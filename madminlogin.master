@@ -1,0 +1,70 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="madminlogin.master.cs" Inherits="madminlogin" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head id="Head1" runat="server">
+    <link rel="shortcut icon" href="favicon.ico" />
+    <title>IICEM Login</title>
+
+    <link rel="stylesheet" type="text/css" href="css/Holtzman_mobile.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="nofollow" />
+
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+    <meta content="" name="description" />
+    <meta content="" name="author" />
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+       <script type="text/javascript">
+
+           localStorage.setItem("fcDefaultView", null);
+           localStorage.setItem("fcDefaultDate", null);
+    </script>
+</head>
+<body class="loginBody">
+    <form id="form1" runat="server">
+        <table class="loginMaster" align="center" cellpadding="0" cellspacing="0" width="100%">
+            <tr>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+            </tr>
+            <%-- <tr>
+                <td align="center">
+                    <asp:Label ID="lblHeader" runat="server" Text="Estimate Control Panel"></asp:Label></td>
+            </tr>--%>
+            <tr>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td align="center">
+                    <img style="margin: 0 auto;width:220px;" src="assets/client_login_logo.png" /></td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+            </tr>
+        </table>
+        <table align="center" cellpadding="0" cellspacing="0" width="40%">
+            <tr>
+                <td align="center" colspan="3">&nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td align="center" colspan="3">
+                    <asp:ContentPlaceHolder ID="head" runat="server">
+                    </asp:ContentPlaceHolder>
+                </td>
+            </tr>
+        </table>
+    </form>
+
+</body>
+</html>

@@ -1,0 +1,651 @@
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Main.master" AutoEventWireup="true" CodeFile="material_traknig_Old.aspx.cs" Inherits="material_traknig" %>
+
+<%@ Register TagPrefix="cc1" Namespace="AjaxControlToolkit" Assembly="AjaxControlToolkit, Version=3.0.30930.22922, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
+    <table cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+            <td class="cssHeader" align="center">
+                <table cellpadding="0" cellspacing="0" width="100%" align="center">
+                    <tr>
+                        <td align="center" class="cssHeader">
+                            <table cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td align="left">
+                                        <span class="titleNu">
+                                            <asp:Label ID="lblHeaderTitle" runat="server" CssClass="cssTitleHeader">Add New Order</asp:Label></span><asp:Label runat="server" CssClass="titleNu" ID="lblTitelJobNumber"></asp:Label>
+                                    </td>
+                                    <td align="right" style="padding-right: 30px;">
+                                        <table cellpadding="0" cellspacing="0" style="padding: 0px; margin: 0px;">
+                                            <tr>
+                                                <td align="left" valign="middle">
+                                                    <%--<asp:CheckBox ID="CheckBox1" runat="server" AutoPostBack="True" OnCheckedChanged="chkPMDisplay_CheckedChanged" />--%>
+                                                </td>
+                                                <td>&nbsp;</td>
+                                                <td>
+                                                    <div class="divToolsLeft">
+                                                        <ul style="list-style-type: none; margin: 0; padding: 0;">
+                                                            <li>
+                                                                <ul style="float: left;">
+                                                                    <li style="float: left;">
+                                                                        <asp:HyperLink ID="hypMessage" runat="server"><img width="26" height="26" src="images/system_icons/01_icon.png" style="color:green;" alt="Message Center" title="Message Center" /></asp:HyperLink></li>
+                                                                    <li style="float: left;">
+                                                                        <asp:HyperLink ID="hypCostLoc" runat="server"><img width="26" height="26" src="images/system_icons/16_icon.png" alt="Project Summary Report" title="Project Summary Report" /></asp:HyperLink></li>
+                                                                    <li style="float: left;">
+                                                                        <asp:HyperLink ID="hyp_CallLog" runat="server"><img width="26" height="26" src="images/system_icons/09_icon.png" alt="Activity Log" title="Activity Log" /></asp:HyperLink></li>
+                                                                    <li style="float: left;">
+                                                                        <asp:HyperLink ID="hyp_Schedule" runat="server"><img width="26" height="26" src="images/system_icons/05_icon.png" alt="Schedule" title="Schedule" /></asp:HyperLink></li>
+                                                                    <li style="float: left;">
+                                                                        <asp:HyperLink ID="hyp_Sow" runat="server"><img width="26" height="26" src="images/system_icons/06_icon.png" alt="Composite SOW" title="Composite SOW" /></asp:HyperLink></li>
+                                                                    <li style="float: left;">
+                                                                        <asp:HyperLink ID="hyp_ProjectNotes" runat="server"><img width="26" height="26" src="images/system_icons/14_icon.png" alt="Project Notes" title="Project Notes" /></asp:HyperLink></li>
+                                                                    <li style="float: left;">
+                                                                        <asp:HyperLink ID="hyp_Allowance" runat="server"><img width="26" height="26" src="images/system_icons/08_icon.png" alt="Allowance Report" title="Allowance Report" /></asp:HyperLink></li>
+                                                                    <li style="float: left;">
+                                                                        <asp:HyperLink ID="hyp_PreCon" runat="server"><img width="26" height="26" src="images/system_icons/10_icon.png" alt="Pre-Con Check List" title="Pre-Con Check List" /></asp:HyperLink></li>
+                                                                    <li style="float: left;">
+                                                                        <asp:HyperLink ID="hyp_SiteReview" runat="server"><img width="26" height="26" src="images/system_icons/11_icon.png" alt="Site Review" title="Site Review" /></asp:HyperLink></li>
+                                                                    <li style="float: left;">
+                                                                        <asp:HyperLink ID="hyp_DocumentManagement" runat="server"><img width="26" height="26" src="images/system_icons/12_icon.png" alt="Document Management" title="Document Management" /></asp:HyperLink></li>
+                                                                    <li style="float: left;">
+                                                                        <asp:HyperLink ID="hyp_Section_Selection" runat="server"><img width="26" height="26" src="images/system_icons/15_icon.png" alt="Selection" title="Selection" /></asp:HyperLink></li>
+                                                                    <li style="float: left;">
+                                                                        <asp:HyperLink ID="hyp_vendor" runat="server"><img width="26" height="26" src="images/system_icons/02_icon.png" alt="Vendor Cost" title="Vendor Cost" /></asp:HyperLink></li>
+                                                                    <li style="float: left;">
+                                                                        <asp:HyperLink ID="hyp_Payment" runat="server"><img width="26" height="26" src="images/system_icons/03_icon.png" alt="Payment Info" title="Payment Info" /></asp:HyperLink></li>
+                                                                    <li style="float: left;">
+                                                                        <asp:HyperLink ID="hyp_survey" runat="server"><img width="26" height="26" src="images/system_icons/07_icon.png" alt="Exit Questionnaire" title="Exit Questionnaire" /></asp:HyperLink></li>
+                                                                        <%--<asp:CheckBox ID="CheckBox1" runat="server" AutoPostBack="True" OnCheckedChanged="chkPMDisplay_CheckedChanged" />--%>
+                                                                    <li style="float: left;"></li>
+                                                                    <li style="float: left;">
+                                                                        <asp:HyperLink ID="hyp_jstatus" runat="server"><img width="26" height="26" src="images/system_icons/04_icon.png" alt="Job Status Graphics" title="Job Status Graphics" /></asp:HyperLink></li>
+                                                                </ul>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table width="100%">
+                    <tr>
+                        <td>
+                            
+                                <table class="wrapper" cellpadding="0" cellspacing="0" width="100%">
+                                    <tr>
+                                        <td align="center">
+                                           
+                                            <table class="wrapper" cellpadding="0" cellspacing="0" width="100%">
+                                                <tr>
+                                                <td align="center">
+                                                    <table cellpadding="0" cellspacing="0" width="100%">
+                                                        <tr style="padding: 0px; margin: 0px;">
+                                                            <td align="left">
+                                                                <asp:Panel ID="Panel2" runat="server">
+                                                                    <span id="PnlCtrlID" runat="server">
+                                                                        <asp:LinkButton ID="lnkAddNewCall" Style="padding-left: 6px;" runat="server" CssClass="button" Width="160px">
+                                                                            <asp:ImageButton ID="ImageTGI2" runat="server" ImageUrl="~/Images/expand.png" CssClass="blindInput" Style="margin: 0px; background: none; border: none; box-shadow: none; padding: 0px; vertical-align: middle;" TabIndex="100" />
+                                                                            Add New Choice
+                                                                        </asp:LinkButton>
+                                                                    </span>
+                                                                </asp:Panel>
+
+
+                                                    </td>
+
+                                                    <%--<td align="center">
+                                                        <asp:Label ID="lblSelectionMSG" runat="server" CssClass="noteYellow" Text="Note: Only Admin or Manager may edit or delete line items after a selection is approved by the customer"></asp:Label>
+
+                                                    </td>--%>
+
+                                                    <td style="padding: 0px; margin: 0px; text-align: right;">
+                                                         <%--<asp:Button ID="btnSelectionApproved2" Text="Approve Selection" runat="server" CssClass="button" data-action="save1" OnClick="btnSubmitSelection_Click" />
+                                                        <asp:Button ID="Button2" runat="server" CssClass="inputPDFBtn" data-action="save1" OnClick="Button2_Click" Text="Selection(s) Report" />
+                                                        <asp:Button ID="Button1" Text="Email Selection(s) to the Customer" runat="server" CssClass="inputEmailBtn" data-action="save1" OnClick="btnEmailSelection_Click" />--%>
+                                                        <cc1:CollapsiblePanelExtender ID="CollapsiblePanelExtender1" runat="server" ImageControlID="ImageTGI2" CollapseControlID="lnkAddNewCall"
+                                                            ExpandControlID="lnkAddNewCall" SuppressPostBack="true" CollapsedImage="Images/expand.png" ExpandedImage="Images/collapse.png" TargetControlID="pnlTGI2" Collapsed="True">
+                                                        </cc1:CollapsiblePanelExtender>
+                                                    </td>
+                                                </tr>
+
+
+                                            </table>
+                                            <table cellpadding="0" cellspacing="0" width="50%">
+                                                <tr style="padding: 0px; margin: 0px;">
+                                                    <td style="padding: 0px; margin: 0px;" align="center">
+                                                        <asp:Panel ID="pnlTGI2" runat="server" Height="100%">
+                                                            <table class="wrappermini" style="padding: 0px; margin: 0px;" width="100%">
+                                                                <tr>
+                                                                    <td align="right"><span class="required">* </span>Order Date: </td>
+                                                                    <td align="left" style="width: 400px">
+                                                                        <table cellpadding="0" cellspacing="0" style="padding: 0px; margin: 0px;">
+                                                                            <tr>
+                                                                                <td align="left">
+                                                                                    <asp:TextBox ID="txtSelectionDate" runat="server"></asp:TextBox>
+                                                                                </td>
+                                                                                <td>&nbsp;</td>
+                                                                                <td align="left">
+                                                                                    <asp:ImageButton ID="imgSelectionDate" runat="server" CssClass="nostyleCalImg" ImageUrl="~/images/calendar.gif" />
+                                                                                    <cc1:CalendarExtender ID="extSelectionDate" runat="server" Format="MM/dd/yyyy" PopupPosition="BottomLeft" PopupButtonID="imgSelectionDate" TargetControlID="txtSelectionDate">
+                                                                                    </cc1:CalendarExtender>
+                                                                                </td>
+
+                                                                            </tr>
+                                                                        </table>
+                                                                    </td>
+                                                                </tr>
+
+                                                                <tr>
+                                                                    <td align="right"><span class="required">* </span>Section: </td>
+                                                                    <td align="left">
+                                                                        <table style="padding: 0px; margin: 0px; border: none;">
+                                                                            <tr style="padding: 0px; margin: 0px; border: none;">
+                                                                                <td style="padding: 0px; margin: 0px; border: none;">
+                                                                                    <asp:DropDownList ID="ddlSection" runat="server"  DataValueField="section_id" DataTextField="section_name" AutoPostBack="True" OnSelectedIndexChanged="ddlSection_IndexChanged">
+                                                                                    </asp:DropDownList>
+                                                                                </td>
+                                                                                <td align="right" style="padding: 0px; margin: 0px; border: none;">Vendor: </td>
+                                                                                <td align="left">
+                                                                                    <asp:DropDownList ID="ddlVendor" runat="server" DataTextField="vendor_name" DataValueField="vendor_id">
+                                                                                    </asp:DropDownList>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </table>
+                                                                    </td>
+
+                                                                </tr>
+
+                                                                <tr>
+                                                                    <td align="right"><span class="required">* </span>Item Name: </td>
+                                                                    <td align="left">
+                                                                        <asp:TextBox ID="txtTitle" runat="server" Style="width: 675px;"></asp:TextBox></td>
+
+                                                                </tr>
+                                                                <tr>
+                                                                    <td align="right" valign="top">
+                                                                        <asp:Label ID="Label2" runat="server"><span class="required">* </span> Notes:</asp:Label>
+                                                                        <br />
+                                                                        (Up to 500 Characters)
+                                                                                    <br />
+                                                                        <asp:TextBox ID="txtDisplayCall" runat="server" BackColor="Transparent" CssClass="nostyle"
+                                                                            BorderColor="Transparent" BorderStyle="None" BorderWidth="0px" Font-Bold="True"
+                                                                            ReadOnly="True">
+                                                                        </asp:TextBox>
+                                                                    </td>
+                                                                    <td align="left">
+                                                                        <asp:TextBox ID="txtNotes" runat="server" TabIndex="109" Height="60px" onkeydown="checkTextAreaMaxLengthWithDisplay(this,event,'500',document.getElementById('head_txtDisplayCall'));" TextMode="MultiLine" Width="680px"></asp:TextBox>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td align="right" valign="top">
+                                                                        <asp:Label ID="lblPShipped" runat="server" Text="Shipped:"></asp:Label>
+
+                                                                        
+                                                                        <asp:CheckBox ID="CheckBoxShipped" runat="server" />
+                                                                        <cc1:CollapsiblePanelExtender ID="CollapsiblePanelShipped" runat="server" CollapseControlID="CheckBoxShipped"
+                                                                            ExpandControlID="CheckBoxShipped" SuppressPostBack="False"  TargetControlID="PaneTrackingInfo" Collapsed="true">
+                                                                        </cc1:CollapsiblePanelExtender>
+                                                                       
+                                                                    </td>
+
+                                                                    <td align="left">
+                                                                        <asp:Panel ID="PaneTrackingInfo" runat="server">
+                                                                            <table width="100%">
+                                                                                <tr>
+                                                                                    <td align="right" width="20%">
+                                                                                        Tracking Info:
+                                                                                    </td>
+                                                                                    <td align="left" width="25%">
+                                                                                        <asp:TextBox ID="txtShippedTrackingInfo" runat="server" Width="100px"></asp:TextBox>
+                                                                                    </td>
+                                                                                    <td align="right" width="15%">
+                                                                                       Notes: 
+                                                                                    </td>
+                                                                                    <td align="left" width="40%">
+                                                                                        <asp:TextBox ID="txtShippedNotes" runat="server" width="350px"></asp:TextBox>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </table>
+                                                                        </asp:Panel>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td align="right" valign="top">
+                                                                        <asp:Label ID="Label1" runat="server" Text="Received:"></asp:Label>
+
+                                                                       
+                                                                        <asp:CheckBox ID="CheckBoxReceived" runat="server" />
+                                                                        <cc1:CollapsiblePanelExtender ID="CollapsiblePanelExtenderReceived" runat="server" CollapseControlID="CheckBoxReceived"
+                                                                            ExpandControlID="CheckBoxReceived" SuppressPostBack="False"  TargetControlID="PanelReceived" Collapsed="true">
+                                                                        </cc1:CollapsiblePanelExtender>
+                                                                    </td>
+                                                                    
+                                                                        <td align="left">
+                                                                            <asp:Panel ID="PanelReceived" runat="server">
+                                                                                <table width="100%">
+                                                                                <tr>
+                                                                                    <td align="right" width="20%">
+                                                                                        Received By:
+                                                                                    </td>
+                                                                                    <td align="left" width="25%">
+                                                                                        <asp:TextBox ID="txtRecReceivedBy" runat="server" Width="100px"></asp:TextBox>
+                                                                                    </td>
+                                                                                    <td align="right" width="15%">
+                                                                                       Notes: 
+                                                                                    </td>
+                                                                                    <td align="left" width="40%">
+                                                                                        <asp:TextBox ID="txtRecNotes" runat="server" Width="350px"></asp:TextBox>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </table>
+
+                                                                       </asp:Panel>
+                                                                        </td>
+                                                                    
+                                                                </tr>
+                                                                <tr>
+                                                                    <td align="right" valign="top">
+                                                                        <asp:Label ID="Label3" runat="server" Text="Picked Up:"></asp:Label>
+
+                                                                        <asp:CheckBox ID="CheckBoxPicked" runat="server" />
+                                                                        <cc1:CollapsiblePanelExtender ID="CollapsiblePanelExtenderPicked" runat="server" CollapseControlID="CheckBoxPicked"
+                                                                            ExpandControlID="CheckBoxPicked" SuppressPostBack="False"  TargetControlID="PanelPicked" Collapsed="true">
+                                                                        </cc1:CollapsiblePanelExtender>
+                                                                    </td>
+                                                                    
+                                                                        <td align="left">
+                                                                            <asp:Panel ID="PanelPicked" runat="server">
+                                                                                <table width="100%">
+                                                                                <tr>
+                                                                                    <td align="right" width="20%">
+                                                                                        Received By:
+                                                                                    </td>
+                                                                                    <td align="left" width="25%">
+                                                                                        <asp:TextBox ID="txtPickedReceivedBy" runat="server" Width="100px"></asp:TextBox>
+                                                                                    </td>
+                                                                                    <td align="right" width="15%">
+                                                                                       Notes: 
+                                                                                    </td>
+                                                                                    <td align="left" width="40%">
+                                                                                        <asp:TextBox ID="txtPickedNotes" runat="server" Width="350px"></asp:TextBox>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </table>
+                                                                       </asp:Panel>
+                                                                        </td>
+                                                                    
+                                                                </tr>
+                                                                <tr>
+                                                                    <td align="right" valign="top">
+                                                                        <asp:Label ID="Label4" runat="server" Text="Confirmed:"></asp:Label>
+
+                                                                        
+                                                                        <asp:CheckBox ID="CheckBoxConfirmed" runat="server" />
+                                                                        <cc1:CollapsiblePanelExtender ID="CollapsiblePanelExtenderConfirmed" runat="server" CollapseControlID="CheckBoxConfirmed"
+                                                                            ExpandControlID="CheckBoxConfirmed" SuppressPostBack="False"  TargetControlID="PanelConfirmed" Collapsed="true">
+                                                                        </cc1:CollapsiblePanelExtender>
+                                                                    </td>
+                                                                    
+                                                                        <td align="left">
+                                                                            <asp:Panel ID="PanelConfirmed" runat="server">
+                                                                                <table width="100%">
+                                                                                <tr>
+                                                                                    <td align="right" width="20%">
+                                                                                        Confirmed By:
+                                                                                    </td>
+                                                                                    <td align="left" width="25%">
+                                                                                        <asp:TextBox ID="txtConfimedBy" runat="server" Width="100px"></asp:TextBox>
+                                                                                    </td>
+                                                                                    <td align="right" width="15%">
+                                                                                       Notes: 
+                                                                                    </td>
+                                                                                    <td align="left" width="40%">
+                                                                                        <asp:TextBox ID="txtConfirmedNotes" runat="server" Width="350px"></asp:TextBox>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </table>
+                                                                            
+                                                                       
+                                                                            </asp:Panel>
+                                                                        </td>
+                                                                    
+                                                                </tr>
+
+                                                                <tr>
+                                                                    <td align="right" valign="top">&nbsp;</td>
+                                                                    <td align="left">
+                                                                        <asp:Label ID="lblResult" runat="server"></asp:Label>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td align="right" valign="top">&nbsp;</td>
+                                                                    <td>
+                                                                        <table style="padding: 0px; margin: 0px; border: none;">
+                                                                            <tr style="padding: 0px; margin: 0px; border: none;">
+                                                                                <td style="padding: 0px; margin: 0px; border: none;">
+                                                                                    <asp:FileUpload ID="file_upload" class="blindInput" accept=".pdf, .doc, .docx, .xls, .xlsx, .csv, .txt, .jpg, .jpeg, .png, .gif" AllowMultiple="true" runat="server" Width="170" />
+                                                                                </td>
+                                                                                <td style="padding: 0px; margin: 0px; border: none;">
+                                                                                    
+
+                                                                                </td>
+                                                                            </tr>
+                                                                        </table>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td align="right" valign="top">&nbsp;</td>
+                                                                    <td align="left">
+                                                                        <asp:Button ID="btnSave" runat="server" CssClass="button" TabIndex="110" Text=" Save " OnClick="btnSave_click" OnClientClick="ShowProgress();" />
+                                                                    </td>
+                                                                </tr>
+
+
+                                                            </table>
+                                                           
+                                                        </asp:Panel>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+
+                                            <asp:Label ID="lblResult2" runat="server"></asp:Label>
+
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td align="center">
+                                            <asp:GridView ID="grdMaterial" runat="server" AutoGenerateColumns="False"
+                                                CssClass="mGrid"
+                                                PageSize="200" TabIndex="2" Width="100%" OnRowDataBound="grdMaterial_RowDataBound" OnRowEditing="grdSelection_RowEditing" OnRowUpdating="grdSelection_RowUpdating">
+                                                
+                                                <Columns>
+                                                    <%--cell=0--%>
+                                                    <asp:TemplateField HeaderText="Order Date">
+                                                        <ItemTemplate>
+                                                            <asp:Label ID="lblOrderDate" runat="server" Text='<%# Eval("Order_date","{0:d}")%>' />
+                                                            <div id="dvCalender" runat="server" visible="false">
+                                                                <table style="padding: 0px; margin: 0px;">
+                                                                    <tr>
+                                                                        <td>
+                                                                            <asp:TextBox ID="txtOrderDate" runat="server" Text='<%# Eval("Order_date","{0:d}") %>' Width="65px"></asp:TextBox>
+                                                                        </td>
+                                                                        <td>
+                                                                            <asp:ImageButton CssClass="nostyleCalImg" ID="imgDate" runat="server" ImageUrl="~/images/calendar.gif" />
+                                                                            <cc1:CalendarExtender ID="extOrderDate" runat="server" Format="MM/dd/yyyy" PopupPosition="BottomLeft" PopupButtonID="imgDate" TargetControlID="txtOrderDate">
+                                                                            </cc1:CalendarExtender>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+
+
+                                                            </div>
+                                                        </ItemTemplate>
+                                                        <HeaderStyle HorizontalAlign="Center" Width="5%" />
+                                                        <ItemStyle HorizontalAlign="Center" Width="5%" />
+                                                    </asp:TemplateField>
+                                                    <%--cell=1--%>
+                                                    <asp:TemplateField HeaderText="Section">
+                                                        <ItemTemplate>
+                                                            <asp:DropDownList ID="ddlgSectiong" CssClass="secDD" runat="server" Visible="false" Enabled="true" DataValueField="section_id" DataTextField="section_name" AutoPostBack="True" OnSelectedIndexChanged="ddlgVendor_SelectedIndexChanged">
+                                                            </asp:DropDownList>
+                                                              
+                       
+                                                             
+                                                            <asp:Label ID="lblSectiong" runat="server" Text='<%# Eval("Section_name") %>'></asp:Label>
+                                                        </ItemTemplate>
+                                                        <ItemStyle Width="5%" HorizontalAlign="Left" />
+                                                    </asp:TemplateField>
+                                                    <%--cell=2--%>
+                                                    <asp:TemplateField HeaderText="Vendor">
+                                                        <ItemTemplate>
+                                                            <asp:DropDownList ID="ddlgVendor" CssClass="secDD" runat="server" Visible="false" Enabled="True" AutoPostBack="true">
+                                                            </asp:DropDownList>
+                                                            <asp:Label ID="lblVendor" runat="server" Text='<%# Eval("Vendor_name") %>'></asp:Label>
+                                                        </ItemTemplate>
+                                                        <ItemStyle Width="5%" HorizontalAlign="Left" />
+                                                    </asp:TemplateField>
+                                                    <%--cell=3--%>
+                                                    <asp:TemplateField HeaderText="Item">
+                                                        <ItemTemplate>
+                                                            <asp:Label ID="lblItem" runat="server" Text='<%# Eval("Item_text") %>' />
+                                                            <asp:TextBox ID="txtItem" runat="server" Visible="false" TextMode="MultiLine"
+                                                                Text='<%# Eval("Item_text") %>' Width="98%" Height="40px"></asp:TextBox>
+                                                        </ItemTemplate>
+                                                        <HeaderStyle HorizontalAlign="Center" />
+                                                        <ItemStyle Width="5%" HorizontalAlign="Left" />
+                                                    </asp:TemplateField>
+                                                    <%--cell=4--%>
+                                                    <asp:TemplateField HeaderText="Notes">
+                                                        <ItemTemplate>
+                                                            <asp:Label ID="lblItemnote" runat="server" Text='<%# Eval("Item_note") %>' Style="display: inline;" />
+                                                            <asp:TextBox ID="txtItemnote" runat="server" Visible="false" TextMode="MultiLine"
+                                                                Text='<%# Eval("Item_note") %>' Width="98%" Height="40px"></asp:TextBox>
+
+                                                            <pre style="height: auto; white-space: pre-wrap; display: inline; font-family: 'Open Sans', Arial, Tahoma, Verdana, sans-serif;"><asp:Label ID="lblItemnote_r" runat="server" Text='<%# Eval("Item_note") %>' Visible="false" ></asp:Label></pre>
+                                                            <asp:LinkButton ID="lnkOpen_Item_note" Style="display: inline;" Text="More" Font-Bold="true" ToolTip="Click here to view more" OnClick="lnkOpen_Click_Item_note" runat="server" ForeColor="Blue"></asp:LinkButton>
+                                                        </ItemTemplate>
+                                                        <HeaderStyle HorizontalAlign="Center" />
+                                                        <ItemStyle Width="8%" HorizontalAlign="Left" />
+                                                    </asp:TemplateField>
+                                                     <%--cell=5--%>
+                                                    <asp:TemplateField HeaderText="Shipped Tracking Info">
+                                                        <ItemTemplate>
+                                                            <asp:Label ID="lblShippedTrackingInfo" runat="server" Text='<%# Eval("Shipped_text") %>' />
+                                                            <asp:TextBox ID="txtShippedTrackingInfo" runat="server" Visible="false" TextMode="MultiLine"
+                                                                Text='<%# Eval("Shipped_text") %>' Width="98%" Height="40px"></asp:TextBox>
+                                                        </ItemTemplate>
+                                                        <HeaderStyle HorizontalAlign="Center" />
+                                                        <ItemStyle Width="5%" HorizontalAlign="Left" />
+                                                    </asp:TemplateField>
+                                                    <%--cell=6--%>
+                                                    <asp:TemplateField HeaderText="Shipped Notes">
+                                                        <ItemTemplate>
+                                                            <asp:Label ID="lblShippedNotes" runat="server" Text='<%# Eval("Shipped_note") %>' Style="display: inline;" />
+                                                            <asp:TextBox ID="txtShippedNotes" runat="server" Visible="false" TextMode="MultiLine"
+                                                                Text='<%# Eval("Shipped_note") %>' Width="98%" Height="40px"></asp:TextBox>
+
+                                                            <pre style="height: auto; white-space: pre-wrap; display: inline; font-family: 'Open Sans', Arial, Tahoma, Verdana, sans-serif;"><asp:Label ID="lblShippedNotes_r" runat="server" Text='<%# Eval("Shipped_note") %>' Visible="false" ></asp:Label></pre>
+                                                            <asp:LinkButton ID="lnkOpen_Shipped_Notes" Style="display: inline;" Text="More" Font-Bold="true" ToolTip="Click here to view more" OnClick="lnkOpen_Shipped_Notes" runat="server" ForeColor="Blue"></asp:LinkButton>
+                                                        </ItemTemplate>
+                                                        <HeaderStyle HorizontalAlign="Center" />
+                                                        <ItemStyle Width="8%" HorizontalAlign="Left" />
+                                                    </asp:TemplateField>
+                                                       <%--cell=7--%>
+                                                    <asp:TemplateField HeaderText="Received">
+                                                        <ItemTemplate>
+                                                            <asp:Label ID="lblReceived" runat="server" Text='<%# Eval("Received_text") %>' />
+                                                            <asp:TextBox ID="txtReceived" runat="server" Visible="false" TextMode="MultiLine"
+                                                                Text='<%# Eval("Received_text") %>' Width="98%" Height="40px"></asp:TextBox>
+                                                        </ItemTemplate>
+                                                        <HeaderStyle HorizontalAlign="Center" />
+                                                        <ItemStyle Width="5%" HorizontalAlign="Left" />
+                                                    </asp:TemplateField>
+                                                    <%--cell=8--%>
+                                                    <asp:TemplateField HeaderText="Received Notes">
+                                                        <ItemTemplate>
+                                                            <asp:Label ID="lblReceivedNotes" runat="server" Text='<%# Eval("Received_note") %>' Style="display: inline;" />
+                                                            <asp:TextBox ID="txtReceivedNotes" runat="server" Visible="false" TextMode="MultiLine"
+                                                                Text='<%# Eval("Received_note") %>' Width="98%" Height="40px"></asp:TextBox>
+
+                                                            <pre style="height: auto; white-space: pre-wrap; display: inline; font-family: 'Open Sans', Arial, Tahoma, Verdana, sans-serif;"><asp:Label ID="lblReceivedNotes_r" runat="server" Text='<%# Eval("Received_note") %>' Visible="false" ></asp:Label></pre>
+                                                            <asp:LinkButton ID="lnkOpen_ReceivedNotes" Style="display: inline;" Text="More" Font-Bold="true" ToolTip="Click here to view more" OnClick="lnkOpen_ReceivedNotes" runat="server" ForeColor="Blue"></asp:LinkButton>
+                                                        </ItemTemplate>
+                                                        <HeaderStyle HorizontalAlign="Center" />
+                                                        <ItemStyle Width="8%" HorizontalAlign="Left" />
+                                                    </asp:TemplateField>
+                                                      <%--cell=9--%>
+                                                    <asp:TemplateField HeaderText="Picked">
+                                                        <ItemTemplate>
+                                                            <asp:Label ID="lblPicked" runat="server" Text='<%# Eval("Picked_text") %>' />
+                                                            <asp:TextBox ID="txtPicked" runat="server" Visible="false" TextMode="MultiLine"
+                                                                Text='<%# Eval("Picked_text") %>' Width="98%" Height="40px"></asp:TextBox>
+                                                        </ItemTemplate>
+                                                        <HeaderStyle HorizontalAlign="Center" />
+                                                        <ItemStyle Width="5%" HorizontalAlign="Left" />
+                                                    </asp:TemplateField>
+                                                    <%--cell=10--%>
+                                                    <asp:TemplateField HeaderText="Picked Notes">
+                                                        <ItemTemplate>
+                                                            <asp:Label ID="lblPickedNotes" runat="server" Text='<%# Eval("Picked_note") %>' Style="display: inline;" />
+                                                            <asp:TextBox ID="txtPickedNotes" runat="server" Visible="false" TextMode="MultiLine"
+                                                                Text='<%# Eval("Picked_note") %>' Width="98%" Height="40px"></asp:TextBox>
+
+                                                            <pre style="height: auto; white-space: pre-wrap; display: inline; font-family: 'Open Sans', Arial, Tahoma, Verdana, sans-serif;"><asp:Label ID="lblPickedNotes_r" runat="server" Text='<%# Eval("Picked_note") %>' Visible="false" ></asp:Label></pre>
+                                                            <asp:LinkButton ID="lnkOpen_PickedNotes" Style="display: inline;" Text="More" Font-Bold="true" ToolTip="Click here to view more" OnClick="lnkOpen_PickedNotes" runat="server" ForeColor="Blue"></asp:LinkButton>
+                                                        </ItemTemplate>
+                                                        <HeaderStyle HorizontalAlign="Center" />
+                                                        <ItemStyle Width="8%" HorizontalAlign="Left" />
+                                                    </asp:TemplateField>
+                                                     <%--cell=11--%>
+                                                    <asp:TemplateField HeaderText="Confirmed">
+                                                        <ItemTemplate>
+                                                            <asp:Label ID="lblConfirmed" runat="server" Text='<%# Eval("Confirmed_text") %>' />
+                                                            <asp:TextBox ID="txtConfirmed" runat="server" Visible="false" TextMode="MultiLine"
+                                                                Text='<%# Eval("Confirmed_text") %>' Width="98%" Height="40px"></asp:TextBox>
+                                                        </ItemTemplate>
+                                                        <HeaderStyle HorizontalAlign="Center" />
+                                                        <ItemStyle Width="5%" HorizontalAlign="Left" />
+                                                    </asp:TemplateField>
+                                                    <%--cell=12--%>
+                                                    <asp:TemplateField HeaderText="Confirmed Notes">
+                                                        <ItemTemplate>
+                                                            <asp:Label ID="lblConfirmedNotes" runat="server" Text='<%# Eval("Confirmed_note") %>' Style="display: inline;" />
+                                                            <asp:TextBox ID="txtConfirmedNotes" runat="server" Visible="false" TextMode="MultiLine"
+                                                                Text='<%# Eval("Confirmed_note") %>' Width="98%" Height="40px"></asp:TextBox>
+
+                                                            <pre style="height: auto; white-space: pre-wrap; display: inline; font-family: 'Open Sans', Arial, Tahoma, Verdana, sans-serif;"><asp:Label ID="lblConfirmedNotes_r" runat="server" Text='<%# Eval("Confirmed_note") %>' Visible="false" ></asp:Label></pre>
+                                                            <asp:LinkButton ID="lnkOpen_ConfirmedNotes" Style="display: inline;" Text="More" Font-Bold="true" ToolTip="Click here to view more" OnClick="lnkOpen_ConfirmedNotes" runat="server" ForeColor="Blue"></asp:LinkButton>
+                                                        </ItemTemplate>
+                                                        <HeaderStyle HorizontalAlign="Center" />
+                                                        <ItemStyle Width="8%" HorizontalAlign="Left" />
+                                                    </asp:TemplateField>
+                                                    <%--cell=13--%>
+                                                    <asp:TemplateField HeaderText="">
+                                                        <ItemTemplate>
+                                                            <table style="padding: 0px; margin: 0px; border: none;">
+                                                                <tr style="padding: 0px; margin: 0px; border: none;">
+                                                                    <td style="padding: 0px; margin: 0px; border: none;">
+
+                                                                        <asp:GridView ID="grdUploadedFileList" runat="server" AutoGenerateColumns="False"
+                                                                            CssClass="uGrid" ShowHeader="false" ShowFooter="false" BorderStyle="None" Style="padding: 0px; margin: 0px; border: none;" 
+                                                                            OnRowDataBound="grdUploadedFileList_RowDataBound">
+                                                                            <Columns>
+                                                                                <asp:TemplateField>
+                                                                                    <ItemTemplate>
+                                                                                        <div class="clearfix">
+                                                                                            <div class="divImageCss">
+                                                                                                <asp:HyperLink ID="hypImg" runat="server" CssClass="hypimgCss" data-imagelightbox="g" data-ilb2-caption="" Visible="false" ToolTip="Click here to view file">
+                                                                                                    <asp:Image ID="img" onerror="this.src='Images/No_image_available.jpg';" runat="server" CssClass="imgCss blindInput" />
+                                                                                                </asp:HyperLink>
+                                                                                                <asp:HyperLink ID="hypPDF" runat="server" CssClass="hypimgCss" data-imagelightbox="g" data-ilb2-caption="" Visible="false" ToolTip="Click here to view file">
+                                                                                                    <asp:Image ID="imgPDF" onerror="this.src='Images/No_image_available.jpg';" runat="server" CssClass="imgCss blindInput" />
+
+                                                                                                </asp:HyperLink>
+                                                                                                <asp:HyperLink ID="hypExcel" runat="server" CssClass="hypimgCss" data-imagelightbox="g" data-ilb2-caption="" Visible="false" ToolTip="Click here to view file">
+                                                                                                    <asp:Image ID="imgExcel" onerror="this.src='Images/No_image_available.jpg';" runat="server" CssClass="imgCss blindInput" />
+
+                                                                                                </asp:HyperLink>
+                                                                                                <asp:HyperLink ID="hypDoc" runat="server" CssClass="hypimgCss" data-imagelightbox="g" data-ilb2-caption="" Visible="false" ToolTip="Click here to view file">
+                                                                                                    <asp:Image ID="imgDoc" onerror="this.src='Images/No_image_available.jpg';" runat="server" CssClass="imgCss blindInput" />
+
+                                                                                                </asp:HyperLink>
+                                                                                                <asp:HyperLink ID="hypTXT" runat="server" CssClass="hypimgCss" data-imagelightbox="g" data-ilb2-caption="" Visible="false" ToolTip="Click here to view file">
+                                                                                                    <asp:Image ID="imgTXT" onerror="this.src='Images/No_image_available.jpg';" runat="server" CssClass="imgCss blindInput" />
+
+                                                                                                </asp:HyperLink>
+
+                                                                                            </div>
+                                                                                            <div style="text-align: center; padding: 5px; font-weight: bold;">
+                                                                                                <asp:Label ID="lblFileName" runat="server" Text=""></asp:Label>
+                                                                                                <asp:Button ID="btnDeleteUploadedFile" Text="Delete" runat="server" OnClick="DeleteUploadedFile" CommandArgument='<%#Eval("upload_fileId")%>' OnClientClick="ShowProgress();" />
+                                                                                            </div>
+                                                                                        </div>
+
+                                                                                    </ItemTemplate>
+                                                                                    <ItemStyle HorizontalAlign="Center"  />
+                                                                                </asp:TemplateField>
+
+                                                                            </Columns>
+                                                                        </asp:GridView>
+
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <table style="padding: 0px; margin: 0px; border: none;">
+                                                                            <tr style="padding: 0px; margin: 0px; border: none;">
+                                                                                <td style="padding: 0px; margin: 0px; border: none;">
+                                                                                    <asp:FileUpload ID="grdfile_upload" class="blindInput" accept=".pdf, .doc, .docx, .xls, .xlsx, .csv, .txt, .jpg, .jpeg, .png, .gif" AllowMultiple="true" runat="server" Width="170" />
+                                                                                </td>
+                                                                                <td style="padding: 0px; margin: 0px; border: none;">
+                                                                                    <asp:ImageButton ID="imgbtngrdUpload" Height="24" Width="24" CssClass="nostyleCalImg" ToolTip="Upload New Files" runat="server" ImageUrl="~/images/upload_imag.png" CommandArgument='<%#Eval("Order_id")%>' OnClientClick="ShowProgress();" OnClick="imgbtngrdUpload_Click" />
+
+                                                                                </td>
+                                                                            </tr>
+                                                                        </table>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </ItemTemplate>
+                                                        <ItemStyle Width="16%" />
+                                                    </asp:TemplateField>
+                                                     <%--cell=14--%>
+                                                    <asp:ButtonField CommandName="Edit" Text="Edit" ItemStyle-Width="2%" ItemStyle-HorizontalAlign="Center"></asp:ButtonField>
+                                                    <asp:TemplateField>
+                                                        <ItemTemplate>
+                                                            <asp:ImageButton ID="imgDelete" runat="server"  CssClass="iconDeleteCss blindInput" ImageUrl="~/images/icon_delete_16x16.png" ToolTip="Delete" CommandArgument='<%#Eval("Order_id")%>' OnClick="DeleteSelection" OnClientClick="ShowProgress();" />
+                                                        </ItemTemplate>
+                                                        <HeaderStyle HorizontalAlign="Center" Width="2%" />
+                                                        <ItemStyle HorizontalAlign="Center" Width="2%"/>
+                                                    </asp:TemplateField>
+
+                                                   
+                                                </Columns>
+                                                <AlternatingRowStyle CssClass="alt" />
+                                            </asp:GridView>
+                                        </td>
+                                    </tr>
+                                </table>
+                         
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <asp:HiddenField ID="hdnCustomerID" runat="server" Value="0" />
+                            <asp:HiddenField ID="hdnEstimateID" runat="server" Value="0" />
+                            <asp:HiddenField ID="hdnOrderId" runat="server" Value="0" />
+                            <asp:HiddenField ID="hdnEmailType" runat="server" Value="2" />
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td align="center">
+
+               
+
+                <%--    <asp:Button ID="btnEmailSelection" Text="Email Selection(s) to the Customer" runat="server" CssClass="inputEmailBtn" data-action="save1" OnClick="btnEmailSelection_Click"/>
+                <asp:Button ID="btnSelectionApproved" Text="Approve Selection" runat="server" CssClass="button" data-action="save1" OnClick="btnSubmitSelection_Click" />--%>
+            </td>
+        </tr>
+    </table>
+
+</asp:Content>
+

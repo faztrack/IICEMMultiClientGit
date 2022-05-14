@@ -1,0 +1,4 @@
+admin=rritivoy@interiorinnovations.biz
+password=Innovation5
+
+C:\Windows\assembly\GAC_MSIL\Microsoft.Exchange.WebServices\15.0.0.0__31bf3856ad364e35\Microsoft.Exchange.WebServices.dll

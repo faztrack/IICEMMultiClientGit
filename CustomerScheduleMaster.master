@@ -1,0 +1,301 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="CustomerScheduleMaster.master.cs" Inherits="CustomerScheduleMaster" %>
+
+<!DOCTYPE html>
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head id="Head1" runat="server">
+    <title>Interior Innovations Kitchen & Bath Design</title>
+    <link rel="shortcut icon" href="favicon.ico" />
+    <link type="text/css" href="css/TableTemplates.css" rel="stylesheet" />
+    <link type="text/css" href="css/core.css" rel="stylesheet" />
+    <link type="text/css" href="css/skin_clean.css" rel="stylesheet" />
+    <link type="text/css" href="css/plugins.css" rel="stylesheet" />
+    <link type="text/css" href="css/css3.css" rel="stylesheet" />
+
+
+    <style type='text/css'>
+        body {
+            margin-top: 0px;
+            text-align: center;
+            font-size: 14px;
+            font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+        }
+
+        #calendar {
+            max-width: 1150px;
+            /*width: 1000px;*/
+            /*margin: 0 auto;*/
+        }
+        /* css for timepicker */ .ui-timepicker-div dl {
+            text-align: left;
+        }
+
+            .ui-timepicker-div dl dt {
+                height: 25px;
+            }
+
+            .ui-timepicker-div dl dd {
+                margin: -25px 0 10px 65px;
+            }
+
+        .style1 {
+            width: 100%;
+        }
+        /* table fields alignment*/ .alignRight {
+            text-align: right;
+            padding-right: 10px;
+            padding-bottom: 10px;
+        }
+
+        .alignLeft {
+            text-align: left;
+            padding-bottom: 10px;
+        }
+
+        .hidden {
+            visibility: hidden;
+        }
+
+        .show {
+            color: red;
+            visibility: visible;
+        }
+
+        .txtReadOnly {
+            border: none;
+            background: none;
+            height: auto !important;
+            resize: none;
+            color: black !important;
+            overflow: hidden;
+            width: auto !important;
+            padding: 0px !important;
+        }
+
+        .popWindow {
+            font: 70% 'Trebuchet MS', sans-serif;
+            margin: 40px;
+            width: 400px !important;
+        }
+
+        .greenEvent {
+            background-color: #00FF00 !important;
+        }
+
+        /*Hide start time in FullCalendar*/
+        .fc-event-time {
+            display: none;
+        }
+    </style>
+
+
+    <link href="jquerycalendar/themes/cupertino/jquery-ui.css" rel="stylesheet" />
+    <link href="jquerycalendar/jquery.qtip.min.css" rel="stylesheet" />
+
+    <link href="fullcalendar/fullcalendar.css" rel="stylesheet" type="text/css" />
+    <link href="fullcalendar/fullcalendar-ext.css" rel="stylesheet" type="text/css" />
+    <%--<link href="fullcalendar/fullcalendar-ext.css" rel="stylesheet" type="text/css" />--%>
+
+
+    <script src="jquerycalendar/moment.min.js" type="text/javascript"></script>
+
+    <script src="jquerycalendar/jquery.min.js" type="text/javascript"></script>
+
+
+    <script src="jquerycalendar/jquery-ui.min.js" type="text/javascript"></script>
+
+    <script src="jquerycalendar/jquery-ui-combobox.js" type="text/javascript"></script>
+
+    <script src="jquerycalendar/jquery.qtip.min.js" type="text/javascript"></script>
+
+    <script src="fullcalendar/fullcalendar.js" type="text/javascript"></script>
+
+    <script src="js/customercalendarscript.js" type="text/javascript"></script>
+
+    <script src="commonScript.js" type="text/javascript"></script>
+
+    <style type="text/css">
+        .noteYellow {
+            background-color: #ffd800;
+            border-radius: 15px;
+            color: #000;
+            padding: 5px 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .fc-Link {
+            display: none !important;
+        }
+
+        .fc-Done {
+            display: none !important;
+        }
+        /*arefin050719*/
+
+
+
+        .fc-list-heading-ext {
+            display: none !important;
+        }
+
+        /*.fc-today-button {
+            display: none !important;
+        }
+
+        .fc-center-ext {
+            margin-left: -130px;
+        }*/
+    </style>
+
+    <!-- dd menu -->
+    <script type="text/javascript">
+
+        var ButtonToAppear = 200;
+
+        $(window).scroll(function () {
+
+            var position = $(window).scrollTop();
+
+            if (position > ButtonToAppear) {
+                $('#backToTop').fadeIn();
+                //$('#backToBottom').fadeOut();
+            }
+            else {
+                $('#backToBottom').fadeIn();
+                $('#backToTop').fadeOut();
+            }
+            if ($(window).scrollTop() == ($(document).height() - $(window).height())) {
+                $('#backToBottom').fadeOut();
+            }
+            else {
+                $('#backToBottom').fadeIn();
+            }
+        });
+
+        function backToTopttt() {
+            // alert("msg");    
+            $("html, body").animate({ scrollTop: 0 }, 1000);
+            $('#backToTop').fadeOut();
+        }
+        function backToBottomttt() {
+            //alert($(document).height()-$(window).height());
+            $("html, body").animate({ scrollTop: $(document).height() - $(window).height() }, 1000);
+            $('#backToBottom').fadeOut();
+        }
+    </script>
+</head>
+<body>
+
+    <form id="form1" runat="server">
+        <div>
+            <ajaxToolkit:ToolkitScriptManager ID="ToolkitScriptManager1" runat="server" AsyncPostBackTimeout="600">
+            </ajaxToolkit:ToolkitScriptManager>
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td style="background-color: #330f02;" align="left" valign="top">
+                        <!-- Header -->
+                        <div>
+                            <!-- The navigation bar -->
+
+                            <div style="clear: both;">
+                                <div class="logo">
+                                    <a href="#">
+                                        <img src="assets/iicem.png" alt="Interior Innovations Kitchen & Bath Design" title="Interior Innovations Kitchen & Bath Design" height="22px" /></a>
+                                </div>
+                                <div style="float: left; width: 50%;">
+                                    <asp:Menu StaticSelectedStyle-CssClass="StaticSelectedStyle" ID="menuBar" runat="server" Orientation="Horizontal"
+                                        CssClass="MenuBarLeft" MaximumDynamicDisplayLevels="10"
+                                        StaticEnableDefaultPopOutImage="true" DynamicEnableDefaultPopOutImage="false">
+                                        <StaticMenuStyle CssClass="StaticMenuItem" />
+                                        <StaticMenuItemStyle CssClass="StaticMenuItemStyle" />
+                                        <StaticHoverStyle CssClass="StaticHoverStyle" />
+                                        <StaticSelectedStyle CssClass="StaticSelectedStyle" />
+                                        <DynamicSelectedStyle CssClass="StaticSelectedStyle" />
+                                        <DynamicMenuItemStyle CssClass="DynamicMenuItemStyle" />
+                                        <DynamicHoverStyle CssClass="DynamicHoverStyle" />
+                                    </asp:Menu>
+                                </div>
+                                <div id="divTestSystem" runat="server" visible="false">
+                                    <div class="hidden-xs" style="background-color: #fff; border: 3px solid #000; left: 45%; padding: 0 5px 3px; position: absolute; top: 45px; z-index: 9">
+                                        <span style="padding: 0 5px; color: #f00; font-size: 20px; font-weight: bold;">Test System</span>
+                                    </div>
+                                </div>
+                                <div style="float: right;">
+                                    <%-- <img style="float:right;margin:9px 8px 0 8px;" src="assets/settings.png" />--%>
+                                    <span style="background-color: #c74a43;">
+                                        <asp:LinkButton ID="lnkSignOut" CssClass="signInCss" runat="server" OnClick="lnkSignOut_Click">SignIn</asp:LinkButton>
+                                    </span>
+                                    <%-- <asp:Menu ID="menuSettings" runat="server" Orientation="Horizontal" CssClass="MenuBarRight"  dir="rtl"
+                                        StaticEnableDefaultPopOutImage="false" DynamicEnableDefaultPopOutImage="false">                                      
+                                        <StaticMenuStyle CssClass="StaticMenuItem" />
+                                        <StaticMenuItemStyle CssClass="StaticMenuItemStyle" />
+                                        <StaticHoverStyle CssClass="StaticHoverStyle" />
+                                        <StaticSelectedStyle CssClass="StaticSelectedStyle" />
+                                        <DynamicSelectedStyle CssClass="StaticSelectedStyle" />
+                                        <DynamicMenuItemStyle CssClass="DynamicMenuItemStyle" />
+                                        <DynamicHoverStyle CssClass="DynamicHoverStyle" />
+                                    </asp:Menu>--%>
+                                </div>
+                            </div>
+
+                            <!-- End of navigation bar" -->
+
+
+                            <!-- End of Search bar -->
+                            <input type="button" id="backToBottom" onclick="backToBottomttt()" title="Go To Bottom" value="" />
+                        </div>
+                        <!-- End of Header -->
+                    </td>
+                </tr>
+                <tr>
+                    <td align="left" valign="top">
+                        <div style="margin-bottom: 64px;" class="content_place_holder">
+                            <asp:ContentPlaceHolder ID="head" runat="server">
+                            </asp:ContentPlaceHolder>
+                        </div>
+                        <input type="button" hidden="true" id="backToTop" onclick="backToTopttt()" title="Back To Top" value="" />
+                    </td>
+                </tr>
+
+
+
+
+
+
+                <tr>
+                    <td>
+                        <table align="center" style="position: fixed; left: 0; bottom: 0px; width: 100%;" class="footer">
+                            <tr>
+                                <td align="left" style="width: 50%;">
+                                    <table width="100%">
+                                        <tr>
+                                            <td style="padding: 0 10px;" align="left" valign="middle"><span id="siteseal">
+                                                <script type="text/javascript" src="https://seal.godaddy.com/getSeal?sealID=R4j4jnWQLB6KzvieEealJG4CTYnxZrK0FLjSIpiwtzbIzAaNJb6DT1aj9Czx"></script>
+                                            </span></td>
+                                            <td align="left" style="margin: 0 !important; width: 100px;" valign="middle">
+                                                <%--<div class="AuthorizeNetSeal">
+                                                    <script type="text/javascript" language="javascript">var ANS_customer_id = "eeac5ee7-7130-4546-b8a6-cdd2fb915c1e";</script>
+                                                    <script type="text/javascript" language="javascript" src="//verify.authorize.net/anetseal/seal.js"></script>
+                                                    <a href="http://www.authorize.net/" id="AuthorizeNetText" target="_blank">Online Payments</a>
+                                                </div>--%>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td style="width: 50%; padding: 0 30px 0 0;" valign="middle">
+                                    <a href="http://www.faztrack.com/" target="_blank">
+                                        <img style="width: 100px;" src="assets/footer_logo.png" /></a>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </form>
+</body>
+</html>

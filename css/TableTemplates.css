@@ -1,0 +1,284 @@
+﻿.logo {
+    float: left;
+}
+.logo a {
+    padding:0;
+    margin:0;
+}
+.logo a img {
+    vertical-align:middle;
+    padding:10px;
+    background-color:#bd0007;
+}
+.logo a img:hover {
+    background-color:#c74a43;
+    transition:.2s;
+    -moz-transition:.2s;
+    -webkit-transition:.2s;
+    -o-transition:.2s;
+}
+.MenuBarLeft {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif !important;
+    float:left !important;
+}
+.MenuBarRight {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif !important;
+    float:right !important;
+}
+.MenuBarRight ul {
+    padding: 0 5px;
+}
+.StaticMenuItem {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif !important;
+    background-color: #992a24 !important;    
+    font: 14px calibri !important;    
+    margin: auto !important;
+    vertical-align: middle !important;
+    background-repeat: repeat-x !important;
+    text-align: center !important;
+    color: white !important; 
+}
+ .StaticMenuItem:hover {
+    background-color: #000 !important;
+    transition:.2s;
+    -moz-transition:.2s;
+    -webkit-transition:.2s;
+    -o-transition:.2s;
+}
+.StaticMenuItemStyle {
+    color: #ffffff !important;
+    padding: 0 5px !important;
+     height: 30px  !important;
+}
+    .StaticMenuItemStyle td {
+        height:24px !important;
+    }
+        .StaticMenuItemStyle td:first-child {
+            width:0 !important;
+            height:42px !important;
+        }
+        .StaticMenuItemStyle td img {
+            text-align:center !important;
+            border-style: none !important;
+            vertical-align: middle !important;
+            padding:0 8px 0 0 !important;
+        }
+.StaticHoverStyle {
+    background-color: #1283b3 !important;
+    color: #9bd8f2 !important;
+}
+
+.StaticSelectedStyle{
+    background-color: #3c79ab !important;
+    color: #fff !important;
+}
+
+.DynamicMenuItemStyle {
+    background-color: #992a24 !important;
+    -moz-border-radius: 1px !important;
+    -webkit-border-radius: 1px !important;
+    font: 12px !important;
+    margin: auto !important;
+    border-left: 0px solid #740600 !important;
+    border-right: 0px solid #740600 !important;
+    border-top: 0px solid #740600 !important;
+    border-bottom: 1px solid #740600 !important;
+    border-spacing: 0px !important;
+    vertical-align: middle !important;
+    background-repeat: repeat-x !important;
+    height: 30px !important;
+    text-align: left !important;
+    color: #fff !important;
+}
+.DynamicMenuItemStyle:hover {
+    color:#fff !important;
+    transition:.2s;
+    -moz-transition:.2s;
+    -webkit-transition:.2s;
+    -o-transition:.2s;
+    background-color: #c74a43 !important;
+}
+
+.DynamicHoverStyle {
+    background-color: #1283b3 !important;
+    color: #ffffff !important;
+}
+
+
+#menuBar {
+    width: auto !important;
+}
+#menuBar img.icon {
+    border-style: none;
+    vertical-align: middle;
+}
+#menuBar img.separator {
+    border-style: none;
+    display: block;
+}
+#menuBar img.horizontal-separator {
+    border-style: none;
+    vertical-align: middle;
+}
+#menuBar ul {
+    list-style: outside none none;
+    margin: 0;
+    padding: 0;
+    width: auto;
+}
+    #menuBar ul li {
+        background-color:#427ed8;
+        border-right: 1px solid #000;
+    }
+#menuBar ul.static {
+    height: 42px  !important;
+}
+#menuBar ul.dynamic {
+    z-index: 1;
+}
+#menuBar a {
+    display: block;
+    text-decoration: none;
+    white-space: nowrap;
+    background-color:#330f02;
+    color:#fff;
+    padding:12px 12px 0 !important;
+}
+#menuBar a.static {
+    border-style: none;
+    padding-left: 0.15em;
+    padding-right: 0.15em;
+    text-decoration: none;
+}
+#menuBar a.static:hover {
+    border-style: none;
+    text-decoration: none;
+    transition:.2s;
+    -moz-transition:.2s;
+    -webkit-transition:.2s;
+    -o-transition:.2s;
+    background-color:#000;
+}
+#menuBar a.static.selected {
+    border-style: none;
+    text-decoration: none;
+    background-color: #992a24 !important;
+    color: #fff !important;
+}
+#menuBar a.popout {
+    background-position: right center;
+    background-repeat: no-repeat;
+    padding-right: 20px !important;
+    background-image:url(../images/drop_down.png) !important;
+}
+#menuBar a.dynamic {
+    border-style: none;
+    text-decoration: none;
+}
+#menuBar a.dynamic.selected {
+    border-style: none;
+    text-decoration: none;
+}
+#menuSettings {
+    float:right;
+    direction:rtl;
+}
+
+#menuSettings img.icon {
+    border-style: none;
+    vertical-align: middle;
+}
+#menuSettings img.separator {
+    border-style: none;
+    display: block;
+}
+#menuSettings img.horizontal-separator {
+    border-style: none;
+    vertical-align: middle;
+}
+#menuSettings ul {
+    list-style: outside none none;
+    margin: 0;
+    padding: 0;
+    width: auto;
+}
+#menuSettings ul li {
+    overflow:visible;
+}
+#menuSettings ul.dynamic {
+    z-index: 1;
+}
+#menuSettings a {
+    display: block;
+    text-decoration: none;
+    white-space: nowrap;
+    padding:12px 12px 0 !important;
+}
+#menuSettings a.static {
+    border-style: none;
+    padding-left: 0.15em;
+    padding-right: 0.15em;
+    text-decoration: none;
+}
+#menuSettings a.popout {
+    background-image:url("assets/settings.png");
+    background-position:center center !important;
+    background-repeat:no-repeat;
+    padding:6px 26px !important;
+    float:right !important;
+}
+#menuSettings a.dynamic {
+    border-style: none;
+    text-decoration: none;
+}
+#menuSettings a.static.selected {
+    border-style: none;
+    text-decoration: none;
+}
+#menuSettings a.dynamic.selected {
+    border-style: none;
+    text-decoration: none;
+}
+.imageBtn {
+    background: none !important;
+    border: none !important;
+    padding: 4px 5px;
+    opacity:.7;
+    outline: none !important;
+    box-shadow: none !important;
+}
+.imageBtn:hover {
+    transition:.3s;
+    opacity:1;
+}
+.titleNu {
+    font-weight:500;
+    font-family:'Open Sans', Arial;
+    font-size:16px;
+    color: #330f02;
+    padding: 10px 0;
+    margin:0 0 0 10px;
+}
+
+/*.....................asp Menu flickering problem css.....................*/
+.MenuBarLeft ul li ul { display: none; }
+.MenuBarLeft ul li { position: relative;  float: left; list-style: none; }
+.MenuBarLeft ul li ul li { width: 100%; }
+
+.MenuBarRight ul li ul { display: none; }
+.MenuBarRight ul li { position: relative;  float: left; list-style: none; }
+.MenuBarRight ul li ul li { width: 100%; }
+/*.....................asp Menu flickering problem css.....................*/
+
+.nos {
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-image:url(../assets/nos.png) !important;
+    border-radius: 20px;
+    color: #fff;
+    font-weight: bold;
+    height: 32px;
+    padding: 0 12px;
+    text-align: center;
+    width: 10px;
+}

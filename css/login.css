@@ -1,0 +1,256 @@
+@import 'css3.css';
+
+* {
+	margin:0; padding:0;
+}
+
+body {
+    font-family:'Open Sans', Arial, Tahoma, Verdana, sans-serif;
+}
+/*body {
+ position:relative;
+ height:100%;
+ background:#fff url('../assets/loginbg0.jpg') left top repeat-x;
+ font-family:Tahoma, Arial, sans-serif;
+}*/
+img {
+	border:0;
+}
+#loginTop50 {
+    width:100%;
+    margin:0 auto;
+    min-height:500px !important;
+}
+#container {
+	width:960px;
+	margin:0 auto;
+}
+
+#container .logo {
+	width:260px;
+	margin:75px auto 0;
+}
+#headerTitle
+{
+	margin: 20px auto;
+	position: relative;
+	text-align: center;
+	color: #fff;
+	font-size: 26px;
+	font-family: Arial,Tahoma;
+	font-weight: normal;
+	padding: 10px;
+}
+#loginTop50 #header
+{
+	color: #fff;
+    font-family: Arial,Tahoma;
+    font-size: 30px;
+    font-weight: normal;
+    margin: 0 auto;
+    top:10px;
+    padding: 20px;
+    position: relative;
+    text-align: center;
+}
+#headerCustomer
+{
+	border:1px solid #417096;
+	color:#417096;
+	font-size:30px;
+	font-family: Arial, Tahoma;
+	font-weight:normal;
+	margin:30px auto;
+	padding: 20px 5px;
+	width:300px;
+	position:relative;
+	text-align:center;
+	background: url('../assets/1px_opacity10.png') repeat;
+	opacity: .9;
+	-moz-opacity: .9;
+	-khtml-opacity: .9;
+	-webkit-opacity: .9;
+	-o-opacity: .9;
+	*-opacity: .9;
+	border-radius: 100px;
+	-webkit-border-radius: 100px;
+	-khtml-border-radius: 100px;
+	-moz-border-radius: 100px;
+	-o-border-radius: 100px;
+	*-border-radius: 100px;
+}
+#loginTop50 #box {
+ clear:both;
+ float:none;
+ width:380px;
+ margin:0 auto 0;
+}
+
+p.main label {
+    color: #000;
+    display: inline;
+    float: left;
+    font-size: 14px;
+    font-weight: normal;
+    margin: 0;
+    padding: 5px 0;
+}
+
+#box p {
+ clear:both;
+ float:none;
+ width:100%;
+}
+
+p.main INPUT 
+{
+border: 1px solid #000;
+background:url('../assets/trans_op20W.png') repeat;
+border-radius: 3px;
+color: #000;
+float: left;
+font-size: 16px;
+height: 30px;
+font-weight:200;
+letter-spacing: 1px;
+padding: 5px 10px;
+width: 100%;
+text-align:left;
+}
+p.main INPUT:focus 
+{
+	box-shadow:0 0 10px #555;
+	-moz-box-shadow:0 0 10px #555;
+	-webkit-box-shadow:0 0 10px #555;
+	-o-box-shadow:0 0 10px #555;
+	*-box-shadow:0 0 10px #555;
+    border:1px solid #000;
+    transition:.2s;
+    -moz-transition:.2s;
+    -webkit-transition:.2s;
+    *-transition:.2s;
+}
+input.login {
+float:right;
+padding:10px 0;
+margin-top: 15px;
+color:#992a24;
+font-size:14px;
+font-weight:700;
+text-decoration:none;
+background:url('../assets/trans_op20.png') repeat;
+display:inline;
+margin-right:5px;
+border-radius:3px;
+-moz-border-radius:3px;
+-webkit-border-radius:3px;
+-o-border-radius:3px;
+*-border-radius:3px;
+border:1px solid #992a24;
+text-transform:uppercase;
+}
+input.login:hover 
+{
+border:1px solid #330f02;
+background:#330f02;
+color:#fff;
+transition:.2s;
+-moz-transition:.2s;
+-o-transition:.2s;
+-webkit-transition:.2s;
+*-transition:.2s;
+box-shadow:0 1px 1px 0 #274e6d;
+-moz-box-shadow:0 1px 1px 0 #274e6d;
+-webkit-box-shadow:0 1px 1px 0 #274e6d;
+-o-box-shadow:0 1px 1px 0 #274e6d;
+}
+input.btnNormal {
+float:right;
+padding:6px 10px;
+margin-top: 15px;
+color:#992a24;
+font-size:14px;
+font-weight:700;
+text-decoration:none;
+background:url('../assets/trans_op20.png') repeat;
+display:inline;
+margin-right:5px;
+border-radius:3px;
+-moz-border-radius:3px;
+-webkit-border-radius:3px;
+-o-border-radius:3px;
+*-border-radius:3px;
+border:1px solid #992a24;
+text-transform:uppercase;
+}
+input.btnNormal:hover 
+{
+border:1px solid #330f02;
+background:#330f02;
+color:#fff;
+transition:.2s;
+-moz-transition:.2s;
+-o-transition:.2s;
+-webkit-transition:.2s;
+*-transition:.2s;
+box-shadow:0 1px 1px 0 #274e6d;
+-moz-box-shadow:0 1px 1px 0 #274e6d;
+-webkit-box-shadow:0 1px 1px 0 #274e6d;
+-o-box-shadow:0 1px 1px 0 #274e6d;
+}
+input.btnDefault {
+float:right;
+padding:6px 10px;
+margin-top: 15px;
+color:#fff;
+font-size:14px;
+font-weight:700;
+text-decoration:none;
+display:inline;
+margin-right:5px;
+border-radius:3px;
+-moz-border-radius:3px;
+-webkit-border-radius:3px;
+-o-border-radius:3px;
+*-border-radius:3px;
+border:1px solid #330f02;
+text-transform:uppercase;
+background:#330f02;
+}
+input.btnDefault:hover 
+{
+border:1px solid #992a24;
+background:url('../assets/trans_op20.png') repeat;
+color:#992a24;
+transition:.2s;
+-moz-transition:.2s;
+-o-transition:.2s;
+-webkit-transition:.2s;
+*-transition:.2s;
+box-shadow:0 1px 1px 0 #274e6d;
+-moz-box-shadow:0 1px 1px 0 #274e6d;
+-webkit-box-shadow:0 1px 1px 0 #274e6d;
+-o-box-shadow:0 1px 1px 0 #274e6d;
+}
+span {
+ font-size:13px;
+ /*color:#666;*/
+}
+
+.space {
+ padding-top:15px;
+}
+
+span input {
+ margin-left:125px;
+ margin-right:5px;
+ border:1px solid #111;
+ background:#444;
+ color:#fff;
+}
+.modalBackground 
+{
+	background-color:Gray;
+	filter:alpha(opacity=70);
+	opacity:0.7;
+}

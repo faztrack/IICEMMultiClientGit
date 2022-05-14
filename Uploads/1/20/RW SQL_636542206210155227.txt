@@ -1,0 +1,2 @@
+CREATE INDEX idx_LeadCardId ON RM_ModuleType (LeadCardId);
+

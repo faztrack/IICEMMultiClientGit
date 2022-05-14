@@ -1,0 +1,226 @@
+﻿
+
+================================================================
+
+Table = roles
+column = role_id
+
+value = 1 // Administrator
+value = 2 // Manager
+value = 3 // Sales
+value = 4 // Superintendent
+value = 5 // Operation
+================================================================
+
+Table = file_upload_infos
+column =  type   
+
+value = 1 //  Vendor File
+value = 5 // Selection
+value = 2 // item(material_traknig.aspx)
+value = 3 // pickup(material_traknig.aspx)
+value = 4 // confirmed(material_traknig.aspx)
+================================================================
+
+Table = ScheduleCalendar
+column = type_id
+
+value = 0  // Calendar Entry WITHOUT Customer Id (Visible in Both Operation & Sales)
+
+value = 1  // Operation  (calendar Entry with Customer Id (Estimate Item Drag and Drop))
+value = 11 // Operation  (General calendar Entry  with Customer Id (Manual Entry))   
+
+value = 2  // Sales (calendar Entry with  Customer Id)
+value = 22 // Sales (General calendar Entry WITHOUT Customer Id)   
+
+value = 5  // Other (Weekend, Holiday)
+================================================================
+
+Calendar Event Link Dependency
+
+Table = ScheduleCalendarLink, ScheduleCalendarLinkTemp
+column =  dependencyType
+
+value = 1 //  Start Same Time  
+value = 2 //  Start After Finish  
+value = 3 //  Offset days   
+================================================================
+
+Table = user_info 
+column =   EmailIntegrationType
+
+value  = 1; // Outlook Email       
+value = 2; // Others Email (example:  Gmail)
+================================================================
+
+Table = followup_message 
+column = mess_type_id
+
+value = 1; // Initiale Mail with estimate To Customer       
+value = 2; // 2nd Followupe Mail To Customer 
+value = 3; // 3rd Followup Mail With Cupon To Customer
+value = 4; // Welcome Mail To Customer
+
+================================================================
+Table = estimate_payment, New_partial_payments (pay_term_ids)
+
+In Code         column (estimate_payment)
+(strTermId)        -----------------------      
+-------------        
+value = 1        // deposit_amount
+value = 2        // countertop_amount
+value = 3        // start_job_amount
+value = 4        // due_completion_amount 
+value = 5        // final_measure_amount
+value = 6        // deliver_cabinet_amount
+value = 7        // substantial_amount
+value = 8        // drywall_amount
+value = 9        // flooring_amount
+value = 10       // other_amount
+
+================================================================
+
+Table = co_pricing_master
+Column = item_status_id
+
+value = 1        // default
+value = 2        // Item will be Deleted
+value = 3        // Item newly added 
+
+******************************************************************************************
+Email Information >>>>>>>>>>>>>>>>
+
+******************************************************************************************
+******************************************************************************************
+
+### Customer Payment Transaction Email ( >> From Customer Portal Dashboard)
+
+"From Email Address" 
+...............................................................
+Email field (From company_profile Table)
+
+
+Send "To Email Addreses" 
+---------------------------------------------------------------
+Customer Email (from customers Table)
+
+
+"CC Email Addreses"
+---------------------------------------------------------------
+co_email field (From company_profile Table)
+
+
+******************************************************************************************
+******************************************************************************************
+
+### Customer Change Order Transaction Email ( >> From Customer Portal changeorder)
+
+"From Email Address" 
+...............................................................
+Email field (From company_profile Table)
+
+
+Send "To Email Addreses" 
+---------------------------------------------------------------
+Customer Email (from customers Table)
+
+
+"BCC Email Addreses"
+---------------------------------------------------------------
+ChangeOrdersEmail field (From company_profile Table)
+
+
+******************************************************************************************
+******************************************************************************************
+
+### Customer Selection Approved / Declined mail  ( >> From Customer Portal Selection)
+
+"From Email Address" 
+...............................................................
+Email field (From company_profile Table)
+
+
+Send "To Email Addreses" 
+---------------------------------------------------------------
+SalesPerson Email (from sales_person Table)
+
+Superintendent Email (from User_info Table, Superintendent user)
+
+UserEmail (from Section_Selection Table, who created the Selection)
+
+SelectionEmail (From company_profile Table)
+
+
+
+******************************************************************************************
+******************************************************************************************
+
+### ProjectNotes Email ( >> From Admin Portal ProjectNotes)
+
+"From Email Address" 
+...............................................................
+user company_email field (From user_info Table)
+
+
+Send "To Email Addreses" 
+---------------------------------------------------------------
+AddtionalEmail (from ProjectNotesEmailInfo Table)
+
+ProjectNotesEmail (from company_profile Table)
+
+SalesPerson Email (from sales_person Table)
+
+
+"CC Email Addreses"
+---------------------------------------------------------------
+Superintendent Email (from User_info Table, Superintendent user)
+
+
+"BCC Email Addreses"
+---------------------------------------------------------------
+DevBCC field (From Web Config appSettings DevBCC)
+
+
+******************************************************************************************
+******************************************************************************************
+
+### SiteReview Email ( >> From Admin Portal SiteReview)
+
+"From Email Address" 
+...............................................................
+Email field (From company_profile Table)
+
+
+Send "To Email Addreses" 
+---------------------------------------------------------------
+AddtionalEmail (from ProjectNotesEmailInfo Table)
+
+SalesPerson Email (from sales_person Table)
+
+Superintendent Email (from User_info Table, Superintendent user)
+
+
+"BCC Email Addreses"
+---------------------------------------------------------------
+DevBCC field (From Web Config appSettings DevBCC)
+
+******************************************************************************************
+******************************************************************************************
+
+### 
+Welcome Email To Customer,  
+Initiale Mail with estimate To Customer, 
+2nd Followupe Mail To Customer and 
+3rd Followup Mail With Cupon To Customer ( >> From Admin Portal Customer message Center)
+
+
+"From Email Address" 
+...............................................................
+Email field (From company_profile Table)
+
+
+Send "To Email Addreses" 
+---------------------------------------------------------------
+Customer Email (from customers Table)
+
+

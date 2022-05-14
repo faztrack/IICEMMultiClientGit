@@ -1,0 +1,45 @@
+ALTER TABLE [dbo].[BusModel]
+ADD IsActive bit; 
+
+
+ALTER TABLE [dbo].[BusPreparationServicePart]
+ADD IsActive bit; 
+
+ALTER TABLE [dbo].[OptionPriceList]
+ADD IsActive bit; 
+
+ALTER TABLE [dbo].[NewDeliveryRange]
+ADD LastUpdateDate DateTime,IsActive bit; 
+
+ALTER TABLE [dbo].[MicrobirdOptionList]
+ADD IsActive bit; 
+
+
+  UPDATE [dbo].[BusModel]
+SET IsActive = 1
+
+  UPDATE [dbo].[BusPreparationServicePart]
+SET IsActive = 1
+
+  UPDATE [dbo].[MicrobirdOptionList]
+SET IsActive = 1
+
+  UPDATE [dbo].[OptionPriceList]
+SET IsActive = 1
+
+  UPDATE [dbo].[NewDeliveryRange]
+SET IsActive = 1
+
+  UPDATE [dbo].[NewDeliveryRange]
+SET LastUpdateDate = '10-15-2017'
+
+
+
+   UPDATE [QuoteDetails]
+SET CodeDescription = REPLACE(CodeDescription, '&amp;', '&') where CodeDescription like '%&amp;%'
+
+  UPDATE [QuoteDetails]
+SET Code = REPLACE(Code, '&amp;', '&') where Code like '%&amp;%'
+
+   UPDATE [QuoteDetails]
+SET CodeDescription = REPLACE(CodeDescription, '&quot;', '"') where CodeDescription like '%&quot;%'

@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="dsSalesReport" targetNamespace="http://tempuri.org/dsSalesReport.xsd" xmlns:mstns="http://tempuri.org/dsSalesReport.xsd" xmlns="http://tempuri.org/dsSalesReport.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="dsSalesReport" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="SalesReports">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="customer_id" type="xs:int" minOccurs="0" />
+              <xs:element name="sales_person_id" type="xs:int" minOccurs="0" />
+              <xs:element name="estimate_id" type="xs:int" minOccurs="0" />
+              <xs:element name="CustomerName" type="xs:string" minOccurs="0" />
+              <xs:element name="address" type="xs:string" minOccurs="0" />
+              <xs:element name="city" type="xs:string" minOccurs="0" />
+              <xs:element name="state" type="xs:string" minOccurs="0" />
+              <xs:element name="zip_code" type="xs:string" minOccurs="0" />
+              <xs:element name="email" type="xs:string" minOccurs="0" />
+              <xs:element name="phone" type="xs:string" minOccurs="0" />
+              <xs:element name="SalesPerson" type="xs:string" minOccurs="0" />
+              <xs:element name="project_subtotal" type="xs:decimal" minOccurs="0" />
+              <xs:element name="tax_amount" type="xs:decimal" minOccurs="0" />
+              <xs:element name="adjusted_price" type="xs:decimal" minOccurs="0" />
+              <xs:element name="adjusted_tax_amount" type="xs:decimal" minOccurs="0" />
+              <xs:element name="tSales" type="xs:decimal" minOccurs="0" />
+              <xs:element name="sale_date" type="xs:string" minOccurs="0" />
+              <xs:element name="estimate_name" type="xs:string" minOccurs="0" />
+              <xs:element name="job_start_date" type="xs:string" minOccurs="0" />
+              <xs:element name="appointment_date" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="create_date" type="xs:dateTime" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

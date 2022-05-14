@@ -1,0 +1,106 @@
+.hypimgCss {
+    /*padding: 5px;*/
+}
+
+.imgCss {
+    padding: 5px;
+    max-height: 100%;
+    max-width: 100%;
+    width: auto;
+    height: auto;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto !important;
+}
+
+.uGrid {
+    border: none;
+    text-align: left;
+    padding: 5px;
+}
+
+    .uGrid tr {
+        display: inline-block;
+        padding: 5px;
+        border: none;
+    }
+
+    .uGrid td {
+        padding: 5px;
+        border: none;
+    }
+
+.lblDescripCss {
+    display: inline-block;
+    height: 20px;
+    width: 100px;
+    padding-left: 10px;
+    color: black;
+}
+
+.iconEditCss {
+    margin-left: 10px;
+    background: none;
+    border: none;
+    box-shadow: none;
+}
+
+.iconDeleteCss {
+    margin-right: 10px;
+    background: none;
+    border: none;
+    box-shadow: none;
+}
+
+.clearfix:after {
+    content: " ";
+    display: block;
+    height: 0;
+    clear: both;
+}
+
+.clearfix {
+    width: 100%;
+    box-shadow: 0 0 20px #cdcdcd;
+    border-radius: 5px;
+}
+
+
+.divImageCss {
+    height: 115px; /*can be anything*/
+    width: 115px; /*can be anything*/
+    position: relative;
+}
+.divEditCss {
+    width: 30%;
+    float: left;
+}
+
+.divRotateCss {
+    width: 20%;
+    float: left;
+}
+
+.divDeleteCss {
+    width: 50%;
+    float: right;
+    text-align: right;
+    /*margin: -54px 0px 0px 68px;*/
+}
+
+
+/*Search Customer*/
+
+.SearchCustomerclearfix {
+    width: 100%;
+    
+    border-radius: 5px;
+}
+
+.gsrImg {
+    height:32px;
+    padding:4px;
+}

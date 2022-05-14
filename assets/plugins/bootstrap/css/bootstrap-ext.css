@@ -1,0 +1,134 @@
+﻿
+
+.MainSection {
+    margin-top: 60px;
+    margin-bottom:70px !important;
+}
+
+.panel-heading-ext {
+    background-color: #992a24 !important;
+    color: #fff !important;
+    padding: 10px 4px !important;
+}
+
+.panel-title-ext {
+    width: 50%;
+}
+
+.form-control-ext {
+    margin: 0 0 0 0;
+    height: 34px;
+}
+
+.btn-ext {
+    width: 50%;
+    float: right;
+}
+
+.form-group-ext {
+    display: inline-block;
+    width: 49%;
+    margin: 0px !important;
+    margin-bottom: 0px !important;
+    padding: 0px !important;
+}
+
+.form-group-ext-txtArea {
+    margin: 0px !important;
+    margin-bottom: 0px !important;
+    padding: 0px !important;
+    width: 100% !important;
+    display: block;
+}
+
+.form-group-ext-phone {
+    display: inline-block;
+    width: 49%;
+    margin: 0px !important;
+    margin-bottom: 0px !important;
+    padding: 0px !important;
+}
+
+.form-group-ext-email {
+    display: inline-block;
+    width: 49%;
+    margin: 0px !important;
+    margin-bottom: 0px !important;
+    padding: 0px !important;
+}
+
+.panel-body-ext {
+    padding: 0px 0 0 !important;
+}
+
+.col-ext {
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+}
+
+.col-ext-txtArea {
+    padding-left: 0px !important;
+    padding-right: 15px !important;
+}
+
+.btn-ext {
+    background-color: #6666c4;
+    border-color: #6666c4;
+}
+
+    .btn-ext:hover {
+        background-color: #00007e;
+        border-color: #00007e;
+    }
+
+.glyphicon-map-marker-ext:before {
+    content: "\e062";
+    color:#f8f8f8;
+}
+.glyphicon-edit-ext:before {
+    content: "\e065";
+    color:#f8f8f8;
+}
+
+ 
+
+@media only screen and (min-width: 320px) and (max-width: 640px) {
+    .MainSection {
+        margin-top: 68px;
+        margin-bottom:50px !important;
+    }
+
+    .form-group-ext {
+        width: 49%;
+        padding: 0px !important;
+    }
+
+    .form-group-ext-txtArea {
+        padding: 0px !important;
+        width: 100% !important;
+    }
+
+    .form-group-ext-phone {
+        width: 39%;
+        padding: 0px !important;
+    }
+
+    .form-group-ext-email {
+        width: 59%;
+        padding: 0px !important;
+    }
+
+    .panel-body-ext {
+        padding: 8px 0 0 !important;
+    }
+
+    .col-ext {
+        padding-left: 5px !important;
+        padding-right: 5px !important;
+    }
+
+    .col-ext-txtArea {
+        padding-left: 5px !important;
+        padding-right: 5px !important;
+    }
+}

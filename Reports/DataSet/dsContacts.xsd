@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="dsContacts" targetNamespace="http://tempuri.org/dsContacts.xsd" xmlns:mstns="http://tempuri.org/dsContacts.xsd" xmlns="http://tempuri.org/dsContacts.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="dsContacts" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Contact_x0020_Data">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="pricing_id" type="xs:int" minOccurs="0" />
+              <xs:element name="client_id" type="xs:int" minOccurs="0" />
+              <xs:element name="customer_id" type="xs:int" minOccurs="0" />
+              <xs:element name="estimate_id" type="xs:int" minOccurs="0" />
+              <xs:element name="location_id" type="xs:int" minOccurs="0" />
+              <xs:element name="sales_person_id" type="xs:int" minOccurs="0" />
+              <xs:element name="section_level" type="xs:int" minOccurs="0" />
+              <xs:element name="item_id" type="xs:int" minOccurs="0" />
+              <xs:element name="section_name" type="xs:string" minOccurs="0" />
+              <xs:element name="item_name" type="xs:string" minOccurs="0" />
+              <xs:element name="measure_unit" type="xs:string" minOccurs="0" />
+              <xs:element name="item_cost" type="xs:decimal" minOccurs="0" />
+              <xs:element name="minimum_qty" type="xs:decimal" minOccurs="0" />
+              <xs:element name="quantity" type="xs:decimal" minOccurs="0" />
+              <xs:element name="retail_multiplier" type="xs:decimal" minOccurs="0" />
+              <xs:element name="labor_rate" type="xs:decimal" minOccurs="0" />
+              <xs:element name="labor_id" type="xs:int" minOccurs="0" />
+              <xs:element name="section_serial" type="xs:decimal" minOccurs="0" />
+              <xs:element name="item_cnt" type="xs:int" minOccurs="0" />
+              <xs:element name="total_direct_price" type="xs:decimal" minOccurs="0" />
+              <xs:element name="total_retail_price" type="xs:decimal" minOccurs="0" />
+              <xs:element name="pricing_type" type="xs:string" minOccurs="0" />
+              <xs:element name="short_notes" type="xs:string" minOccurs="0" />
+              <xs:element name="location_name" type="xs:string" minOccurs="0" />
+              <xs:element name="is_direct" type="xs:int" minOccurs="0" />
+              <xs:element name="tmpCo" type="xs:string" minOccurs="0" />
+              <xs:element name="item_status_id" type="xs:int" minOccurs="0" />
+              <xs:element name="sort_id" type="xs:int" minOccurs="0" />
+              <xs:element name="short_notes_new" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

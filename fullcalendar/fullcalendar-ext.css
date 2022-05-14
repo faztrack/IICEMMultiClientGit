@@ -1,0 +1,863 @@
+﻿
+
+.scTextArea {
+    width: 230px !important;
+}
+
+fc-selected {
+    border: 2px solid #ffffff !important;
+    -webkit-box-shadow: 0 0 7px #000000 !important;
+    -moz-box-shadow: 0 0 7px #000000 !important;
+    box-shadow: 0 0 7px #000000 !important;
+}
+
+
+
+/*FULL CALENDAR CSS STARTS HERE*/
+/*FULL CALENDAR CSS STARTS HERE*/
+/*FULL CALENDAR CSS STARTS HERE*/
+.fc-content-skeleton .fc-workday {
+  
+}
+.fc-workday {
+    position: absolute;
+    top: 20px;
+    border: 1px solid #bbb;
+    background-color: #cdcdcd !important;
+    border-radius: 4px;
+    color: black !important;
+    padding-top: 4% !important;
+    padding-bottom: 2% !important;
+    margin-right: 0 !important;
+    margin-top: 0px !important;
+    z-index: 999999;
+    background-image: repeating-linear-gradient(-45deg, transparent, transparent 5px, rgba(255,255,255,.5) 5px, rgba(255,255,255,.5) 10px);
+    opacity: .8;
+    height: 50%;
+    width: 13.5%;
+    bottom: 0;
+}
+    .fc-workday .fc-content {
+        text-align: center;
+        
+    }
+    .fc-workday .fc-time {
+        display: none;
+    }
+.fc-default {
+    border: 1px solid #6e538a; /*arefin 06092019*/
+    background-color: #6e538a !important;
+    border-radius: 4px;
+    color: White !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-white {
+    border: 3px solid #ffffff;
+    background-color: #ffffff !important;
+    border-radius: 4px;
+    color: #000000 !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+
+.fc-RoyalBlue {
+    border: 1px solid #4169E1; /*arefin 06092019*/
+    background: #4169E1 !important;
+    border-radius: 4px;
+    color: White !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-CadetBlue {
+    border: 1px solid #5F9EA0; /*arefin 06092019*/
+    background: #5F9EA0 !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-Blue {
+    border: 1px solid #5252e6; /*arefin 06092019*/
+    background: #5252e6 !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-Coral {
+    border: 1px solid #df8260; /*arefin 06092019*/
+    background: #df8260 !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-BlueViolet {
+    border: 1px solid #8d70d8; /*arefin 06092019*/
+    background: #8d70d8 !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-Brown {
+    border: 1px solid #A52A2A; /*arefin 06092019*/
+    background: #A52A2A !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-Chartreuse {
+    border: 1px solid #729d47; /*arefin 06092019*/
+    background: #729d47 !important;
+    border-radius: 4px;
+    color: #fff !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-CornflowerBlue {
+    border: 1px solid #6495ED; /*arefin 06092019*/
+    background: #6495ED !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-Crimson {
+    border: 1px solid #d44e69; /*arefin 06092019*/
+    background: #d44e69 !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-DarkOliveGreen {
+    border: 1px solid #556B2F; /*arefin 06092019*/
+    background: #556B2F !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-MediumPurple {
+    border: 1px solid #9370DB; /*arefin 06092019*/
+    background: #9370DB !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-Yellow {
+    border: 1px solid #bd9d1b; /*arefin 06092019*/
+    background: #bd9d1b !important;
+    border-radius: 4px;
+    color: #fff !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-GoldenRod {
+    border: 1px solid #DAA520; /*arefin 06092019*/
+    background: #DAA520 !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-Violet {
+    border: 1px solid #c094c0; /*arefin 06092019*/
+    background: #c094c0 !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-Tomato {
+    border: 1px solid #f4586e; /*arefin 06092019*/
+    background: #f4586e !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-Indigo {
+    border: 1px solid #222e64; /*arefin 06092019*/
+    background: #222e64 !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-Teal {
+    border: 1px solid #008080; /*arefin 06092019*/
+    background: #008080 !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-Tan {
+    border: 1px solid #aa9273; /*arefin 06092019*/
+    background: #aa9273 !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-SteelBlue {
+    border: 1px solid #4682B4; /*arefin 06092019*/
+    background: #4682B4 !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-SlateGrey {
+    border: 1px solid #708090; /*arefin 06092019*/
+    background: #708090 !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-SlateBlue {
+    border: 1px solid #6A5ACD; /*arefin 06092019*/
+    background: #6A5ACD !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-SkyBlue {
+    border: 1px solid #87CEEB; /*arefin 06092019*/
+    background: #87CEEB !important;
+    border-radius: 4px;
+    color: #0000ff !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-SeaGreen {
+    border: 1px solid #2E8B57; /*arefin 06092019*/
+    background: #2E8B57 !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-SandyBrown {
+    border: 1px solid #a97d57; /*arefin 06092019*/
+    background: #a97d57 !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-IndianRed {
+    border: 1px solid #CD5C5C; /*arefin 06092019*/
+    background: #CD5C5C !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-Aqua {
+    border: 1px solid #00ffff; /*arefin 06092019*/
+    background: #00ffff !important;
+    border-radius: 4px;
+    color: #000080 !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-RosyBrown {
+    border: 1px solid #BC8F8F; /*arefin 06092019*/
+    background: #BC8F8F !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-Red {
+    border: 1px solid #FF0000; /*arefin 06092019*/
+    background: #FF0000 !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-Purple {
+    border: 1px solid #800080; /*arefin 06092019*/
+    background: #800080 !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-YellowGreen {
+    border: 1px solid #9ca154; /*arefin 06092019*/
+    background: #9ca154 !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-RebeccaPurple {
+    border: 1px solid #663399; /*arefin 06092019*/
+    background: #663399 !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-DarkSlateGray {
+    border: 1px solid #2F4F4F; /*arefin 06092019*/
+    background: #2F4F4F !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-DarkOrange {
+    border: 1px solid #FF8C00; /*arefin 06092019*/
+    background: #FF8C00 !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-PaleVioletRed {
+    border: 1px solid #DB7093; /*arefin 06092019*/
+    background: #DB7093 !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-OliveDrab {
+    border: 1px solid #6B8E23; /*arefin 06092019*/
+    background: #6B8E23 !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-DeepPink {
+    border: 1px solid #883763; /*arefin 06092019*/
+    background: #883763 !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-OrangeRed {
+    border: 1px solid #FF4500; /*arefin 06092019*/
+    background: #FF4500 !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-Orange {
+    border: 1px solid #FFA500; /*arefin 06092019*/
+    background: #FFA500 !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-Navy {
+    border: 1px solid #1e1e48; /*arefin 06092019*/
+    background: #1e1e48 !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-DimGrey {
+    border: 1px solid #696969; /*arefin 06092019*/
+    background: #696969 !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-MediumVioletRed {
+    border: 1px solid #a05283; /*arefin 06092019*/
+    background: #a05283 !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-Magenta {
+    border: 1px solid #c640c6; /*arefin 06092019*/
+    background: #c640c6 !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-MidnightBlue {
+    border: 1px solid #191970; /*arefin 06092019*/
+    background: #191970 !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-Green {
+    border: 1px solid #008000; /*arefin 06092019*/
+    background: #008000 !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-MediumSlateBlue {
+    border: 1px solid #7B68EE; /*arefin 06092019*/
+    background: #7B68EE !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-MediumOrchid {
+    border: 1px solid #a27cab; /*arefin 06092019*/
+    background: #a27cab !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-LimeGreen {
+    border: 1px solid #56ca56; /*arefin 06092019*/
+    background: #56ca56 !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-Salmon {
+    border: 1px solid #FA8072; /*arefin 06092019*/
+    background: #FA8072 !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-DarkSlateBlue {
+    border: 1px solid #483D8B; /*arefin 06092019*/
+    background: #483D8B !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+
+.fc-DarkBlue {
+    border: 1px solid #3e5796; /*arefin 06092019*/
+    background: #3e5796 !important;
+    border-radius: 4px;
+    color: white !important;
+    padding: 1px 5px !important;
+    margin-right: 0 !important;
+}
+/*FULL CALENDAR CSS ENDS HERE*/
+/*FULL CALENDAR CSS ENDS HERE*/
+/*FULL CALENDAR CSS ENDS HERE*/
+
+.qtip-ext {
+    font-size: 12px !important;
+    border: 2px solid #2779AA !important;
+    line-height: 1.25em !important;
+}
+
+
+.cssdialog {
+    z-index: 9 !important;
+    padding: 0px !important;
+}
+
+/* resizable */
+
+/*.fc .ui-resizable-handle {
+    display: block !important;
+    position: absolute !important;
+    z-index: 99999 !important;
+    border: 0 !important; 
+    background: url(data:image/gif;base64,AAAA) !important;  
+}*/
+
+/* Style the tab */
+.tab {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+}
+
+    /* Style the buttons that are used to open the tab content */
+    .tab button {
+        background-color: inherit;
+        float: left;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        padding: 14px 16px;
+        transition: 0.3s;
+    }
+
+        /* Change background color of buttons on hover */
+        .tab button:hover {
+            background-color: #ddd;
+        }
+
+        /* Create an active/current tablink class */
+        .tab button.active {
+            background-color: #ccc;
+        }
+
+/* Style the tab content */
+.tabcontent {
+    display: none;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+
+.hdnColumnCss {
+    display: none !important;
+    margin: 0px !important;
+    padding: 0px !important;
+}
+
+.fc-center-ext {
+    /*padding-left: 155px;*/
+}
+
+.CssCalStateActionDiv {
+    top: 11%;
+    left: 23%;
+    position: absolute;
+    z-index: 9999;
+}
+
+.CssCalStateActionBtn {
+    border-radius: 5px !important;
+    padding: 5px !important;
+    background: #3baae3 url(images/ui-bg_glass_50_3baae3_1x400.png) 50% 50% repeat-x;
+    font-weight: bold !important;
+    cursor: pointer !important;
+    color: #ffffff !important;
+    border: 1px solid #2694e8;
+}
+
+#external-events {
+    margin-top: 10px;
+    padding: 0 10px;
+    border: 1px solid #ccc;
+    background: #eee;
+    max-height: 665px;
+    min-height: 665px;
+    overflow-x: scroll;
+    max-width: 250px;
+}
+
+    #external-events .fc-event {
+        margin: 5px 0;
+        cursor: move;
+        padding: 5px;
+        /*border: 1px solid #663399;
+        background-color: #663399;*/
+        border: 1px solid #cdcdcd;
+        background-color: #fff;
+        color: #000;
+    }
+
+.displayhide {
+    display: none;
+}
+
+.displayshow {
+    display: block;
+}
+
+.cssgrdTemplateSectionList {
+    border: none;
+}
+
+    .cssgrdTemplateSectionList td {
+        border: none;
+    }
+
+    .cssgrdTemplateSectionList th {
+        border: none;
+    }
+
+.cssgrdProjectSectionList {
+    border: none;
+}
+
+    .cssgrdProjectSectionList td {
+        border: none;
+    }
+
+    .cssgrdProjectSectionList th {
+        border: none;
+        padding: 0px;
+        background: none;
+        margin: 0px;
+    }
+
+.hideCalendarTime > div > span.fc-time {
+    display: none; /*arefin 01-16-2019*/
+}
+
+.fc-sun {
+    background-color: #f7f9fa !important;
+    background: #cdcdcd !important;
+    border-top: 1px solid #dddddd !important;
+}
+
+.fc-sat {
+    background-color: #f7f9fa !important;
+    background: #cdcdcd !important;
+    border-top: 1px solid #dddddd !important;
+}
+
+
+.ui-datepicker-trigger {
+    position: relative !important;
+    top: 10px !important;
+}
+
+.csscalMainSectionList label {
+    display: inline !important;
+}
+
+.csscalMainSectionList td {
+    max-width: 250px;
+    border: none;
+}
+
+.csscalMainSectionList th {
+    border: none;
+}
+
+#estimate-sections {
+    padding: 0 10px;
+    border: 1px solid #ccc;
+    background: #eee;
+    max-height: 894px;
+    min-height: 894px;
+    overflow-x: scroll;
+    max-width: 90%;
+    min-width: 90%;
+}
+
+    #estimate-sections .fc-event {
+        margin: 5px 0;
+        cursor: move;
+        padding: 5px;
+        border: 1px solid #cdcdcd;
+        background-color: #fff;
+        color: #000;
+    }
+
+
+.MenuBarLeft ul {
+    z-index: 9 !important;
+}
+
+.MenuBarRight {
+    z-index: 9 !important;
+}
+
+
+#background {
+    position: absolute;
+    z-index: 0;
+    /* background: white; */
+    display: block;
+    /* min-height: 50%; */
+    /* min-width: 50%; */
+    color: #000 !important;
+    background-repeat: repeat-x;
+}
+
+#schedulecontent {
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+}
+
+#bg-text {
+    color: #aaa;
+    font-size: 72px;
+    transform: rotate(300deg);
+    -webkit-transform: rotate(330deg);
+    line-height: 116px;
+    margin-top: -490px;
+    position: fixed;
+    display: block;
+    margin-left: -260px;
+    width: 2600px;
+    opacity: .2;
+}
+
+.opreadonly img {
+    padding: 6px;
+}
+
+.ui-autocomplete {
+    max-height: 500px !important;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.fc-Done img {
+}
+
+.fc-Link img {
+    /*width:10px;
+    height:10px;*/
+}
+
+.fc-EventIconSpan {
+    background-color: #8a8a90;
+    padding: 7px;
+    border-radius: 5px;
+}
+
+.fc-EventIconLabel {
+    color: #ffffff;
+}
+
+.fc-EventIconImg {
+    padding-left: 5px;
+    color: #000000;
+    vertical-align: bottom;
+}
+
+.fc-ResourceIconImg {
+    /*width:30px;*/
+    height: 30px;
+    padding: 1px;
+    color: #fff;
+    vertical-align: bottom;
+    border-radius: 5px;
+    /*background: #3baae3 url(images/ui-bg_glass_50_3baae3_1x400.png) 50% 50% repeat-x;*/
+}
+
+.header-ResourceIconImg {
+    height: 28px;
+    padding: 0px 0px 0px 0px;
+    margin: 0px 0px -4px 9px;
+    color: #fff;
+    vertical-align: bottom;
+}
+
+.fc-WeekListTitleSpan {
+    padding: 0px 0px 0px 0px !important;
+    margin: 0px 0px 0px 0px !important;
+    font-weight: bold;
+}
+
+.weekend {
+    background-color: #b2b2b2 !important;
+    background-image: url(../images/stripe_medium.png) !important;
+    background-attachment: fixed !important;
+    color: #fff !important;
+}
+
+@-webkit-keyframes blink {
+    50% {
+        border-color: #f82509;
+        /*box-shadow: 0 0 3px 3px #f00;
+        -webkit-box-shadow: 0 0 3px 3px #f00;
+        -moz-box-shadow: 0 0 3px 3px #f00;*/
+    }
+}
+
+
+@keyframes blink {
+    50% {
+        border-color: #f82509;
+        /*box-shadow: 0 0 3px 3px #f00;
+        -webkit-box-shadow: 0 0 3px 3px #f00;
+        -moz-box-shadow: 0 0 3px 3px #f00;*/
+    }
+}
+
+@-moz-keyframes blink {
+    50% {
+        border-color: #f82509;
+        /*box-shadow: 0 0 3px 3px #f00;
+        -webkit-box-shadow: 0 0 3px 3px #f00;
+        -moz-box-shadow: 0 0 3px 3px #f00;*/
+    }
+}
+
+.fc-Unassigned {
+    border: 3px solid #cdcdcd;
+    animation: blink .5s step-end infinite alternate;
+    -webkit-animation: blink .5s step-end infinite alternate;
+    -moz-animation: blink .5s step-end infinite alternate;
+    /*box-shadow: 0 0 3px 3px #fcff00;
+    -webkit-box-shadow: 0 0 3px 3px #fcff00;
+    -moz-box-shadow: 0 0 3px 3px #fcff00;*/
+}
+
+.fc-UnassignedChk {
+    /*vertical-align: bottom;*/
+    margin: 12px 0px 0px 0px !important;
+}

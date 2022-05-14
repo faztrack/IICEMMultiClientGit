@@ -1,0 +1,385 @@
+﻿/* Responsive Device Screen CSS starts here */
+
+/* iPhone 6, 7, & 8 in landscape */
+@media only screen and (min-device-width : 375px) and (max-device-width : 667px) and (orientation : landscape) {
+    .contentResponsive {
+        transform: scale(.6);
+        -webkit-transform: scale(.6); /* Safari and Chrome */
+        -moz-transform: scale(.6); /* Firefox */
+        margin: -100px 0 0 -225px !important;
+    }
+
+    .divMenuSettings span a {
+        font-size: 5px !important;
+    }
+
+    #menuBar ul li a {
+        font-size: 5px !important;
+    }
+}
+
+/* iPhone 6, 7, & 8 Plus in landscape */
+@media only screen and (min-device-width : 414px) and (max-device-width : 736px) and (orientation : landscape) {
+    .contentResponsive {
+        transform: scale(.82);
+        -webkit-transform: scale(.82); /* Safari and Chrome */
+        -moz-transform: scale(.82); /* Firefox */
+        margin: -35px 0 0 -70px !important;
+    }
+
+    .divMenuSettings span a {
+        font-size: 7px !important;
+    }
+
+    #menuBar ul li a {
+        font-size: 9.5px !important;
+    }
+}
+
+/* iPhone X in landscape */
+
+@media only screen and (min-device-width : 375px) and (max-device-width : 812px) and (-webkit-device-pixel-ratio : 3) and (orientation : landscape) {
+    body, select, option, input, th {
+        font-size: 8px !important;
+    }
+
+    .contentResponsive {
+        transform: scale(.9);
+        -webkit-transform: scale(.9); /* Safari and Chrome */
+        -moz-transform: scale(.9); /* Firefox */
+        margin: -20px 0 0 -40px !important;
+    }
+
+    .divMenuSettings span a {
+        font-size: 12px !important;
+    }
+
+    #menuBar ul li a {
+        font-size: 11px !important;
+    }
+
+    .mainTable .subTD {
+        width: 800px !important;
+        float: left;
+    }
+
+    #menuBar a {
+        padding: 6px !important;
+        vertical-align: middle !important;
+        line-height: 26px;
+    }
+
+        #menuBar a.popout {
+            padding-right: 12px !important;
+            background-size: 12px;
+        }
+
+    .divMenuSettings span a {
+        font-size: 11px !important;
+    }
+
+    .mGrid th {
+        font-size: 8px !important;
+    }
+
+    .signInCss {
+        font-size: 6px !important;
+    }
+
+    .divToolsLeft img {
+        width: 16px;
+        height: 16px;
+    }
+
+    .divEstimate img {
+        width: 16px;
+        height: 16px;
+    }
+
+    #divCOrder img {
+        width: 24px !important;
+        height: 24px !important;
+    }
+
+    #menuBar ul li a {
+        font-size: 8px !important;
+    }
+
+    .divMenuSettings span a {
+        font-size: 8px !important;
+    }
+
+    .wrapper h2 {
+        font-size: 14px;
+        line-height: 18px;
+    }
+
+    .wrapper td img {
+        width: 48px;
+    }
+
+    #head_hypGoogleMap img {
+        width: 32px !important;
+        height: 32px !important;
+    }
+
+    .iPXDate {
+        width: 5% !important;
+    }
+
+    .iPXTime {
+        width: 5% !important;
+    }
+
+    .iPXFrom {
+        width: 10% !important;
+    }
+
+    .iPXTo {
+        width: 7% !important;
+    }
+
+    .iPXSubject {
+        width: 8% !important;
+    }
+
+    .iPXSentBy {
+        width: 6% !important;
+    }
+
+    .iPXViewed {
+        width: 5% !important;
+    }
+
+    .iPXSentVia {
+        width: 5% !important;
+    }
+
+    .iPXDetails {
+        width: 5% !important;
+    }
+
+    .footer-ext {
+        position: fixed;
+        left: 0;
+        bottom: 0px;
+        width: 100%;
+    }
+}
+
+
+
+/* iPad in landscape */
+
+@media only screen and (min-device-width: 1112px) and (orientation: landscape) {
+    #menuBar a {
+        padding: 12px 6px 0 !important;
+    }
+
+    .StaticMenuItem {
+        font: 10px Arial !important;
+    } 
+}
+
+@media only screen and (min-width: 1366px) and (orientation: landscape) {
+    #menuBar a {
+        padding: 12px 6px 0 !important;
+    }
+
+    .StaticMenuItem {
+        font: 10px Arial !important;
+    }
+}
+/* iPad in landscape */
+
+
+
+/* Desktop */
+@media only screen and (min-width: 1920px) and (orientation: landscape) {
+    #menuBar a {
+        padding: 12px 12px 0 !important;
+    }
+
+    .StaticMenuItem {
+        font: 12px Arial !important;
+    }
+}
+@media only screen and (min-device-width : 1360px) and (max-device-width : 2880px) and (orientation : landscape) {
+    #menuBar a {
+        padding: 12px 12px 0 !important;
+    }
+
+    .menuDesktop {
+        font: 12px Arial !important;
+    } 
+}
+/* Desktop */
+
+
+
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) {
+
+    body, select, option, input, th {
+        font-size: .6em !important;
+    }
+
+    .divToolsLeft img {
+        width: 24px;
+        height: 24px;
+    }
+
+    .divEstimate img {
+        width: 24px;
+        height: 24px;
+    }
+
+    #divCOrder img {
+        width: 24px !important;
+        height: 24px !important;
+    }
+
+    #menuBar ul li a {
+        font-size: 9px !important;
+    }
+
+    .divMenuSettings span a {
+        font-size: 9px !important;
+    }
+
+    .wrapper h2 {
+        font-size: 14px;
+        line-height: 18px;
+    }
+
+    .wrapper td img {
+        width: 48px;
+    }
+
+    #head_hypGoogleMap img {
+        width: 32px !important;
+        height: 32px !important;
+    }
+
+    .iPadDD {
+        width: 150px !important;
+    }
+
+    .iPadCO {
+        width: 80px !important;
+    }
+
+    .jobNumberCL {
+        width: 6% !important;
+    }
+
+    .custNameCL {
+        width: 6% !important;
+    }
+
+    .addressCL {
+        width: 6% !important;
+    }
+
+    .projectsCL {
+        width: 16% !important;
+    }
+
+    .changeOrCL {
+        width: 10% !important;
+    }
+
+    .salesCL {
+        width: 6% !important;
+    }
+
+    .superCL {
+        width: 6%;
+    }
+
+    .toolsCL {
+        width: 24% !important;
+    }
+}
+
+/** CUSTOMER LIST DESKTOP VERSION CSS STARTS HERE **/
+.jobNumberCL {
+    width: 6%;
+}
+
+.custNameCL {
+    width: 8%;
+}
+
+.addressCL {
+    width: 8%;
+}
+
+.projectsCL {
+    width: 22%;
+}
+
+.changeOrCL {
+    width: 14%;
+}
+
+.salesCL {
+    width: 7%;
+}
+
+.superCL {
+    width: 5%;
+}
+
+.toolsCL {
+    width: 30%;
+}
+
+
+
+
+
+/** VENDOR COST DETAILS DESKTOP VERSION CSS STARTS HERE **/
+
+.vcdDate {
+    width: 6%;
+}
+
+.vcdVendor {
+    width: 20%;
+}
+
+.vcdSec {
+    width: 20%;
+}
+
+.vcdDes {
+    width: 12%;
+}
+
+.vcdCate {
+    width: 6%;
+}
+
+.vcdAmou {
+    width: 8%;
+}
+
+.vcdTools {
+    width: 16%;
+}
+
+.vcdEdit {
+    width: 6%;
+}
+
+.vcdDel {
+    width: 6%;
+}
+
+.vcdDD {
+    width: 100%;
+}
+
+.secDD {
+    width: 100%;
+}

@@ -1,0 +1,332 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="Documentmaster.master.cs"
+    Inherits="Documentmaster" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head id="Head1" runat="server">
+    <title>Interior Innovations Kitchen & Bath Design</title>
+    <link type="text/css" href="css/layout.css" rel="stylesheet" />
+    
+    <link href="Content/themes-1.12.1/jquery-ui-1.12.1.css" rel="stylesheet" type="text/css" />
+    <link href="Content/elFinder-2.1.42/css/elfinder.full.css" rel="stylesheet" type="text/css" />
+    <link href="Content/elFinder-2.1.42/css/theme.css" rel="stylesheet" type="text/css" />
+
+    <script src="Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+    <script src="Scripts/jquery-ui-1.12.1.js" type="text/javascript"></script>
+
+    <script src="Scripts/elFinder-2.1.42/elfinder.full.js" type="text/javascript"></script>
+
+    <script src="commonScript.js" type="text/javascript"></script>
+
+
+    <script type="text/javascript">
+<!--
+    var timeout = 500;
+    var closetimer = 0;
+    var ddmenuitem = 0;
+
+    // open hidden layer
+    function mopen(id) {
+        // cancel close timer
+        mcancelclosetime();
+
+        // close old layer
+        if (ddmenuitem) ddmenuitem.style.visibility = 'hidden';
+
+        // get new layer and show it
+        ddmenuitem = document.getElementById(id);
+        ddmenuitem.style.visibility = 'visible';
+
+    }
+    // close showed layer
+    function mclose() {
+        if (ddmenuitem) ddmenuitem.style.visibility = 'hidden';
+    }
+
+    // go close timer
+    function mclosetime() {
+        closetimer = window.setTimeout(mclose, timeout);
+    }
+
+    // cancel close timer
+    function mcancelclosetime() {
+        if (closetimer) {
+            window.clearTimeout(closetimer);
+            closetimer = null;
+        }
+    }
+
+    // close layer when click-out
+    document.onclick = mclose;
+    // -->
+    var ButtonToAppear = 200;
+
+    $(window).scroll(function () {
+
+        var position = $(window).scrollTop();
+
+        if (position > ButtonToAppear) {
+            $('#backToTop').fadeIn();
+            //$('#backToBottom').fadeOut();
+        }
+        else {
+            $('#backToBottom').fadeIn();
+            $('#backToTop').fadeOut();
+        }
+        if ($(window).scrollTop() == ($(document).height() - $(window).height())) {
+            $('#backToBottom').fadeOut();
+        }
+        else {
+            $('#backToBottom').fadeIn();
+        }
+    });
+
+    function backToTopttt() {
+        // alert("msg");    
+        $("html, body").animate({ scrollTop: 0 }, 1000);
+        $('#backToTop').fadeOut();
+    }
+    function backToBottomttt() {
+        //alert($(document).height()-$(window).height());
+        $("html, body").animate({ scrollTop: $(document).height() - $(window).height() }, 1000);
+        $('#backToBottom').fadeOut();
+    }
+
+    function ShowPopUpSystemIcons(e) {
+        document.getElementById('dialogSystemIcons').style.display = "block";
+    }
+
+    function HidePopUpSystemIcons() {
+
+        document.getElementById('dialogSystemIcons').style.display = "none";
+    }
+    </script>
+
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div>
+            <asp:ScriptManager ID="ScriptManager1" runat="server" EnablePageMethods="true">
+            </asp:ScriptManager>
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td></td>
+                </tr>
+                <tr>
+                     <td style="background-color: #330f02;" align="left" valign="top">
+                        <!-- Header -->
+                        <div>
+                            <!-- The navigation bar -->
+
+                            <div style="clear: both; width: 100%;">
+                                <div class="logo">
+                                    <a href="customerlist.aspx">
+                                        <img src="assets/iicem.png" alt="Interior Innovations Kitchen & Bath Design" title="Interior Innovations Kitchen & Bath Design" height="22px" /></a>
+                                </div>
+                                <div style="float: left; width: auto;">
+                                    <asp:Menu StaticSelectedStyle-CssClass="StaticSelectedStyle" ID="menuBar" runat="server" Orientation="Horizontal"
+                                        CssClass="MenuBarLeft" MaximumDynamicDisplayLevels="10"
+                                        StaticEnableDefaultPopOutImage="true" DynamicEnableDefaultPopOutImage="false">
+                                        <StaticMenuStyle CssClass="StaticMenuItem" />
+                                        <StaticMenuItemStyle CssClass="StaticMenuItemStyle" />
+                                        <StaticHoverStyle CssClass="StaticHoverStyle" />
+                                        <StaticSelectedStyle CssClass="StaticSelectedStyle" />
+                                        <DynamicSelectedStyle CssClass="StaticSelectedStyle" />
+                                        <DynamicMenuItemStyle CssClass="DynamicMenuItemStyle" />
+                                        <DynamicHoverStyle CssClass="DynamicHoverStyle" />
+                                    </asp:Menu>
+                                </div>
+                                   <div style="width: auto; float: left;">
+                                    <asp:ImageButton ID="btnOperationCalendar" ToolTip="Go to Operation Calendar" Style="opacity: 1; margin: 5px 0 0 15px; padding: 0; background: none; border: none; box-shadow: none; -moz-box-shadow: none; -webkit-box-shadow: none; -o-box-shadow: none;"
+                                        runat="server" ImageUrl="~/images/calendar_hard_hat.png" OnClick="btnOperationCalendar_Click" />
+                                </div>
+                                <div id="divTestSystem" runat="server" visible="false">
+                                    <div class="hidden-xs" style="background-color: #fff; border: 3px solid #000;  left: 45%; padding: 0 5px 3px; position: absolute; top: 45px;">
+                                        <span style="padding:0 5px; color: #f00; font-size: 22px; font-weight: bold;">Test System</span>
+                                    </div>
+                                </div>
+                                <div class="divMenuSettings">
+                                    <%-- <img style="float:right;margin:9px 8px 0 8px;" src="assets/settings.png" />--%>
+                                    <span style="background-color: #c74a43;">
+                                        <asp:LinkButton ID="lnkProfile" CssClass="signInCss" runat="server" OnClick="lnkProfile_Click"></asp:LinkButton>
+                                    </span>
+                                    <asp:Menu ID="menuSettings" runat="server" Orientation="Horizontal" CssClass="MenuBarRight" dir="rtl"
+                                        StaticEnableDefaultPopOutImage="false" DynamicEnableDefaultPopOutImage="false"
+                                        StaticPopOutImageUrl="~/assets/settings.png" DynamicPopOutImageUrl="~/assets/settings.png">
+                                        <StaticMenuStyle CssClass="StaticMenuItem" />
+                                        <StaticMenuItemStyle CssClass="StaticMenuItemStyle" />
+                                        <StaticHoverStyle CssClass="StaticHoverStyle" />
+                                        <StaticSelectedStyle CssClass="StaticSelectedStyle" />
+                                        <DynamicSelectedStyle CssClass="StaticSelectedStyle" />
+                                        <DynamicMenuItemStyle CssClass="DynamicMenuItemStyle" />
+                                        <DynamicHoverStyle CssClass="DynamicHoverStyle" />
+                                    </asp:Menu>
+                                </div>
+                            </div>
+
+                            <!-- End of navigation bar" -->
+
+
+                            <!-- End of Search bar -->
+                            <input type="button" id="backToBottom" onclick="backToBottomttt()" title="Go To Bottom" value="" />
+                        </div>
+                        <!-- End of Header -->
+                    </td>
+                </tr>
+                <tr>
+                    <td align="left" valign="top">
+                        <div style="margin-bottom:64px;" class="content_place_holder">
+                            <asp:ContentPlaceHolder ID="head" runat="server">
+                            </asp:ContentPlaceHolder>
+                        </div>
+                         <input type="button" hidden="true" id="backToTop" onclick="backToTopttt()" title="Back To Top" value="" />
+                    </td>
+                </tr>
+
+
+
+
+                
+
+                 <tr>
+                    <td>
+                        <table align="center" class="footer footer-ext">
+                            <tr>
+                                <td align="left" style="width: 50%;">
+                                   
+                                </td>
+                                <td>
+                                    <input type="button" id="btnSystemIcons" onclick="ShowPopUpSystemIcons();" class="sysIcons" title="System Icons" />
+
+                                </td>
+                                <td style="width: 50%; padding: 0 30px 0 0;" valign="middle">
+                                    <a href="http://www.faztrack.com/" target="_blank">
+                                        <img style="width: 100px;" src="assets/footer_logo.png" /></a>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>           
+        </div>
+        <div id="dialogSystemIcons" class="modal">
+
+            <!-- Modal content -->
+            <div class="modal-content" style="width: 300px;">
+
+                <table style="padding: 5px; margin: 0px; width: 100%;" class="mGrid">
+                     <tr>
+                        <td style="padding: 5px; margin: 0px; text-align: center;">
+                            <img width="25" height="25" src="images/01_message_center.png" alt="Message Center" title="Message Center" /></td>
+                        <td>Message Center</td>
+                         <td align="center">
+                             <asp:CheckBox ID="chkMessage" runat="server"  Value="Message" Checked="true"/></td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 5px; margin: 0px; text-align: center;">
+                            <img width="25" height="25" src="images/02_vendor_cost.png" alt="Vendor Cost" title="Vendor Cost" /></td>
+                        <td>Vendor Cost</td>
+                        <td align="center">
+                             <asp:CheckBox ID="chkVendor" runat="server"  Value="Vendor" Checked="true"/></td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 5px; margin: 0px; text-align: center;">
+                            <img width="25" height="25" src="images/03_payment_info.png" alt="Payment Info" title="Payment Info" /></td>
+                        <td>Payment Info</td>
+                         <td align="center">
+                             <asp:CheckBox ID="chkPayment" runat="server"  Value="Payment" Checked="true"/></td>
+                    </tr>
+                    <tr style="display:none;">
+                        <td style="padding: 5px; margin: 0px; text-align: center;">
+                            <img width="25" height="25" src="images/04_job_status.png" alt="Job Status Graphics" title="Job Status Graphics" /></td>
+                        <td>Job Status Graphics</td>
+                         <td align="center">
+                             <asp:CheckBox ID="chkJobStatus" runat="server"  Value="JobStatus" Checked="true"/></td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 5px; margin: 0px; text-align: center;">
+                            <img width="25" height="25" src="images/05_schedule.png" alt="Schedule" title="Schedule" /></td>
+                        <td>Schedule</td>
+                         <td align="center">
+                             <asp:CheckBox ID="chkSchedule" runat="server"  Value="Schedule" Checked="true"/></td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 5px; margin: 0px; text-align: center;">
+                            <img width="25" height="25" src="images/06_sow.png" alt="Composite SOW" title="Composite SOW" /></td>
+                        <td>Composite SOW</td>
+                         <td align="center">
+                             <asp:CheckBox ID="chkCompositeSow" runat="server"  Value="CompositeSow" Checked="true"/></td>
+                    </tr>
+                    
+                    <tr>
+                        <td style="padding: 5px; margin: 0px; text-align: center;">
+                            <img width="25" height="25" src="images/15_project_notes.png" alt="Project Notes" title="Project Notes" /></td>
+                        <td>Project Notes</td>
+                         <td align="center">
+                             <asp:CheckBox ID="chkProjectNotes" runat="server"  Value="ProjectNotes" Checked="true"/></td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 5px; margin: 0px; text-align: center;">
+                            <img width="25" height="25" src="images/08_allowance_report.png" alt="Allowance Report" title="Allowance Report" /></td>
+                        <td>Allowance Report</td>
+                         <td align="center">
+                             <asp:CheckBox ID="chkAllowanceReport" runat="server"  Value="AllowanceReport" Checked="true"/></td>
+                    </tr>
+                  
+                    <tr>
+                        <td style="padding: 5px; margin: 0px; text-align: center;">
+                            <img width="25" height="25" src="images/08_call_log.png" alt="Activity Log" title="Activity Log" /></td>
+                        <td>Activity Log</td>
+                         <td align="center">
+                             <asp:CheckBox ID="chkActivityLog" runat="server"  Value="ActivityLog" Checked="true"/></td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 5px; margin: 0px; text-align: center;">
+                            <img width="25" height="25" src="images/09_precon_checklist.png" alt="Pre-Con Check List" title="Pre-Con Check List" /></td>
+                        <td>Pre-Con Check List</td>
+                        <td align="center">
+                             <asp:CheckBox ID="chkPreConCheckList" runat="server"  Value="PreConCheckList" Checked="true"/></td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 5px; margin: 0px; text-align: center;">
+                            <img width="25" height="25" src="images/10_site_review.png" alt="Site Review" title="Site Review" /></td>
+                        <td>Site Review</td>
+                         <td align="center">
+                             <asp:CheckBox ID="chkSiteReview" runat="server"  Value="SiteReview" Checked="true"/></td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 5px; margin: 0px; text-align: center;">
+                            <img width="25" height="25" src="images/11_Document.png" alt="Document Management" title="Document Management" /></td>
+                        <td>Document Management</td>
+                         <td align="center">
+                             <asp:CheckBox ID="chkDocumentManagement" runat="server"  Value="DocumentManagement" Checked="true"/></td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 5px; margin: 0px; text-align: center;">
+                            <img width="25" height="25" src="images/16_section_selection.png" alt="Selection" title="Selection" /></td>
+                        <td>Selection</td>
+                        <td align="center">
+                             <asp:CheckBox ID="chkSelection" runat="server"  Value="Selection" Checked="true"/></td>
+                    </tr>
+                     <tr>
+                        <td style="padding: 5px; margin: 0px; text-align: center;">
+                            <img width="25" height="25" src="images/17_project_summary.png" alt="Project Summary" title="Project Summary" /></td>
+                        <td>Project Summary Report</td>
+                        <td align="center">
+                             <asp:CheckBox ID="chkProjectSummary" runat="server"  Value="ProjectSummary" Checked="true"/></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="padding: 10px; margin: 0px; text-align: center;">
+                            <input type="button" id="Close" class="button" value="Close" onclick="HidePopUpSystemIcons();" />
+                        </td>
+                        <td align="center">
+                            <asp:Button ID="btnSave" runat="server" Text="Save" class="button" OnClick="btnSave_Click"/>
+                        </td>
+
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </form>
+</body>
+</html>
