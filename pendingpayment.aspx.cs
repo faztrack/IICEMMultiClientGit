@@ -37,6 +37,10 @@ public partial class pendingpayment : System.Web.UI.Page
             {
                 Response.Redirect(ConfigurationManager.AppSettings["LoginPage"].ToString());
             }
+            else
+            {
+                hdnClientId.Value = ((userinfo)Session["oUser"]).client_id.ToString();
+            }
             if (Page.User.IsInRole("cus002") == false)
             {
                 // No Permission Page.
@@ -351,7 +355,7 @@ public partial class pendingpayment : System.Web.UI.Page
 
                 estimate_payment objEstPay = new estimate_payment();
                 HyperLink hyp_section = (HyperLink)e.Row.FindControl("hyp_section");
-                if (_db.estimate_payments.Where(est_p => est_p.estimate_id == neid && est_p.customer_id == ncid && est_p.client_id == 1).SingleOrDefault() == null)
+                if (_db.estimate_payments.Where(est_p => est_p.estimate_id == neid && est_p.customer_id == ncid && est_p.client_id.ToString().Contains(hdnClientId.Value)).SingleOrDefault() == null)
                 {
                     hyp_section.NavigateUrl = "payment_info.aspx?eid=" + neid + "&cid=" + ncid;
 
@@ -359,7 +363,7 @@ public partial class pendingpayment : System.Web.UI.Page
                 else
                 {
 
-                    objEstPay = _db.estimate_payments.Single(pay => pay.estimate_id == neid && pay.customer_id == ncid && pay.client_id == 1);
+                    objEstPay = _db.estimate_payments.Single(pay => pay.estimate_id == neid && pay.customer_id == ncid && pay.client_id.ToString().Contains(hdnClientId.Value));
                     hyp_section.NavigateUrl = "payment_recieved.aspx?cid=" + ncid + "&epid=" + objEstPay.est_payment_id + "&eid=" + neid;
 
                 }

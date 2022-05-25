@@ -52,19 +52,22 @@ public partial class customerschedulecalendar : System.Web.UI.Page
                 nCustomerID = Convert.ToInt32(obj.customerid);
 
                 int CustomerCalendarWeeklyView = 1;
+                int clientId = 0;
                 if (_db.customers.Where(c => c.customer_id == nCustomerID).Count() > 0)
                 {
                     objCust = _db.customers.SingleOrDefault(c => c.customer_id == nCustomerID);
                     strCustName = objCust.first_name1 + " " + objCust.last_name1;
                     lbltopHead.Text = "Project Calendar for " + strCustName;
                     CustomerCalendarWeeklyView = (int)objCust.CustomerCalendarWeeklyView;
+
+                    clientId = Convert.ToInt32(objCust.client_id);
                 }
 
                 hdnEstIDSelected.Value = nEstimateID.ToString();
                 hdnCustIDSelected.Value = nCustomerID.ToString();
                 hdnCustCalWeeklyView.Value = CustomerCalendarWeeklyView.ToString();
 
-                string strQ = "SELECT * FROM customer_estimate WHERE customer_id=" + nCustomerID + " AND status_id = 3 AND client_id=1";
+                string strQ = "SELECT * FROM customer_estimate WHERE customer_id=" + nCustomerID + " AND status_id = 3 AND client_id= "+ clientId;
                 IEnumerable<customer_estimate> list = _db.ExecuteQuery<customer_estimate>(strQ, string.Empty);
 
                 //ddlEst.DataSource = list;

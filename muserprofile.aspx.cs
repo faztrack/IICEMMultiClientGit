@@ -184,7 +184,7 @@ public partial class muserprofile : System.Web.UI.Page
                     uinfo = _db.user_infos.Single(c => c.user_id == Convert.ToInt32(hdnUserId.Value));
 
                 txtPhone.Text = csCommonUtility.GetPhoneFormat(txtPhone.Text.Trim());
-                uinfo.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                uinfo.client_id = uinfo.client_id;
                 uinfo.user_id = Convert.ToInt32(hdnUserId.Value);
 
                 uinfo.first_name = txtFirstName.Text;

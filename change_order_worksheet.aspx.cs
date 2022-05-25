@@ -36,7 +36,7 @@ public partial class change_order_worksheet : System.Web.UI.Page
             if (Session["oUser"] == null)
             {
                 Response.Redirect(ConfigurationManager.AppSettings["LoginPage"].ToString());
-            }
+            }            
             else
             {
                 userinfo oUser = (userinfo)Session["oUser"];
@@ -57,6 +57,10 @@ public partial class change_order_worksheet : System.Web.UI.Page
 
             //    }
             //}
+
+
+           
+
 
             int nCid = Convert.ToInt32(Request.QueryString.Get("cid"));
             hdnCustomerId.Value = nCid.ToString();
@@ -80,28 +84,33 @@ public partial class change_order_worksheet : System.Web.UI.Page
             {
                 GetTools();
                 customer cust = new customer();
-                cust = _db.customers.Single(c => c.customer_id == Convert.ToInt32(hdnCustomerId.Value));
+                cust = _db.customers.SingleOrDefault(c => c.customer_id == Convert.ToInt32(hdnCustomerId.Value));
 
-                lblCustomerName.Text = cust.first_name1 + " " + cust.last_name1;
-                string strAddress = "";
-                strAddress = cust.address + " </br>" + cust.city + ", " + cust.state + " " + cust.zip_code;
-                lblAddress.Text = strAddress;
-                lblEmail.Text = cust.email;
-                lblPhone.Text = cust.phone;
-                hdnSalesPersonId.Value = cust.sales_person_id.ToString();
-                sales_person sp = new sales_person();
-                sp = _db.sales_persons.Single(s => s.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value));
-                lblSalesRep.Text = sp.first_name + " " + sp.last_name;
+                if(cust != null)
+                {
+                    lblCustomerName.Text = cust.first_name1 + " " + cust.last_name1;
+                    string strAddress = "";
+                    strAddress = cust.address + " </br>" + cust.city + ", " + cust.state + " " + cust.zip_code;
+                    lblAddress.Text = strAddress;
+                    lblEmail.Text = cust.email;
+                    lblPhone.Text = cust.phone;
+                    hdnSalesPersonId.Value = cust.sales_person_id.ToString();
+                    sales_person sp = new sales_person();
+                    sp = _db.sales_persons.Single(s => s.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value));
+                    lblSalesRep.Text = sp.first_name + " " + sp.last_name;
 
-                //hypGoogleMap.NavigateUrl = "GoogleMap.aspx?strAdd=" + strAddress.Replace("</br>", "");
-                string address = cust.address + ",+" + cust.city + ",+" + cust.state + ",+" + cust.zip_code;
-                hypGoogleMap.NavigateUrl = "http://maps.google.com/maps?f=q&source=s_q&hl=en&geocode=&q=" + address;
+                    //hypGoogleMap.NavigateUrl = "GoogleMap.aspx?strAdd=" + strAddress.Replace("</br>", "");
+                    string address = cust.address + ",+" + cust.city + ",+" + cust.state + ",+" + cust.zip_code;
+                    hypGoogleMap.NavigateUrl = "http://maps.google.com/maps?f=q&source=s_q&hl=en&geocode=&q=" + address;
+
+                    hdnClientId.Value = cust.client_id.ToString();
+                }
 
                 // Get Estimate Info
                 if (Convert.ToInt32(hdnEstimateId.Value) > 0)
                 {
                     customer_estimate cus_est = new customer_estimate();
-                    cus_est = _db.customer_estimates.Single(ce => ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value));
+                    cus_est = _db.customer_estimates.Single(ce => ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value) && ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value));
                     lblEstimateName.Text = cus_est.estimate_name;
 
                     if ((cus_est.job_number ?? "").Length > 0)
@@ -117,7 +126,7 @@ public partial class change_order_worksheet : System.Web.UI.Page
                 if (Convert.ToInt32(hdnChEstId.Value) > 0)
                 {
                     changeorder_estimate cho = new changeorder_estimate();
-                    cho = _db.changeorder_estimates.Single(ce => ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && ce.chage_order_id == Convert.ToInt32(hdnChEstId.Value));
+                    cho = _db.changeorder_estimates.Single(ce => ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value) && ce.chage_order_id == Convert.ToInt32(hdnChEstId.Value));
 
                     lblChangeOrderName.Text = cho.changeorder_name;
                     lblExistingChangeOrderName.Text = cho.changeorder_name;
@@ -172,14 +181,14 @@ public partial class change_order_worksheet : System.Web.UI.Page
                         lnkResend.Visible = false;
                     }
                     decimal taxrate = 0;
-                    if (_db.estimate_payments.Where(ep => ep.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ep.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ep.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).SingleOrDefault() == null)
+                    if (_db.estimate_payments.Where(ep => ep.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ep.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ep.client_id == Convert.ToInt32(hdnClientId.Value)).SingleOrDefault() == null)
                     {
                         taxrate = 0;
                     }
                     else
                     {
                         estimate_payment esp = new estimate_payment();
-                        esp = _db.estimate_payments.Single(ep => ep.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ep.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ep.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+                        esp = _db.estimate_payments.Single(ep => ep.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ep.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ep.client_id == Convert.ToInt32(hdnClientId.Value));
                         taxrate = Convert.ToDecimal(esp.tax_rate);
                     }
                     if (cho.tax == 0)
@@ -273,8 +282,8 @@ public partial class change_order_worksheet : System.Web.UI.Page
             customer_review();
 
             // CO Payment Term
-            //if (_db.Co_PaymentTerms.Where(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(hdnChEstId.Value) && est_p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).SingleOrDefault() == null)
-            if (!_db.Co_PaymentTerms.Any(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(hdnChEstId.Value) && est_p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])))
+            //if (_db.Co_PaymentTerms.Where(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(hdnChEstId.Value) && est_p.client_id == Convert.ToInt32(hdnClientId.Value)).SingleOrDefault() == null)
+            if (!_db.Co_PaymentTerms.Any(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(hdnChEstId.Value) && est_p.client_id == Convert.ToInt32(hdnClientId.Value)))
             {
                 hdnChPaymentId.Value = "0";
                 if (ddlTerms.SelectedItem.Text == "Other")
@@ -329,7 +338,7 @@ public partial class change_order_worksheet : System.Web.UI.Page
             }
             else
             {
-                Co_PaymentTerm objPayTerm = _db.Co_PaymentTerms.FirstOrDefault(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(hdnChEstId.Value) && est_p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+                Co_PaymentTerm objPayTerm = _db.Co_PaymentTerms.FirstOrDefault(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(hdnChEstId.Value) && est_p.client_id == Convert.ToInt32(hdnClientId.Value));
                 hdnChPaymentId.Value = objPayTerm.co_payment_id.ToString();
 
 
@@ -435,7 +444,7 @@ public partial class change_order_worksheet : System.Web.UI.Page
     private void AddChildMenu(TreeNode parentNode, sectioninfo sec)
     {
         DataClassesDataContext _db = new DataClassesDataContext();
-        string strQ = " SELECT * FROM sectioninfo WHERE  client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " AND section_id NOT IN (SELECT item_id FROM item_price WHERE client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + ")";
+        string strQ = " SELECT * FROM sectioninfo WHERE  client_id=" + Convert.ToInt32(hdnClientId.Value) + " AND section_id NOT IN (SELECT item_id FROM item_price WHERE client_id=" + Convert.ToInt32(hdnClientId.Value) + ")";
         IEnumerable<sectioninfo> list = _db.ExecuteQuery<sectioninfo>(strQ, string.Empty);
         foreach (sectioninfo subsec in list)
         {
@@ -455,16 +464,16 @@ public partial class change_order_worksheet : System.Web.UI.Page
         string strQ = "";
         if (rdoSort.SelectedValue == "2")
         {
-            strQ = " select DISTINCT section_level AS colId,'SECTION: '+ section_name as colName from co_pricing_master where co_pricing_master.location_id IN (Select location_id from changeorder_locations WHERE changeorder_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_locations.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                   " AND co_pricing_master.section_level IN (Select section_id from changeorder_sections WHERE changeorder_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_sections.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                   " AND co_pricing_master.item_status_id!=1 AND co_pricing_master.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND co_pricing_master.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND is_direct=1 AND co_pricing_master.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + "  order by section_level asc";
+            strQ = " select DISTINCT section_level AS colId,'SECTION: '+ section_name as colName from co_pricing_master where co_pricing_master.location_id IN (Select location_id from changeorder_locations WHERE changeorder_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_locations.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+                   " AND co_pricing_master.section_level IN (Select section_id from changeorder_sections WHERE changeorder_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+                   " AND co_pricing_master.item_status_id!=1 AND co_pricing_master.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND co_pricing_master.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND is_direct=1 AND co_pricing_master.client_id =" + Convert.ToInt32(hdnClientId.Value) + "  order by section_level asc";
 
         }
         else
         {
-            strQ = "select DISTINCT co_pricing_master.location_id AS colId,'LOCATION: '+ location.location_name as colName from co_pricing_master  INNER JOIN location on location.location_id = co_pricing_master.location_id where co_pricing_master.location_id IN (Select location_id from changeorder_locations WHERE changeorder_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_locations.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                " AND co_pricing_master.section_level IN (Select section_id from changeorder_sections WHERE changeorder_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_sections.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                " AND   co_pricing_master.item_status_id!=1 AND co_pricing_master.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND co_pricing_master.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND is_direct=1 AND co_pricing_master.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " order by colName asc";
+            strQ = "select DISTINCT co_pricing_master.location_id AS colId,'LOCATION: '+ location.location_name as colName from co_pricing_master  INNER JOIN location on location.location_id = co_pricing_master.location_id where co_pricing_master.location_id IN (Select location_id from changeorder_locations WHERE changeorder_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_locations.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+                " AND co_pricing_master.section_level IN (Select section_id from changeorder_sections WHERE changeorder_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+                " AND   co_pricing_master.item_status_id!=1 AND co_pricing_master.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND co_pricing_master.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND is_direct=1 AND co_pricing_master.client_id =" + Convert.ToInt32(hdnClientId.Value) + " order by colName asc";
         }
         List<CO_PricingMaster> mList = _db.ExecuteQuery<CO_PricingMaster>(strQ, string.Empty).ToList();
         grdGrouping.DataSource = mList;
@@ -479,15 +488,15 @@ public partial class change_order_worksheet : System.Web.UI.Page
         string strQ = "";
         if (rdoSort.SelectedValue == "2")
         {
-            strQ = "select DISTINCT section_level AS colId,'SECTION: '+ section_name as colName from co_pricing_master where co_pricing_master.location_id IN (Select location_id from changeorder_locations WHERE changeorder_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_locations.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                   " AND co_pricing_master.section_level IN (Select section_id from changeorder_sections WHERE changeorder_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_sections.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                   " AND  co_pricing_master.item_status_id!=1 AND co_pricing_master.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND co_pricing_master.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND is_direct=2 AND co_pricing_master.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + "  order by section_level asc";
+            strQ = "select DISTINCT section_level AS colId,'SECTION: '+ section_name as colName from co_pricing_master where co_pricing_master.location_id IN (Select location_id from changeorder_locations WHERE changeorder_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_locations.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+                   " AND co_pricing_master.section_level IN (Select section_id from changeorder_sections WHERE changeorder_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+                   " AND  co_pricing_master.item_status_id!=1 AND co_pricing_master.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND co_pricing_master.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND is_direct=2 AND co_pricing_master.client_id =" + Convert.ToInt32(hdnClientId.Value) + "  order by section_level asc";
         }
         else
         {
-            strQ = "select DISTINCT co_pricing_master.location_id AS colId,'LOCATION: '+ location.location_name as colName from co_pricing_master  INNER JOIN location on location.location_id = co_pricing_master.location_id where co_pricing_master.location_id IN (Select location_id from changeorder_locations WHERE changeorder_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_locations.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                   " AND co_pricing_master.section_level IN (Select section_id from changeorder_sections WHERE changeorder_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_sections.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                   " AND  co_pricing_master.item_status_id!=1 AND co_pricing_master.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND co_pricing_master.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND is_direct=2 AND co_pricing_master.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " order by colName asc";
+            strQ = "select DISTINCT co_pricing_master.location_id AS colId,'LOCATION: '+ location.location_name as colName from co_pricing_master  INNER JOIN location on location.location_id = co_pricing_master.location_id where co_pricing_master.location_id IN (Select location_id from changeorder_locations WHERE changeorder_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_locations.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+                   " AND co_pricing_master.section_level IN (Select section_id from changeorder_sections WHERE changeorder_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+                   " AND  co_pricing_master.item_status_id!=1 AND co_pricing_master.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND co_pricing_master.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND is_direct=2 AND co_pricing_master.client_id =" + Convert.ToInt32(hdnClientId.Value) + " order by colName asc";
         }
         List<CO_PricingMaster> mList = _db.ExecuteQuery<CO_PricingMaster>(strQ, string.Empty).ToList();
         grdGroupingDirect.DataSource = mList;
@@ -524,7 +533,7 @@ public partial class change_order_worksheet : System.Web.UI.Page
         int nestId = Convert.ToInt32(hdnEstimateId.Value);
         int coId = Convert.ToInt32(hdnChEstId.Value);
         if (Convert.ToInt32(hdnCustomerId.Value) > 0 && Convert.ToInt32(hdnEstimateId.Value) > 0 && Convert.ToInt32(hdnChEstId.Value) > 0)
-            co_est = _db.changeorder_estimates.Single(ce => ce.customer_id == ncid && ce.chage_order_id == coId && ce.estimate_id == nestId && ce.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+            co_est = _db.changeorder_estimates.Single(ce => ce.customer_id == ncid && ce.chage_order_id == coId && ce.estimate_id == nestId && ce.client_id == Convert.ToInt32(hdnClientId.Value));
 
         co_est.changeorder_name = strNewName;
 
@@ -590,12 +599,12 @@ public partial class change_order_worksheet : System.Web.UI.Page
         DataClassesDataContext _db = new DataClassesDataContext();
         hdnPricingId.Value = grdSelectedItem.DataKeys[e.RowIndex].Values[0].ToString();
         co_pricing_master cpl = new co_pricing_master();
-        cpl = _db.co_pricing_masters.Single(c => c.co_pricing_list_id == Convert.ToInt32(hdnPricingId.Value) && c.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+        cpl = _db.co_pricing_masters.Single(c => c.co_pricing_list_id == Convert.ToInt32(hdnPricingId.Value) && c.client_id == Convert.ToInt32(hdnClientId.Value));
         string strQ = "";
         if (cpl.item_status_id == 3)
-            strQ = "Delete co_pricing_master WHERE co_pricing_list_id =" + Convert.ToInt32(hdnPricingId.Value) + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+            strQ = "Delete co_pricing_master WHERE co_pricing_list_id =" + Convert.ToInt32(hdnPricingId.Value) + " AND client_id=" + Convert.ToInt32(hdnClientId.Value);
         else
-            strQ = "UPDATE co_pricing_master SET item_status_id=2,prev_total_price=" + cpl.total_retail_price + ",total_retail_price=0 WHERE co_pricing_list_id =" + Convert.ToInt32(hdnPricingId.Value) + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+            strQ = "UPDATE co_pricing_master SET item_status_id=2,prev_total_price=" + cpl.total_retail_price + ",total_retail_price=0 WHERE co_pricing_list_id =" + Convert.ToInt32(hdnPricingId.Value) + " AND client_id=" + Convert.ToInt32(hdnClientId.Value);
 
         _db.ExecuteCommand(strQ, string.Empty);
 
@@ -680,11 +689,11 @@ public partial class change_order_worksheet : System.Web.UI.Page
             var price_detail = from p in _db.co_pricing_masters
                                join lc in _db.locations on p.location_id equals lc.location_id
                                where (from clc in _db.changeorder_locations
-                                      where clc.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && clc.customer_id == Convert.ToInt32(hdnCustomerId.Value) && clc.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                      where clc.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && clc.customer_id == Convert.ToInt32(hdnCustomerId.Value) && clc.client_id == Convert.ToInt32(hdnClientId.Value)
                                       select clc.location_id).Contains(p.location_id) &&
                                       (from cs in _db.changeorder_sections
-                                       where cs.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cs.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
-                                       select cs.section_id).Contains(p.section_level) && p.location_id == colId && p.item_status_id != 1 && p.is_direct == nDirectId && p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                       where cs.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cs.client_id == Convert.ToInt32(hdnClientId.Value)
+                                       select cs.section_id).Contains(p.section_level) && p.location_id == colId && p.item_status_id != 1 && p.is_direct == nDirectId && p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && p.client_id == Convert.ToInt32(hdnClientId.Value)
                                orderby p.section_level ascending
 
                                select new CO_PricingDeatilModel()
@@ -758,10 +767,10 @@ public partial class change_order_worksheet : System.Web.UI.Page
                         co_obj1.total_direct_price = objcl1.prev_total_price;
                     }
                 }
-                if (_db.change_order_pricing_lists.Where(pd => pd.chage_order_id == Convert.ToInt32(hdnChEstId.Value) && pd.co_pricing_list_id == objcl1.co_pricing_list_id && pd.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.customer_id == Convert.ToInt32(hdnCustomerId.Value) && pd.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).ToList().Count > 0)
+                if (_db.change_order_pricing_lists.Where(pd => pd.chage_order_id == Convert.ToInt32(hdnChEstId.Value) && pd.co_pricing_list_id == objcl1.co_pricing_list_id && pd.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.customer_id == Convert.ToInt32(hdnCustomerId.Value) && pd.client_id == Convert.ToInt32(hdnClientId.Value)).ToList().Count > 0)
                 {
                     change_order_pricing_list copl = new change_order_pricing_list();
-                    copl = _db.change_order_pricing_lists.Single(pd => pd.chage_order_id == Convert.ToInt32(hdnChEstId.Value) && pd.co_pricing_list_id == objcl1.co_pricing_list_id && pd.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.customer_id == Convert.ToInt32(hdnCustomerId.Value) && pd.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+                    copl = _db.change_order_pricing_lists.Single(pd => pd.chage_order_id == Convert.ToInt32(hdnChEstId.Value) && pd.co_pricing_list_id == objcl1.co_pricing_list_id && pd.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.customer_id == Convert.ToInt32(hdnCustomerId.Value) && pd.client_id == Convert.ToInt32(hdnClientId.Value));
                     co_obj1.EconomicsId = (int)copl.EconomicsId;
                     co_obj1.EconomicsCost = (decimal)copl.EconomicsCost;
                 }
@@ -785,12 +794,12 @@ public partial class change_order_worksheet : System.Web.UI.Page
             var price_detail = from p in _db.co_pricing_masters
                                join lc in _db.locations on p.location_id equals lc.location_id
                                where (from clc in _db.changeorder_locations
-                                      where clc.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && clc.customer_id == Convert.ToInt32(hdnCustomerId.Value) && clc.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                      where clc.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && clc.customer_id == Convert.ToInt32(hdnCustomerId.Value) && clc.client_id == Convert.ToInt32(hdnClientId.Value)
                                       select clc.location_id).Contains(p.location_id) &&
                                       (from cs in _db.changeorder_sections
-                                       where cs.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cs.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                       where cs.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cs.client_id == Convert.ToInt32(hdnClientId.Value)
                                        select cs.section_id).Contains(p.section_level)
-                                      && p.section_level == colId && p.item_status_id != 1 && p.is_direct == nDirectId && p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                      && p.section_level == colId && p.item_status_id != 1 && p.is_direct == nDirectId && p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && p.client_id == Convert.ToInt32(hdnClientId.Value)
                                orderby lc.location_name ascending
 
                                select new CO_PricingDeatilModel()
@@ -863,10 +872,10 @@ public partial class change_order_worksheet : System.Web.UI.Page
                         co_obj.total_direct_price = objcl.prev_total_price;
                     }
                 }
-                if (_db.change_order_pricing_lists.Where(pd => pd.chage_order_id == Convert.ToInt32(hdnChEstId.Value) && pd.co_pricing_list_id == objcl.co_pricing_list_id && pd.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.customer_id == Convert.ToInt32(hdnCustomerId.Value) && pd.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).ToList().Count > 0)
+                if (_db.change_order_pricing_lists.Where(pd => pd.chage_order_id == Convert.ToInt32(hdnChEstId.Value) && pd.co_pricing_list_id == objcl.co_pricing_list_id && pd.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.customer_id == Convert.ToInt32(hdnCustomerId.Value) && pd.client_id == Convert.ToInt32(hdnClientId.Value)).ToList().Count > 0)
                 {
                     change_order_pricing_list copl = new change_order_pricing_list();
-                    copl = _db.change_order_pricing_lists.Single(pd => pd.chage_order_id == Convert.ToInt32(hdnChEstId.Value) && pd.co_pricing_list_id == objcl.co_pricing_list_id && pd.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.customer_id == Convert.ToInt32(hdnCustomerId.Value) && pd.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+                    copl = _db.change_order_pricing_lists.Single(pd => pd.chage_order_id == Convert.ToInt32(hdnChEstId.Value) && pd.co_pricing_list_id == objcl.co_pricing_list_id && pd.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.customer_id == Convert.ToInt32(hdnCustomerId.Value) && pd.client_id == Convert.ToInt32(hdnClientId.Value));
                     co_obj.EconomicsId = (int)copl.EconomicsId;
                     co_obj.EconomicsCost = (decimal)copl.EconomicsCost;
                 }
@@ -917,12 +926,12 @@ public partial class change_order_worksheet : System.Web.UI.Page
         DataClassesDataContext _db = new DataClassesDataContext();
         hdnPricingId.Value = grdSelectedItem2.DataKeys[e.RowIndex].Values[0].ToString();
         co_pricing_master cpl = new co_pricing_master();
-        cpl = _db.co_pricing_masters.Single(c => c.co_pricing_list_id == Convert.ToInt32(hdnPricingId.Value) && c.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+        cpl = _db.co_pricing_masters.Single(c => c.co_pricing_list_id == Convert.ToInt32(hdnPricingId.Value) && c.client_id == Convert.ToInt32(hdnClientId.Value));
         string strQ = "";
         if (cpl.item_status_id == 3)
-            strQ = "Delete co_pricing_master WHERE co_pricing_list_id =" + Convert.ToInt32(hdnPricingId.Value) + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+            strQ = "Delete co_pricing_master WHERE co_pricing_list_id =" + Convert.ToInt32(hdnPricingId.Value) + " AND client_id=" + Convert.ToInt32(hdnClientId.Value);
         else
-            strQ = "UPDATE co_pricing_master SET item_status_id=2,prev_total_price=" + cpl.total_direct_price + ",total_direct_price=0 WHERE co_pricing_list_id =" + Convert.ToInt32(hdnPricingId.Value) + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+            strQ = "UPDATE co_pricing_master SET item_status_id=2,prev_total_price=" + cpl.total_direct_price + ",total_direct_price=0 WHERE co_pricing_list_id =" + Convert.ToInt32(hdnPricingId.Value) + " AND client_id=" + Convert.ToInt32(hdnClientId.Value);
 
         _db.ExecuteCommand(strQ, string.Empty);
 
@@ -1030,7 +1039,7 @@ public partial class change_order_worksheet : System.Web.UI.Page
     public string GetItemDetialsForUpdateItem(int SectionId)
     {
         DataClassesDataContext _db = new DataClassesDataContext();
-        List<sectioninfo> list = _db.sectioninfos.Where(c => c.section_id == SectionId && c.parent_id > 0 && c.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).ToList();
+        List<sectioninfo> list = _db.sectioninfos.Where(c => c.section_id == SectionId && c.parent_id > 0 && c.client_id == Convert.ToInt32(hdnClientId.Value)).ToList();
         foreach (sectioninfo sec1 in list)
         {
             strDetails = sec1.section_name + " >> " + strDetails;
@@ -1043,7 +1052,7 @@ public partial class change_order_worksheet : System.Web.UI.Page
         string str = "";
         DataClassesDataContext _db = new DataClassesDataContext();
         sectioninfo si = new sectioninfo();
-        si = _db.sectioninfos.Single(c => c.section_level == section_level && c.parent_id == 0 && c.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+        si = _db.sectioninfos.Single(c => c.section_level == section_level && c.parent_id == 0 && c.client_id == Convert.ToInt32(hdnClientId.Value));
         str = si.section_name;
         return str;
     }
@@ -1052,7 +1061,7 @@ public partial class change_order_worksheet : System.Web.UI.Page
         int nSerial = 0;
         DataClassesDataContext _db = new DataClassesDataContext();
         var result = (from pd in _db.co_pricing_masters
-                      where pd.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.customer_id == Convert.ToInt32(hdnCustomerId.Value) && pd.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && pd.section_level == Convert.ToInt32(hdnSectionLevel.Value)
+                      where pd.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.customer_id == Convert.ToInt32(hdnCustomerId.Value) && pd.client_id == Convert.ToInt32(hdnClientId.Value) && pd.section_level == Convert.ToInt32(hdnSectionLevel.Value)
                       select pd.item_cnt);
         int n = result.Count();
         if (result != null && n > 0)
@@ -1069,9 +1078,9 @@ public partial class change_order_worksheet : System.Web.UI.Page
             DataClassesDataContext _db = new DataClassesDataContext();
             hdnPricingId.Value = grdSelectedItem.DataKeys[Convert.ToInt32(e.CommandArgument)].Values[0].ToString();
             co_pricing_master cpl = new co_pricing_master();
-            cpl = _db.co_pricing_masters.Single(c => c.co_pricing_list_id == Convert.ToInt32(hdnPricingId.Value) && c.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
-            string strQ = "UPDATE co_pricing_master SET item_status_id=1,total_retail_price=" + cpl.prev_total_price + " WHERE co_pricing_list_id =" + Convert.ToInt32(hdnPricingId.Value) + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
-            //string strQ = "Delete co_pricing_master WHERE co_pricing_list_id =" + Convert.ToInt32(hdnPricingId.Value) + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+            cpl = _db.co_pricing_masters.Single(c => c.co_pricing_list_id == Convert.ToInt32(hdnPricingId.Value) && c.client_id == Convert.ToInt32(hdnClientId.Value));
+            string strQ = "UPDATE co_pricing_master SET item_status_id=1,total_retail_price=" + cpl.prev_total_price + " WHERE co_pricing_list_id =" + Convert.ToInt32(hdnPricingId.Value) + " AND client_id=" + Convert.ToInt32(hdnClientId.Value);
+            //string strQ = "Delete co_pricing_master WHERE co_pricing_list_id =" + Convert.ToInt32(hdnPricingId.Value) + " AND client_id=" + Convert.ToInt32(hdnClientId.Value);
             _db.ExecuteCommand(strQ, string.Empty);
 
         }
@@ -1107,8 +1116,8 @@ public partial class change_order_worksheet : System.Web.UI.Page
             DataClassesDataContext _db = new DataClassesDataContext();
             hdnPricingId.Value = grdSelectedItem2.DataKeys[Convert.ToInt32(e.CommandArgument)].Values[0].ToString();
             co_pricing_master cpl = new co_pricing_master();
-            cpl = _db.co_pricing_masters.Single(c => c.co_pricing_list_id == Convert.ToInt32(hdnPricingId.Value) && c.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
-            string strQ = "UPDATE co_pricing_master SET item_status_id=1, total_direct_price=" + cpl.prev_total_price + " WHERE co_pricing_list_id =" + Convert.ToInt32(hdnPricingId.Value) + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+            cpl = _db.co_pricing_masters.Single(c => c.co_pricing_list_id == Convert.ToInt32(hdnPricingId.Value) && c.client_id == Convert.ToInt32(hdnClientId.Value));
+            string strQ = "UPDATE co_pricing_master SET item_status_id=1, total_direct_price=" + cpl.prev_total_price + " WHERE co_pricing_list_id =" + Convert.ToInt32(hdnPricingId.Value) + " AND client_id=" + Convert.ToInt32(hdnClientId.Value);
             _db.ExecuteCommand(strQ, string.Empty);
 
         }
@@ -1258,7 +1267,7 @@ public partial class change_order_worksheet : System.Web.UI.Page
         }
 
         DataClassesDataContext _db = new DataClassesDataContext();
-        string strQ_Delete = "Delete change_order_pricing_list WHERE chage_order_id=" + Convert.ToInt32(hdnChEstId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND estimate_id=" + Convert.ToInt32(hdnEstimateId.Value) + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        string strQ_Delete = "Delete change_order_pricing_list WHERE chage_order_id=" + Convert.ToInt32(hdnChEstId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND estimate_id=" + Convert.ToInt32(hdnEstimateId.Value) + " AND client_id=" + Convert.ToInt32(hdnClientId.Value);
         _db.ExecuteCommand(strQ_Delete, string.Empty);
 
         foreach (GridViewRow dimaster1 in grdGrouping.Rows)
@@ -1271,10 +1280,10 @@ public partial class change_order_worksheet : System.Web.UI.Page
                 ddlEconomics.ForeColor = System.Drawing.Color.Black;
                 TextBox txtViewEcon = (TextBox)di.FindControl("txtViewEcon");
                 co_pricing_master cpm = new co_pricing_master();
-                cpm = _db.co_pricing_masters.Single(ce => ce.co_pricing_list_id == Convert.ToInt32(grdSelectedItem1.DataKeys[di.RowIndex].Values[0]) && ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value));
+                cpm = _db.co_pricing_masters.Single(ce => ce.co_pricing_list_id == Convert.ToInt32(grdSelectedItem1.DataKeys[di.RowIndex].Values[0]) && ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value) && ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value));
                 change_order_pricing_list co_obj = new change_order_pricing_list();
                 co_obj.co_pricing_list_id = Convert.ToInt32(grdSelectedItem1.DataKeys[di.RowIndex].Values[0]);
-                co_obj.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                co_obj.client_id = Convert.ToInt32(hdnClientId.Value);
                 co_obj.customer_id = Convert.ToInt32(hdnCustomerId.Value);
                 co_obj.estimate_id = Convert.ToInt32(hdnEstimateId.Value);
                 co_obj.chage_order_id = Convert.ToInt32(hdnChEstId.Value);
@@ -1318,10 +1327,10 @@ public partial class change_order_worksheet : System.Web.UI.Page
                 ddlEconomics1.ForeColor = System.Drawing.Color.Black;
                 TextBox txtViewEcon1 = (TextBox)di.FindControl("txtViewEcon1");
                 co_pricing_master cpm = new co_pricing_master();
-                cpm = _db.co_pricing_masters.Single(ce => ce.co_pricing_list_id == Convert.ToInt32(grdSelectedItem2.DataKeys[di.RowIndex].Values[0]) && ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value));
+                cpm = _db.co_pricing_masters.Single(ce => ce.co_pricing_list_id == Convert.ToInt32(grdSelectedItem2.DataKeys[di.RowIndex].Values[0]) && ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value) && ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value));
                 change_order_pricing_list co_obj = new change_order_pricing_list();
                 co_obj.co_pricing_list_id = Convert.ToInt32(grdSelectedItem2.DataKeys[di.RowIndex].Values[0]);
-                co_obj.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                co_obj.client_id = Convert.ToInt32(hdnClientId.Value);
                 co_obj.customer_id = Convert.ToInt32(hdnCustomerId.Value);
                 co_obj.estimate_id = Convert.ToInt32(hdnEstimateId.Value);
                 co_obj.chage_order_id = Convert.ToInt32(hdnChEstId.Value);
@@ -1375,19 +1384,19 @@ public partial class change_order_worksheet : System.Web.UI.Page
         if (Convert.ToInt32(ddlStatus.SelectedValue) == 3)
         {
             IsClose = true;
-            strQ = "UPDATE changeorder_estimate SET IsChangeOrderQtyViewByCust= " + ChangeOrderQtyViewByCust + ",is_cutomer_viewable = " + Convert.ToInt32(rdoconfirm.SelectedValue) + ", changeorder_name='" + lblChangeOrderName.Text.Replace("'", "''") + "', change_order_status_id=" + Convert.ToInt32(ddlStatus.SelectedValue) + ",comments='" + txtComments.Text.Replace("'", "''") + "',change_order_type_id=" + Convert.ToInt32(ddlChangeOrderType.SelectedValue) + ",payment_terms='" + ddlTerms.SelectedItem.Text.Replace("'", "''") + "', other_terms='" + txtOtherTerms.Text.Replace("'", "''") + "',is_total=" + Convert.ToInt32(rdoList.SelectedValue) + ",is_tax='" + btax + "',tax=" + Convert.ToDecimal(txtTaxPer.Text.Replace("%", "").Replace("$", "")) + ",total_payment_due='" + ddlTotalHeader.SelectedItem.Text.Replace("'", "''") + "',changeorder_date='" + txtChangeOrderDate.Text + "',execute_date='" + DateTime.Today + "',notes1='" + txtNotes1.Text.Replace("'", "''") + "',is_close='" + IsClose + "', last_updated_date='" + DateTime.Now + "' WHERE chage_order_id =" + Convert.ToInt32(hdnChEstId.Value) + " AND estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
-            MasterAdd_strQ = "UPDATE co_pricing_master SET item_status_id=1 WHERE item_status_id = 3 AND estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
-            MasterDel_strQ = "Delete co_pricing_master WHERE item_status_id = 2 AND estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+            strQ = "UPDATE changeorder_estimate SET IsChangeOrderQtyViewByCust= " + ChangeOrderQtyViewByCust + ",is_cutomer_viewable = " + Convert.ToInt32(rdoconfirm.SelectedValue) + ", changeorder_name='" + lblChangeOrderName.Text.Replace("'", "''") + "', change_order_status_id=" + Convert.ToInt32(ddlStatus.SelectedValue) + ",comments='" + txtComments.Text.Replace("'", "''") + "',change_order_type_id=" + Convert.ToInt32(ddlChangeOrderType.SelectedValue) + ",payment_terms='" + ddlTerms.SelectedItem.Text.Replace("'", "''") + "', other_terms='" + txtOtherTerms.Text.Replace("'", "''") + "',is_total=" + Convert.ToInt32(rdoList.SelectedValue) + ",is_tax='" + btax + "',tax=" + Convert.ToDecimal(txtTaxPer.Text.Replace("%", "").Replace("$", "")) + ",total_payment_due='" + ddlTotalHeader.SelectedItem.Text.Replace("'", "''") + "',changeorder_date='" + txtChangeOrderDate.Text + "',execute_date='" + DateTime.Today + "',notes1='" + txtNotes1.Text.Replace("'", "''") + "',is_close='" + IsClose + "', last_updated_date='" + DateTime.Now + "' WHERE chage_order_id =" + Convert.ToInt32(hdnChEstId.Value) + " AND estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND client_id=" + Convert.ToInt32(hdnClientId.Value);
+            MasterAdd_strQ = "UPDATE co_pricing_master SET item_status_id=1 WHERE item_status_id = 3 AND estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND client_id=" + Convert.ToInt32(hdnClientId.Value);
+            MasterDel_strQ = "Delete co_pricing_master WHERE item_status_id = 2 AND estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND client_id=" + Convert.ToInt32(hdnClientId.Value);
             _db.ExecuteCommand(MasterAdd_strQ, string.Empty);
             _db.ExecuteCommand(MasterDel_strQ, string.Empty);
         }
         else if (Convert.ToInt32(ddlStatus.SelectedValue) == 4)
         {
             IsClose = true;
-            strQ = "UPDATE changeorder_estimate SET IsChangeOrderQtyViewByCust= " + ChangeOrderQtyViewByCust + ",is_cutomer_viewable = " + Convert.ToInt32(rdoconfirm.SelectedValue) + ", changeorder_name='" + lblChangeOrderName.Text.Replace("'", "''") + "', change_order_status_id=" + Convert.ToInt32(ddlStatus.SelectedValue) + ",comments='" + txtComments.Text.Replace("'", "''") + "',change_order_type_id=" + Convert.ToInt32(ddlChangeOrderType.SelectedValue) + ",payment_terms='" + ddlTerms.SelectedItem.Text.Replace("'", "''") + "', other_terms='" + txtOtherTerms.Text + "',is_total=" + Convert.ToInt32(rdoList.SelectedValue) + ",is_tax='" + btax + "',tax=" + Convert.ToDecimal(txtTaxPer.Text.Replace("%", "").Replace("$", "")) + ",total_payment_due='" + ddlTotalHeader.SelectedItem.Text.Replace("'", "''") + "',changeorder_date='" + txtChangeOrderDate.Text + "',execute_date='" + DateTime.Today + "',notes1='" + txtNotes1.Text.Replace("'", "''") + "',is_close='" + IsClose + "', last_updated_date='" + DateTime.Today + "' WHERE chage_order_id =" + Convert.ToInt32(hdnChEstId.Value) + " AND estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
-            MasterAdd_strQ = "UPDATE co_pricing_master SET item_status_id=1,total_retail_price=prev_total_price WHERE item_status_id = 2 AND is_direct=1 AND estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
-            string MasterAdd_direct_strQ = "UPDATE co_pricing_master SET item_status_id=1,total_direct_price=prev_total_price WHERE item_status_id = 2 AND is_direct=2 AND estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
-            MasterDel_strQ = "Delete co_pricing_master WHERE item_status_id = 3 AND estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+            strQ = "UPDATE changeorder_estimate SET IsChangeOrderQtyViewByCust= " + ChangeOrderQtyViewByCust + ",is_cutomer_viewable = " + Convert.ToInt32(rdoconfirm.SelectedValue) + ", changeorder_name='" + lblChangeOrderName.Text.Replace("'", "''") + "', change_order_status_id=" + Convert.ToInt32(ddlStatus.SelectedValue) + ",comments='" + txtComments.Text.Replace("'", "''") + "',change_order_type_id=" + Convert.ToInt32(ddlChangeOrderType.SelectedValue) + ",payment_terms='" + ddlTerms.SelectedItem.Text.Replace("'", "''") + "', other_terms='" + txtOtherTerms.Text + "',is_total=" + Convert.ToInt32(rdoList.SelectedValue) + ",is_tax='" + btax + "',tax=" + Convert.ToDecimal(txtTaxPer.Text.Replace("%", "").Replace("$", "")) + ",total_payment_due='" + ddlTotalHeader.SelectedItem.Text.Replace("'", "''") + "',changeorder_date='" + txtChangeOrderDate.Text + "',execute_date='" + DateTime.Today + "',notes1='" + txtNotes1.Text.Replace("'", "''") + "',is_close='" + IsClose + "', last_updated_date='" + DateTime.Today + "' WHERE chage_order_id =" + Convert.ToInt32(hdnChEstId.Value) + " AND estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND client_id=" + Convert.ToInt32(hdnClientId.Value);
+            MasterAdd_strQ = "UPDATE co_pricing_master SET item_status_id=1,total_retail_price=prev_total_price WHERE item_status_id = 2 AND is_direct=1 AND estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND client_id=" + Convert.ToInt32(hdnClientId.Value);
+            string MasterAdd_direct_strQ = "UPDATE co_pricing_master SET item_status_id=1,total_direct_price=prev_total_price WHERE item_status_id = 2 AND is_direct=2 AND estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND client_id=" + Convert.ToInt32(hdnClientId.Value);
+            MasterDel_strQ = "Delete co_pricing_master WHERE item_status_id = 3 AND estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND client_id=" + Convert.ToInt32(hdnClientId.Value);
             _db.ExecuteCommand(MasterAdd_strQ, string.Empty);
             _db.ExecuteCommand(MasterAdd_direct_strQ, string.Empty);
             _db.ExecuteCommand(MasterDel_strQ, string.Empty);
@@ -1395,7 +1404,7 @@ public partial class change_order_worksheet : System.Web.UI.Page
         else
         {
             IsClose = false;
-            strQ = "UPDATE changeorder_estimate SET IsChangeOrderQtyViewByCust= " + ChangeOrderQtyViewByCust + ",is_cutomer_viewable = " + Convert.ToInt32(rdoconfirm.SelectedValue) + ", changeorder_name='" + lblChangeOrderName.Text.Replace("'", "''") + "', change_order_status_id=" + Convert.ToInt32(ddlStatus.SelectedValue) + ",comments='" + txtComments.Text.Replace("'", "''") + "',change_order_type_id=" + Convert.ToInt32(ddlChangeOrderType.SelectedValue) + ",payment_terms='" + ddlTerms.SelectedItem.Text.Replace("'", "''") + "', other_terms='" + txtOtherTerms.Text.Replace("'", "''") + "',is_total=" + Convert.ToInt32(rdoList.SelectedValue) + ",is_tax='" + btax + "',tax=" + Convert.ToDecimal(txtTaxPer.Text.Replace("%", "").Replace("$", "")) + ",total_payment_due='" + ddlTotalHeader.SelectedItem.Text.Replace("'", "''") + "',changeorder_date='" + txtChangeOrderDate.Text + "',notes1='" + txtNotes1.Text.Replace("'", "''") + "',is_close='" + IsClose + "', last_updated_date='" + DateTime.Today + "' WHERE chage_order_id =" + Convert.ToInt32(hdnChEstId.Value) + " AND estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+            strQ = "UPDATE changeorder_estimate SET IsChangeOrderQtyViewByCust= " + ChangeOrderQtyViewByCust + ",is_cutomer_viewable = " + Convert.ToInt32(rdoconfirm.SelectedValue) + ", changeorder_name='" + lblChangeOrderName.Text.Replace("'", "''") + "', change_order_status_id=" + Convert.ToInt32(ddlStatus.SelectedValue) + ",comments='" + txtComments.Text.Replace("'", "''") + "',change_order_type_id=" + Convert.ToInt32(ddlChangeOrderType.SelectedValue) + ",payment_terms='" + ddlTerms.SelectedItem.Text.Replace("'", "''") + "', other_terms='" + txtOtherTerms.Text.Replace("'", "''") + "',is_total=" + Convert.ToInt32(rdoList.SelectedValue) + ",is_tax='" + btax + "',tax=" + Convert.ToDecimal(txtTaxPer.Text.Replace("%", "").Replace("$", "")) + ",total_payment_due='" + ddlTotalHeader.SelectedItem.Text.Replace("'", "''") + "',changeorder_date='" + txtChangeOrderDate.Text + "',notes1='" + txtNotes1.Text.Replace("'", "''") + "',is_close='" + IsClose + "', last_updated_date='" + DateTime.Today + "' WHERE chage_order_id =" + Convert.ToInt32(hdnChEstId.Value) + " AND estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND client_id=" + Convert.ToInt32(hdnClientId.Value);
         }
 
         _db.ExecuteCommand(strQ, string.Empty);
@@ -1403,7 +1412,7 @@ public partial class change_order_worksheet : System.Web.UI.Page
         if (Convert.ToInt32(hdnChPaymentId.Value) > 0)
             objPayTerm = _db.Co_PaymentTerms.SingleOrDefault(ep => ep.co_payment_id == Convert.ToInt32(hdnChPaymentId.Value));
 
-        objPayTerm.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        objPayTerm.client_id = Convert.ToInt32(hdnClientId.Value);
         objPayTerm.customer_id = Convert.ToInt32(hdnCustomerId.Value);
         objPayTerm.estimate_id = Convert.ToInt32(hdnEstimateId.Value);
         objPayTerm.ChangeOrderId = Convert.ToInt32(hdnChEstId.Value);
@@ -1668,7 +1677,7 @@ public partial class change_order_worksheet : System.Web.UI.Page
         DataClassesDataContext _db = new DataClassesDataContext();
         string strQ = " SELECT  co_pricing_list_id, customer_id, estimate_id, chage_order_id, change_order_pricing_list.location_id, sales_person_id, section_level, section_serial, item_id, section_name, item_name, total_direct_price, total_retail_price, is_direct, item_status_id, EconomicsId, EconomicsCost, create_date, last_update_date,location_name,short_notes,quantity,measure_unit FROM change_order_pricing_list  " +
                     " INNER JOIN location ON change_order_pricing_list.location_id=location.location_id AND change_order_pricing_list.client_id=location.client_id " +
-                    " WHERE chage_order_id=" + Convert.ToInt32(hdnChEstId.Value) + " AND estimate_id=" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND change_order_pricing_list.client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                    " WHERE chage_order_id=" + Convert.ToInt32(hdnChEstId.Value) + " AND estimate_id=" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND change_order_pricing_list.client_id=" + Convert.ToInt32(hdnClientId.Value);
         List<ChangeOrderPricingListModel> rList = _db.ExecuteQuery<ChangeOrderPricingListModel>(strQ, string.Empty).ToList();
 
         if (rList.Count == 0)
@@ -1677,7 +1686,7 @@ public partial class change_order_worksheet : System.Web.UI.Page
             return;
         }
         changeorder_estimate cho = new changeorder_estimate();
-        cho = _db.changeorder_estimates.Single(ce => ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && ce.chage_order_id == Convert.ToInt32(hdnChEstId.Value));
+        cho = _db.changeorder_estimates.Single(ce => ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value) && ce.chage_order_id == Convert.ToInt32(hdnChEstId.Value));
 
         ReportDocument rptFile = new ReportDocument();
         string strReportPath = "";
@@ -1739,9 +1748,9 @@ public partial class change_order_worksheet : System.Web.UI.Page
         decimal dOtherAmount = 0;
 
 
-        if (_db.Co_PaymentTerms.Any(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(hdnChEstId.Value) && est_p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])))
+        if (_db.Co_PaymentTerms.Any(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(hdnChEstId.Value) && est_p.client_id == Convert.ToInt32(hdnClientId.Value)))
         {
-            Co_PaymentTerm objPayTerm = _db.Co_PaymentTerms.FirstOrDefault(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(hdnChEstId.Value) && est_p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+            Co_PaymentTerm objPayTerm = _db.Co_PaymentTerms.FirstOrDefault(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(hdnChEstId.Value) && est_p.client_id == Convert.ToInt32(hdnClientId.Value));
             hdnChPaymentId.Value = objPayTerm.co_payment_id.ToString();
 
             if (objPayTerm.UponSign_value != null)
@@ -1845,12 +1854,12 @@ public partial class change_order_worksheet : System.Web.UI.Page
         KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnViewHTML.ID, btnViewHTML.GetType().Name, "Click"); 
         DataClassesDataContext _db = new DataClassesDataContext();
         string strQ = " SELECT  co_pricing_list_id, customer_id, estimate_id, chage_order_id, change_order_pricing_list.location_id, sales_person_id, section_level, section_serial, item_id, section_name, item_name, total_direct_price, total_retail_price, is_direct, item_status_id, EconomicsId, EconomicsCost, create_date, last_update_date,location_name,short_notes FROM change_order_pricing_list  " +
-                    " INNER JOIN location ON change_order_pricing_list.location_id=location.location_id AND change_order_pricing_list.client_id=location.client_id " +
-                    " WHERE chage_order_id=" + Convert.ToInt32(hdnChEstId.Value) + " AND estimate_id=" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND change_order_pricing_list.client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                    " INNER JOIN location ON change_order_pricing_list.location_id=location.location_id " +
+                    " WHERE chage_order_id=" + Convert.ToInt32(hdnChEstId.Value) + " AND estimate_id=" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND change_order_pricing_list.client_id=" + Convert.ToInt32(hdnClientId.Value);
         List<ChangeOrderPricingListModel> rList = _db.ExecuteQuery<ChangeOrderPricingListModel>(strQ, string.Empty).ToList();
 
         changeorder_estimate cho = new changeorder_estimate();
-        cho = _db.changeorder_estimates.Single(ce => ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && ce.chage_order_id == Convert.ToInt32(hdnChEstId.Value));
+        cho = _db.changeorder_estimates.Single(ce => ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value) && ce.chage_order_id == Convert.ToInt32(hdnChEstId.Value));
 
         ReportDocument rptFile = new ReportDocument();
         string strReportPath = Server.MapPath(@"Reports\rpt\rptchange_order.rpt");
@@ -1902,9 +1911,9 @@ public partial class change_order_worksheet : System.Web.UI.Page
         decimal dOtherAmount = 0;
 
         //if (_db.Co_PaymentTerms.Where(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(hdnChEstId.Value) && est_p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).SingleOrDefault() != null)
-        if (_db.Co_PaymentTerms.Any(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(hdnChEstId.Value) && est_p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])))
+        if (_db.Co_PaymentTerms.Any(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(hdnChEstId.Value) && est_p.client_id == Convert.ToInt32(hdnClientId.Value)))
         {
-            Co_PaymentTerm objPayTerm = _db.Co_PaymentTerms.FirstOrDefault(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(hdnChEstId.Value) && est_p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+            Co_PaymentTerm objPayTerm = _db.Co_PaymentTerms.FirstOrDefault(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(hdnChEstId.Value) && est_p.client_id == Convert.ToInt32(hdnClientId.Value));
             hdnChPaymentId.Value = objPayTerm.co_payment_id.ToString();
 
 
@@ -2022,12 +2031,12 @@ public partial class change_order_worksheet : System.Web.UI.Page
     {
         DataClassesDataContext _db = new DataClassesDataContext();
         string strQ = " SELECT  co_pricing_list_id, customer_id, estimate_id, chage_order_id, change_order_pricing_list.location_id, sales_person_id, section_level, section_serial, item_id, section_name, item_name, total_direct_price, total_retail_price, is_direct, item_status_id, EconomicsId, EconomicsCost, create_date, last_update_date,location_name,short_notes FROM change_order_pricing_list  " +
-                    " INNER JOIN location ON change_order_pricing_list.location_id=location.location_id AND change_order_pricing_list.client_id=location.client_id " +
-                    " WHERE chage_order_id=" + Convert.ToInt32(hdnChEstId.Value) + " AND estimate_id=" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND change_order_pricing_list.client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                    " INNER JOIN location ON change_order_pricing_list.location_id=location.location_id  " +
+                    " WHERE chage_order_id=" + Convert.ToInt32(hdnChEstId.Value) + " AND estimate_id=" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND change_order_pricing_list.client_id=" + Convert.ToInt32(hdnClientId.Value);
         List<ChangeOrderPricingListModel> rList = _db.ExecuteQuery<ChangeOrderPricingListModel>(strQ, string.Empty).ToList();
 
         changeorder_estimate cho = new changeorder_estimate();
-        cho = _db.changeorder_estimates.Single(ce => ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && ce.chage_order_id == Convert.ToInt32(hdnChEstId.Value));
+        cho = _db.changeorder_estimates.Single(ce => ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value) && ce.chage_order_id == Convert.ToInt32(hdnChEstId.Value));
 
         ReportDocument rptFile = new ReportDocument();
         string strReportPath = Server.MapPath(@"Reports\rpt\rptchange_order.rpt");
@@ -2081,9 +2090,9 @@ public partial class change_order_worksheet : System.Web.UI.Page
         decimal dOtherAmount = 0;
 
         //if (_db.Co_PaymentTerms.Where(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(hdnChEstId.Value) && est_p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).SingleOrDefault() != null)
-        if (_db.Co_PaymentTerms.Any(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(hdnChEstId.Value) && est_p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])))
+        if (_db.Co_PaymentTerms.Any(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(hdnChEstId.Value) && est_p.client_id == Convert.ToInt32(hdnClientId.Value)))
         {
-            Co_PaymentTerm objPayTerm = _db.Co_PaymentTerms.FirstOrDefault(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(hdnChEstId.Value) && est_p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+            Co_PaymentTerm objPayTerm = _db.Co_PaymentTerms.FirstOrDefault(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(hdnChEstId.Value) && est_p.client_id == Convert.ToInt32(hdnClientId.Value));
             hdnChPaymentId.Value = objPayTerm.co_payment_id.ToString();
 
 
@@ -2568,12 +2577,12 @@ public partial class change_order_worksheet : System.Web.UI.Page
         KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnbtnDocuSign.ID, btnbtnDocuSign.GetType().Name, "Click"); 
         DataClassesDataContext _db = new DataClassesDataContext();
         string strQ = " SELECT  co_pricing_list_id, customer_id, estimate_id, chage_order_id, change_order_pricing_list.location_id, sales_person_id, section_level, section_serial, item_id, section_name, item_name, total_direct_price, total_retail_price, is_direct, item_status_id, EconomicsId, EconomicsCost, create_date, last_update_date,location_name,short_notes FROM change_order_pricing_list  " +
-                    " INNER JOIN location ON change_order_pricing_list.location_id=location.location_id AND change_order_pricing_list.client_id=location.client_id " +
-                    " WHERE chage_order_id=" + Convert.ToInt32(hdnChEstId.Value) + " AND estimate_id=" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND change_order_pricing_list.client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                    " INNER JOIN location ON change_order_pricing_list.location_id=location.location_id " +
+                    " WHERE chage_order_id=" + Convert.ToInt32(hdnChEstId.Value) + " AND estimate_id=" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND change_order_pricing_list.client_id=" + Convert.ToInt32(hdnClientId.Value);
         List<ChangeOrderPricingListModel> rList = _db.ExecuteQuery<ChangeOrderPricingListModel>(strQ, string.Empty).ToList();
 
         changeorder_estimate cho = new changeorder_estimate();
-        cho = _db.changeorder_estimates.Single(ce => ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && ce.chage_order_id == Convert.ToInt32(hdnChEstId.Value));
+        cho = _db.changeorder_estimates.Single(ce => ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value) && ce.chage_order_id == Convert.ToInt32(hdnChEstId.Value));
 
         ReportDocument rptFile = new ReportDocument();
         string strReportPath = Server.MapPath(@"Reports\rpt\rptchange_order_Docusign.rpt");
@@ -2625,9 +2634,9 @@ public partial class change_order_worksheet : System.Web.UI.Page
         decimal dOtherAmount = 0;
 
         //if (_db.Co_PaymentTerms.Where(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(hdnChEstId.Value) && est_p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).SingleOrDefault() != null)
-        if (_db.Co_PaymentTerms.Any(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(hdnChEstId.Value) && est_p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])))
+        if (_db.Co_PaymentTerms.Any(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(hdnChEstId.Value) && est_p.client_id == Convert.ToInt32(hdnClientId.Value)))
         {
-            Co_PaymentTerm objPayTerm = _db.Co_PaymentTerms.FirstOrDefault(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(hdnChEstId.Value) && est_p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+            Co_PaymentTerm objPayTerm = _db.Co_PaymentTerms.FirstOrDefault(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(hdnChEstId.Value) && est_p.client_id == Convert.ToInt32(hdnClientId.Value));
             hdnChPaymentId.Value = objPayTerm.co_payment_id.ToString();
 
 
@@ -2668,7 +2677,7 @@ public partial class change_order_worksheet : System.Web.UI.Page
 
         }
 
-        string strId = hdnChEstId.Value + " " + hdnCustomerId.Value + "_" + hdnEstimateId.Value + "_" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        string strId = hdnChEstId.Value + " " + hdnCustomerId.Value + "_" + hdnEstimateId.Value + "_" + Convert.ToInt32(hdnClientId.Value);
         Hashtable ht = new Hashtable();
 
         ht.Add("p_CustomerName", strCustomerName);
@@ -3085,7 +3094,7 @@ public partial class change_order_worksheet : System.Web.UI.Page
 
             hyp_vendor.NavigateUrl = "Vendor_cost_details.aspx?eid=" + neid + "&cid=" + ncid;
 
-            if (!_db.estimate_payments.Any(est_p => est_p.estimate_id == neid && est_p.customer_id == ncid && est_p.client_id == 1))
+            if (!_db.estimate_payments.Any(est_p => est_p.estimate_id == neid && est_p.customer_id == ncid && est_p.client_id == Convert.ToInt32(hdnClientId.Value)))
             {
                 hyp_Payment.NavigateUrl = "payment_info.aspx?eid=" + neid + "&cid=" + ncid;
 
@@ -3093,7 +3102,7 @@ public partial class change_order_worksheet : System.Web.UI.Page
             else
             {
                 estimate_payment objEstPay = new estimate_payment();
-                objEstPay = _db.estimate_payments.Single(pay => pay.estimate_id == neid && pay.customer_id == ncid && pay.client_id == 1);
+                objEstPay = _db.estimate_payments.Single(pay => pay.estimate_id == neid && pay.customer_id == ncid && pay.client_id == Convert.ToInt32(hdnClientId.Value));
                 hyp_Payment.NavigateUrl = "payment_recieved.aspx?cid=" + ncid + "&epid=" + objEstPay.est_payment_id + "&eid=" + neid;
 
             }

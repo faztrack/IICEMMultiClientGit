@@ -52,6 +52,13 @@ public partial class mtimeclock : System.Web.UI.Page
                 btnEndTrip.Attributes.Add("class", "btn btn-danger endbuttonwidth125");
                 CheckEndTime();
             }
+
+            if(Session["oUser"] != null)
+            {
+                hdnClientId.Value = ((userinfo)Session["oUser"]).client_id.ToString();
+            }
+
+
             BindJob();
             lblDateTime.Text = DateTime.Now.ToShortDateString();
             BindLaborHourTracking();
@@ -554,9 +561,9 @@ public partial class mtimeclock : System.Web.UI.Page
                 int Estimate_id = 0;
 
 
-                if (_db.customer_estimates.Where(ce => ce.job_number == job.Trim() && ce.client_id == 1 && ce.status_id == 3).ToList().Count > 0)
+                if (_db.customer_estimates.Where(ce => ce.job_number == job.Trim() && ce.client_id.ToString().Contains(hdnClientId.Value) && ce.status_id == 3).ToList().Count > 0)
                 {
-                    customer_estimate obj = _db.customer_estimates.FirstOrDefault(ce => ce.job_number == job.Trim() && ce.client_id == 1 && ce.status_id == 3);
+                    customer_estimate obj = _db.customer_estimates.FirstOrDefault(ce => ce.job_number == job.Trim() && ce.client_id.ToString().Contains(hdnClientId.Value) && ce.status_id == 3);
 
                     customer_id = Convert.ToInt32(obj.customer_id);
                     Estimate_id = Convert.ToInt32(obj.estimate_id);
@@ -568,7 +575,7 @@ public partial class mtimeclock : System.Web.UI.Page
                 }
                 else
                 {
-                    customer_estimate obj = _db.customer_estimates.FirstOrDefault(ce => ce.alter_job_number == job.Trim() && ce.client_id == 1 && ce.status_id == 3);
+                    customer_estimate obj = _db.customer_estimates.FirstOrDefault(ce => ce.alter_job_number == job.Trim() && ce.client_id.ToString().Contains(hdnClientId.Value) && ce.status_id == 3);
                     if (obj != null)
                     {
                         customer_id = Convert.ToInt32(obj.customer_id);
@@ -613,7 +620,7 @@ public partial class mtimeclock : System.Web.UI.Page
 
             var item = (from it in _db.customer_sections
                         join si in _db.sectioninfos on it.section_id equals si.section_id
-                        where it.customer_id == custID && it.estimate_id == estID && it.client_id == 1
+                        where it.customer_id == custID && it.estimate_id == estID && it.client_id.ToString().Contains(hdnClientId.Value)
                         orderby si.section_name ascending
                         select new SectionInfo()
                         {

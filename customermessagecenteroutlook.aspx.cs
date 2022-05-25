@@ -80,19 +80,23 @@ public partial class customermessagecenteroutlook : System.Web.UI.Page
                 //}
 
                 customer cust = new customer();
-                cust = _db.customers.Single(c => c.customer_id == Convert.ToInt32(hdnCustomerId.Value));
+                cust = _db.customers.SingleOrDefault(c => c.customer_id == Convert.ToInt32(hdnCustomerId.Value));
 
-                lblCustomerName.Text = cust.first_name1 + " " + cust.last_name1;
+                if(cust != null)
+                {
+                    lblCustomerName.Text = cust.first_name1 + " " + cust.last_name1;
 
-                string strAddress = "";
-                strAddress = cust.address + " </br>" + cust.city + ", " + cust.state + " " + cust.zip_code;
-                lblAddress.Text = strAddress;
-                lblEmail.Text = cust.email;
-                lblPhone.Text = cust.phone;
+                    string strAddress = "";
+                    strAddress = cust.address + " </br>" + cust.city + ", " + cust.state + " " + cust.zip_code;
+                    lblAddress.Text = strAddress;
+                    lblEmail.Text = cust.email;
+                    lblPhone.Text = cust.phone;
 
-                hypGoogleMap.NavigateUrl = "GoogleMap.aspx?strAdd=" + strAddress.Replace("</br>", "");
-                string address = cust.address + ",+" + cust.city + ",+" + cust.state + ",+" + cust.zip_code;
-                hypGoogleMap.NavigateUrl = "http://maps.google.com/maps?f=q&source=s_q&hl=en&geocode=&q=" + address;
+                    hypGoogleMap.NavigateUrl = "GoogleMap.aspx?strAdd=" + strAddress.Replace("</br>", "");
+                    string address = cust.address + ",+" + cust.city + ",+" + cust.state + ",+" + cust.zip_code;
+                    hypGoogleMap.NavigateUrl = "http://maps.google.com/maps?f=q&source=s_q&hl=en&geocode=&q=" + address;
+                    hdnClientId.Value = cust.client_id.ToString();
+                }
 
 
 
@@ -131,7 +135,7 @@ public partial class customermessagecenteroutlook : System.Web.UI.Page
 
                 DataClassesDataContext _db = new DataClassesDataContext();
                 var messList = (from mess_info in _db.customer_messages
-                                where mess_info.customer_id == nCustId && mess_info.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                where mess_info.customer_id == nCustId && mess_info.client_id == Convert.ToInt32(hdnClientId.Value)
                                 orderby mess_info.cust_message_id descending
                                 select mess_info).ToList();
 
@@ -162,7 +166,7 @@ public partial class customermessagecenteroutlook : System.Web.UI.Page
 
                     if (msg.HasAttachments == null)
                     {
-                        string strQ = "select * from message_upolad_info where customer_id=" + nCustId + " and message_id=" + msg.message_id + " and client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                        string strQ = "select * from message_upolad_info where customer_id=" + nCustId + " and message_id=" + msg.message_id + " and client_id=" + Convert.ToInt32(hdnClientId.Value);
                         IEnumerable<message_upolad_info> list = _db.ExecuteQuery<message_upolad_info>(strQ, string.Empty);
 
                         string mess_file = "";

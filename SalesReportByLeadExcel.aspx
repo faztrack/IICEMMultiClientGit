@@ -30,7 +30,7 @@
                                     <b>Sales Person: </b>
                                 </td>
                                 <td align="left" valign="middle">
-                                    <asp:DropDownList ID="ddlSalesPersons" runat="server">
+                                    <asp:DropDownList ID="ddlSalesPersons" runat="server" Width="152px">
                                     </asp:DropDownList>
                                 </td>
                             </tr>
@@ -94,7 +94,9 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td align="right"></td>
+                                <td align="right">
+                                    <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
+                                </td>
                                 <td align="left"></td>
                             </tr>
                         </table>

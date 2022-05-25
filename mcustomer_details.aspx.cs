@@ -49,10 +49,11 @@ public partial class mcustomer_details : System.Web.UI.Page
 
             DataClassesDataContext _db = new DataClassesDataContext();
 
-
+            BindDivision();
             BindStates();
             BindSalesPerson();
             BindLeadSource();
+            
 
             //int ncid = Convert.ToInt32(Request.QueryString.Get("cid"));
             //hdnCustomerId.Value = ncid.ToString();
@@ -65,13 +66,16 @@ public partial class mcustomer_details : System.Web.UI.Page
                 customer cust = new customer();
                 cust = _db.customers.Single(c => c.customer_id == Convert.ToInt32(hdnCustomerId.Value));
 
-               
+                
 
                 txtFirstName1.Text = cust.first_name1;
                 txtLastName1.Text = cust.last_name1;
 
                 txtAddress.Text = cust.address;
 
+                ddlDivision.SelectedValue = cust.client_id.ToString();
+
+                
 
                 string strAddress = cust.address + ",+" + cust.city + ",+" + cust.state + ",+" + cust.zip_code;
 
@@ -116,8 +120,23 @@ public partial class mcustomer_details : System.Web.UI.Page
         }
 
     }
-    
 
+    private void BindDivision()
+    {
+        try
+        {
+            string sql = "select id, division_name from division order by division_name";
+            DataTable dt = csCommonUtility.GetDataTable(sql);
+            ddlDivision.DataSource = dt;
+            ddlDivision.DataTextField = "division_name";
+            ddlDivision.DataValueField = "id";
+            ddlDivision.DataBind();
+        }
+        catch (Exception ex)
+        {
+            lblResult.Text = csCommonUtility.GetSystemErrorMessage(ex.ToString());
+        }
+    }
     private void BindStates()
     {
         DataClassesDataContext _db = new DataClassesDataContext();
@@ -132,7 +151,7 @@ public partial class mcustomer_details : System.Web.UI.Page
     private void BindSalesPerson()
     {
         DataClassesDataContext _db = new DataClassesDataContext();
-        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1  and is_sales=1 and sales_person.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " order by sales_person_id asc";
+        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1  and is_sales=1 and sales_person.client_id =" + Convert.ToInt32(ddlDivision.SelectedValue) + " order by sales_person_id asc";
         List<userinfo> mList = _db.ExecuteQuery<userinfo>(strQ, string.Empty).ToList();
         ddlSalesPerson.DataSource = mList;
         ddlSalesPerson.DataTextField = "sales_person_name";
@@ -221,11 +240,13 @@ public partial class mcustomer_details : System.Web.UI.Page
 
         cust.address = txtAddress.Text;
         cust.city = txtCity.Text;
-        cust.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        cust.client_id = Convert.ToInt32(ddlDivision.SelectedValue);
         cust.company = "";
         cust.cross_street = "";
         cust.email2 = "";
         cust.fax ="";
+        cust.islead = 1;
+        cust.isCustomer = 0;
         cust.first_name1 = txtFirstName1.Text;
         cust.first_name2 = "";
         cust.is_active = Convert.ToBoolean(1);
@@ -323,5 +344,11 @@ public partial class mcustomer_details : System.Web.UI.Page
     protected void imgBack_Click(object sender, ImageClickEventArgs e)
     {
         Response.Redirect("mcustomerlist.aspx");
+    }
+
+  
+    protected void ddlDivision_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        BindSalesPerson();
     }
 }

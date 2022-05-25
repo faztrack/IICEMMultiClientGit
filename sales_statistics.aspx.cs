@@ -27,6 +27,10 @@ public partial class sales_statistics : System.Web.UI.Page
             {
                 Response.Redirect(ConfigurationManager.AppSettings["LoginPage"].ToString());
             }
+            else
+            {
+                hdnClientId.Value = ((userinfo)Session["oUser"]).client_id.ToString();
+            }
             if (Page.User.IsInRole("rpt002") == false)
             {
                 // No Permission Page.
@@ -37,12 +41,12 @@ public partial class sales_statistics : System.Web.UI.Page
     }
     private void BindSalesPersons()
     {
-        int nclient_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        //int nclient_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
         DataClassesDataContext _db = new DataClassesDataContext();
         string strQ = "SELECT DISTINCT sp.first_name + ' '+sp.last_name AS sales_person_name,sp.sales_person_id " +
                     " FROM sales_person sp " +
                     " INNER JOIN customer_estimate ce ON ce.sales_person_id = sp.sales_person_id AND ce.client_id = sp.client_id " +
-                    " WHERE  sp.is_active = 1 AND ce.client_id = " + nclient_id + " AND sp.client_id = " + nclient_id +
+                    " WHERE  sp.is_active = 1 AND ce.client_id in  (" + hdnClientId.Value + ") AND sp.client_id in (" + hdnClientId.Value + ") "+
                     " ORDER BY sales_person_name ASC";
         List<userinfo> mList = _db.ExecuteQuery<userinfo>(strQ, string.Empty).ToList();
         ddlSalesPersons.DataSource = mList;

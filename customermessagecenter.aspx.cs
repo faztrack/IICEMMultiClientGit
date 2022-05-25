@@ -72,6 +72,9 @@ public partial class customermessagecenter : System.Web.UI.Page
                 hypGoogleMap.NavigateUrl = "GoogleMap.aspx?strAdd=" + strAddress.Replace("</br>", "");
                 string address = cust.address + ",+" + cust.city + ",+" + cust.state + ",+" + cust.zip_code;
                 hypGoogleMap.NavigateUrl = "http://maps.google.com/maps?f=q&source=s_q&hl=en&geocode=&q=" + address;
+
+                hdnClientId.Value = cust.client_id.ToString();
+
                 GetCustomerMessageInfo(Convert.ToInt32(hdnCustomerId.Value));
                 var resultCount = (from ce in _db.customer_estimates
                                    where ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == 1 && ce.status_id == 3
@@ -196,7 +199,7 @@ public partial class customermessagecenter : System.Web.UI.Page
         if (Convert.ToInt32(hdnCustomerId.Value) > 0)
         {
             var mess = from mess_info in _db.customer_messages
-                       where mess_info.customer_id == nCustId && mess_info.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                       where mess_info.customer_id == nCustId && mess_info.client_id == Convert.ToInt32(hdnClientId.Value)
                        orderby mess_info.cust_message_id descending
                        select mess_info;
             grdCustomersMessage.DataSource = mess;
@@ -220,7 +223,7 @@ public partial class customermessagecenter : System.Web.UI.Page
                 e.Row.Cells[7].Text = "";
 
             System.Web.UI.WebControls.Table tdLink = (System.Web.UI.WebControls.Table)e.Row.FindControl("tdLink");
-            string strQ = "select * from message_upolad_info where customer_id=" + CustId + " and message_id=" + MessId + " and client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+            string strQ = "select * from message_upolad_info where customer_id=" + CustId + " and message_id=" + MessId + " and client_id=" + Convert.ToInt32(hdnClientId.Value);
             IEnumerable<message_upolad_info> list = _db.ExecuteQuery<message_upolad_info>(strQ, string.Empty);
 
             foreach (message_upolad_info message_upolad in list)
@@ -391,7 +394,7 @@ public partial class customermessagecenter : System.Web.UI.Page
             DataClassesDataContext _db = new DataClassesDataContext();
             int nMsId = 0;
             var result = (from cm in _db.customer_messages
-                          where cm.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cm.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                          where cm.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cm.client_id == Convert.ToInt32(hdnClientId.Value)
                           select cm.message_id);
 
             int n = result.Count();
@@ -403,7 +406,7 @@ public partial class customermessagecenter : System.Web.UI.Page
             string strUser = obj.first_name + " " + obj.last_name;
 
             customer_message cus_ms = new customer_message();
-            cus_ms.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+            cus_ms.client_id = Convert.ToInt32(hdnClientId.Value);
             cus_ms.customer_id = Convert.ToInt32(hdnCustomerId.Value);
             cus_ms.message_id = nMsId;
             cus_ms.sent_by = strUser;
@@ -485,7 +488,7 @@ public partial class customermessagecenter : System.Web.UI.Page
             DataClassesDataContext _db = new DataClassesDataContext();
             int nMsId = 0;
             var result = (from cm in _db.customer_messages
-                          where cm.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cm.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                          where cm.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cm.client_id == Convert.ToInt32(hdnClientId.Value)
                           select cm.message_id);
 
             int n = result.Count();
@@ -497,7 +500,7 @@ public partial class customermessagecenter : System.Web.UI.Page
             string strUser = obj.first_name + " " + obj.last_name;
 
             customer_message cus_ms = new customer_message();
-            cus_ms.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+            cus_ms.client_id = Convert.ToInt32(hdnClientId.Value);
             cus_ms.customer_id = Convert.ToInt32(hdnCustomerId.Value);
             cus_ms.message_id = nMsId;
             cus_ms.sent_by = strUser;
@@ -575,7 +578,7 @@ public partial class customermessagecenter : System.Web.UI.Page
             DataClassesDataContext _db = new DataClassesDataContext();
             int nMsId = 0;
             var result = (from cm in _db.customer_messages
-                          where cm.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cm.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                          where cm.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cm.client_id == Convert.ToInt32(hdnClientId.Value)
                           select cm.message_id);
 
             int n = result.Count();
@@ -587,7 +590,7 @@ public partial class customermessagecenter : System.Web.UI.Page
             string strUser = obj.first_name + " " + obj.last_name;
 
             customer_message cus_ms = new customer_message();
-            cus_ms.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+            cus_ms.client_id = Convert.ToInt32(hdnClientId.Value);
             cus_ms.customer_id = Convert.ToInt32(hdnCustomerId.Value);
             cus_ms.message_id = nMsId;
             cus_ms.sent_by = strUser;
@@ -666,7 +669,7 @@ public partial class customermessagecenter : System.Web.UI.Page
             DataClassesDataContext _db = new DataClassesDataContext();
             int nMsId = 0;
             var result = (from cm in _db.customer_messages
-                          where cm.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cm.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                          where cm.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cm.client_id == Convert.ToInt32(hdnClientId.Value)
                           select cm.message_id);
 
             int n = result.Count();
@@ -678,7 +681,7 @@ public partial class customermessagecenter : System.Web.UI.Page
             string strUser = obj.first_name + " " + obj.last_name;
 
             customer_message cus_ms = new customer_message();
-            cus_ms.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+            cus_ms.client_id = Convert.ToInt32(hdnClientId.Value);
             cus_ms.customer_id = Convert.ToInt32(hdnCustomerId.Value);
             cus_ms.message_id = nMsId;
             cus_ms.sent_by = strUser;

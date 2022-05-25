@@ -302,6 +302,7 @@
                                             <tr>
                                                 <td align="right">
                                                     <asp:HiddenField ID="hdnSectionLevel" runat="server" Value="0" />
+                                                    <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
                                                 </td>
                                                 <td align="left">
                                                     <asp:HiddenField ID="hdnParentId" runat="server" Value="0" />

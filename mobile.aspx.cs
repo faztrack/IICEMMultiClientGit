@@ -183,7 +183,7 @@ public partial class mobile : System.Web.UI.Page
         {
             user_info uinfo = new user_info();
 
-            uinfo = _db.user_infos.Single(u => u.client_id == ClientId && u.user_id == UserId);
+            uinfo = _db.user_infos.Single(u =>  u.user_id == UserId);
 
             userinfo obj = new userinfo();
             obj.first_name = uinfo.first_name;
@@ -197,7 +197,7 @@ public partial class mobile : System.Web.UI.Page
             obj.email = uinfo.email;
             obj.role_id = Convert.ToInt32(uinfo.role_id);
             obj.is_active = Convert.ToBoolean(uinfo.is_active);
-            obj.client_id = Convert.ToInt32(uinfo.client_id);
+            obj.client_id = uinfo.client_id;
             obj.create_date = Convert.ToDateTime(uinfo.create_date);
             obj.username = uinfo.username;
             obj.sales_person_id = Convert.ToInt32(uinfo.sales_person_id);
@@ -302,6 +302,7 @@ public partial class mobile : System.Web.UI.Page
                 obj.email = "tislam@faztrack.com";
                 obj.sales_person_id = 0;
                 obj.IsTimeClock = true;
+                obj.client_id = "1,2";
                 Session.Add("oUser", obj);
 
                 Session.Add("sRole", "admin"); //for Context menu
@@ -361,9 +362,9 @@ public partial class mobile : System.Web.UI.Page
 
             string role = GetUserRoles(userName, password, nClientId);
 
-            if (_db.user_infos.Where(sp => sp.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && sp.username == userName && sp.password == password && sp.is_active == Convert.ToBoolean(1)).SingleOrDefault() == null)
+            if (_db.user_infos.Where(sp =>  sp.username == userName && sp.password == password && sp.is_active == Convert.ToBoolean(1)).SingleOrDefault() == null)
             {
-                if (_db.Crew_Details.Where(sp => sp.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && sp.username.ToLower() == userName.ToLower() && sp.password == crewPassword && sp.is_active == Convert.ToBoolean(1)).SingleOrDefault() == null)
+                if (_db.Crew_Details.Where(sp =>  sp.username.ToLower() == userName.ToLower() && sp.password == crewPassword && sp.is_active == Convert.ToBoolean(1)).SingleOrDefault() == null)
                 {
                     lblResult.Text = "Invalid username and password.";
                     lblResult.ForeColor = Color.Red;
@@ -372,7 +373,7 @@ public partial class mobile : System.Web.UI.Page
                 else
                 {
                     Crew_Detail objCrew = new Crew_Detail();
-                    objCrew = _db.Crew_Details.Single(u => u.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && u.username == userName && u.password == crewPassword);
+                    objCrew = _db.Crew_Details.Single(u =>  u.username == userName && u.password == crewPassword);
                   
                     
                    
@@ -471,7 +472,7 @@ public partial class mobile : System.Web.UI.Page
             {
                 user_info uinfo = new user_info();
 
-                uinfo = _db.user_infos.Single(u => u.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && u.username == userName && u.password == password);
+                uinfo = _db.user_infos.Single(u => u.username == userName && u.password == password);
 
                 userinfo obj = new userinfo();
                 obj.first_name = uinfo.first_name;
@@ -485,7 +486,7 @@ public partial class mobile : System.Web.UI.Page
                 obj.email = uinfo.email;
                 obj.role_id = Convert.ToInt32(uinfo.role_id);
                 obj.is_active = Convert.ToBoolean(uinfo.is_active);
-                obj.client_id = Convert.ToInt32(uinfo.client_id);
+                obj.client_id = uinfo.client_id;
                 obj.create_date = Convert.ToDateTime(uinfo.create_date);
                 obj.username = uinfo.username;
                 obj.sales_person_id = Convert.ToInt32(uinfo.sales_person_id);

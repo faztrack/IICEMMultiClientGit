@@ -200,6 +200,7 @@
                 </tr>
                 <tr>
                     <td>
+                        <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
                         <asp:HiddenField ID="hdnLeadId" runat="server" Value="0" />
                         <asp:HiddenField ID="hdnOrder" runat="server" Value="ASC" />
                     </td>

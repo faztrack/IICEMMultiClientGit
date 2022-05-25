@@ -43,33 +43,33 @@
                                     <td style="width: 390px;" align="left" valign="top">
                                         <table style="width: 390px;">
                                             <tr>
-                                                <td style="width: 200px;" align="left" valign="top"><b>Customer Name: </b></td>
+                                                <td style="width: 120px;" align="left" valign="top"><b>Customer Name: </b></td>
                                                 <td style="width: auto;">
                                                     <asp:Label ID="lblCustomerName" runat="server" Text=""></asp:Label>
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td style="width: 200px;" align="left" valign="top"><b>Job Number: </b></td>
+                                                <td  align="left" valign="top"><b>Job Number: </b></td>
                                                 <td style="width: auto;">
                                                     <asp:Label ID="lblJobNumber" runat="server" Text=""></asp:Label>
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td style="width: 200px;" align="left" valign="top"><b>Phone: </b></td>
+                                                <td  align="left" valign="top"><b>Phone: </b></td>
                                                 <td style="width: auto;">
                                                     <asp:Label ID="lblPhone" runat="server" Text=""></asp:Label>
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td style="width: 200px;" align="left" valign="top"><b>Email: </b></td>
+                                                <td  align="left" valign="top"><b>Email: </b></td>
                                                 <td style="width: auto;">
                                                     <asp:Label ID="lblEmail" runat="server" Text=""></asp:Label>
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td style="width: 200px;" align="left" valign="top"><b>Estimate Name:</b> </td>
+                                                <td  align="left" valign="top"><b>Estimate Name:</b> </td>
                                                 <td style="width: auto;">
-                                                    <asp:Label ID="lblEstimateName" Font-Bold="true" runat="server"></asp:Label>
+                                                    <asp:Label ID="lblEstimateName" runat="server"></asp:Label>
                                                 </td>
                                             </tr>
                                         </table>
@@ -205,6 +205,7 @@
                                         </tr>
                                         <tr>
                                             <td>
+                                                <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
                                                 <asp:HiddenField ID="hdnAllowance" runat="server" Value="0" />
                                                 <asp:HiddenField ID="hdnCustomerId" runat="server" Value="0" />
                                                 <asp:HiddenField ID="hdnEstimateId" runat="server" Value="0" />

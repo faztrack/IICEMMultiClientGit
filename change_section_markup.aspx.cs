@@ -25,6 +25,10 @@ public partial class change_section_markup : System.Web.UI.Page
             {
                 Response.Redirect(ConfigurationManager.AppSettings["LoginPage"].ToString());
             }
+            else
+            {
+                hdnClientId.Value = ((userinfo)Session["oUser"]).client_id.ToString();
+            }
             if (Page.User.IsInRole("admin021") == false)
             {
                 // No Permission Page.
@@ -38,7 +42,7 @@ public partial class change_section_markup : System.Web.UI.Page
     private void LoadTree()
     {
         DataClassesDataContext _db = new DataClassesDataContext();
-        string strQ = " SELECT * FROM sectioninfo WHERE  client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " AND section_id NOT IN (SELECT item_id FROM item_price WHERE client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + ")";
+        string strQ = " SELECT * FROM sectioninfo WHERE  client_id in (" + hdnClientId.Value + " ) AND section_id NOT IN (SELECT item_id FROM item_price WHERE client_id in (" + hdnClientId.Value + "))";
         IEnumerable<sectioninfo> list = _db.ExecuteQuery<sectioninfo>(strQ, string.Empty);
         // List<sectioninfo> list = _db.sectioninfos.Where(c => c.client_id == 1).ToList();
         trvSection.Nodes.Clear();
@@ -59,7 +63,7 @@ public partial class change_section_markup : System.Web.UI.Page
     private void AddChildMenu(TreeNode parentNode, sectioninfo sec)
     {
         DataClassesDataContext _db = new DataClassesDataContext();
-        string strQ = " SELECT * FROM sectioninfo WHERE  client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " AND section_id NOT IN (SELECT item_id FROM item_price WHERE client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + ")";
+        string strQ = " SELECT * FROM sectioninfo WHERE  client_id in (" + hdnClientId.Value + " ) AND section_id NOT IN (SELECT item_id FROM item_price WHERE client_id in (" + hdnClientId.Value + " ))";
         IEnumerable<sectioninfo> list = _db.ExecuteQuery<sectioninfo>(strQ, string.Empty);
         //List<sectioninfo> list = _db.sectioninfos.Where(c => c.client_id == 1).ToList();
         foreach (sectioninfo subsec in list)
@@ -97,10 +101,10 @@ public partial class change_section_markup : System.Web.UI.Page
             //txtSectionName.Text = "";
             DataClassesDataContext _db = new DataClassesDataContext();
             sectioninfo sinfo = new sectioninfo();
-            sinfo = _db.sectioninfos.Single(c => c.section_id == Convert.ToInt32(hdnParentId.Value) && c.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+            sinfo = _db.sectioninfos.Single(c => c.section_id == Convert.ToInt32(hdnParentId.Value) && c.client_id.ToString().Contains(hdnClientId.Value));
             hdnSectionLevel.Value = sinfo.section_level.ToString();
             var result = (from sin in _db.sectioninfos
-                          where sin.section_level == Convert.ToInt32(hdnSectionLevel.Value) && sin.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && sin.section_id < Convert.ToInt32(hdnSectionLevel.Value) + 100
+                          where sin.section_level == Convert.ToInt32(hdnSectionLevel.Value) && sin.client_id.ToString().Contains(hdnClientId.Value) && sin.section_id < Convert.ToInt32(hdnSectionLevel.Value) + 100
                           select sin.section_id);
             int nsectionId = 0;
             int n = result.Count();
@@ -185,7 +189,7 @@ public partial class change_section_markup : System.Web.UI.Page
             hdnSectionLevel.Value = sinfo.section_level.ToString();
 
             var result = (from sin in _db.sectioninfos
-                          where sin.section_level == Convert.ToInt32(hdnSectionLevel.Value) && sin.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && sin.section_id > Convert.ToInt32(hdnSectionLevel.Value) + 100
+                          where sin.section_level == Convert.ToInt32(hdnSectionLevel.Value) && sin.client_id.ToString().Contains(hdnClientId.Value) && sin.section_id > Convert.ToInt32(hdnSectionLevel.Value) + 100
                           select sin.section_id);
             int nsectionId = 0;
             int n = result.Count();
@@ -224,7 +228,7 @@ public partial class change_section_markup : System.Web.UI.Page
             }
             DataClassesDataContext _db = new DataClassesDataContext();
             var result = (from sin in _db.sectioninfos
-                          where sin.parent_id == Convert.ToInt32(hdnParentId.Value) && sin.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                          where sin.parent_id == Convert.ToInt32(hdnParentId.Value) && sin.client_id.ToString().Contains(hdnClientId.Value)
                           select sin.section_id);
             int nsectionId = 0;
             int n = result.Count();

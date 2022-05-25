@@ -67,8 +67,11 @@ public partial class sendemailoutlook : System.Web.UI.Page
             if (Convert.ToInt32(hdnCustomerId.Value) > 0)
             {
 
-                cust = _db.customers.Single(c => c.customer_id == Convert.ToInt32(hdnCustomerId.Value));
+                cust = _db.customers.SingleOrDefault(c => c.customer_id == Convert.ToInt32(hdnCustomerId.Value));
                 txtTo.Text = cust.email;
+
+                hdnClientId.Value = cust.client_id.ToString();
+
                 if (cust.email2 != null)
                 {
                     if (cust.email2.ToString().Length > 4)
@@ -237,7 +240,7 @@ public partial class sendemailoutlook : System.Web.UI.Page
                         hdnEstimateId.Value = ncid.ToString();
                     }
                     changeorder_estimate cho = new changeorder_estimate();
-                    cho = _db.changeorder_estimates.Single(ce => ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && ce.chage_order_id == Convert.ToInt32(hdnChEstId.Value));
+                    cho = _db.changeorder_estimates.Single(ce => ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value) && ce.chage_order_id == Convert.ToInt32(hdnChEstId.Value));
 
                     string strLibk = " </br> </br> </br></br></br></br></br></br> ";
 
@@ -432,12 +435,12 @@ public partial class sendemailoutlook : System.Web.UI.Page
         var price_detail = from p in _db.co_pricing_masters
                            join lc in _db.locations on p.location_id equals lc.location_id
                            where (from clc in _db.changeorder_locations
-                                  where clc.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && clc.customer_id == Convert.ToInt32(hdnCustomerId.Value) && clc.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                  where clc.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && clc.customer_id == Convert.ToInt32(hdnCustomerId.Value) && clc.client_id == Convert.ToInt32(hdnClientId.Value)
                                   select clc.location_id).Contains(p.location_id) &&
                                   (from cs in _db.changeorder_sections
-                                   where cs.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cs.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                   where cs.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cs.client_id == Convert.ToInt32(hdnClientId.Value)
                                    select cs.section_id).Contains(p.section_level)
-                                  && p.item_status_id != 3 && p.section_level == nsid && p.is_direct == ndirectId && p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                  && p.item_status_id != 3 && p.section_level == nsid && p.is_direct == ndirectId && p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && p.client_id == Convert.ToInt32(hdnClientId.Value)
                            orderby p.week_id, p.section_level, p.execution_unit, lc.location_name ascending
 
                            select new CO_PricingDeatilModel()
@@ -470,12 +473,12 @@ public partial class sendemailoutlook : System.Web.UI.Page
             price_detail = from p in _db.co_pricing_masters
                            join lc in _db.locations on p.location_id equals lc.location_id
                            where (from clc in _db.changeorder_locations
-                                  where clc.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && clc.customer_id == Convert.ToInt32(hdnCustomerId.Value) && clc.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                  where clc.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && clc.customer_id == Convert.ToInt32(hdnCustomerId.Value) && clc.client_id == Convert.ToInt32(hdnClientId.Value)
                                   select clc.location_id).Contains(p.location_id) &&
                                   (from cs in _db.changeorder_sections
-                                   where cs.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cs.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                   where cs.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cs.client_id == Convert.ToInt32(hdnClientId.Value)
                                    select cs.section_id).Contains(p.section_level)
-                                  && p.item_status_id != 3 && p.week_id == nsid && p.is_direct == ndirectId && p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                  && p.item_status_id != 3 && p.week_id == nsid && p.is_direct == ndirectId && p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && p.client_id == Convert.ToInt32(hdnClientId.Value)
                            orderby p.week_id, p.section_level, p.execution_unit, lc.location_name ascending
 
                            select new CO_PricingDeatilModel()
@@ -532,7 +535,7 @@ public partial class sendemailoutlook : System.Web.UI.Page
         if (Convert.ToInt32(hdnEstimateId.Value) > 0)
         {
             customer_estimate cus_est = new customer_estimate();
-            cus_est = _db.customer_estimates.Single(ce => ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value));
+            cus_est = _db.customer_estimates.SingleOrDefault(ce => ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value) && ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value));
             //strPO = cus_est.job_number;
             if (cus_est.alter_job_number == "" || cus_est.alter_job_number == null)
                 strPO = cus_est.job_number;
@@ -839,7 +842,7 @@ public partial class sendemailoutlook : System.Web.UI.Page
             {
                 int nMsId = 0;
                 var result = (from cm in _db.customer_messages
-                              where cm.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cm.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                              where cm.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cm.client_id == Convert.ToInt32(hdnClientId.Value)
                               select cm.message_id);
 
                 int n = result.Count();
@@ -851,7 +854,7 @@ public partial class sendemailoutlook : System.Web.UI.Page
                 string strUser = obj.first_name + " " + obj.last_name;
                 string strCC = string.Empty;
                 customer_message cus_ms = new customer_message();
-                cus_ms.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                cus_ms.client_id = Convert.ToInt32(hdnClientId.Value);
                 cus_ms.customer_id = Convert.ToInt32(hdnCustomerId.Value);
                 cus_ms.message_id = Convert.ToInt32(hdnMessageId.Value);
                 cus_ms.sent_by = strUser;
@@ -929,9 +932,9 @@ public partial class sendemailoutlook : System.Web.UI.Page
                     if (Convert.ToInt32(hdnCustomerId.Value) > 0 && Convert.ToInt32(hdnMessageId.Value) > 0)
                     {
                         message_upolad_info mui = new message_upolad_info();
-                        if (_db.message_upolad_infos.Where(l => l.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && l.customer_id == Convert.ToInt32(hdnCustomerId.Value) && l.message_id == Convert.ToInt32(hdnMessageId.Value) && l.mess_file_name == FileName.ToString()).SingleOrDefault() == null)
+                        if (_db.message_upolad_infos.Where(l => l.client_id == Convert.ToInt32(hdnClientId.Value) && l.customer_id == Convert.ToInt32(hdnCustomerId.Value) && l.message_id == Convert.ToInt32(hdnMessageId.Value) && l.mess_file_name == FileName.ToString()).SingleOrDefault() == null)
                         {
-                            mui.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                            mui.client_id = Convert.ToInt32(hdnClientId.Value);
                             mui.customer_id = Convert.ToInt32(hdnCustomerId.Value);
                             mui.message_id = Convert.ToInt32(hdnMessageId.Value); ;
                             mui.mess_file_name = FileName.ToString();

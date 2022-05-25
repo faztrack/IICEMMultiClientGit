@@ -104,6 +104,13 @@
                                 <td align="right" valign="middle">
                                     <table>
                                         <tr>
+                                            <td>
+                                                <b>Division:</b>                                    
+                                            </td>
+                                            <td>
+                                                <asp:DropDownList ID="ddlDivision" runat="server" OnSelectedIndexChanged="ddlDivision_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+                                            </td>
+
                                             <td><b>Sales Person:</b></td>
                                             <td>
                                                 <asp:DropDownList ID="ddlSalesRep" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlSalesRep_SelectedIndexChanged"></asp:DropDownList></td>
@@ -229,6 +236,8 @@
                                         <br />
                                         <asp:Label ID="lblSaleDate" runat="server"></asp:Label>
                                         <br />
+                                        <asp:Label ID="lblDivision" runat="server"></asp:Label>
+                                        <br />
                                     </ItemTemplate>
                                     <HeaderStyle HorizontalAlign="Center" />
                                     <ItemStyle HorizontalAlign="Center" CssClass="salesCL" />
@@ -249,7 +258,7 @@
                                                                 <asp:HyperLink ID="hyp_CallLog" runat="server"><img src="images/system_icons/09_icon.png" alt="Activity Log" title="Activity Log" /></asp:HyperLink></li>
                                                             <li style="float: left;">
                                                                 <asp:HyperLink ID="hyp_SMS" runat="server"><img src="images/system_icons/17_icon.png" height="37" style="cursor:pointer;" alt="SMS" title="SMS" /></asp:HyperLink></li>
-                                                    </ul>
+                                                        </ul>
                                                         <ul style="float: left;">
                                                             <li style="float: left;">
                                                                 <asp:HyperLink ID="hyp_Schedule" runat="server"><img src="images/system_icons/05_icon.png" alt="Schedule" title="Schedule" /></asp:HyperLink></li>
@@ -345,6 +354,7 @@
                 </tr>
                 <tr>
                     <td>
+                        <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
                         <asp:HiddenField ID="hdnCustomerId" runat="server" Value="0" />
                         <asp:HiddenField ID="hdnEmailType" runat="server" Value="2" />
                     </td>

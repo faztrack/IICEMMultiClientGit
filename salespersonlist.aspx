@@ -165,6 +165,11 @@
                                     <asp:Label ID="lblLoadTime" runat="server" Text="" ForeColor="White"></asp:Label>
                                 </td>
                             </tr>
+                            <tr>
+                                <td align="center">
+                                    <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
+                                </td>
+                            </tr>
                         </table>
                     </td>
                 </tr>

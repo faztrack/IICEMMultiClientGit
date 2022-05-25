@@ -68,19 +68,19 @@
                                                 <td style="width: 390px;" align="left" valign="top">
                                                     <table style="width: 390px;">
                                                         <tr>
-                                                            <td style="width: 112px;" align="left" valign="top"><b>Customer Name: </b></td>
+                                                            <td style="width: 113px;" align="left" valign="top"><b>Customer Name: </b></td>
                                                             <td style="width: auto;">
                                                                 <asp:Label ID="lblCustomerName" runat="server"></asp:Label>
                                                             </td>
                                                         </tr>
                                                         <tr>
-                                                            <td style="width: 112px;" align="left" valign="top"><b>Phone: </b></td>
+                                                            <td align="left" valign="top"><b>Phone: </b></td>
                                                             <td style="width: auto;">
                                                                 <asp:Label ID="lblPhone" runat="server" Text=""></asp:Label>
                                                             </td>
                                                         </tr>
                                                         <tr>
-                                                            <td style="width: 112px;" align="left" valign="top"><b>Email: </b></td>
+                                                            <td align="left" valign="top"><b>Email: </b></td>
                                                             <td style="width: auto;">
                                                                 <asp:Label ID="lblEmail" runat="server" Text=""></asp:Label>
                                                             </td>
@@ -736,6 +736,7 @@
                                                 <td align="right">&nbsp;
                                                 </td>
                                                 <td align="left">
+                                                    <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
                                                     <asp:HiddenField ID="hdnCustomerId" runat="server" Value="0" />
                                                 </td>
                                             </tr>

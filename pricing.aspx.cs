@@ -150,6 +150,7 @@ public partial class pricing : System.Web.UI.Page
                 lblEmail.Text = cust.email;
                 lblPhone.Text = cust.phone;
                 hdnSalesPersonId.Value = cust.sales_person_id.ToString();
+                hdnClientId.Value = cust.client_id.ToString();
 
                 if (_db.sales_persons.Any(c => c.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && c.sales_person_id > 0))
                 {
@@ -184,7 +185,7 @@ public partial class pricing : System.Web.UI.Page
                 if (Convert.ToInt32(hdnEstimateId.Value) > 0)
                 {
                     customer_estimate cus_est = new customer_estimate();
-                    cus_est = _db.customer_estimates.Single(ce => ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value));
+                    cus_est = _db.customer_estimates.Single(ce => ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value) && ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value));
                     lblEstimateName.Text = cus_est.estimate_name;
                     lblExistingEstimateName.Text = cus_est.estimate_name;
                     // ddlStatus.SelectedValue = cus_est.status_id.ToString();
@@ -211,7 +212,7 @@ public partial class pricing : System.Web.UI.Page
 
                     estimate_payment est_pay = new estimate_payment();
 
-                    est_pay = _db.estimate_payments.Where(ep => ep.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ep.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ep.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).FirstOrDefault();
+                    est_pay = _db.estimate_payments.Where(ep => ep.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ep.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ep.client_id == Convert.ToInt32(hdnClientId.Value)).FirstOrDefault();
                     if (est_pay != null)
                     {
                         if (est_pay.tax_rate != null)
@@ -268,7 +269,7 @@ public partial class pricing : System.Web.UI.Page
 
                 var item = from loc in _db.locations
                            join cl in _db.customer_locations on loc.location_id equals cl.location_id
-                           where cl.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cl.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cl.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                           where cl.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cl.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cl.client_id == Convert.ToInt32(hdnClientId.Value)
                            orderby loc.location_name
                            select new LocationModel()
                            {
@@ -301,7 +302,7 @@ public partial class pricing : System.Web.UI.Page
 
                 var section = from sec in _db.sectioninfos
                               join cs in _db.customer_sections on sec.section_id equals cs.section_id
-                              where cs.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cs.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                              where cs.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cs.client_id == Convert.ToInt32(hdnClientId.Value)
                               orderby sec.section_name
                               select new SectionInfo()
                               {
@@ -310,7 +311,9 @@ public partial class pricing : System.Web.UI.Page
                               };
 
                 DataTable dtSectionId = csCommonUtility.LINQToDataTable(section);
-                ddlSections.DataSource = section; //_db.customer_sections.Where(cs => cs.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cs.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).ToList();
+                ddlSections.DataSource = section;
+                //_db.customer_sections.Where(cs => cs.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cs.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.client_id == Convert.ToInt32(hdnClientId.Value)).ToList();
+
                 ddlSections.DataTextField = "section_name";
                 ddlSections.DataValueField = "section_id";
                 ddlSections.DataBind();
@@ -400,7 +403,7 @@ public partial class pricing : System.Web.UI.Page
                 }
             }
 
-
+            
             csCommonUtility.SetPagePermission(this.Page, new string[] { "lnkUpdateEstimate", "btnTemplateEstimate", "ddlSuperintendent", "ddlCustomerLocations", "ddlSuperintendent", "lnkAddMoreLocation", "rdbEstimateIsActive", "rdbEstimateIsActive", "chkCashPay", "chkCustDisp", "chkPMDisplay", "ddlSections", "btnPricingPrint", "btnPricingPrintWOPrice", "lnkAddMoreSections", "btnRefreshLatestPricing",  "btnSave",  "btnDuplicate", "pnlRefreshPricing", "hypGoogleMap", "lnkUpdateLocation", "pnlChangeLocation", "pnlUpdateEstimate", "rdbDiscount" });
             csCommonUtility.SetPagePermissionForGrid(this.Page, new string[] { "Copy Selected Item(s)", "Edit Selected Item(s)", "Delete Selected Item(s)", "Add Notes", "Move to Top", "grdSelectedItem1_0_chkSingle", "grdSelectedItem1_0_chkAll" });
         }
@@ -430,7 +433,7 @@ public partial class pricing : System.Web.UI.Page
     private void LoadTree(int nSectionLevel)
     {
         DataClassesDataContext _db = new DataClassesDataContext();
-        string strQ = " SELECT * FROM sectioninfo WHERE is_disable = 0 and is_active=1 AND section_level=" + nSectionLevel + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + "ORDER BY section_name";
+        string strQ = " SELECT * FROM sectioninfo WHERE is_disable = 0 and is_active=1 AND section_level=" + nSectionLevel + " AND client_id=" + Convert.ToInt32(hdnClientId.Value) + " ORDER BY section_name";
         IEnumerable<sectioninfo> list = _db.ExecuteQuery<sectioninfo>(strQ, string.Empty);
         trvSection.Nodes.Clear();
         foreach (sectioninfo sec in list)
@@ -447,7 +450,7 @@ public partial class pricing : System.Web.UI.Page
     private void AddChildMenu(TreeNode parentNode, sectioninfo sec)
     {
         DataClassesDataContext _db = new DataClassesDataContext();
-        string strQ = " SELECT * FROM sectioninfo WHERE is_disable = 0 and is_active=1 AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " AND section_id NOT IN (SELECT item_id FROM item_price WHERE client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + ")  ORDER BY section_name";
+        string strQ = " SELECT * FROM sectioninfo WHERE is_disable = 0 and is_active=1 AND client_id=" + Convert.ToInt32(hdnClientId.Value) + " AND section_id NOT IN (SELECT item_id FROM item_price WHERE client_id=" + Convert.ToInt32(hdnClientId.Value) + ")  ORDER BY section_name";
         IEnumerable<sectioninfo> list = _db.ExecuteQuery<sectioninfo>(strQ, string.Empty);
         //List<sectioninfo> list = _db.sectioninfos.Where(c => c.client_id == 1).ToList();
         foreach (sectioninfo subsec in list)
@@ -464,7 +467,7 @@ public partial class pricing : System.Web.UI.Page
     //{
     //    DataClassesDataContext _db = new DataClassesDataContext();
     //    sectioninfo sinfo = new sectioninfo();
-    //    sinfo = _db.sectioninfos.Single(c => c.section_id == Convert.ToInt32(hdnSectionId.Value) && c.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+    //    sinfo = _db.sectioninfos.Single(c => c.section_id == Convert.ToInt32(hdnSectionId.Value) && c.client_id == Convert.ToInt32(hdnClientId.Value));
     //    hdnSectionLevel.Value = Convert.ToInt32(sinfo.section_level).ToString();
     //    hdnParentId.Value = Convert.ToInt32(sinfo.parent_id).ToString();
     //    hdnSectionSerial.Value = Convert.ToDecimal(sinfo.section_serial).ToString();
@@ -506,7 +509,7 @@ public partial class pricing : System.Web.UI.Page
                     strCondition = "  AND si.section_name LIKE '%" + txtSearchItemName.Text.Trim() + "%'";
                 }
                 sectioninfo sinfo = new sectioninfo();
-                sinfo = _db.sectioninfos.Single(c => c.section_id == Convert.ToInt32(hdnSectionId.Value) && c.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+                sinfo = _db.sectioninfos.Single(c => c.section_id == Convert.ToInt32(hdnSectionId.Value) && c.client_id == Convert.ToInt32(hdnClientId.Value));
                 hdnSectionLevel.Value = Convert.ToInt32(sinfo.section_level).ToString();
                 hdnParentId.Value = Convert.ToInt32(sinfo.parent_id).ToString();
                 hdnSectionSerial.Value = Convert.ToDecimal(sinfo.section_serial).ToString();
@@ -572,12 +575,13 @@ public partial class pricing : System.Web.UI.Page
     //{
     //    DataClassesDataContext _db = new DataClassesDataContext();
     //int[] ids = (int[])HttpContext.Current.Session["myIds"];
-    //List<sectioninfo> list = _db.sectioninfos.Where(c => c.section_name.Contains(strName) && ids.Contains((int)c.section_level) && c.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).ToList();
+    //List<sectioninfo> list = _db.sectioninfos.Where(c => c.section_name.Contains(strName) && ids.Contains((int)c.section_level) && c.client_id == Convert.ToInt32(hdnClientId.Value)).ToList();
 
     //}
 
     public static DataTable LoadFullSection()
     {
+        
         DataTable dt = new DataTable();
         try
         {
@@ -609,7 +613,7 @@ public partial class pricing : System.Web.UI.Page
             HttpContext.Current.Session["gspSearch"] = dt;
             //var itemlist = (from c in _db.sectioninfos
             //                 join i in _db.item_prices on c.section_id equals i.item_id
-            //                where ids.Contains((int)c.section_level) && c.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+            //                where ids.Contains((int)c.section_level) && c.client_id == Convert.ToInt32(hdnClientId.Value)
             //                select new SectionInfo()
             //                {
             //                    section_id = c.section_id,
@@ -656,7 +660,7 @@ public partial class pricing : System.Web.UI.Page
     public string GetItemDetialsForUpdateItem(int SectionId)
     {
         DataClassesDataContext _db = new DataClassesDataContext();
-        List<sectioninfo> list = _db.sectioninfos.Where(c => c.section_id == SectionId && c.parent_id > 0 && c.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).ToList();
+        List<sectioninfo> list = _db.sectioninfos.Where(c => c.section_id == SectionId && c.parent_id > 0 && c.client_id == Convert.ToInt32(hdnClientId.Value)).ToList();
         foreach (sectioninfo sec1 in list)
         {
             strDetails = sec1.section_name + " >> " + strDetails;
@@ -667,7 +671,7 @@ public partial class pricing : System.Web.UI.Page
     public string GetItemDetials_forBreadCome(int SectionId)
     {
         DataClassesDataContext _db = new DataClassesDataContext();
-        List<sectioninfo> list = _db.sectioninfos.Where(c => c.section_id == SectionId && c.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).ToList();
+        List<sectioninfo> list = _db.sectioninfos.Where(c => c.section_id == SectionId && c.client_id == Convert.ToInt32(hdnClientId.Value)).ToList();
         foreach (sectioninfo sec1 in list)
         {
             strDetails = sec1.section_name + " >> " + strDetails;
@@ -680,7 +684,7 @@ public partial class pricing : System.Web.UI.Page
         string str = "";
         DataClassesDataContext _db = new DataClassesDataContext();
         sectioninfo si = new sectioninfo();
-        si = _db.sectioninfos.SingleOrDefault(c => c.section_level == section_level && c.parent_id == 0 && c.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+        si = _db.sectioninfos.SingleOrDefault(c => c.section_level == section_level && c.parent_id == 0 && c.client_id == Convert.ToInt32(hdnClientId.Value));
         if (si != null)
             str = si.section_name;
         return str;
@@ -690,7 +694,7 @@ public partial class pricing : System.Web.UI.Page
         int nSerial = 0;
         DataClassesDataContext _db = new DataClassesDataContext();
         var result = (from pd in _db.pricing_details
-                      where pd.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.customer_id == Convert.ToInt32(hdnCustomerId.Value) && pd.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && pd.pricing_type == "A" && pd.section_level == Convert.ToInt32(hdnSectionLevel.Value)
+                      where pd.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.customer_id == Convert.ToInt32(hdnCustomerId.Value) && pd.client_id == Convert.ToInt32(hdnClientId.Value) && pd.pricing_type == "A" && pd.section_level == Convert.ToInt32(hdnSectionLevel.Value)
                       select pd.item_cnt);
         int n = result.Count();
         if (result != null && n > 0)
@@ -703,7 +707,7 @@ public partial class pricing : System.Web.UI.Page
         int nSerial = 0;
         DataClassesDataContext _db = new DataClassesDataContext();
         var result = (from pd in _db.pricing_details
-                      where pd.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.customer_id == Convert.ToInt32(hdnCustomerId.Value) && pd.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && pd.pricing_type == "A" && pd.section_level == sectionLvel
+                      where pd.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.customer_id == Convert.ToInt32(hdnCustomerId.Value) && pd.client_id == Convert.ToInt32(hdnClientId.Value) && pd.pricing_type == "A" && pd.section_level == sectionLvel
                       select pd.item_cnt);
         int n = result.Count();
         if (result != null && n > 0)
@@ -716,7 +720,7 @@ public partial class pricing : System.Web.UI.Page
         int nSerial = 0;
         DataClassesDataContext _db = new DataClassesDataContext();
         var result = (from pd in _db.pricing_details
-                      where pd.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.item_id == nOtherId && pd.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.customer_id == Convert.ToInt32(hdnCustomerId.Value) && pd.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && pd.section_level == Convert.ToInt32(hdnSectionLevel.Value)
+                      where pd.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.item_id == nOtherId && pd.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.customer_id == Convert.ToInt32(hdnCustomerId.Value) && pd.client_id == Convert.ToInt32(hdnClientId.Value) && pd.section_level == Convert.ToInt32(hdnSectionLevel.Value)
                       select pd.other_item_cnt);
         int n = result.Count();
         if (result != null && n > 0)
@@ -730,11 +734,11 @@ public partial class pricing : System.Web.UI.Page
         DataClassesDataContext _db = new DataClassesDataContext();
         var result = (from pd in _db.pricing_details
                       where (from clc in _db.customer_locations
-                             where clc.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && clc.customer_id == Convert.ToInt32(hdnCustomerId.Value) && clc.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                             where clc.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && clc.customer_id == Convert.ToInt32(hdnCustomerId.Value) && clc.client_id == Convert.ToInt32(hdnClientId.Value)
                              select clc.location_id).Contains(pd.location_id) &&
                              (from cs in _db.customer_sections
-                              where cs.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cs.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
-                              select cs.section_id).Contains(pd.section_level) && pd.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.customer_id == Convert.ToInt32(hdnCustomerId.Value) && pd.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && pd.pricing_type == "A"
+                              where cs.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cs.client_id == Convert.ToInt32(hdnClientId.Value)
+                              select cs.section_id).Contains(pd.section_level) && pd.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.customer_id == Convert.ToInt32(hdnCustomerId.Value) && pd.client_id == Convert.ToInt32(hdnClientId.Value) && pd.pricing_type == "A"
                       select pd.total_retail_price);
         int n = result.Count();
         if (result != null && n > 0)
@@ -748,11 +752,11 @@ public partial class pricing : System.Web.UI.Page
         DataClassesDataContext _db = new DataClassesDataContext();
         var result = (from pd in _db.pricing_details
                       where (from clc in _db.customer_locations
-                             where clc.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && clc.customer_id == Convert.ToInt32(hdnCustomerId.Value) && clc.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                             where clc.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && clc.customer_id == Convert.ToInt32(hdnCustomerId.Value) && clc.client_id == Convert.ToInt32(hdnClientId.Value)
                              select clc.location_id).Contains(pd.location_id) &&
                              (from cs in _db.customer_sections
-                              where cs.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cs.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
-                              select cs.section_id).Contains(pd.section_level) && pd.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.customer_id == Convert.ToInt32(hdnCustomerId.Value) && pd.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && pd.pricing_type == "A"
+                              where cs.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cs.client_id == Convert.ToInt32(hdnClientId.Value)
+                              select cs.section_id).Contains(pd.section_level) && pd.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.customer_id == Convert.ToInt32(hdnCustomerId.Value) && pd.client_id == Convert.ToInt32(hdnClientId.Value) && pd.pricing_type == "A"
                       select pd.total_direct_price);
         int n = result.Count();
         if (result != null && n > 0)
@@ -766,15 +770,15 @@ public partial class pricing : System.Web.UI.Page
         string strQ = "";
         if (rdoSort.SelectedValue == "2")
         {
-            strQ = " select DISTINCT section_level AS colId,'SECTION: '+ section_name as colName from pricing_details where pricing_details.location_id IN (Select location_id from customer_locations WHERE customer_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_locations.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                   " AND pricing_details.section_level IN (Select section_id from customer_sections WHERE customer_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_sections.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                   " AND pricing_details.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND pricing_details.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND is_direct=1 AND pricing_details.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + "  order by section_level asc";
+            strQ = " select DISTINCT section_level AS colId,'SECTION: '+ section_name as colName from pricing_details where pricing_details.location_id IN (Select location_id from customer_locations WHERE customer_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_locations.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+                   " AND pricing_details.section_level IN (Select section_id from customer_sections WHERE customer_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+                   " AND pricing_details.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND pricing_details.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND is_direct=1 AND pricing_details.client_id =" + Convert.ToInt32(hdnClientId.Value) + "  order by section_level asc";
         }
         else
         {
-            strQ = "select DISTINCT pricing_details.location_id AS colId,'LOCATION: '+ location.location_name as colName,Max(ISNULL(sort_id,0)) AS sort_id  from pricing_details  INNER JOIN location on location.location_id = pricing_details.location_id where pricing_details.location_id IN (Select location_id from customer_locations WHERE customer_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_locations.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                " AND pricing_details.section_level IN (Select section_id from customer_sections WHERE customer_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_sections.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                " AND pricing_details.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND pricing_details.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND is_direct=1 AND pricing_details.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " GROUP BY pricing_details.location_id,location.location_name order by sort_id asc";
+            strQ = "select DISTINCT pricing_details.location_id AS colId,'LOCATION: '+ location.location_name as colName,Max(ISNULL(sort_id,0)) AS sort_id  from pricing_details  INNER JOIN location on location.location_id = pricing_details.location_id where pricing_details.location_id IN (Select location_id from customer_locations WHERE customer_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_locations.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+                " AND pricing_details.section_level IN (Select section_id from customer_sections WHERE customer_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+                " AND pricing_details.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND pricing_details.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND is_direct=1 AND pricing_details.client_id =" + Convert.ToInt32(hdnClientId.Value) + " GROUP BY pricing_details.location_id,location.location_name order by sort_id asc";
         }
         List<PricingMaster> mList = _db.ExecuteQuery<PricingMaster>(strQ, string.Empty).ToList();
         grdGrouping.DataSource = mList;
@@ -788,15 +792,15 @@ public partial class pricing : System.Web.UI.Page
         string strQ = "";
         if (rdoSort.SelectedValue == "2")
         {
-            strQ = "select DISTINCT section_level AS colId,'SECTION: '+ section_name as colName from pricing_details where pricing_details.location_id IN (Select location_id from customer_locations WHERE customer_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_locations.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                   " AND pricing_details.section_level IN (Select section_id from customer_sections WHERE customer_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_sections.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                   " AND pricing_details.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND pricing_details.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND is_direct=2 AND pricing_details.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + "  order by section_level asc";
+            strQ = "select DISTINCT section_level AS colId,'SECTION: '+ section_name as colName from pricing_details where pricing_details.location_id IN (Select location_id from customer_locations WHERE customer_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_locations.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+                   " AND pricing_details.section_level IN (Select section_id from customer_sections WHERE customer_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+                   " AND pricing_details.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND pricing_details.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND is_direct=2 AND pricing_details.client_id =" + Convert.ToInt32(hdnClientId.Value) + "  order by section_level asc";
         }
         else
         {
-            strQ = "select DISTINCT pricing_details.location_id AS colId,'LOCATION: '+ location.location_name as colName,Max(ISNULL(sort_id,0)) AS sort_id from pricing_details  INNER JOIN location on location.location_id = pricing_details.location_id where pricing_details.location_id IN (Select location_id from customer_locations WHERE customer_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_locations.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                   " AND pricing_details.section_level IN (Select section_id from customer_sections WHERE customer_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_sections.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                   " AND pricing_details.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND pricing_details.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND is_direct=2 AND pricing_details.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " GROUP BY pricing_details.location_id,location.location_name order by sort_id asc";
+            strQ = "select DISTINCT pricing_details.location_id AS colId,'LOCATION: '+ location.location_name as colName,Max(ISNULL(sort_id,0)) AS sort_id from pricing_details  INNER JOIN location on location.location_id = pricing_details.location_id where pricing_details.location_id IN (Select location_id from customer_locations WHERE customer_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_locations.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+                   " AND pricing_details.section_level IN (Select section_id from customer_sections WHERE customer_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+                   " AND pricing_details.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND pricing_details.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND is_direct=2 AND pricing_details.client_id =" + Convert.ToInt32(hdnClientId.Value) + " GROUP BY pricing_details.location_id,location.location_name order by sort_id asc";
         }
         List<PricingMaster> mList = _db.ExecuteQuery<PricingMaster>(strQ, string.Empty).ToList();
         grdGroupingDirect.DataSource = mList;
@@ -1019,7 +1023,7 @@ public partial class pricing : System.Web.UI.Page
                 }
             }
 
-            sectioninfo sinfo = _db.sectioninfos.Single(s => s.section_id == Convert.ToInt32(hdnSectionId.Value) && s.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+            sectioninfo sinfo = _db.sectioninfos.Single(s => s.section_id == Convert.ToInt32(hdnSectionId.Value) && s.client_id == Convert.ToInt32(hdnClientId.Value));
             hdnParentId.Value = Convert.ToInt32(sinfo.parent_id).ToString();
             hdnSectionLevel.Value = Convert.ToInt32(sinfo.section_level).ToString();
             hdnSectionSerial.Value = Convert.ToDecimal(sinfo.section_serial).ToString();
@@ -1033,7 +1037,7 @@ public partial class pricing : System.Web.UI.Page
             price_detail.labor_rate = dlabor_rate;
             price_detail.item_cost = ditem_cost;
 
-            price_detail.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+            price_detail.client_id = Convert.ToInt32(hdnClientId.Value);
             price_detail.customer_id = Convert.ToInt32(hdnCustomerId.Value);
             price_detail.estimate_id = Convert.ToInt32(hdnEstimateId.Value);
             //co_price_detail.change_order_id = Convert.ToInt32(hdnChEstId.Value);
@@ -1295,7 +1299,7 @@ public partial class pricing : System.Web.UI.Page
         int ncid = Convert.ToInt32(hdnCustomerId.Value);
         int nestId = Convert.ToInt32(hdnEstimateId.Value);
         if (Convert.ToInt32(hdnCustomerId.Value) > 0 && Convert.ToInt32(hdnEstimateId.Value) > 0)
-            cus_est = _db.customer_estimates.Single(ce => ce.customer_id == ncid && ce.estimate_id == nestId && ce.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+            cus_est = _db.customer_estimates.SingleOrDefault(ce => ce.customer_id == ncid && ce.estimate_id == nestId && ce.client_id == Convert.ToInt32(hdnClientId.Value));
 
         cus_est.estimate_name = strNewName;
 
@@ -1447,7 +1451,7 @@ public partial class pricing : System.Web.UI.Page
             int ncid = Convert.ToInt32(hdnCustomerId.Value);
             int nestId = Convert.ToInt32(hdnEstimateId.Value);
             if (Convert.ToInt32(hdnCustomerId.Value) > 0 && Convert.ToInt32(hdnEstimateId.Value) > 0)
-                cus_est = _db.customer_estimates.Single(ce => ce.customer_id == ncid && ce.estimate_id == nestId && ce.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+                cus_est = _db.customer_estimates.Single(ce => ce.customer_id == ncid && ce.estimate_id == nestId && ce.client_id == Convert.ToInt32(hdnClientId.Value));
 
             cus_est.estimate_name = strNewName;
 
@@ -1494,15 +1498,15 @@ public partial class pricing : System.Web.UI.Page
                  ", IsEstimateActive =" + rdbEstimateIsActive.SelectedValue + ",  IsCustDisplay = " + strDisplay +
                 " WHERE estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) +
                 " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) +
-                " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                " AND client_id=" + Convert.ToInt32(hdnClientId.Value);
             _db.ExecuteCommand(strQ, string.Empty);
 
-            string strCustQ = "UPDATE customers SET  SuperintendentId =" + nSuperintendentId + "  WHERE  customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+            string strCustQ = "UPDATE customers SET  SuperintendentId =" + nSuperintendentId + "  WHERE  customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND client_id=" + Convert.ToInt32(hdnClientId.Value);
             _db.ExecuteCommand(strCustQ, string.Empty);
             estimate_payment est_pay = new estimate_payment();
-            if (_db.estimate_payments.Where(ep => ep.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ep.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ep.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).SingleOrDefault() != null)
+            if (_db.estimate_payments.Where(ep => ep.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ep.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ep.client_id == Convert.ToInt32(hdnClientId.Value)).SingleOrDefault() != null)
             {
-                string sSql = "UPDATE estimate_payments SET tax_rate=" + TaxPer + " WHERE estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                string sSql = "UPDATE estimate_payments SET tax_rate=" + TaxPer + " WHERE estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND client_id=" + Convert.ToInt32(hdnClientId.Value);
                 _db.ExecuteCommand(sSql, string.Empty);
             }
             hdnSortDesc.Value = "0";
@@ -1537,13 +1541,13 @@ public partial class pricing : System.Web.UI.Page
         if (Convert.ToInt32(hdnCustomerId.Value) > 0)
         {
 
-            List<customer_location> Cust_LocList = _db.customer_locations.Where(cl => cl.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cl.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cl.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).ToList();
-            List<customer_section> Cust_SecList = _db.customer_sections.Where(cs => cs.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cs.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).ToList();
-            List<pricing_detail> Pd_List = _db.pricing_details.Where(pd => pd.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.customer_id == Convert.ToInt32(hdnCustomerId.Value) && pd.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && pd.pricing_type == "A").ToList();
+            List<customer_location> Cust_LocList = _db.customer_locations.Where(cl => cl.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cl.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cl.client_id == Convert.ToInt32(hdnClientId.Value)).ToList();
+            List<customer_section> Cust_SecList = _db.customer_sections.Where(cs => cs.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cs.client_id == Convert.ToInt32(hdnClientId.Value)).ToList();
+            List<pricing_detail> Pd_List = _db.pricing_details.Where(pd => pd.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.customer_id == Convert.ToInt32(hdnCustomerId.Value) && pd.client_id == Convert.ToInt32(hdnClientId.Value) && pd.pricing_type == "A").ToList();
 
             int nEstId = 0;
             var result = (from ce in _db.customer_estimates
-                          where ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                          where ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value)
                           select ce.estimate_id);
 
             int n = result.Count();
@@ -1552,7 +1556,7 @@ public partial class pricing : System.Web.UI.Page
             nEstId = nEstId + 1;
             hdnEstimateId.Value = nEstId.ToString();
             customer_estimate cus_est = new customer_estimate();
-            cus_est.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+            cus_est.client_id = Convert.ToInt32(hdnClientId.Value);
             cus_est.customer_id = Convert.ToInt32(hdnCustomerId.Value);
             cus_est.estimate_id = Convert.ToInt32(hdnEstimateId.Value);
             cus_est.status_id = 1;
@@ -1854,7 +1858,7 @@ public partial class pricing : System.Web.UI.Page
 
         int nCustId = Convert.ToInt32(hdnCustomerId.Value);
         int nEstId = Convert.ToInt32(hdnEstimateId.Value);
-        int nClientId = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        int nClientId = Convert.ToInt32(hdnClientId.Value);
 
         string strQ = "SELECT p.pricing_id, p.item_id, p.labor_id, p.section_serial, lc.location_name, p.section_name, p.item_name, " +
                     " p.measure_unit, p.item_cost, p.total_retail_price, p.total_direct_price, p.minimum_qty, p.quantity, " +
@@ -1945,7 +1949,7 @@ public partial class pricing : System.Web.UI.Page
         DataTable dtItemDirect = (DataTable)Session["Item_list_Direct"];
 
         bool Iexists = dtItemDirect.AsEnumerable().Where(c => c.Field<Int32>("pricing_id").Equals(Convert.ToInt32(hdnPricingId.Value))).Count() > 0;
-        string strQ = "Delete pricing_details WHERE pricing_id =" + Convert.ToInt32(hdnPricingId.Value) + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        string strQ = "Delete pricing_details WHERE pricing_id =" + Convert.ToInt32(hdnPricingId.Value) + " AND client_id=" + Convert.ToInt32(hdnClientId.Value);
         _db.ExecuteCommand(strQ, string.Empty);
         if (Iexists)
         {
@@ -2294,7 +2298,7 @@ public partial class pricing : System.Web.UI.Page
             nQty = 1;
 
         }
-        string strQ = "UPDATE pricing_details SET quantity=" + nQty + " ,total_retail_price=" + dTotalPrice + " ,short_notes='" + txtshort_notes.Text.Replace("'", "''") + "' WHERE pricing_id =" + nPricingId + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        string strQ = "UPDATE pricing_details SET quantity=" + nQty + " ,total_retail_price=" + dTotalPrice + " ,short_notes='" + txtshort_notes.Text.Replace("'", "''") + "' WHERE pricing_id =" + nPricingId + " AND client_id=" + Convert.ToInt32(hdnClientId.Value);
         _db.ExecuteCommand(strQ, string.Empty);
         DataTable dtItem = (DataTable)Session["Item_list"];
 
@@ -2427,7 +2431,7 @@ public partial class pricing : System.Web.UI.Page
             nQty = 1;
 
         }
-        string strQ = "UPDATE pricing_details SET quantity=" + nQty + " ,total_direct_price=" + dTotalDirectPrice + " ,short_notes='" + txtshort_notes1.Text.Replace("'", "''") + "' WHERE pricing_id =" + nPricingId + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        string strQ = "UPDATE pricing_details SET quantity=" + nQty + " ,total_direct_price=" + dTotalDirectPrice + " ,short_notes='" + txtshort_notes1.Text.Replace("'", "''") + "' WHERE pricing_id =" + nPricingId + " AND client_id=" + Convert.ToInt32(hdnClientId.Value);
         _db.ExecuteCommand(strQ, string.Empty);
 
         DataTable dtItemDirect = (DataTable)Session["Item_list_Direct"];
@@ -2532,7 +2536,7 @@ public partial class pricing : System.Web.UI.Page
 
         decimal Other_TotalPrice = nOtherUnitPrice * nOtherQty;
 
-        sectioninfo sinfo = _db.sectioninfos.Single(s => s.section_id == Convert.ToInt32(hdnSectionId.Value) && s.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+        sectioninfo sinfo = _db.sectioninfos.Single(s => s.section_id == Convert.ToInt32(hdnSectionId.Value) && s.client_id == Convert.ToInt32(hdnClientId.Value));
         hdnParentId.Value = Convert.ToInt32(sinfo.parent_id).ToString();
         hdnSectionLevel.Value = Convert.ToInt32(sinfo.section_level).ToString();
         hdnSectionSerial.Value = Convert.ToDecimal(sinfo.section_serial).ToString();
@@ -2545,7 +2549,7 @@ public partial class pricing : System.Web.UI.Page
         price_detail.retail_multiplier = 0;
         price_detail.labor_rate = 0;
         price_detail.item_cost = nOtherUnitPrice; //Convert.ToDecimal(txtO_Price.Text.Replace("$", "").Replace("(", "-").Replace(")", ""));
-        price_detail.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        price_detail.client_id = Convert.ToInt32(hdnClientId.Value);
         price_detail.customer_id = Convert.ToInt32(hdnCustomerId.Value);
         price_detail.estimate_id = Convert.ToInt32(hdnEstimateId.Value);
         price_detail.location_id = Convert.ToInt32(ddlCustomerLocations.SelectedValue);
@@ -2722,13 +2726,13 @@ public partial class pricing : System.Web.UI.Page
             if (Convert.ToInt32(hdnCustomerId.Value) > 0)
             {
 
-                List<customer_location> Cust_LocList = _db.customer_locations.Where(cl => cl.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cl.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cl.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).ToList();
-                List<customer_section> Cust_SecList = _db.customer_sections.Where(cs => cs.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cs.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).ToList();
-                List<pricing_detail> Pd_List = _db.pricing_details.Where(pd => pd.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.customer_id == Convert.ToInt32(hdnCustomerId.Value) && pd.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && pd.pricing_type == "A").ToList();
-                estimate_payment objes = _db.estimate_payments.SingleOrDefault(cs => cs.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cs.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+                List<customer_location> Cust_LocList = _db.customer_locations.Where(cl => cl.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cl.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cl.client_id == Convert.ToInt32(hdnClientId.Value)).ToList();
+                List<customer_section> Cust_SecList = _db.customer_sections.Where(cs => cs.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cs.client_id == Convert.ToInt32(hdnClientId.Value)).ToList();
+                List<pricing_detail> Pd_List = _db.pricing_details.Where(pd => pd.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.customer_id == Convert.ToInt32(hdnCustomerId.Value) && pd.client_id == Convert.ToInt32(hdnClientId.Value) && pd.pricing_type == "A").ToList();
+                estimate_payment objes = _db.estimate_payments.SingleOrDefault(cs => cs.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cs.client_id == Convert.ToInt32(hdnClientId.Value));
                 int nEstId = 0;
                 var result = (from mest in _db.model_estimates
-                              where mest.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mest.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                              where mest.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mest.client_id == Convert.ToInt32(hdnClientId.Value)
                               select mest.model_estimate_id);
 
                 int n = result.Count();
@@ -2737,7 +2741,7 @@ public partial class pricing : System.Web.UI.Page
                 nEstId = nEstId + 1;
                 hdnModelEstimateId.Value = nEstId.ToString();
                 model_estimate me = new model_estimate();
-                me.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                me.client_id = Convert.ToInt32(hdnClientId.Value);
                 me.model_estimate_id = Convert.ToInt32(hdnModelEstimateId.Value);
                 me.status_id = 1;
                 me.estimate_comments = "";
@@ -3018,7 +3022,7 @@ public partial class pricing : System.Web.UI.Page
     //        }
     //    }
 
-    //    sectioninfo sinfo = _db.sectioninfos.Single(s => s.section_id == Convert.ToInt32(hdnSectionId.Value) && s.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+    //    sectioninfo sinfo = _db.sectioninfos.Single(s => s.section_id == Convert.ToInt32(hdnSectionId.Value) && s.client_id == Convert.ToInt32(hdnClientId.Value));
     //    hdnParentId.Value = Convert.ToInt32(sinfo.parent_id).ToString();
     //    hdnSectionLevel.Value = Convert.ToInt32(sinfo.section_level).ToString();
     //    hdnSectionSerial.Value = Convert.ToDecimal(sinfo.section_serial).ToString();
@@ -3032,7 +3036,7 @@ public partial class pricing : System.Web.UI.Page
     //    price_detail.labor_rate = labor_rate;
     //    price_detail.item_cost = ditem_cost;
 
-    //    price_detail.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+    //    price_detail.client_id = Convert.ToInt32(hdnClientId.Value);
     //    price_detail.customer_id = Convert.ToInt32(hdnCustomerId.Value);
     //    price_detail.estimate_id = Convert.ToInt32(hdnEstimateId.Value);
     //    //co_price_detail.change_order_id = Convert.ToInt32(hdnChEstId.Value);
@@ -3163,9 +3167,9 @@ public partial class pricing : System.Web.UI.Page
                     hdnPricingId.Value = grdSelectedItem1.DataKeys[diitem.RowIndex].Values[0].ToString();
                     int LaborId = 1;
                     decimal nCost1 = 0;
-                    if (_db.pricing_details.Where(ep => ep.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ep.pricing_id == Convert.ToInt32(hdnPricingId.Value) && ep.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ep.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).SingleOrDefault() != null)
+                    if (_db.pricing_details.Where(ep => ep.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ep.pricing_id == Convert.ToInt32(hdnPricingId.Value) && ep.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ep.client_id == Convert.ToInt32(hdnClientId.Value)).SingleOrDefault() != null)
                     {
-                        pricing_detail pd = _db.pricing_details.Single(p => p.item_id == Convert.ToInt32(diitem.Cells[1].Text) && p.pricing_id == Convert.ToInt32(hdnPricingId.Value) && p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+                        pricing_detail pd = _db.pricing_details.Single(p => p.item_id == Convert.ToInt32(diitem.Cells[1].Text) && p.pricing_id == Convert.ToInt32(hdnPricingId.Value) && p.client_id == Convert.ToInt32(hdnClientId.Value));
                         LaborId = Convert.ToInt32(pd.labor_id);
                         nCost1 = Convert.ToDecimal(pd.item_cost);
                     }
@@ -3176,7 +3180,7 @@ public partial class pricing : System.Web.UI.Page
 
                     if (LaborId == 2)
                     {
-                        item_price itm = _db.item_prices.Single(it => it.item_id == Convert.ToInt32(diitem.Cells[1].Text) && it.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+                        item_price itm = _db.item_prices.Single(it => it.item_id == Convert.ToInt32(diitem.Cells[1].Text) && it.client_id == Convert.ToInt32(hdnClientId.Value));
                         //nLaborRate = Convert.ToDecimal(itm.labor_rate);
                         nLaborRate = (decimal)itm.labor_rate * (decimal)itm.retail_multiplier;
                         nLaborRate = nLaborRate * nQty1;
@@ -3251,15 +3255,15 @@ public partial class pricing : System.Web.UI.Page
                     decimal nCost2 = 0;
                     decimal nQty2 = Convert.ToDecimal(txtquantity1.Text);
                     decimal nTotalPrice2 = 0;
-                    if (_db.pricing_details.Where(ep => ep.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ep.pricing_id == Convert.ToInt32(hdnPricingId.Value) && ep.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ep.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).SingleOrDefault() != null)
+                    if (_db.pricing_details.Where(ep => ep.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ep.pricing_id == Convert.ToInt32(hdnPricingId.Value) && ep.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ep.client_id == Convert.ToInt32(hdnClientId.Value)).SingleOrDefault() != null)
                     {
-                        pricing_detail pd = _db.pricing_details.Single(p => p.item_id == Convert.ToInt32(diitem2.Cells[1].Text) && p.pricing_id == Convert.ToInt32(hdnPricingId.Value) && p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+                        pricing_detail pd = _db.pricing_details.Single(p => p.item_id == Convert.ToInt32(diitem2.Cells[1].Text) && p.pricing_id == Convert.ToInt32(hdnPricingId.Value) && p.client_id == Convert.ToInt32(hdnClientId.Value));
                         LaborId2 = Convert.ToInt32(pd.labor_id);
                         nCost2 = Convert.ToDecimal(pd.item_cost);
                     }
                     if (LaborId2 == 2)
                     {
-                        item_price itm = _db.item_prices.Single(it => it.item_id == Convert.ToInt32(diitem2.Cells[1].Text) && it.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+                        item_price itm = _db.item_prices.Single(it => it.item_id == Convert.ToInt32(diitem2.Cells[1].Text) && it.client_id == Convert.ToInt32(hdnClientId.Value));
                         //nLaborRate2 = Convert.ToDecimal(itm.labor_rate);
                         nLaborRate2 = (decimal)itm.labor_rate * (decimal)itm.retail_multiplier;
                         nLaborRate2 = nLaborRate2 * nQty2;
@@ -3418,9 +3422,9 @@ public partial class pricing : System.Web.UI.Page
 
                 strQ = " SELECT  pricing_id, pricing_details.client_id, customer_id, estimate_id, pricing_details.location_id, sales_person_id, section_level, item_id, section_name, item_name, measure_unit, item_cost, minimum_qty, quantity, retail_multiplier, labor_rate, labor_id, section_serial, item_cnt, total_direct_price, total_retail_price, is_direct, pricing_type, short_notes,location_name " +
                             " FROM pricing_details  INNER JOIN location ON pricing_details.location_id=location.location_id AND pricing_details.client_id=location.client_id " +
-                            " WHERE pricing_details.location_id IN (Select location_id from customer_locations WHERE customer_locations.estimate_id =" + nEstId + " AND customer_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_locations.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                            " AND pricing_details.section_level IN (Select section_id from customer_sections  WHERE customer_sections.estimate_id =" + nEstId + " AND customer_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_sections.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                            " AND section_level=" + nSecId + " AND estimate_id=" + nEstId + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND pricing_details.client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                            " WHERE pricing_details.location_id IN (Select location_id from customer_locations WHERE customer_locations.estimate_id =" + nEstId + " AND customer_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_locations.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+                            " AND pricing_details.section_level IN (Select section_id from customer_sections  WHERE customer_sections.estimate_id =" + nEstId + " AND customer_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+                            " AND section_level=" + nSecId + " AND estimate_id=" + nEstId + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND pricing_details.client_id=" + Convert.ToInt32(hdnClientId.Value);
 
 
                 List<PricingDetailModel> CList = _db.ExecuteQuery<PricingDetailModel>(strQ, string.Empty).ToList();
@@ -3646,9 +3650,9 @@ public partial class pricing : System.Web.UI.Page
 
                 strQ = " SELECT  pricing_id, pricing_details.client_id, customer_id, estimate_id, pricing_details.location_id, sales_person_id, section_level, item_id, section_name, item_name, measure_unit, item_cost, minimum_qty, quantity, retail_multiplier, labor_rate, labor_id, section_serial, item_cnt, total_direct_price, total_retail_price, is_direct, pricing_type, short_notes,location_name " +
                             " FROM pricing_details  INNER JOIN location ON pricing_details.location_id=location.location_id AND pricing_details.client_id=location.client_id " +
-                            " WHERE pricing_details.location_id IN (Select location_id from customer_locations WHERE customer_locations.estimate_id =" + nEstId + " AND customer_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_locations.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                            " AND pricing_details.section_level IN (Select section_id from customer_sections  WHERE customer_sections.estimate_id =" + nEstId + " AND customer_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_sections.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                            " AND section_level=" + nSecId + " AND estimate_id=" + nEstId + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND pricing_details.client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                            " WHERE pricing_details.location_id IN (Select location_id from customer_locations WHERE customer_locations.estimate_id =" + nEstId + " AND customer_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_locations.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+                            " AND pricing_details.section_level IN (Select section_id from customer_sections  WHERE customer_sections.estimate_id =" + nEstId + " AND customer_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+                            " AND section_level=" + nSecId + " AND estimate_id=" + nEstId + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND pricing_details.client_id=" + Convert.ToInt32(hdnClientId.Value);
 
 
                 List<PricingDetailModel> CList = _db.ExecuteQuery<PricingDetailModel>(strQ, string.Empty).ToList();
@@ -3822,7 +3826,7 @@ public partial class pricing : System.Web.UI.Page
             strID = Session["DeleteID"].ToString();
             DataClassesDataContext _db = new DataClassesDataContext();
 
-            string strQ = "Delete pricing_details WHERE pricing_id IN (" + strID + ") AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+            string strQ = "Delete pricing_details WHERE pricing_id IN (" + strID + ") AND client_id=" + Convert.ToInt32(hdnClientId.Value);
             _db.ExecuteCommand(strQ, string.Empty);
 
             hdnSortDesc.Value = "0";
@@ -4026,7 +4030,7 @@ public partial class pricing : System.Web.UI.Page
 
                 if (Convert.ToInt32(ddlDirect.SelectedValue) == 1 || Convert.ToInt32(ddlDirect.SelectedValue) == 2)
                 {
-                    pricing_detail pd = _db.pricing_details.Single(p => p.item_id == nItemId && p.pricing_id == nPricingId && p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+                    pricing_detail pd = _db.pricing_details.Single(p => p.item_id == nItemId && p.pricing_id == nPricingId && p.client_id == Convert.ToInt32(hdnClientId.Value));
 
                     pd.labor_rate = nLaborRate;
                     pd.retail_multiplier = nRetailMultiplier;
@@ -4113,7 +4117,7 @@ public partial class pricing : System.Web.UI.Page
                 }
                 else
                 {
-                    string strQ = "UPDATE pricing_details SET quantity=" + nQty + " ,total_direct_price=" + nTotalPrice + " ,short_notes='" + txtshort_notes.Text.Replace("'", "''") + "' WHERE pricing_id =" + nPricingId + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                    string strQ = "UPDATE pricing_details SET quantity=" + nQty + " ,total_direct_price=" + nTotalPrice + " ,short_notes='" + txtshort_notes.Text.Replace("'", "''") + "' WHERE pricing_id =" + nPricingId + " AND client_id=" + Convert.ToInt32(hdnClientId.Value);
                     _db.ExecuteCommand(strQ, string.Empty);
                     DataTable dtItemDiret = (DataTable)Session["Item_list_Direct"];
 
@@ -4264,9 +4268,9 @@ public partial class pricing : System.Web.UI.Page
 
                 strQ = " SELECT  pricing_id, pricing_details.client_id, customer_id, estimate_id, pricing_details.location_id, sales_person_id, section_level, item_id, section_name, item_name, measure_unit, item_cost, minimum_qty, quantity, retail_multiplier, labor_rate, labor_id, section_serial, item_cnt, total_direct_price, total_retail_price, is_direct, pricing_type, short_notes,location_name " +
                             " FROM pricing_details  INNER JOIN location ON pricing_details.location_id=location.location_id AND pricing_details.client_id=location.client_id " +
-                            " WHERE pricing_details.location_id IN (Select location_id from customer_locations WHERE customer_locations.estimate_id =" + nEstId + " AND customer_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_locations.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                            " AND pricing_details.section_level IN (Select section_id from customer_sections  WHERE customer_sections.estimate_id =" + nEstId + " AND customer_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_sections.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                            " AND section_level=" + nSecId + " AND estimate_id=" + nEstId + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND pricing_details.client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                            " WHERE pricing_details.location_id IN (Select location_id from customer_locations WHERE customer_locations.estimate_id =" + nEstId + " AND customer_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_locations.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+                            " AND pricing_details.section_level IN (Select section_id from customer_sections  WHERE customer_sections.estimate_id =" + nEstId + " AND customer_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+                            " AND section_level=" + nSecId + " AND estimate_id=" + nEstId + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND pricing_details.client_id=" + Convert.ToInt32(hdnClientId.Value);
 
 
                 List<PricingDetailModel> CList = _db.ExecuteQuery<PricingDetailModel>(strQ, string.Empty).ToList();
@@ -4689,7 +4693,7 @@ public partial class pricing : System.Web.UI.Page
 
             foreach (string strId in strIds)
             {
-                if (_db.pricing_details.Where(ep => ep.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ep.item_id == Convert.ToInt32(strId) && ep.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ep.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).Count() == 0)
+                if (_db.pricing_details.Where(ep => ep.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ep.item_id == Convert.ToInt32(strId) && ep.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ep.client_id == Convert.ToInt32(hdnClientId.Value)).Count() == 0)
                 {
                     if (strRequired.Length == 0)
                         strRequired = "Mandatory Items in Pink Color: " + strId;
@@ -4946,7 +4950,7 @@ public partial class pricing : System.Web.UI.Page
                 }
 
 
-                sectioninfo sinfo = _db.sectioninfos.Single(s => s.section_id == nSectionId && s.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+                sectioninfo sinfo = _db.sectioninfos.Single(s => s.section_id == nSectionId && s.client_id == Convert.ToInt32(hdnClientId.Value));
 
                 bool IsCommissionExclude = Convert.ToBoolean(sinfo.is_CommissionExclude);
                 pricing_detail price_detail = new pricing_detail();
@@ -4957,7 +4961,7 @@ public partial class pricing : System.Web.UI.Page
                 price_detail.labor_rate = dlabor_rate;
                 price_detail.item_cost = ditem_cost;
 
-                price_detail.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                price_detail.client_id = Convert.ToInt32(hdnClientId.Value);
                 price_detail.customer_id = Convert.ToInt32(hdnCustomerId.Value);
                 price_detail.estimate_id = Convert.ToInt32(hdnEstimateId.Value);
                 price_detail.location_id = Convert.ToInt32(ddlCustomerLocations.SelectedValue);
@@ -5258,7 +5262,7 @@ public partial class pricing : System.Web.UI.Page
 
         DataTable dtItem = (DataTable)Session["Item_list"];
         bool Iexists = dtItem.AsEnumerable().Where(c => c.Field<Int32>("pricing_id").Equals(nPricingId)).Count() > 0;
-        string strQ = "Delete pricing_details WHERE pricing_id =" + nPricingId + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        string strQ = "Delete pricing_details WHERE pricing_id =" + nPricingId + " AND client_id=" + Convert.ToInt32(hdnClientId.Value);
         _db.ExecuteCommand(strQ, string.Empty);
         if (Iexists)
         {
@@ -5419,7 +5423,7 @@ public partial class pricing : System.Web.UI.Page
                 strQ = "UPDATE customer_estimate SET IsCustDisplay = 1 " +
               " WHERE estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) +
               " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) +
-              " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+              " AND client_id=" + Convert.ToInt32(hdnClientId.Value);
                 _db.ExecuteCommand(strQ, string.Empty);
                 //lblResult1.Text = csCommonUtility.GetSystemMessage("Customized display setting of Project activated successfully.");
 
@@ -5429,7 +5433,7 @@ public partial class pricing : System.Web.UI.Page
                 strQ = "UPDATE customer_estimate SET IsCustDisplay = 0 " +
              " WHERE estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) +
              " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) +
-             " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+             " AND client_id=" + Convert.ToInt32(hdnClientId.Value);
                 _db.ExecuteCommand(strQ, string.Empty);
                 //lblResult1.Text = csCommonUtility.GetSystemMessage("Customized display setting of Project deactivated successfully.");
             }
@@ -5471,24 +5475,24 @@ public partial class pricing : System.Web.UI.Page
 
         strQ = " SELECT co_pricing_list_id as pricing_id, co_pricing_master.client_id, customer_id, estimate_id, co_pricing_master.location_id, sales_person_id, section_level, item_id, section_name, item_name, measure_unit, item_cost, minimum_qty, quantity, retail_multiplier, labor_rate, labor_id, section_serial, item_cnt, total_direct_price, total_retail_price, is_direct, 'A' AS pricing_type, short_notes,location_name " +
               " FROM co_pricing_master  INNER JOIN location ON co_pricing_master.location_id=location.location_id AND co_pricing_master.client_id=location.client_id " +
-              " WHERE co_pricing_master.location_id IN (Select location_id from changeorder_locations WHERE changeorder_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_locations.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-              " AND co_pricing_master.section_level IN (Select section_id from changeorder_sections  WHERE changeorder_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_sections.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-              " AND estimate_id=" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND item_status_id = 1 AND co_pricing_master.client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + "  " +
+              " WHERE co_pricing_master.location_id IN (Select location_id from changeorder_locations WHERE changeorder_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_locations.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+              " AND co_pricing_master.section_level IN (Select section_id from changeorder_sections  WHERE changeorder_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+              " AND estimate_id=" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND item_status_id = 1 AND co_pricing_master.client_id=" + Convert.ToInt32(hdnClientId.Value) + "  " +
               " UNION " +
               " SELECT co_pricing_list_id as pricing_id, co_pricing_master.client_id, customer_id, estimate_id, co_pricing_master.location_id, sales_person_id, section_level, item_id, section_name, item_name, measure_unit, item_cost, minimum_qty, quantity, retail_multiplier, labor_rate, labor_id, section_serial, item_cnt,prev_total_price AS total_direct_price, prev_total_price AS total_retail_price, is_direct, 'A' AS pricing_type, short_notes,location_name " +
               " FROM co_pricing_master  INNER JOIN location ON co_pricing_master.location_id=location.location_id AND co_pricing_master.client_id=location.client_id " +
-              " WHERE co_pricing_master.location_id IN (Select location_id from changeorder_locations WHERE changeorder_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_locations.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-              " AND co_pricing_master.section_level IN (Select section_id from changeorder_sections  WHERE changeorder_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_sections.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-              " AND estimate_id=" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND item_status_id = 2 AND co_pricing_master.client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+              " WHERE co_pricing_master.location_id IN (Select location_id from changeorder_locations WHERE changeorder_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_locations.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+              " AND co_pricing_master.section_level IN (Select section_id from changeorder_sections  WHERE changeorder_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+              " AND estimate_id=" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND item_status_id = 2 AND co_pricing_master.client_id=" + Convert.ToInt32(hdnClientId.Value);
 
         List<PricingDetailModel> CList = _db.ExecuteQuery<PricingDetailModel>(strQ, string.Empty).ToList();
         if (CList.Count == 0)
         {
             strQ = " SELECT  pricing_id, pricing_details.client_id, customer_id, estimate_id, pricing_details.location_id, sales_person_id, section_level, item_id, section_name, item_name, measure_unit, item_cost, minimum_qty, quantity, retail_multiplier, labor_rate, labor_id, section_serial, item_cnt, total_direct_price, total_retail_price, is_direct, pricing_type, short_notes,location_name " +
                     " FROM pricing_details  INNER JOIN location ON pricing_details.location_id=location.location_id AND pricing_details.client_id=location.client_id " +
-                    " WHERE pricing_details.location_id IN (Select location_id from customer_locations WHERE customer_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_locations.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                    " AND pricing_details.section_level IN (Select section_id from customer_sections  WHERE customer_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_sections.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                    " AND estimate_id=" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND pricing_details.client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                    " WHERE pricing_details.location_id IN (Select location_id from customer_locations WHERE customer_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_locations.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+                    " AND pricing_details.section_level IN (Select section_id from customer_sections  WHERE customer_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+                    " AND estimate_id=" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND pricing_details.client_id=" + Convert.ToInt32(hdnClientId.Value);
 
 
             CList = _db.ExecuteQuery<PricingDetailModel>(strQ, string.Empty).ToList();
@@ -5663,24 +5667,24 @@ public partial class pricing : System.Web.UI.Page
 
         strQ = " SELECT co_pricing_list_id as pricing_id, co_pricing_master.client_id, customer_id, estimate_id, co_pricing_master.location_id, sales_person_id, section_level, item_id, section_name, item_name, measure_unit, item_cost, minimum_qty, quantity, retail_multiplier, labor_rate, labor_id, section_serial, item_cnt, total_direct_price, total_retail_price, is_direct, 'A' AS pricing_type, short_notes,location_name " +
               " FROM co_pricing_master  INNER JOIN location ON co_pricing_master.location_id=location.location_id AND co_pricing_master.client_id=location.client_id " +
-              " WHERE co_pricing_master.location_id IN (Select location_id from changeorder_locations WHERE changeorder_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_locations.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-              " AND co_pricing_master.section_level IN (Select section_id from changeorder_sections  WHERE changeorder_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_sections.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-              " AND estimate_id=" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND item_status_id = 1 AND co_pricing_master.client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + "  " +
+              " WHERE co_pricing_master.location_id IN (Select location_id from changeorder_locations WHERE changeorder_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_locations.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+              " AND co_pricing_master.section_level IN (Select section_id from changeorder_sections  WHERE changeorder_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+              " AND estimate_id=" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND item_status_id = 1 AND co_pricing_master.client_id=" + Convert.ToInt32(hdnClientId.Value) + "  " +
               " UNION " +
               " SELECT co_pricing_list_id as pricing_id, co_pricing_master.client_id, customer_id, estimate_id, co_pricing_master.location_id, sales_person_id, section_level, item_id, section_name, item_name, measure_unit, item_cost, minimum_qty, quantity, retail_multiplier, labor_rate, labor_id, section_serial, item_cnt,prev_total_price AS total_direct_price, prev_total_price AS total_retail_price, is_direct, 'A' AS pricing_type, short_notes,location_name " +
               " FROM co_pricing_master  INNER JOIN location ON co_pricing_master.location_id=location.location_id AND co_pricing_master.client_id=location.client_id " +
-              " WHERE co_pricing_master.location_id IN (Select location_id from changeorder_locations WHERE changeorder_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_locations.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-              " AND co_pricing_master.section_level IN (Select section_id from changeorder_sections  WHERE changeorder_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_sections.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-              " AND estimate_id=" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND item_status_id = 2 AND co_pricing_master.client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+              " WHERE co_pricing_master.location_id IN (Select location_id from changeorder_locations WHERE changeorder_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_locations.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+              " AND co_pricing_master.section_level IN (Select section_id from changeorder_sections  WHERE changeorder_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+              " AND estimate_id=" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND item_status_id = 2 AND co_pricing_master.client_id=" + Convert.ToInt32(hdnClientId.Value);
 
         List<PricingDetailModel> CList = _db.ExecuteQuery<PricingDetailModel>(strQ, string.Empty).ToList();
         if (CList.Count == 0)
         {
             strQ = " SELECT  pricing_id, pricing_details.client_id, customer_id, estimate_id, pricing_details.location_id, sales_person_id, section_level, item_id, section_name, item_name, measure_unit, item_cost, minimum_qty, quantity, retail_multiplier, labor_rate, labor_id, section_serial, item_cnt, total_direct_price, total_retail_price, is_direct, pricing_type, short_notes,location_name " +
                     " FROM pricing_details  INNER JOIN location ON pricing_details.location_id=location.location_id AND pricing_details.client_id=location.client_id " +
-                    " WHERE pricing_details.location_id IN (Select location_id from customer_locations WHERE customer_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_locations.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                    " AND pricing_details.section_level IN (Select section_id from customer_sections  WHERE customer_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_sections.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                    " AND estimate_id=" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND pricing_details.client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                    " WHERE pricing_details.location_id IN (Select location_id from customer_locations WHERE customer_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_locations.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+                    " AND pricing_details.section_level IN (Select section_id from customer_sections  WHERE customer_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+                    " AND estimate_id=" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND pricing_details.client_id=" + Convert.ToInt32(hdnClientId.Value);
 
 
             CList = _db.ExecuteQuery<PricingDetailModel>(strQ, string.Empty).ToList();
@@ -5932,7 +5936,7 @@ public partial class pricing : System.Web.UI.Page
         if (Convert.ToInt32(hdnEstimateId.Value) > 0)
         {
             customer_estimate cus_est = new customer_estimate();
-            cus_est = _db.customer_estimates.Single(ce => ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value));
+            cus_est = _db.customer_estimates.Single(ce => ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value) && ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value));
             //strPO = cus_est.job_number;
             if (cus_est.alter_job_number == "" || cus_est.alter_job_number == null)
                 strPO = cus_est.job_number;
@@ -5998,16 +6002,16 @@ public partial class pricing : System.Web.UI.Page
 
         strQ = " SELECT  pricing_id, pricing_details.client_id, customer_id, estimate_id, pricing_details.location_id, sales_person_id, section_level, item_id, section_name, item_name, measure_unit, item_cost, minimum_qty, quantity, retail_multiplier, labor_rate, labor_id, section_serial, item_cnt, total_direct_price, total_retail_price, is_direct, pricing_type, short_notes,location_name " +
                     " FROM pricing_details  INNER JOIN location ON pricing_details.location_id=location.location_id AND pricing_details.client_id=location.client_id " +
-                    " WHERE pricing_details.location_id IN (Select location_id from customer_locations WHERE customer_locations.estimate_id =" + nEstId + " AND customer_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_locations.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                    " AND pricing_details.section_level IN (Select section_id from customer_sections  WHERE customer_sections.estimate_id =" + nEstId + " AND customer_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_sections.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                    " AND section_level=" + nSecId + " AND estimate_id=" + nEstId + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND pricing_details.client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                    " WHERE pricing_details.location_id IN (Select location_id from customer_locations WHERE customer_locations.estimate_id =" + nEstId + " AND customer_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_locations.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+                    " AND pricing_details.section_level IN (Select section_id from customer_sections  WHERE customer_sections.estimate_id =" + nEstId + " AND customer_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+                    " AND section_level=" + nSecId + " AND estimate_id=" + nEstId + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND pricing_details.client_id=" + Convert.ToInt32(hdnClientId.Value);
 
 
         List<PricingDetailModel> CList = _db.ExecuteQuery<PricingDetailModel>(strQ, string.Empty).ToList();
 
 
         customer_estimate cus_est = new customer_estimate();
-        cus_est = _db.customer_estimates.Single(ce => ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && ce.estimate_id == nEstId);
+        cus_est = _db.customer_estimates.Single(ce => ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value) && ce.estimate_id == nEstId);
 
         ReportDocument rptFile = new ReportDocument();
         string strReportPath = Server.MapPath(@"Reports\rpt\rptEmailReportBySection.rpt");
@@ -6143,9 +6147,9 @@ public partial class pricing : System.Web.UI.Page
 
         strQ = " SELECT  pricing_id, pricing_details.client_id, customer_id, estimate_id, pricing_details.location_id, sales_person_id, section_level, item_id, section_name, item_name, measure_unit, item_cost, minimum_qty, quantity, retail_multiplier, labor_rate, labor_id, section_serial, item_cnt, total_direct_price, total_retail_price, is_direct, pricing_type, short_notes,location_name " +
                     " FROM pricing_details  INNER JOIN location ON pricing_details.location_id=location.location_id AND pricing_details.client_id=location.client_id " +
-                    " WHERE pricing_details.location_id IN (Select location_id from customer_locations WHERE customer_locations.estimate_id =" + nEstId + " AND customer_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_locations.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                    " AND pricing_details.section_level IN (Select section_id from customer_sections  WHERE customer_sections.estimate_id =" + nEstId + " AND customer_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_sections.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                    " AND estimate_id=" + nEstId + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND pricing_details.client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                    " WHERE pricing_details.location_id IN (Select location_id from customer_locations WHERE customer_locations.estimate_id =" + nEstId + " AND customer_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_locations.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+                    " AND pricing_details.section_level IN (Select section_id from customer_sections  WHERE customer_sections.estimate_id =" + nEstId + " AND customer_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+                    " AND estimate_id=" + nEstId + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND pricing_details.client_id=" + Convert.ToInt32(hdnClientId.Value);
 
 
         List<PricingDetailModel> CList = _db.ExecuteQuery<PricingDetailModel>(strQ, string.Empty).ToList();
@@ -6193,7 +6197,7 @@ public partial class pricing : System.Web.UI.Page
         List<PMainSummary> PSummList = _db.ExecuteQuery<PMainSummary>(strPsumm, string.Empty).ToList();
 
         customer_estimate cus_est = new customer_estimate();
-        cus_est = _db.customer_estimates.Single(ce => ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && ce.estimate_id == nEstId);
+        cus_est = _db.customer_estimates.Single(ce => ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value) && ce.estimate_id == nEstId);
 
         ReportDocument rptFile = new ReportDocument();
         string strReportPath = string.Empty;
@@ -6506,7 +6510,7 @@ public partial class pricing : System.Web.UI.Page
 
                 if (Convert.ToInt32(ddlDirect.SelectedValue) == 1 || Convert.ToInt32(ddlDirect.SelectedValue) == 2)
                 {
-                    pricing_detail pd = _db.pricing_details.Single(p => p.item_id == nItemId && p.pricing_id == nPricingId && p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+                    pricing_detail pd = _db.pricing_details.Single(p => p.item_id == nItemId && p.pricing_id == nPricingId && p.client_id == Convert.ToInt32(hdnClientId.Value));
 
                     pd.labor_rate = nLaborRate;
                     pd.retail_multiplier = nRetailMultiplier;
@@ -6592,7 +6596,7 @@ public partial class pricing : System.Web.UI.Page
                 }
                 else
                 {
-                    string strQ = "UPDATE pricing_details SET quantity=" + nQty + " ,total_direct_price=" + nTotalPrice + " ,short_notes='" + txtshort_notes.Text.Replace("'", "''") + "' WHERE pricing_id =" + nPricingId + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                    string strQ = "UPDATE pricing_details SET quantity=" + nQty + " ,total_direct_price=" + nTotalPrice + " ,short_notes='" + txtshort_notes.Text.Replace("'", "''") + "' WHERE pricing_id =" + nPricingId + " AND client_id=" + Convert.ToInt32(hdnClientId.Value);
                     _db.ExecuteCommand(strQ, string.Empty);
                     DataTable dtItemDiret = (DataTable)Session["Item_list_Direct"];
                     if (Session["Item_list_Direct"] != null)
@@ -6819,7 +6823,7 @@ public partial class pricing : System.Web.UI.Page
                     int nItemId = Convert.ToInt32(grdCopyItem.DataKeys[gvr.RowIndex].Values[1]);
                     pricing_detail objPD = new pricing_detail();
 
-                    pricing_detail pd = _db.pricing_details.SingleOrDefault(p => p.item_id == nItemId && p.pricing_id == nPricingId && p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+                    pricing_detail pd = _db.pricing_details.SingleOrDefault(p => p.item_id == nItemId && p.pricing_id == nPricingId && p.client_id == Convert.ToInt32(hdnClientId.Value));
 
                     //arefin 102719
                     int nSortId = _db.pricing_details.Where(p => p.customer_id == pd.customer_id && p.estimate_id == pd.estimate_id && p.location_id == Convert.ToInt32(ddCopyLocation.SelectedValue)).DefaultIfEmpty().Max(x => x == null ? 0 : x.sort_id) ?? 0;
@@ -7067,20 +7071,21 @@ public partial class pricing : System.Web.UI.Page
           nRetailMul = nTotalPrice / nUnitPrice / nQty;
        }
         
-        sectioninfo sinfo = _db.sectioninfos.Single(s => s.section_id == Convert.ToInt32(hdnSectionId.Value) && s.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+        sectioninfo sinfo = _db.sectioninfos.Single(s => s.section_id == Convert.ToInt32(hdnSectionId.Value) && s.client_id == Convert.ToInt32(hdnClientId.Value));
         hdnParentId.Value = Convert.ToInt32(sinfo.parent_id).ToString();
         hdnSectionLevel.Value = Convert.ToInt32(sinfo.section_level).ToString();
         hdnSectionSerial.Value = Convert.ToDecimal(sinfo.section_serial).ToString();
         bool IsCommissionExclude = Convert.ToBoolean(sinfo.is_CommissionExclude);
         pricing_detail price_detail = new pricing_detail();
         ///  string test = lblParent.Text.Trim().Replace(ddlSections.SelectedItem.Text+" >>", "") + "" + txtOther.Text + ">>Other";
-        price_detail.item_name = lblParent.Text.Trim().Replace(ddlSections.SelectedItem.Text + " >>", "") + "" + txtCustomizeItemName.Text;//GetItemDetialsForUpdateItem(Convert.ToInt32(hdnSectionId.Value)).ToString() + "" + txtOther.Text + ">>Other";
+        price_detail.item_name = lblParent.Text.Trim().Replace(ddlSections.SelectedItem.Text + " >>", "") + "" + txtCustomizeItemName.Text;
+        //GetItemDetialsForUpdateItem(Convert.ToInt32(hdnSectionId.Value)).ToString() + "" + txtOther.Text + ">>Other";
         price_detail.measure_unit = txtCustomizeUOM.Text;
         price_detail.minimum_qty = 1;
         price_detail.retail_multiplier = nRetailMul;
         price_detail.labor_rate = 0;
         price_detail.item_cost = nUnitPrice * nRetailMul; //Convert.ToDecimal(txtO_Price.Text.Replace("$", "").Replace("(", "-").Replace(")", ""));
-        price_detail.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        price_detail.client_id = Convert.ToInt32(hdnClientId.Value);
         price_detail.customer_id = Convert.ToInt32(hdnCustomerId.Value);
         price_detail.estimate_id = Convert.ToInt32(hdnEstimateId.Value);
         price_detail.location_id = Convert.ToInt32(ddlCustomerLocations.SelectedValue);

@@ -86,6 +86,10 @@ public partial class salespersonlist : System.Web.UI.Page
             {
                 Response.Redirect(ConfigurationManager.AppSettings["LoginPage"].ToString());
             }
+            else
+            {
+                hdnClientId.Value = ((userinfo)Session["oUser"]).client_id.ToString();
+            }
             if (Page.User.IsInRole("sales001") == false)
             {
                 // No Permission Page.
@@ -101,7 +105,7 @@ public partial class salespersonlist : System.Web.UI.Page
     {
         DataClassesDataContext _db = new DataClassesDataContext();
         string strCondition = "";
-        int nClientId = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        int nClientId = Convert.ToInt32(hdnClientId.Value);
         grdSalesPersonList.PageIndex = nPageNo;
                
 

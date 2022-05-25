@@ -63,12 +63,13 @@ public partial class InteriorInnovLogin : System.Web.UI.Page
         if (userName.ToLower() == "Faztrack".ToLower() && password == "F@ztrack")
         {
 
-            user_info uinfo = _db.user_infos.SingleOrDefault(u => u.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && u.user_id == 14);
+            user_info uinfo = _db.user_infos.SingleOrDefault(u => u.user_id == 14);
 
             userinfo obj = new userinfo();
             obj.first_name = "FazTrack";
             obj.username = "Faztrack";
             obj.role_id = 1;
+            obj.client_id = "1,2";
             obj.user_id = 0;
             obj.IsPriceChange = true;
             obj.email = "tislam@faztrack.com";
@@ -145,7 +146,7 @@ public partial class InteriorInnovLogin : System.Web.UI.Page
 
         string role = GetUserRoles(userName, password, nClientId);
 
-        if (_db.user_infos.Where(sp => sp.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && sp.username == userName && sp.password == password && sp.is_active == Convert.ToBoolean(1)).SingleOrDefault() == null)
+        if (_db.user_infos.Where(sp =>  sp.username == userName && sp.password == password && sp.is_active == Convert.ToBoolean(1)).SingleOrDefault() == null)
         {
             lblResult.Text = csCommonUtility.GetSystemErrorMessage("Invalid username and password.");
 
@@ -162,7 +163,7 @@ public partial class InteriorInnovLogin : System.Web.UI.Page
         {
             user_info uinfo = new user_info();
 
-            uinfo = _db.user_infos.Single(u => u.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && u.username == userName && u.password == password);
+            uinfo = _db.user_infos.Single(u => u.username == userName && u.password == password);
 
             userinfo obj = new userinfo();
             obj.first_name = uinfo.first_name;
@@ -176,7 +177,7 @@ public partial class InteriorInnovLogin : System.Web.UI.Page
             obj.email = uinfo.email;
             obj.role_id = Convert.ToInt32(uinfo.role_id);
             obj.is_active = Convert.ToBoolean(uinfo.is_active);
-            obj.client_id = Convert.ToInt32(uinfo.client_id);
+            obj.client_id = uinfo.client_id;
             obj.create_date = Convert.ToDateTime(uinfo.create_date);
             obj.username = uinfo.username;
             obj.sales_person_id = Convert.ToInt32(uinfo.sales_person_id);
@@ -273,7 +274,7 @@ public partial class InteriorInnovLogin : System.Web.UI.Page
         string strQ = "select m.* from Menu_item m " +
                     " right join role_right r on r.menu_id = m.menu_id " +
                     " right outer join user_info u on u.role_id = r.role_id " +
-                    " WHERE u.is_active = 1 AND u.username ='" + sName + "' AND u.password ='" + sPassword + "' AND u.client_id =" + nClientID + " AND r.client_id = " + nClientID + " AND m.client_id = " + nClientID;
+                    " WHERE u.is_active = 1 AND u.username ='" + sName + "' AND u.password ='" + sPassword + "' AND  r.client_id in (" + nClientID + ") AND m.client_id in (" + nClientID + ")" ;
 
         List<menu_item> list = _db.ExecuteQuery<menu_item>(strQ, string.Empty).ToList();
 

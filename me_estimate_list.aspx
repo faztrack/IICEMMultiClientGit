@@ -268,6 +268,11 @@
                         </table>
                     </td>
                 </tr>
+                <tr>
+                    <td>
+                        <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
+                    </td>
+                </tr>
             </table>
         </ContentTemplate>
     </asp:UpdatePanel>

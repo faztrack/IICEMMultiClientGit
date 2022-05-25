@@ -37,6 +37,7 @@ public partial class user_details : System.Web.UI.Page
             BindStates();
             BindRoles();
             BindQuestions();
+            BindDivision();
 
             lblEmailIntegration.Text = "Outlook/Exchange Email: ";
             lblEmailPassword.Text = "Outlook/Exchange Password: ";
@@ -73,7 +74,34 @@ public partial class user_details : System.Web.UI.Page
                     hdnEmailPassword.Value = uinfo.email_password;
                     // txtEmailPassword.Text = uinfo.email_password;
 
-                    if(uinfo.ViewPassword!=null && uinfo.ViewPassword!="")
+                    if (uinfo.client_id.Contains(','))
+                    {
+                        string[] ary = uinfo.client_id.Split(',');
+                        foreach (ListItem item in lstDivision.Items)
+                        {
+                            foreach (var a in ary)
+                            {
+                                if (a == item.Value)
+                                {
+                                    item.Selected = true;
+
+                                }
+                            }
+
+                        }
+                    }
+                    else
+                    {
+                        lstDivision.SelectedValue = uinfo.client_id;
+                    }
+
+                        
+
+                  
+
+
+
+                        if (uinfo.ViewPassword!=null && uinfo.ViewPassword!="")
                     {
                         txtPassword.Attributes.Add("value", uinfo.ViewPassword);
                         txtConfirmPass.Attributes.Add("value", uinfo.ViewPassword);
@@ -165,6 +193,26 @@ public partial class user_details : System.Web.UI.Page
         }
     }
 
+
+    private void BindDivision()
+    {
+        try
+        {
+            string sql = "select id, division_name from division order by division_name";
+            DataTable dt = csCommonUtility.GetDataTable(sql);
+            lstDivision.DataSource = dt;
+            lstDivision.DataTextField = "division_name";
+            lstDivision.DataValueField = "id";
+            lstDivision.DataBind();
+
+
+        }
+        catch(Exception ex)
+        {
+            lblResult.Text = csCommonUtility.GetSystemErrorMessage(ex.ToString());
+        }
+    }
+
     public void SetUserPagePermission(int uid)
     {
         DataClassesDataContext _db = new DataClassesDataContext();
@@ -211,7 +259,7 @@ public partial class user_details : System.Web.UI.Page
         }
         catch (Exception ex)
         {
-
+            lblResult.Text = csCommonUtility.GetSystemErrorMessage(ex.ToString());
         }
     }
     private void BindRoles()
@@ -254,6 +302,22 @@ public partial class user_details : System.Web.UI.Page
         DataClassesDataContext _db = new DataClassesDataContext();
         user_info uinfo = new user_info();
         sales_person obj = new sales_person();
+
+        string selectedvalue = "";
+        foreach (ListItem item in lstDivision.Items)
+        {
+            if (item.Selected)
+            {
+                selectedvalue += item.Value + ",";
+            }
+        }
+        if(selectedvalue == "")
+        {
+            lblResult.Text = csCommonUtility.GetSystemErrorMessage("Missing required field: Division.");
+            lblResult.Focus();
+            return;
+        }
+
 
         if (txtFirstName.Text.Trim() == "")
         {
@@ -459,8 +523,9 @@ public partial class user_details : System.Web.UI.Page
         uinfo.IsEnableSMS = chkIsSMS.Checked;
         txtPhone.Text = csCommonUtility.GetPhoneFormat(txtPhone.Text.Trim());
         txtFax.Text = csCommonUtility.GetPhoneFormat(txtFax.Text.Trim());
+                
 
-        uinfo.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        uinfo.client_id = selectedvalue.TrimEnd(',');
         uinfo.user_id = Convert.ToInt32(hdnUserId.Value);
 
         uinfo.first_name = txtFirstName.Text;
@@ -509,7 +574,8 @@ public partial class user_details : System.Web.UI.Page
         }
 
         // Sales person Info
-        obj.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        //obj.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        obj.client_id = selectedvalue.TrimEnd(',');
         obj.sales_person_id = Convert.ToInt32(hdnSalesPersonId.Value);
 
         obj.first_name = txtFirstName.Text;
@@ -579,8 +645,8 @@ public partial class user_details : System.Web.UI.Page
 
                     int nSalePersonId = 0;
                     var result = (from sp in _db.sales_persons
-                                  where sp.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
-                                  select sp.sales_person_id);
+                                  where sp.client_id == selectedvalue.TrimEnd(',')
+                    select sp.sales_person_id);
 
                     int n = result.Count();
                     if (result != null && n > 0)
@@ -631,7 +697,7 @@ public partial class user_details : System.Web.UI.Page
 
                     int nSalePersonId = 0;
                     var result = (from sp in _db.sales_persons
-                                  where sp.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                  where sp.client_id == selectedvalue.TrimEnd(',')
                                   select sp.sales_person_id);
 
                     int n = result.Count();
@@ -650,7 +716,7 @@ public partial class user_details : System.Web.UI.Page
                 }
                 else
                 {
-                    string strQ = "UPDATE sales_person SET first_name='" + obj.first_name + "',last_name='" + obj.last_name + "',address='" + obj.address + "',city='" + obj.city + "', state='" + obj.state + "', zip='" + obj.zip + "',phone='" + obj.phone + "',fax='" + obj.fax + "',email='" + obj.email + "', role_id=" + obj.role_id + ", is_active='" + obj.is_active + "',is_sales='" + obj.is_sales + "',is_service='" + obj.is_service + "',is_install='" + obj.is_install + "',client_id=" + obj.client_id + " , com_per =" + Convert.ToDecimal(txtCom.Text.Replace("%", "").Replace("$", "")) + ",  co_com_per =" + Convert.ToDecimal(txtCOCom.Text.Replace("%", "").Replace("$", "")) + "   WHERE sales_person_id =" + obj.sales_person_id + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                    string strQ = "UPDATE sales_person SET first_name='" + obj.first_name + "',last_name='" + obj.last_name + "',address='" + obj.address + "',city='" + obj.city + "', state='" + obj.state + "', zip='" + obj.zip + "',phone='" + obj.phone + "',fax='" + obj.fax + "',email='" + obj.email + "', role_id=" + obj.role_id + ", is_active='" + obj.is_active + "',is_sales='" + obj.is_sales + "',is_service='" + obj.is_service + "',is_install='" + obj.is_install + "',client_id= '" + obj.client_id + "' , com_per =" + Convert.ToDecimal(txtCom.Text.Replace("%", "").Replace("$", "")) + ",  co_com_per =" + Convert.ToDecimal(txtCOCom.Text.Replace("%", "").Replace("$", "")) + "   WHERE sales_person_id =" + obj.sales_person_id + " AND client_id= '" + selectedvalue.TrimEnd(',')+"'";
                     _db.ExecuteCommand(strQ, string.Empty);
 
                 }
@@ -663,7 +729,7 @@ public partial class user_details : System.Web.UI.Page
             }
             if (Convert.ToInt32(hdnSalesPersonId.Value) > 0)
             {
-                string strQ = "UPDATE sales_person SET google_calendar_account='" + txtEmail.Text + "', is_active='" + obj.is_active + "' WHERE sales_person_id =" + obj.sales_person_id + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                string strQ = "UPDATE sales_person SET google_calendar_account='" + txtEmail.Text + "', is_active='" + obj.is_active + "' WHERE sales_person_id =" + obj.sales_person_id + " AND client_id= '" + selectedvalue.TrimEnd(',')+"'";
                 _db.ExecuteCommand(strQ, string.Empty);
             }
 
@@ -698,7 +764,8 @@ public partial class user_details : System.Web.UI.Page
             {
                 pp.menu_id = menuId;
                 pp.user_id = uinfo.user_id;
-                pp.client_id = (int)uinfo.client_id;
+                //pp.client_id = (int)uinfo.client_id;
+                pp.client_id = 1;
                 pp.PageName = menuUrl;
 
                 _db.PagePermissions.InsertOnSubmit(pp);
@@ -746,7 +813,7 @@ public partial class user_details : System.Web.UI.Page
             }
         }
         catch (Exception ex)
-       {
+        {
 
              lblResult.Text = csCommonUtility.GetSystemErrorMessage(ex.Message);
         }

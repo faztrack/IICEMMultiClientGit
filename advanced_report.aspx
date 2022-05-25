@@ -508,7 +508,8 @@
                 </tr>
                 <tr>
                     <td>
-                        <asp:HiddenField ID="hdnLeadId" runat="server" Value="0" />
+                        <asp:HiddenField ID="hdnLeadId" runat="server" Value="0" />   
+                        <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />   
                     </td>
                 </tr>
             </table>

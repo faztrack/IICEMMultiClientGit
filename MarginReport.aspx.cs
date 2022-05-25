@@ -19,6 +19,10 @@ public partial class MarginReport : System.Web.UI.Page
             {
                 Response.Redirect(ConfigurationManager.AppSettings["LoginPage"].ToString());
             }
+            else
+            {
+                hdnClientId.Value = ((userinfo)Session["oUser"]).client_id.ToString();
+            }
             if (Page.User.IsInRole("rpt007") == false)
             {
                 // No Permission Page.
@@ -29,12 +33,12 @@ public partial class MarginReport : System.Web.UI.Page
     }
     private void BindSalesPersons()
     {
-        int nclient_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        //int nclient_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
         DataClassesDataContext _db = new DataClassesDataContext();
         string strQ = "SELECT DISTINCT sp.first_name + ' '+sp.last_name AS sales_person_name,sp.sales_person_id " +
                     " FROM sales_person sp " +
                     " INNER JOIN customer_estimate ce ON ce.sales_person_id = sp.sales_person_id AND ce.client_id = sp.client_id " +
-                    " WHERE  sp.is_active = 1 AND ce.client_id = " + nclient_id + " AND sp.client_id = " + nclient_id +
+                    " WHERE  sp.is_active = 1 AND ce.client_id in (" + hdnClientId.Value + ") AND sp.client_id in (" + hdnClientId.Value + ") " +
                     " ORDER BY sales_person_name ASC";
         List<userinfo> mList = _db.ExecuteQuery<userinfo>(strQ, string.Empty).ToList();
         ddlSalesPersons.DataSource = mList;
@@ -259,11 +263,11 @@ public partial class MarginReport : System.Web.UI.Page
                decimal Comper = 0;
                var result1 = (from pd in _db.pricing_details
                              where (from clc in _db.customer_locations
-                                    where clc.estimate_id == nEstimateId && clc.customer_id == nCustomerId && clc.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                    where clc.estimate_id == nEstimateId && clc.customer_id == nCustomerId && clc.client_id.ToString().Contains(hdnClientId.Value)
                                     select clc.location_id).Contains(pd.location_id) &&
                                     (from cs in _db.customer_sections
-                                     where cs.estimate_id == nEstimateId && cs.customer_id == nCustomerId && cs.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
-                                     select cs.section_id).Contains(pd.section_level) && pd.estimate_id == nEstimateId && pd.customer_id == nCustomerId && pd.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && pd.pricing_type == "A" && pd.is_CommissionExclude == false
+                                     where cs.estimate_id == nEstimateId && cs.customer_id == nCustomerId && cs.client_id.ToString().Contains(hdnClientId.Value)
+                                     select cs.section_id).Contains(pd.section_level) && pd.estimate_id == nEstimateId && pd.customer_id == nCustomerId && pd.client_id.ToString().Contains(hdnClientId.Value) && pd.pricing_type == "A" && pd.is_CommissionExclude == false
                              select pd.total_retail_price);
                int n1 = result1.Count();
                if (result1 != null && n1 > 0)
@@ -272,7 +276,7 @@ public partial class MarginReport : System.Web.UI.Page
                decimal TotalPriceExCom = dRetail - Intensive;
                decimal ComAmount = 0;
                var result3 = (from ppi in _db.co_estimate_commissions
-                              where ppi.estimate_id == nEstimateId && ppi.customer_id == nCustomerId && ppi.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                              where ppi.estimate_id == nEstimateId && ppi.customer_id == nCustomerId && ppi.client_id.ToString().Contains(hdnClientId.Value)
                               select ppi.comission_amount);
                int n3 = result3.Count();
                if (result3 != null && n3 > 0)
@@ -320,7 +324,7 @@ public partial class MarginReport : System.Web.UI.Page
                    decimal dEconCost = 0;
                    decimal dECOCostExCom = 0;
                    var Coresult = (from chpl in _db.change_order_pricing_lists
-                                   where chpl.estimate_id == nEstimateId && chpl.customer_id == nCustomerId && chpl.client_id == 1 && chpl.chage_order_id == ncoeid
+                                   where chpl.estimate_id == nEstimateId && chpl.customer_id == nCustomerId && chpl.client_id.ToString().Contains(hdnClientId.Value) && chpl.chage_order_id == ncoeid
                                    select chpl.EconomicsCost);
                    int cn = Coresult.Count();
                    if (Coresult != null && cn > 0)
@@ -328,7 +332,7 @@ public partial class MarginReport : System.Web.UI.Page
 
 
                    var CoresultExCom = (from chpl in _db.change_order_pricing_lists
-                                        where chpl.estimate_id == nEstimateId  && chpl.customer_id == nCustomerId && chpl.client_id == 1 && chpl.chage_order_id == ncoeid
+                                        where chpl.estimate_id == nEstimateId  && chpl.customer_id == nCustomerId && chpl.client_id.ToString().Contains(hdnClientId.Value) && chpl.chage_order_id == ncoeid
                                         select chpl.EconomicsCost);
 
                    int cnExCom = CoresultExCom.Count();
@@ -354,7 +358,7 @@ public partial class MarginReport : System.Web.UI.Page
 
                    decimal TotalCoCostAmount = 0;
 
-                   string strCOCostQ = " SELECT item_id, total_retail_price FROM change_order_pricing_list  where estimate_id =" + nEstimateId + " AND customer_id = " + nCustomerId + " AND client_id = 1 AND chage_order_id ="+ ncoeid;
+                   string strCOCostQ = " SELECT item_id, total_retail_price FROM change_order_pricing_list  where estimate_id =" + nEstimateId + " AND customer_id = " + nCustomerId + " AND client_id in ("+hdnClientId.Value+") AND chage_order_id ="+ ncoeid;
 
                    DataTable dtCOCost = csCommonUtility.GetDataTable(strCOCostQ);
                    foreach (DataRow drCOCost in dtCOCost.Rows)
@@ -362,9 +366,9 @@ public partial class MarginReport : System.Web.UI.Page
                        decimal nCOCostAmt = 0;
                        // int nLaborId = 1;
                        decimal nRetailMulti = 0;
-                       if (_db.item_prices.Where(it => it.item_id == Convert.ToInt32(drCOCost["item_id"]) && it.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).ToList().Count > 0)
+                       if (_db.item_prices.Where(it => it.item_id == Convert.ToInt32(drCOCost["item_id"]) && it.client_id.ToString().Contains(hdnClientId.Value)).ToList().Count > 0)
                        {
-                           item_price itm = _db.item_prices.Single(it => it.item_id == Convert.ToInt32(drCOCost["item_id"]) && it.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+                           item_price itm = _db.item_prices.Single(it => it.item_id == Convert.ToInt32(drCOCost["item_id"]) && it.client_id.ToString().Contains(hdnClientId.Value));
                          
                            //decimal nLaborRate = 0;
                            //decimal nItemCost = 0;
@@ -397,7 +401,7 @@ public partial class MarginReport : System.Web.UI.Page
 
                decimal COComAmount = 0;
                var result2 = (from ppi in _db.co_estimate_commissions
-                             where ppi.estimate_id == nEstimateId && ppi.customer_id == nCustomerId && ppi.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                             where ppi.estimate_id == nEstimateId && ppi.customer_id == nCustomerId && ppi.client_id.ToString().Contains(hdnClientId.Value)
                               select ppi.comission_amount);
                int n2 = result2.Count();
                if (result2 != null && n2 > 0)
@@ -430,7 +434,7 @@ public partial class MarginReport : System.Web.UI.Page
 
                decimal payAmount = 0;
                var result = (from ppi in _db.New_partial_payments
-                             where ppi.estimate_id == nEstimateId && ppi.customer_id == nCustomerId && ppi.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                             where ppi.estimate_id == nEstimateId && ppi.customer_id == nCustomerId && ppi.client_id.ToString().Contains(hdnClientId.Value)
                              select ppi.pay_amount);
                int n = result.Count();
                if (result != null && n > 0)
@@ -451,10 +455,10 @@ public partial class MarginReport : System.Web.UI.Page
                decimal TotalCostAmountasSold = 0;
 
                string strCostQ = " SELECT  pricing_id, pricing_details.client_id, customer_id, estimate_id, pricing_details.location_id, sales_person_id, section_level, item_id, section_name, item_name, measure_unit, item_cost, minimum_qty, quantity, retail_multiplier, labor_rate, labor_id, section_serial, item_cnt, total_direct_price, total_retail_price, is_direct, pricing_type, short_notes,location_name " +
-                   " FROM pricing_details  INNER JOIN location ON pricing_details.location_id=location.location_id AND pricing_details.client_id=location.client_id " +
-                   " WHERE pricing_details.location_id IN (Select location_id from customer_locations WHERE customer_locations.estimate_id =" + nEstimateId + " AND customer_locations.customer_id =" + nCustomerId + " AND customer_locations.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                   " AND pricing_details.section_level IN (Select section_id from customer_sections  WHERE customer_sections.estimate_id =" + nEstimateId + " AND customer_sections.customer_id =" + nCustomerId+ " AND customer_sections.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                   " AND estimate_id=" + nEstimateId + " AND customer_id=" + nCustomerId + " AND pricing_details.client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                   " FROM pricing_details  INNER JOIN location ON pricing_details.location_id=location.location_id  " +
+                   " WHERE pricing_details.location_id IN (Select location_id from customer_locations WHERE customer_locations.estimate_id =" + nEstimateId + " AND customer_locations.customer_id =" + nCustomerId + " AND customer_locations.client_id in (" + hdnClientId.Value + ") ) " +
+                   " AND pricing_details.section_level IN (Select section_id from customer_sections  WHERE customer_sections.estimate_id =" + nEstimateId + " AND customer_sections.customer_id =" + nCustomerId+ " AND customer_sections.client_id in (" + hdnClientId.Value + ") ) " +
+                   " AND estimate_id=" + nEstimateId + " AND customer_id=" + nCustomerId + " AND pricing_details.client_id in (" + hdnClientId.Value +") ";
 
                DataTable dtCost = csCommonUtility.GetDataTable(strCostQ);
                foreach (DataRow drCost in dtCost.Rows)
@@ -493,7 +497,7 @@ public partial class MarginReport : System.Web.UI.Page
 
                decimal nLabor = 0;
                var result4 = (from ppi in _db.vendor_costs
-                              where ppi.estimate_id == nEstimateId && ppi.customer_id == nCustomerId && ppi.category_id == 2 && ppi.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                              where ppi.estimate_id == nEstimateId && ppi.customer_id == nCustomerId && ppi.category_id == 2 && ppi.client_id.ToString().Contains(hdnClientId.Value)
                              select ppi.cost_amount);
                int n4 = result4.Count();
                if (result4 != null && n4 > 0)
@@ -501,7 +505,7 @@ public partial class MarginReport : System.Web.UI.Page
 
                decimal nMaterial = 0;
                var result5 = (from ppi in _db.vendor_costs
-                              where ppi.estimate_id == nEstimateId && ppi.customer_id == nCustomerId && ppi.category_id == 1 && ppi.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                              where ppi.estimate_id == nEstimateId && ppi.customer_id == nCustomerId && ppi.category_id == 1 && ppi.client_id.ToString().Contains(hdnClientId.Value)
                               select ppi.cost_amount);
                int n5 = result5.Count();
                if (result5 != null && n5 > 0)

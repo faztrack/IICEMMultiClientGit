@@ -62,6 +62,8 @@ public partial class AllowanceReport : System.Web.UI.Page
                 string address = cust.address + ",+" + cust.city + ",+" + cust.state + ",+" + cust.zip_code;
                 hypGoogleMap.NavigateUrl = "http://maps.google.com/maps?f=q&source=s_q&hl=en&geocode=&q=" + address;
 
+                hdnClientId.Value = cust.client_id.ToString();
+
             }
 
             if (Request.QueryString.Get("eid") != null)
@@ -76,7 +78,7 @@ public partial class AllowanceReport : System.Web.UI.Page
                     hdnAllowance.Value = "1"; // Set value 1 
                 }
                 customer_estimate cus_est = new customer_estimate();
-                cus_est = _db.customer_estimates.Single(ce => ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value));
+                cus_est = _db.customer_estimates.Single(ce => ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value) && ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value));
 
                 lblEstimateName.Text = cus_est.estimate_name;
                 //lblJobNumber.Text = cus_est.job_number;
@@ -156,7 +158,7 @@ public partial class AllowanceReport : System.Web.UI.Page
             if (nAllowanceId > 0)
                 objalwncdtl = _db.allowance_details.SingleOrDefault(al => al.allowance_id == nAllowanceId);
 
-            objalwncdtl.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+            objalwncdtl.client_id = Convert.ToInt32(hdnClientId.Value);
             objalwncdtl.customer_id = Convert.ToInt32(hdnCustomerId.Value);
             objalwncdtl.estimate_id = Convert.ToInt32(hdnEstimateId.Value);
             objalwncdtl.pricing_id = Convert.ToInt32(dr["pricing_id"]);

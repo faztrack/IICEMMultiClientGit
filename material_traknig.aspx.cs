@@ -45,6 +45,7 @@ public partial class material_traknig : System.Web.UI.Page
             {
                 objCust = _db.customers.SingleOrDefault(c => c.customer_id == nCustomerID);
                 strCustName = objCust.first_name1 + " " + objCust.last_name1;
+                hdnClientId.Value = objCust.client_id.ToString();
             }
 
             lblHeaderTitle.Text = "Material Tracking (" + strCustName + ")";
@@ -422,7 +423,7 @@ public partial class material_traknig : System.Web.UI.Page
 
                         }
 
-                        objfui.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                        objfui.client_id = Convert.ToInt32(hdnClientId.Value);
                         objfui.CustomerId = CustomerId;
                         objfui.estimate_id = EstimateId;
                         objfui.Desccription = "";
@@ -1049,7 +1050,7 @@ public partial class material_traknig : System.Web.UI.Page
                 }
 
             }
-            string strQ = "Delete file_upload_info WHERE upload_fileId=" + nUploadFileId + "  AND type = 2 AND client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+            string strQ = "Delete file_upload_info WHERE upload_fileId=" + nUploadFileId + "  AND type = 2 AND client_id =" + Convert.ToInt32(hdnClientId.Value);
             _db.ExecuteCommand(strQ, string.Empty);
 
             //Set Focus
@@ -1170,7 +1171,7 @@ public partial class material_traknig : System.Web.UI.Page
                         }
 
 
-                        objfui.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                        objfui.client_id = Convert.ToInt32(hdnClientId.Value);
                         objfui.CustomerId = CustomerId;
                         objfui.estimate_id = EstimateId;
                         objfui.Desccription = "";

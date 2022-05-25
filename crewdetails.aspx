@@ -25,6 +25,15 @@
                                 </td>
                                 <td>&nbsp;</td>
                             </tr>
+                           
+                            <tr>
+                                <td align="right">
+                                    <b>Division: </b>
+                                </td>
+                                <td align="left">
+                                    <asp:DropDownList ID="ddlDivision" runat="server" Width="212px"></asp:DropDownList>
+                                </td>
+                            </tr>
                             <tr>
                                 <td width="35%" align="right">
                                     <span class="required">* </span><b>First Name: </b>

@@ -73,7 +73,7 @@
                                             <tr>
                                                 <td style="width: 200px;" align="left" valign="top"><b>Estimate Name:</b> </td>
                                                 <td style="width: auto;">
-                                                    <asp:Label ID="lblEstimateName" Font-Bold="true" runat="server"></asp:Label>
+                                                    <asp:Label ID="lblEstimateName"  runat="server"></asp:Label>
                                                 </td>
                                             </tr>
                                         </table>
@@ -144,6 +144,7 @@
                                                 &nbsp;<asp:HiddenField ID="hdnEstimateId" runat="server" Value="0" />
                                                 <asp:HiddenField ID="hdnSalesPersonId" runat="server" EnableViewState="False"
                                                     Value="0" />
+                                                <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
                                             </td>
                                         </tr>
                                     </table>

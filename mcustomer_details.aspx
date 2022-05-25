@@ -18,6 +18,16 @@
                     <div class="panel-body panel-body-ext">
                         <div class="form-horizontal">
                             <div class="panel-body">
+                                 <div class="form-group form-group-ext-txtArea">
+                                    <asp:Label ID="lblDivision" runat="server" CssClass="col-sm-3 col-md-6 col-lg-3 control-label">Division:</asp:Label>
+                                    <div class="col-sm-9 col-md-3 col-lg-9 col-ext-txtArea">
+                                        <div class="row">
+                                            <div class="col-sm-4 col-md-3 col-lg-4">
+                                                <asp:DropDownList ID="ddlDivision" runat="server" TabIndex="1" CssClass="textBox form-control" OnSelectedIndexChanged="ddlDivision_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="form-group form-group-ext">
                                     <asp:Label ID="Label1" runat="server" CssClass="col-sm-6 col-md-6 col-lg-6 control-label">First Name 1:</asp:Label>
                                     <div class="col-sm-6 col-md-3 col-lg-6 col-ext">
@@ -122,6 +132,7 @@
                                 <div>
                                     <asp:HiddenField ID="hdnCustomerId" runat="server" Value="0" />
                                 </div>
+
                             </div>
                         </div>
                     </div>

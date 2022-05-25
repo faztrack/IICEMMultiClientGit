@@ -53,12 +53,14 @@ public partial class customer_job_status_info : System.Web.UI.Page
                 objCust = _db.customers.Single(c => c.customer_id == nCustomerId);
 
                 rdoconfirm.SelectedValue = Convert.ToInt32(objCust.isJobSatusViewable).ToString();
-                
+                hdnClientId.Value = objCust.client_id.ToString();
+
+
                 lblCustomerName.Text = objCust.first_name1 + " " + objCust.last_name1;
                 if (Convert.ToInt32(hdnEstimateId.Value) > 0)
                 {
                     customer_estimate cus_est = new customer_estimate();
-                    cus_est = _db.customer_estimates.SingleOrDefault(ce => ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value));
+                    cus_est = _db.customer_estimates.SingleOrDefault(ce => ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value) && ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value));
                     if (cus_est.alter_job_number == "" || cus_est.alter_job_number == null)
                         lblCustomerName.Text = objCust.first_name1 + " " + objCust.last_name1 + " ( Job Number: " + cus_est.job_number + " )";
                     else
@@ -812,10 +814,10 @@ public partial class customer_job_status_info : System.Web.UI.Page
             //{
             //    nEstimateId = Convert.ToInt32(cus_est.estimate_id);
             //}
-            if (_db.estimate_payments.Where(pay => pay.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pay.customer_id == Convert.ToInt32(hdnCustomerId.Value) && pay.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).SingleOrDefault() != null)
+            if (_db.estimate_payments.Where(pay => pay.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pay.customer_id == Convert.ToInt32(hdnCustomerId.Value) && pay.client_id == Convert.ToInt32(hdnClientId.Value)).SingleOrDefault() != null)
             {
                 estimate_payment objEstPay = new estimate_payment();
-                objEstPay = _db.estimate_payments.Single(pay => pay.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pay.customer_id == Convert.ToInt32(hdnCustomerId.Value) && pay.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+                objEstPay = _db.estimate_payments.Single(pay => pay.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pay.customer_id == Convert.ToInt32(hdnCustomerId.Value) && pay.client_id == Convert.ToInt32(hdnClientId.Value));
                 strContractDate = objEstPay.contract_date;
             }
 

@@ -44,6 +44,10 @@ public partial class mcustomerlist : System.Web.UI.Page
             {
                 Response.Redirect("mobile.aspx");
             }
+            else
+            {               
+                hdnClientId.Value = ((userinfo)Session["oUser"]).client_id.ToString();                
+            }
             if (Page.User.IsInRole("cus001") == false)
             {
                 // No Permission Page.
@@ -183,7 +187,7 @@ public partial class mcustomerlist : System.Web.UI.Page
 
             HyperLink hypPhone = (HyperLink)e.Row.FindControl("hypPhone");
             HyperLink hypMobile = (HyperLink)e.Row.FindControl("hypMobile");
-            if (cust.mobile.Length > 2)
+            if (cust.mobile != null )
             {
                 hypPhone.NavigateUrl = "tel:" + cust.phone;
                 hypMobile.NavigateUrl = "tel:" + cust.mobile;
@@ -197,7 +201,7 @@ public partial class mcustomerlist : System.Web.UI.Page
 
             }
             // Customer Email
-        
+
             HyperLink hypEmail = (HyperLink)e.Row.FindControl("hypEmail");
             hypEmail.NavigateUrl = "mailto:" + cust.email;
             hypEmail.Text = cust.email;
@@ -216,7 +220,7 @@ public partial class mcustomerlist : System.Web.UI.Page
 
             //// Customer Estimates
             DropDownList ddlEst = (DropDownList)e.Row.FindControl("ddlEst");
-            string strQ = "select * from customer_estimate where customer_id=" + ncid + " and client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+            string strQ = "select * from customer_estimate where customer_id=" + ncid + " and client_id in (" + hdnClientId.Value +")";
             IEnumerable<customer_estimate_model> list = _db.ExecuteQuery<customer_estimate_model>(strQ, string.Empty);
 
             ddlEst.DataSource = list;
@@ -228,18 +232,18 @@ public partial class mcustomerlist : System.Web.UI.Page
 
             hyp_SiteReview.NavigateUrl = "msiteviewlist.aspx?nestid=1&nbackId=1&cid=" + ncid;
 
-            if (_db.customer_estimates.Where(ce => ce.customer_id == ncid && ce.client_id == 1).ToList().Count > 0)
+            if (_db.customer_estimates.Where(ce => ce.customer_id == ncid && ce.client_id.ToString().Contains(hdnClientId.Value)).ToList().Count > 0)
             {
                 int nEstId = 0;
                 var result = (from ce in _db.customer_estimates
-                              where ce.customer_id == ncid && ce.client_id == 1
+                              where ce.customer_id == ncid && ce.client_id.ToString().Contains(hdnClientId.Value)
                               select ce.estimate_id);
 
                 int n = result.Count();
                 if (result != null && n > 0)
                     nEstId = result.Max();
                 ddlEst.SelectedValue = nEstId.ToString();
-                string strQ1 = "select * from customer_estimate where customer_id=" + ncid + " AND estimate_id = " + Convert.ToInt32(ddlEst.SelectedValue) + " and client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                string strQ1 = "select * from customer_estimate where customer_id=" + ncid + " AND estimate_id = " + Convert.ToInt32(ddlEst.SelectedValue) + " and client_id in (" + hdnClientId.Value + ")";
                 IEnumerable<customer_estimate_model> list1 = _db.ExecuteQuery<customer_estimate_model>(strQ1, string.Empty);
 
 
@@ -328,29 +332,15 @@ public partial class mcustomerlist : System.Web.UI.Page
         hypProjectNotes.Text = "Project Notes<span class='glyphicon glyphicon-list-alt'></span>";
         hypProjectNotes.NavigateUrl = "mProjectNotes.aspx?cid=" + ncid;
 
-        Label lblPhone = (Label)diitem.FindControl("lblPhone");
-        lblPhone.Text = cust.phone;
-
-        // Customer Email
-        Label lblEmail = (Label)diitem.FindControl("lblEmail");
-        lblEmail.Text = cust.email;
-
-        // Customer Address in Google Map
-        Label lblAddress = (Label)diitem.FindControl("lblAddress");
-        lblAddress.Text = strAddress;
-
-        // Customer Address in Google Map
-        Label lblCityStateZip = (Label)diitem.FindControl("lblCityStateZip");
-        lblCityStateZip.Text = strCityStateZip;
+        
 
 
         DropDownList ddlEst = (DropDownList)diitem.FindControl("ddlEst");
         HyperLink hyp_SiteReview = (HyperLink)diitem.FindControl("hyp_SiteReview");
 
 
-        string strQ2 = "select * from customer_estimate where customer_id=" + ncid + " AND estimate_id != " + Convert.ToInt32(ddlEst.SelectedValue) + " and client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
-        IEnumerable<customer_estimate_model> list2 = _db.ExecuteQuery<customer_estimate_model>(strQ2, string.Empty);
-        string strQ1 = "select * from customer_estimate where customer_id=" + ncid + " AND estimate_id = " + Convert.ToInt32(ddlEst.SelectedValue) + " and client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        
+        string strQ1 = "select * from customer_estimate where customer_id=" + ncid + " AND estimate_id = " + Convert.ToInt32(ddlEst.SelectedValue) + " and client_id in (" + hdnClientId.Value + ")";
         IEnumerable<customer_estimate_model> list1 = _db.ExecuteQuery<customer_estimate_model>(strQ1, string.Empty);
 
         foreach (customer_estimate_model cus_est in list1)

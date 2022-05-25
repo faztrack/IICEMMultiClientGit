@@ -69,9 +69,47 @@ public partial class user_management : System.Web.UI.Page
             DataClassesDataContext _db = new DataClassesDataContext();
             List<user_info> UserList = _db.user_infos.ToList();
             Session.Add("uSearch", UserList);
+
+            BindRoles();
+            BindDivision();
             GetUsers(0);
+            
         }
     }
+
+    private void BindRoles()
+    {
+        DataClassesDataContext _db = new DataClassesDataContext();
+        var roles = from ro in _db.roles
+                    select ro;
+        ddlRole.DataSource = roles;
+        ddlRole.DataTextField = "role_name";
+        ddlRole.DataValueField = "role_id";        
+        ddlRole.DataBind();
+        ddlRole.Items.Insert(0, "All");
+    }
+
+    private void BindDivision()
+    {
+        try
+        {
+            string sql = "select id, division_name from division order by division_name";
+            DataTable dt = csCommonUtility.GetDataTable(sql);
+            ddlDivision.DataSource = dt;
+            ddlDivision.DataTextField = "division_name";
+            ddlDivision.DataValueField = "id";            
+            ddlDivision.DataBind();
+            ddlDivision.Items.Insert(0, "All");
+
+
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+    }
+
+
     protected void GetUsers(int nPageNo)
     {
         string strCondition = string.Empty;
@@ -111,11 +149,28 @@ public partial class user_management : System.Web.UI.Page
 
         }
 
+        if (ddlRole.SelectedItem.Text != "All")
+        {
+            if (strCondition.Length > 2)
+                strCondition += " AND user_info.role_id=" + ddlRole.SelectedValue;
+            else
+                strCondition = " WHERE  user_info.role_id=" + ddlRole.SelectedValue;
+        }
+
+
+        if (ddlDivision.SelectedItem.Text != "All")
+        {
+            if (strCondition.Length > 2)
+                strCondition += " AND user_info.client_id in (" + ddlDivision.SelectedValue +") ";
+            else
+                strCondition = " WHERE  user_info.client_id in (" + ddlDivision.SelectedValue + ") ";
+        }
+
         DataClassesDataContext _db = new DataClassesDataContext();
         grdUserList.PageIndex = nPageNo;
 
 
-        string strQ = "SELECT user_id, first_name, last_name, address, city, state, zip, phone, fax, email,  role_id, is_active,  last_login_time, " +
+        string strQ = "SELECT user_id, first_name, last_name, address, city, state, zip, phone, fax, email, client_id,  role_id, is_active, last_login_time, " +
                       " company_email, case when EmailIntegrationType = 1 then 'Yes' else 'No' END  AS EmailIntegration FROM user_info " + strCondition + " order by last_name asc";
 
 
@@ -131,7 +186,7 @@ public partial class user_management : System.Web.UI.Page
             grdUserList.PageSize = 200;
         }
         grdUserList.DataSource = uList;
-        grdUserList.DataKeyNames = new string[] { "user_id", "is_active" };
+        grdUserList.DataKeyNames = new string[] { "user_id", "is_active", "client_id" };
         grdUserList.DataBind();
         lblCurrentPageNo.Text = Convert.ToString(nPageNo + 1);
         if (nPageNo == 0)
@@ -167,28 +222,34 @@ public partial class user_management : System.Web.UI.Page
             DataClassesDataContext _db = new DataClassesDataContext();
             int nuid = Convert.ToInt32(grdUserList.DataKeys[e.Row.RowIndex].Values[0]);
             bool bAcitve = Convert.ToBoolean(grdUserList.DataKeys[e.Row.RowIndex].Values[1]);
+            string client_id = grdUserList.DataKeys[e.Row.RowIndex].Values[2].ToString().TrimEnd(',');            
+            string divisionName = csCommonUtility.GetDivisionName(client_id);
+
+            Label lblDivision = (Label)e.Row.FindControl("lblDivision");
+            lblDivision.Text = divisionName;
+
             if (bAcitve)
             {
-                e.Row.Cells[6].Text = "Yes";
+                e.Row.Cells[8].Text = "Yes";
             }
             else
             {
-                e.Row.Cells[6].Text = "No";
+                e.Row.Cells[8].Text = "No";
             }
-            int nRoleId = Convert.ToInt32(e.Row.Cells[5].Text);
+            int nRoleId = Convert.ToInt32(e.Row.Cells[6].Text);
 
             if (nRoleId == 1)
-                e.Row.Cells[5].Text = "Admin";
+                e.Row.Cells[6].Text = "Admin";
             else if (nRoleId == 2)
-                e.Row.Cells[5].Text = "Manager";
+                e.Row.Cells[6].Text = "Manager";
             else if (nRoleId == 3)
-                e.Row.Cells[5].Text = "Sales";
+                e.Row.Cells[6].Text = "Sales";
             else if (nRoleId == 4)
-                e.Row.Cells[5].Text = "Superintendent";
+                e.Row.Cells[6].Text = "Superintendent";
             else if (nRoleId == 5)
-                e.Row.Cells[5].Text = "Operation";
+                e.Row.Cells[6].Text = "Operation";
 
-            e.Row.Cells[4].Text = DateTime.Parse(Convert.ToDateTime(e.Row.Cells[4].Text).ToShortDateString() + " " + Convert.ToDateTime(e.Row.Cells[4].Text).ToLongTimeString()).ToString("g");
+            e.Row.Cells[5].Text = DateTime.Parse(Convert.ToDateTime(e.Row.Cells[5].Text).ToShortDateString() + " " + Convert.ToDateTime(e.Row.Cells[5].Text).ToLongTimeString()).ToString("g");
 
             // Customer Address
             //user_info uinfo = new user_info();
@@ -251,6 +312,16 @@ public partial class user_management : System.Web.UI.Page
     {
         txtSearch.Text = "";
         ddlStatus.SelectedValue = "3";
+        GetUsers(0);
+    }
+
+    protected void ddlRole_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        GetUsers(0);
+    }
+
+    protected void ddlDivision_SelectedIndexChanged(object sender, EventArgs e)
+    {
         GetUsers(0);
     }
 }

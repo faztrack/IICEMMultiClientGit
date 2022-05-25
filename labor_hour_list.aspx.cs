@@ -35,7 +35,7 @@ public partial class labor_hour_list : System.Web.UI.Page
             if (Session["oUser"] == null)
             {
                 Response.Redirect(ConfigurationManager.AppSettings["LoginPage"].ToString());
-            }
+            }           
             if (Page.User.IsInRole("t04") == false)
             {
                 // No Permission Page.

@@ -1001,6 +1001,7 @@
             <div id="map" runat="server" style="height: 300px; margin: 0;"></div>
         </div>
 
+        <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
         <asp:HiddenField ID="hdnLatitude" runat="server" Value="0" />
         <asp:HiddenField ID="hdnLongitude" runat="server" Value="0" />
         <asp:HiddenField ID="hdnDistance" runat="server" Value="0" />

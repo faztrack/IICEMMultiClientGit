@@ -80,6 +80,11 @@ public partial class crewlist : System.Web.UI.Page
             {
                 Response.Redirect(ConfigurationManager.AppSettings["LoginPage"].ToString());
             }
+            else
+            {
+                hdnClientId.Value = ((userinfo)Session["oUser"]).client_id.ToString();
+            }
+
             if (Page.User.IsInRole("t01") == false)
             {
                 // No Permission Page.
@@ -91,64 +96,55 @@ public partial class crewlist : System.Web.UI.Page
             Session.Add("sSearch", crewList);
 
 
-            //var item = from u in _db.Crew_Details
-            //           where u.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && u.is_active == true
-            //           orderby u.full_name ascending
-            //           select u;
-            //Session.Add("sCrews", csCommonUtility.LINQToDataTable(item));
-
-            string strCondition = "";
-
-            string strQ = "";
-
-            strCondition += " where is_active =1 AND client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
-            strQ = "SELECT crew_id, client_id, first_name, last_name, phone, is_active, full_name,email,username,CreatedDate " +
-               " FROM Crew_Details " +
-               "" + strCondition + "" +
-              " ORDER BY full_name asc";
-
-            IEnumerable<csCrewList> clist = _db.ExecuteQuery<csCrewList>(strQ, string.Empty).ToList();
-            Session.Add("sCrews", csCommonUtility.LINQToDataTable(clist));
-            GetCrew(0);
-           // GetSearchedCrews();
+            
+            BindDivision();           
+            GetCrew();
+           
         }
     }
-    protected void GetCrew(int nPageNo)
+
+    private void BindDivision()
+    {
+
+        string sql = "select id, division_name from division order by division_name";
+        DataTable dt = csCommonUtility.GetDataTable(sql);
+        ddlDivision.DataSource = dt;
+        ddlDivision.DataTextField = "division_name";
+        ddlDivision.DataValueField = "id";
+        ddlDivision.DataBind();
+        ddlDivision.Items.Insert(0, "All");
+
+    }
+
+    protected void BindCrew(int nPageNo)
     {
 
         try
         {
+
+
             if (Session["sCrews"] != null)
             {
-
-                if (ddlItemPerPage.SelectedValue != "4")
-                {
-                    grdCrewList.PageSize = Convert.ToInt32(ddlItemPerPage.SelectedValue);
-                }
-                else
-                {
-                    grdCrewList.PageSize = 200;
-                }
-
                 DataTable dtCrews = (DataTable)Session["sCrews"];
-               // grdCrewList.PageSize = Convert.ToInt32(ddlItemPerPage.SelectedValue);
+                lblCurrentPageNo.Text = dtCrews.Rows.Count.ToString();
+                grdCrewList.PageSize = Convert.ToInt32(ddlItemPerPage.SelectedValue);
                 grdCrewList.PageIndex = nPageNo;
                 grdCrewList.DataSource = dtCrews;
-                grdCrewList.DataKeyNames = new string[] { "crew_id", "is_active" };
+                grdCrewList.DataKeyNames = new string[] { "crew_id", "client_id", "Status" };
                 grdCrewList.DataBind();
 
+            }
+            else
+            {
+                lblCurrentPageNo.Text = "0";
             }
         }
         catch (Exception ex)
         {
-
+            lblResult.Text = csCommonUtility.GetSystemErrorMessage(ex.Message);
         }
+            
 
-       
-        
-        //grdCrewList.DataSource = item;
-        //grdCrewList.DataKeyNames = new string[] { "crew_id", "is_active" };
-        //grdCrewList.DataBind();
         lblCurrentPageNo.Text = Convert.ToString(nPageNo + 1);
         if (nPageNo == 0)
         {
@@ -173,7 +169,7 @@ public partial class crewlist : System.Web.UI.Page
         }
     }
 
-   private void GetSearchedCrews()
+   private void GetCrew()
    {
 
        try
@@ -185,7 +181,7 @@ public partial class crewlist : System.Web.UI.Page
 
            string strQ = "";
            string strKey = "";
-           strCondition += " where client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+           strCondition += " where client_id in ( " + hdnClientId.Value + " ) ";
 
            if (txtSearch.Text.Trim() != "")
            {
@@ -202,29 +198,41 @@ public partial class crewlist : System.Web.UI.Page
                                    " username LIKE '%" + strKey + "%' )";
 
            }
-           if (ddlStatus.SelectedItem.Text != "All")
+
+            if (ddlDivision.SelectedItem.Text != "All")
+            {
+                if (strCondition.Length > 2)
+                    strCondition += " AND client_id in (" + ddlDivision.SelectedValue + ") ";
+                else
+                    strCondition = " WHERE client_id in (" + ddlDivision.SelectedValue + ") ";
+            }
+
+            if (ddlStatus.SelectedItem.Text != "All")
            {
 
 
                strCondition += " AND is_active=" + Convert.ToInt32(ddlStatus.SelectedValue);
            }
+            
 
-           strQ = "SELECT crew_id, client_id, first_name, last_name, phone, is_active, full_name,email,username,CreatedDate " +
-                " FROM Crew_Details " +
+            strQ = "SELECT crew_id, client_id, first_name, last_name, phone, is_active, full_name,email,username,CreatedDate, " +                   
+                  " case when is_active=1 then 'Active'" +
+                  " else 'InActive' end as Status " +
+                " FROM  Crew_Details " + 
                 "" + strCondition + "" +
                " ORDER BY full_name asc";
 
-           IEnumerable<csCrewList> clist = _db.ExecuteQuery<csCrewList>(strQ, string.Empty).ToList();
-           Session.Add("sCrews", csCommonUtility.LINQToDataTable(clist));
+            DataTable dt = csCommonUtility.GetDataTable(strQ);
+           Session.Add("sCrews", dt);
 
            
 
-           GetCrew(0);
+           BindCrew(0);
        }
        catch( Exception ex)
        {
-
-       }
+            lblResult.Text = csCommonUtility.GetSystemErrorMessage(ex.Message);
+        }
    }
     protected void btnAddNew_Click(object sender, EventArgs e)
     {
@@ -234,23 +242,25 @@ public partial class crewlist : System.Web.UI.Page
     {
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
+                       
+            Label lblDivision = e.Row.FindControl("lblDivision") as Label;
+            int clientId = Convert.ToInt32(grdCrewList.DataKeys[e.Row.RowIndex].Values[1]);
+            lblDivision.Text = csCommonUtility.GetDivisionName(clientId.ToString());
 
-            int crId = Convert.ToInt32(grdCrewList.DataKeys[e.Row.RowIndex].Values[0]);
-           
-            if (Convert.ToBoolean(e.Row.Cells[3].Text) == true)
-                e.Row.Cells[3].Text = "Yes";
-            else
-                e.Row.Cells[3].Text = "No";
+            Label lblStatus = e.Row.FindControl("lblStatus") as Label;
+            string status = grdCrewList.DataKeys[e.Row.RowIndex].Values[2].ToString();
+            lblStatus.Text = status;
+
         }
     }
     protected void grdCrewList_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {
-        GetCrew(e.NewPageIndex);
+        BindCrew(e.NewPageIndex);
     }
     protected void btnSearch_Click(object sender, EventArgs e)
     {
-        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnSearch.ID, btnSearch.GetType().Name, "Click"); 
-        GetSearchedCrews();
+        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnSearch.ID, btnSearch.GetType().Name, "Click");
+        GetCrew();
         // GetCrew(0);
     }
     protected void btnNext_Click(object sender, EventArgs e)
@@ -258,25 +268,25 @@ public partial class crewlist : System.Web.UI.Page
         KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnNext.ID, btnNext.GetType().Name, "Click"); 
         int nCurrentPage = 0;
         nCurrentPage = Convert.ToInt32(lblCurrentPageNo.Text);
-        GetCrew(nCurrentPage);
+        BindCrew(nCurrentPage);
     }
     protected void btnPrevious_Click(object sender, EventArgs e)
     {
         KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnPrevious.ID, btnPrevious.GetType().Name, "Click"); 
         int nCurrentPage = 0;
         nCurrentPage = Convert.ToInt32(lblCurrentPageNo.Text);
-        GetCrew(nCurrentPage - 2);
+        BindCrew(nCurrentPage - 2);
     }
     protected void ddlItemPerPage_SelectedIndexChanged(object sender, EventArgs e)
     {
-        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, ddlItemPerPage.ID, ddlItemPerPage.GetType().Name, "SelectedIndexChanged"); 
-       // GetSearchedCrews();
-        GetCrew(0);
+        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, ddlItemPerPage.ID, ddlItemPerPage.GetType().Name, "SelectedIndexChanged");
+        // GetSearchedCrews();
+        BindCrew(0);
     }
     protected void ddlStatus_SelectedIndexChanged(object sender, EventArgs e)
     {
-        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, ddlStatus.ID, ddlStatus.GetType().Name, "SelectedIndexChanged"); 
-        GetSearchedCrews();
+        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, ddlStatus.ID, ddlStatus.GetType().Name, "SelectedIndexChanged");
+        GetCrew();
         
     }
 
@@ -299,14 +309,14 @@ public partial class crewlist : System.Web.UI.Page
             txtSearch_AutoCompleteExtender.ServiceMethod = "GetUserName";
         }
 
-        GetCrew(0);
+        GetCrew();
     }
 
     protected void lnkViewAll_Click(object sender, EventArgs e)
     {
         ddlStatus.SelectedValue = "1";
         txtSearch.Text = "";
-        GetSearchedCrews();
+        GetCrew();
     }
     protected void grdCrewList_Sorting(object sender, GridViewSortEventArgs e)
     {
@@ -335,8 +345,13 @@ public partial class crewlist : System.Web.UI.Page
         lblSortedBy.Text = lblSortedBy.Text.Replace("full_name", "Crew Name");
         lblSortedBy.Text = lblSortedBy.Text.Replace("username", "Username");
 
-        GetCrew(0);
+        BindCrew(0);
       
         
+    }
+
+    protected void ddlDivision_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        GetCrew();
     }
 }

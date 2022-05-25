@@ -49,12 +49,13 @@ public partial class customer_new_schedule : System.Web.UI.Page
                 lblEmail.Text = cust.email;
                 lblPhone.Text = cust.phone;
                 lbltopHead.Text = "Schedule for " + cust.first_name1 + " " + cust.last_name1;
+                hdnClientId.Value = cust.client_id.ToString();
 
                 // Get Estimate Info
                 if (Convert.ToInt32(hdnEstimateId.Value) > 0)
                 {
                     customer_estimate cus_est = new customer_estimate();
-                    cus_est = _db.customer_estimates.Single(ce => ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value));
+                    cus_est = _db.customer_estimates.Single(ce => ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value) && ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value));
                     lblEstimateName.Text = cus_est.estimate_name;
                     ddlStatus.SelectedValue = cus_est.status_id.ToString();
                     ddlStatus.Enabled = false;
@@ -141,12 +142,12 @@ public partial class customer_new_schedule : System.Web.UI.Page
         var price_detail = from p in _db.pricing_details
                            join lc in _db.locations on p.location_id equals lc.location_id
                            where (from clc in _db.customer_locations
-                                  where clc.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && clc.customer_id == Convert.ToInt32(hdnCustomerId.Value) && clc.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                  where clc.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && clc.customer_id == Convert.ToInt32(hdnCustomerId.Value) && clc.client_id == Convert.ToInt32(hdnClientId.Value)
                                   select clc.location_id).Contains(p.location_id) &&
                                   (from cs in _db.customer_sections
-                                   where cs.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cs.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                   where cs.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cs.client_id == Convert.ToInt32(hdnClientId.Value)
                                    select cs.section_id).Contains(p.section_level)
-                                   && p.is_direct == nDirectId && p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && p.pricing_type == "A"
+                                   && p.is_direct == nDirectId && p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && p.client_id == Convert.ToInt32(hdnClientId.Value) && p.pricing_type == "A"
                            orderby p.execution_unit, lc.location_name ascending
 
                            select new PricingDetailModel()
@@ -247,7 +248,7 @@ public partial class customer_new_schedule : System.Web.UI.Page
         DataClassesDataContext _db = new DataClassesDataContext();
         TextBox txtUnitExe = (TextBox)grdSelectedItem.Rows[e.RowIndex].FindControl("txtUnitExe");
         int nPricingId = Convert.ToInt32(grdSelectedItem.DataKeys[Convert.ToInt32(e.RowIndex)].Values[0]);
-        string strQ = "UPDATE pricing_details SET execution_unit='" + txtUnitExe.Text.Replace("'", "''") + "' WHERE pricing_id =" + nPricingId + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        string strQ = "UPDATE pricing_details SET execution_unit='" + txtUnitExe.Text.Replace("'", "''") + "' WHERE pricing_id =" + nPricingId + " AND client_id=" + Convert.ToInt32(hdnClientId.Value);
         _db.ExecuteCommand(strQ, string.Empty);
 
 
@@ -269,7 +270,7 @@ public partial class customer_new_schedule : System.Web.UI.Page
         DataClassesDataContext _db = new DataClassesDataContext();
         TextBox txtUnitExe1 = (TextBox)grdSelectedItem2.Rows[e.RowIndex].FindControl("txtUnitExe1");
         int nPricingId = Convert.ToInt32(grdSelectedItem2.DataKeys[Convert.ToInt32(e.RowIndex)].Values[0]);
-        string strQ = "UPDATE pricing_details SET execution_unit='" + txtUnitExe1.Text.Replace("'", "''") + "' WHERE pricing_id =" + nPricingId + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        string strQ = "UPDATE pricing_details SET execution_unit='" + txtUnitExe1.Text.Replace("'", "''") + "' WHERE pricing_id =" + nPricingId + " AND client_id=" + Convert.ToInt32(hdnClientId.Value);
         _db.ExecuteCommand(strQ, string.Empty);
 
 

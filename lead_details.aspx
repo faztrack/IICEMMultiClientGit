@@ -74,7 +74,19 @@
                                 <td>&nbsp;</td>
                                 <td>&nbsp;</td>
                             </tr>
-                             <tr>
+                              <tr>
+
+                                <td align="right">
+                                    <b>Division: </b>
+                                </td>
+                                <td align="left">
+                                    <asp:DropDownList ID="ddlDivision" runat="server" Width="212px" OnSelectedIndexChanged="ddlDivision_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+                                </td>
+
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                            </tr>
+                            <tr>
                                 <td align="right" width="15%">
                                     <span class="required">* </span><b>First Name 1: </b>
                                 </td>
@@ -287,6 +299,9 @@
                                 </td>
                             </tr>
 
+                          
+
+
                             <tr>
                                 <td align="right" valign="top">
                                     <asp:Label ID="Label4" runat="server">Notes:</asp:Label>
@@ -318,8 +333,8 @@
                         <asp:Button ID="btnCancel" runat="server" Text="Close" TabIndex="24"
                             OnClick="btnCancel_Click" Width="80px" CssClass="button" />
                         <asp:Label ID="lblLoadTime" runat="server" Text="" ForeColor="White"></asp:Label>
-                         <asp:Button ID="btnUpdateLatlong" runat="server" Text="Update Lat long" TabIndex="24" Visible="false"
-                            OnClick="btnUpdateLatlong_Click"  CssClass="button" />
+                        <asp:Button ID="btnUpdateLatlong" runat="server" Text="Update Lat long" TabIndex="24" Visible="false"
+                            OnClick="btnUpdateLatlong_Click" CssClass="button" />
 
                     </td>
                 </tr>
@@ -1088,10 +1103,11 @@
                                 <tr>
                                     <td align="center">
                                         <asp:HiddenField ID="hdnCustomerId" runat="server" Value="0" />
+                                        <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
                                         <asp:HiddenField ID="hdnCallLogId" runat="server" Value="0" />
                                         <asp:HiddenField ID="hdnEmailType" runat="server" Value="2" />
                                         <asp:HiddenField ID="hdnCustEmail" runat="server" Value="" />
-                                         <asp:HiddenField ID="hdnEstimateId" runat="server" Value="0" />
+                                        <asp:HiddenField ID="hdnEstimateId" runat="server" Value="0" />
                                         <%--<cc1:CalendarExtender ID="appointmentdate" runat="server"
                                             Format="MM/dd/yyyy" PopupButtonID="imgAppointmentDate"
                                             PopupPosition="BottomLeft" TargetControlID="txtAppointmentDate">

@@ -50,7 +50,8 @@ public partial class ProjectNotes : System.Web.UI.Page
                 Session.Add("CustomerId", hdnCustomerId.Value);
                 DataClassesDataContext _db = new DataClassesDataContext();
                 customer cust = new customer();
-                cust = _db.customers.Single(c => c.customer_id == Convert.ToInt32(hdnCustomerId.Value));
+                cust = _db.customers.SingleOrDefault(c => c.customer_id == Convert.ToInt32(hdnCustomerId.Value));
+
 
                 company_profile com = new company_profile();
                 if (_db.company_profiles.Where(cp => cp.client_id == 1).SingleOrDefault() != null)
@@ -1210,10 +1211,10 @@ public partial class ProjectNotes : System.Web.UI.Page
         Session["ProjectNote"] = dv.ToTable();
 
         dtProjectNote = (DataTable)Session["ProjectNote"];
-
+        LoadSectionSec();
         Session.Add("ProjectNote", dtProjectNote);
         grdProjectNote.DataSource = dtProjectNote;
-        grdProjectNote.DataKeyNames = new string[] { "ProjectNoteId" };
+        grdProjectNote.DataKeyNames = new string[] { "ProjectNoteId", "section_id" };
         grdProjectNote.DataBind();
 
     }

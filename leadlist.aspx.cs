@@ -32,7 +32,7 @@ public partial class leadlist : System.Web.UI.Page
     {
         if (HttpContext.Current.Session["lSearch"] != null)
         {
-            List<customer> cList = (List<customer>)HttpContext.Current.Session["lSearch"];
+            List<csCustomer> cList = (List<csCustomer>)HttpContext.Current.Session["lSearch"];
             return (from c in cList
                     where c.company.ToLower().StartsWith(prefixText.ToLower())
                     select c.company).Take<String>(count).ToArray();
@@ -51,7 +51,7 @@ public partial class leadlist : System.Web.UI.Page
     {
         if (HttpContext.Current.Session["lSearch"] != null)
         {
-            List<customer> cList = (List<customer>)HttpContext.Current.Session["lSearch"];
+            List<csCustomer> cList = (List<csCustomer>)HttpContext.Current.Session["lSearch"];
             return (from c in cList
                     where c.last_name1.Trim().ToLower().StartsWith(prefixText.Trim().ToLower())
                     select c.last_name1).Take<String>(count).ToArray();
@@ -70,7 +70,7 @@ public partial class leadlist : System.Web.UI.Page
     {
         if (HttpContext.Current.Session["lSearch"] != null)
         {
-            List<customer> cList = (List<customer>)HttpContext.Current.Session["lSearch"];
+            List<csCustomer> cList = (List<csCustomer>)HttpContext.Current.Session["lSearch"];
             return (from c in cList
                     where c.first_name1.Trim().ToLower().StartsWith(prefixText.Trim().ToLower())
                     select c.first_name1).Take<String>(count).ToArray();
@@ -89,7 +89,7 @@ public partial class leadlist : System.Web.UI.Page
     {
         if (HttpContext.Current.Session["lSearch"] != null)
         {
-            List<customer> cList = (List<customer>)HttpContext.Current.Session["lSearch"];
+            List<csCustomer> cList = (List<csCustomer>)HttpContext.Current.Session["lSearch"];
             return (from c in cList
                     where c.address.ToLower().StartsWith(prefixText.ToLower())
                     select c.address).Take<String>(count).ToArray();
@@ -108,7 +108,7 @@ public partial class leadlist : System.Web.UI.Page
     {
         if (HttpContext.Current.Session["lSearch"] != null)
         {
-            List<customer> cList = (List<customer>)HttpContext.Current.Session["lSearch"];
+            List<csCustomer> cList = (List<csCustomer>)HttpContext.Current.Session["lSearch"];
             return (from c in cList
                     where c.email.ToLower().StartsWith(prefixText.ToLower())
                     select c.email).Take<String>(count).ToArray();
@@ -126,7 +126,7 @@ public partial class leadlist : System.Web.UI.Page
     {
         if (HttpContext.Current.Session["lSearch"] != null)
         {
-            List<customer> cList = (List<customer>)HttpContext.Current.Session["lSearch"];
+            List<csCustomer> cList = (List<csCustomer>)HttpContext.Current.Session["lSearch"];
             return (from c in cList
                     where c.phone.ToLower().Contains(prefixText.ToLower())
                     select c.phone).Take<String>(count).ToArray();
@@ -159,7 +159,7 @@ public partial class leadlist : System.Web.UI.Page
             {
                 userinfo oUser = (userinfo)Session["oUser"];
                 hdnEmailType.Value = oUser.EmailIntegrationType.ToString();
-
+                hdnClientId.Value = oUser.client_id.ToString();
             }
 
             if (Page.User.IsInRole("le01") == false)
@@ -178,6 +178,7 @@ public partial class leadlist : System.Web.UI.Page
 
                 customer cust = new customer();
                 cust = _db.customers.Single(c => c.customer_id == nCustomerId);
+                
                 if (cust.isCustomer == 0)
                 {
                     Session.Add("LeadId", nCustomerId.ToString());
@@ -204,13 +205,17 @@ public partial class leadlist : System.Web.UI.Page
 
 
             // Get Leads
-            # region Get Leads
+            #region Get Leads
+            userinfo obj = (userinfo)Session["oUser"];
 
+            //List<customer> LeadList = _db.customers.Where(c=>c.client_id.ToString().Contains(obj.client_id)).ToList();
 
-            List<customer> LeadList = _db.customers.ToList();
+            string strQ = "select * from customers where client_id in (" + hdnClientId.Value + " )  ";
+            IEnumerable<csCustomer> LeadList = _db.ExecuteQuery<csCustomer>(strQ, string.Empty).ToList();
             Session.Add("lSearch", LeadList);
 
             # endregion
+            BindDivision();
             BindSalesPerson();
             BindSuperintendent();
             BindLeadSource();
@@ -240,7 +245,7 @@ public partial class leadlist : System.Web.UI.Page
     private void BindSalesPerson()
     {
         DataClassesDataContext _db = new DataClassesDataContext();
-        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1  and is_sales=1 and sales_person.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " order by sales_person_id asc";
+        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1  and is_sales=1 and sales_person.client_id in (" + hdnClientId.Value + ") order by sales_person_id asc";
         List<userinfo> mList = _db.ExecuteQuery<userinfo>(strQ, string.Empty).ToList();
         ddlSalesRep.DataSource = mList;
         ddlSalesRep.DataTextField = "sales_person_name";
@@ -284,6 +289,7 @@ public partial class leadlist : System.Web.UI.Page
 
     }
 
+
     private void BindSuperintendent()
     {
         DataClassesDataContext _db = new DataClassesDataContext();
@@ -315,34 +321,35 @@ public partial class leadlist : System.Web.UI.Page
 
 
         string strCondition = "";
+        strCondition = " Where customers.client_id in (" + obj.client_id + ") ";
 
         if (txtSearch.Text.Trim() != "")
         {
             string str = txtSearch.Text.Trim();
             if (ddlSearchBy.SelectedValue == "1")
             {
-                strCondition = " customers.first_name1 LIKE '%" + str.Replace("'", "''") + "%'";
+                strCondition += " AND customers.first_name1 LIKE '%" + str.Replace("'", "''") + "%'";
             }
             else if (ddlSearchBy.SelectedValue == "2")
             {
-                strCondition = "  customers.last_name1 LIKE '%" + str.Replace("'", "''") + "%'";
+                strCondition += " AND customers.last_name1 LIKE '%" + str.Replace("'", "''") + "%'";
             }
             else if (ddlSearchBy.SelectedValue == "3")
             {
 
-                strCondition = "  customers.email LIKE '%" + str + "%'";
+                strCondition += " AND customers.email LIKE '%" + str + "%'";
             }
             else if (ddlSearchBy.SelectedValue == "4")
             {
-                strCondition = "  customers.address LIKE '%" + str.Replace("'", "''") + "%'";
+                strCondition += " AND customers.address LIKE '%" + str.Replace("'", "''") + "%'";
             }
             else if (ddlSearchBy.SelectedValue == "6")
             {
-                strCondition = "  customers.company LIKE '%" + str.Replace("'", "''") + "%'";
+                strCondition += "  AND customers.company LIKE '%" + str.Replace("'", "''") + "%'";
             }
             else if (ddlSearchBy.SelectedValue == "7")
             {
-                strCondition = "  customers.phone LIKE '%" + str.Replace("'", "''") + "%'";
+                strCondition += " AND customers.phone LIKE '%" + str.Replace("'", "''") + "%'";
             }
         }
         else
@@ -414,6 +421,15 @@ public partial class leadlist : System.Web.UI.Page
                 }
 
             }
+
+            if (ddlDivision.SelectedItem.Text != "All")
+            {
+                if (strCondition.Length > 2)
+                    strCondition += " AND customers.client_id in (" + ddlDivision.SelectedValue + ") ";
+                else
+                    strCondition = " WHERE  customers.client_id in (" + ddlDivision.SelectedValue + ") ";
+            }
+
             if (ddlSuperintendent.SelectedItem.Text != "All")
             {
                 if (strCondition.Length > 0)
@@ -426,11 +442,12 @@ public partial class leadlist : System.Web.UI.Page
                 }
 
             }
+
         }
-        if (strCondition.Length > 0)
-        {
-            strCondition = "Where " + strCondition;
-        }
+       // if (strCondition.Length > 0)
+       // {
+        //    strCondition = "Where customers.client_id in("+obj.client_id+")  and "+ strCondition;
+       // }
         //if (strCondition.Length > 0)
         //{
         //    strCondition = "Where customers.islead = 1 and " + strCondition;
@@ -495,6 +512,9 @@ public partial class leadlist : System.Web.UI.Page
         }
 
         IEnumerable<csCustomer> mList = _db.ExecuteQuery<csCustomer>(strQ, string.Empty).ToList();
+
+        
+
         DataTable dt = csCommonUtility.LINQToDataTable(mList);
         if (dt.Rows.Count > 0)
         {
@@ -625,6 +645,25 @@ public partial class leadlist : System.Web.UI.Page
         }
     }
 
+    private void BindDivision()
+    {
+        try
+        {
+            string sql = "select id, division_name from division order by division_name";
+            DataTable dt = csCommonUtility.GetDataTable(sql);
+            ddlDivision.DataSource = dt;
+            ddlDivision.DataTextField = "division_name";
+            ddlDivision.DataValueField = "id";
+            ddlDivision.DataBind();
+            ddlDivision.Items.Insert(0, "All");
+
+
+        }
+        catch (Exception ex)
+        {
+            lblResult.Text = csCommonUtility.GetSystemErrorMessage(ex.Message);
+        }
+    }
 
 
     protected void btnAddNew_Click(object sender, EventArgs e)
@@ -639,9 +678,12 @@ public partial class leadlist : System.Web.UI.Page
         {
             int ncid = Convert.ToInt32(grdLeadList.DataKeys[e.Row.RowIndex].Value.ToString());
 
+            Label lblSalesPerson = (Label)e.Row.FindControl("lblSalesPerson");
+            Label lblDivision = (Label)e.Row.FindControl("lblDivision");
+
             DataClassesDataContext _db = new DataClassesDataContext();
 
-            int nid = Convert.ToInt32(e.Row.Cells[2].Text);
+            //int nid = Convert.ToInt32(e.Row.Cells[2].Text);
             string strLatestActivity = "";
             string strCallQ = "SELECT Description as CallActivity FROM CustomerCallLog WHERE customer_id = " + ncid + " and " +
              " CallLogID=(SELECT max(CallLogID) FROM CustomerCallLog where  customer_id =  " + ncid + "  ) ";
@@ -693,9 +735,13 @@ public partial class leadlist : System.Web.UI.Page
             string strAddress = cust.address + " </br>" + cust.city + ", " + cust.state + " " + cust.zip_code;
             //e.Row.Cells[2].Text = strAddress;
 
+
+            lblDivision.Text = "<span style='font-weight:bold'>Division: </span>" + csCommonUtility.GetDivisionName(cust.client_id.ToString());
+
             sales_person sp = new sales_person();
-            sp = _db.sales_persons.Single(s => s.sales_person_id == nid);
-            e.Row.Cells[2].Text = sp.first_name + " " + sp.last_name + "<br/>" + Convert.ToDateTime(cust.registration_date).ToShortDateString();
+            sp = _db.sales_persons.Single(s => s.sales_person_id == cust.sales_person_id);
+
+            lblSalesPerson.Text = sp.first_name + " " + sp.last_name + "<br/>" + Convert.ToDateTime(cust.registration_date).ToShortDateString();
 
             Label lblPhone = (Label)e.Row.FindControl("lblPhone");
             lblPhone.Text = cust.phone;
@@ -757,12 +803,12 @@ public partial class leadlist : System.Web.UI.Page
 
 
 
-            string strQ = "select * from customer_estimate where customer_id=" + ncid + " and client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+            string strQ = "select * from customer_estimate where customer_id=" + ncid + " and client_id=" + Convert.ToInt32(cust.client_id);
             IEnumerable<customer_estimate_model> list = _db.ExecuteQuery<customer_estimate_model>(strQ, string.Empty);
 
             ddlEst.DataSource = list;
             ddlEst.DataTextField = "estimate_name";
-            ddlEst.DataValueField = "estimate_id";
+            ddlEst.DataValueField = "estimate_id";            
             ddlEst.DataBind();
 
 
@@ -771,7 +817,7 @@ public partial class leadlist : System.Web.UI.Page
             //                   select ce.estimate_id);
             //int nEstCount = resultCount.Count();
 
-            if (_db.customer_estimates.Where(ce => ce.customer_id == ncid && ce.client_id == 1).ToList().Count > 0)
+            if (_db.customer_estimates.Where(ce => ce.customer_id == ncid && ce.client_id == Convert.ToInt32(cust.client_id)).ToList().Count > 0)
             {
                 int nEstId = 0;
                 var result = (from ce in _db.customer_estimates
@@ -786,7 +832,7 @@ public partial class leadlist : System.Web.UI.Page
 
 
 
-                string strQ2 = "select * from customer_estimate where customer_id=" + ncid + " AND estimate_id != " + Convert.ToInt32(ddlEst.SelectedValue) + " and client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                string strQ2 = "select * from customer_estimate where customer_id=" + ncid + " AND estimate_id != " + Convert.ToInt32(ddlEst.SelectedValue) + " and client_id=" + Convert.ToInt32(cust.client_id);
                 IEnumerable<customer_estimate_model> list2 = _db.ExecuteQuery<customer_estimate_model>(strQ2, string.Empty);
                 string strOtherJobNum = string.Empty;
                 foreach (customer_estimate_model cus_est2 in list2)
@@ -812,7 +858,7 @@ public partial class leadlist : System.Web.UI.Page
                     }
                 }
 
-                string strQ1 = "select * from customer_estimate where customer_id=" + ncid + " AND estimate_id = " + Convert.ToInt32(ddlEst.SelectedValue) + " and client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                string strQ1 = "select * from customer_estimate where customer_id=" + ncid + " AND estimate_id = " + Convert.ToInt32(ddlEst.SelectedValue) + " and client_id=" + Convert.ToInt32(cust.client_id);
                 IEnumerable<customer_estimate_model> list1 = _db.ExecuteQuery<customer_estimate_model>(strQ1, string.Empty);
 
 
@@ -872,7 +918,7 @@ public partial class leadlist : System.Web.UI.Page
 
                 if (ddlEst.SelectedValue != "")
                 {
-                    decimal TotalExCom_WithIntevcise = GetRetailTotal(Convert.ToInt32(ddlEst.SelectedValue), ncid);
+                    decimal TotalExCom_WithIntevcise = GetRetailTotal(Convert.ToInt32(ddlEst.SelectedValue), ncid, (int)cust.client_id);
                     lblJobJost.Text = "Estimate Amount: " + TotalExCom_WithIntevcise.ToString("c");
                 }
 
@@ -1220,14 +1266,17 @@ public partial class leadlist : System.Web.UI.Page
 
         int ncid = Convert.ToInt32(grdCustomerList.DataKeys[diitem.RowIndex].Values[0]);
 
-        decimal TotalExCom_WithIntevcise = GetRetailTotal(Convert.ToInt32(ddlEst.SelectedValue), ncid);
+        customer cust = new customer();
+        cust = _db.customers.Single(c => c.customer_id == ncid);
+
+        decimal TotalExCom_WithIntevcise = GetRetailTotal(Convert.ToInt32(ddlEst.SelectedValue), ncid, (int)cust.client_id);
         lblJobJost.Text = "Estimate Amount: " + TotalExCom_WithIntevcise.ToString("c");
 
-        string strQ2 = "select * from customer_estimate where customer_id=" + ncid + " AND estimate_id != " + Convert.ToInt32(ddlEst.SelectedValue) + " and client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        string strQ2 = "select * from customer_estimate where customer_id=" + ncid + " AND estimate_id != " + Convert.ToInt32(ddlEst.SelectedValue) + " and client_id=" + Convert.ToInt32(cust.client_id);
         IEnumerable<customer_estimate_model> list2 = _db.ExecuteQuery<customer_estimate_model>(strQ2, string.Empty);
 
 
-        string strQ1 = "select * from customer_estimate where customer_id=" + ncid + " AND estimate_id = " + Convert.ToInt32(ddlEst.SelectedValue) + " and client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        string strQ1 = "select * from customer_estimate where customer_id=" + ncid + " AND estimate_id = " + Convert.ToInt32(ddlEst.SelectedValue) + " and client_id=" + Convert.ToInt32(cust.client_id);
         IEnumerable<customer_estimate_model> list1 = _db.ExecuteQuery<customer_estimate_model>(strQ1, string.Empty);
 
         foreach (customer_estimate_model cus_est in list1)
@@ -1276,7 +1325,7 @@ public partial class leadlist : System.Web.UI.Page
         }
 
     }
-    private decimal GetRetailTotal(int EstID, int ncustid)
+    private decimal GetRetailTotal(int EstID, int ncustid, int clientId)
     {
         decimal dRetail = 0;
         DataClassesDataContext _db = new DataClassesDataContext();
@@ -1287,9 +1336,9 @@ public partial class leadlist : System.Web.UI.Page
         decimal total_incentives = 0;
         estimate_payment esp = new estimate_payment();
 
-        if (_db.estimate_payments.Where(ep => ep.estimate_id == EstID && ep.customer_id == ncustid && ep.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).SingleOrDefault() != null)
+        if (_db.estimate_payments.Where(ep => ep.estimate_id == EstID && ep.customer_id == ncustid && ep.client_id == clientId).SingleOrDefault() != null)
         {
-            esp = _db.estimate_payments.Single(ep => ep.estimate_id == EstID && ep.customer_id == ncustid && ep.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+            esp = _db.estimate_payments.Single(ep => ep.estimate_id == EstID && ep.customer_id == ncustid && ep.client_id == clientId);
             dRetail = Convert.ToDecimal(esp.new_total_with_tax);
             total_incentives = Convert.ToDecimal(esp.total_incentives);
             if (Convert.ToDecimal(esp.adjusted_price) > 0)
@@ -1308,11 +1357,11 @@ public partial class leadlist : System.Web.UI.Page
         {
             var result = (from pd in _db.pricing_details
                           where (from clc in _db.customer_locations
-                                 where clc.estimate_id == EstID && clc.customer_id == ncustid && clc.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                 where clc.estimate_id == EstID && clc.customer_id == ncustid && clc.client_id == clientId
                                  select clc.location_id).Contains(pd.location_id) &&
                                  (from cs in _db.customer_sections
-                                  where cs.estimate_id == EstID && cs.customer_id == ncustid && cs.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
-                                  select cs.section_id).Contains(pd.section_level) && pd.estimate_id == EstID && pd.customer_id == ncustid && pd.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && pd.pricing_type == "A"
+                                  where cs.estimate_id == EstID && cs.customer_id == ncustid && cs.client_id == clientId
+                                  select cs.section_id).Contains(pd.section_level) && pd.estimate_id == EstID && pd.customer_id == ncustid && pd.client_id == clientId && pd.pricing_type == "A"
                           select pd.total_retail_price);
             int n = result.Count();
             if (result != null && n > 0)
@@ -1322,5 +1371,10 @@ public partial class leadlist : System.Web.UI.Page
 
 
         return dRetail;
+    }
+
+    protected void ddlDivision_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        GetCustomersNew(0);
     }
 }

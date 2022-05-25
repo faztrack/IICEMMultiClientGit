@@ -136,7 +136,7 @@ transitional.dtd">
             </tr>
             <tr>
                 <td colspan="2">
-
+                    <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
                     <asp:HiddenField ID="hdnCustomerId" runat="server" Value="0" />
                     <asp:HiddenField ID="hdnMessageId" runat="server" Value="0" />
                     <asp:HiddenField ID="hdnEstimateId" runat="server" Value="0" />

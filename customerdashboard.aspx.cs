@@ -74,6 +74,8 @@ public partial class customerdashboard : System.Web.UI.Page
                     lblPhone.Text = cust.phone;
                     lblEmail.Text = cust.email;
 
+                    hdnClientId.Value = cust.client_id.ToString();
+
 
                     txtCardHolderName.Text = cust.first_name1 + " " + cust.last_name1;
                     hdnSalesPersonId.Value = cust.sales_person_id.ToString();
@@ -84,18 +86,18 @@ public partial class customerdashboard : System.Web.UI.Page
 
                     trJobStatus.Visible = (bool)cust.isJobSatusViewable;
                 }
-                string strQ = "select * from customer_estimate where customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " and client_id= 1 and status_id = 3 order by estimate_id desc ";
+                string strQ = "select * from customer_estimate where customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " and client_id= "+ hdnClientId.Value + " and status_id = 3 order by estimate_id desc ";
                 IEnumerable<customer_estimate_model> clist = _db.ExecuteQuery<customer_estimate_model>(strQ, string.Empty);
                 grdEstimates.DataSource = clist;
                 grdEstimates.DataKeyNames = new string[] { "customer_id", "estimate_id", "status_id", "sale_date", "estimate_name" };
                 grdEstimates.DataBind();
 
 
-                if (_db.customer_estimates.Where(ce => ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == 1 && ce.status_id == 3).ToList().Count > 0)
+                if (_db.customer_estimates.Where(ce => ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value) && ce.status_id == 3).ToList().Count > 0)
                 {
                     int nEstId = 0;
                     var result = (from ce in _db.customer_estimates
-                                  where ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == 1 && ce.status_id == 3
+                                  where ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value) && ce.status_id == 3
                                   select ce.estimate_id);
 
                     int n = result.Count();
@@ -114,7 +116,7 @@ public partial class customerdashboard : System.Web.UI.Page
                 {
                     int nEstId = 0;
                     var result = (from ce in _db.customer_estimates
-                                  where ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == 1
+                                  where ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value)
                                   select ce.estimate_id);
 
                     int n = result.Count();
@@ -187,9 +189,9 @@ public partial class customerdashboard : System.Web.UI.Page
         decimal tax_amount = 0;
         DataClassesDataContext _db = new DataClassesDataContext();
         estimate_payment esp = new estimate_payment();
-        if (_db.estimate_payments.Where(ep => ep.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ep.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ep.client_id == 1).SingleOrDefault() != null)
+        if (_db.estimate_payments.Where(ep => ep.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ep.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ep.client_id == Convert.ToInt32(hdnClientId.Value)).SingleOrDefault() != null)
         {
-            esp = _db.estimate_payments.Single(ep => ep.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ep.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ep.client_id == 1);
+            esp = _db.estimate_payments.Single(ep => ep.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ep.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ep.client_id == Convert.ToInt32(hdnClientId.Value));
             totalwithtax = Convert.ToDecimal(esp.new_total_with_tax);
             if (Convert.ToDecimal(esp.adjusted_price) > 0)
                 project_subtotal = Convert.ToDecimal(esp.adjusted_price);
@@ -207,7 +209,7 @@ public partial class customerdashboard : System.Web.UI.Page
         }
         decimal payAmount = 0;
         var result = (from ppi in _db.New_partial_payments
-                      where ppi.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ppi.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ppi.client_id == 1
+                      where ppi.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ppi.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ppi.client_id == Convert.ToInt32(hdnClientId.Value)
                       select ppi.pay_amount);
         int n = result.Count();
         if (result != null && n > 0)
@@ -238,7 +240,7 @@ public partial class customerdashboard : System.Web.UI.Page
             CoTaxRate = Convert.ToDecimal(cho.tax);
             decimal dEconCost = 0;
             var Coresult = (from chpl in _db.change_order_pricing_lists
-                            where chpl.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && chpl.customer_id == Convert.ToInt32(hdnCustomerId.Value) && chpl.client_id == 1 && chpl.chage_order_id == ncoeid
+                            where chpl.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && chpl.customer_id == Convert.ToInt32(hdnCustomerId.Value) && chpl.client_id == Convert.ToInt32(hdnClientId.Value) && chpl.chage_order_id == ncoeid
                             select chpl.EconomicsCost);
             int cn = Coresult.Count();
             if (Coresult != null && cn > 0)
@@ -334,7 +336,7 @@ public partial class customerdashboard : System.Web.UI.Page
         if (Convert.ToInt32(hdnEstimateId.Value) > 0)
         {
             customer_estimate cus_est = new customer_estimate();
-            cus_est = _db.customer_estimates.Single(ce => ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value));
+            cus_est = _db.customer_estimates.Single(ce => ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value) && ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value));
             lblEstimateName.Text = cus_est.estimate_name;
         }
         customer_jobstatus objCJS = new customer_jobstatus();
@@ -413,7 +415,7 @@ public partial class customerdashboard : System.Web.UI.Page
                 DataClassesDataContext _db = new DataClassesDataContext();
                 string custEmail = lblEmail.Text;
                 var messList = (from mess_info in _db.customer_messages
-                                where mess_info.customer_id == nCustId && (mess_info.mess_to.Contains(custEmail.Trim()) || mess_info.mess_from.Contains(custEmail.Trim())) && mess_info.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                where mess_info.customer_id == nCustId && (mess_info.mess_to.Contains(custEmail.Trim()) || mess_info.mess_from.Contains(custEmail.Trim())) && mess_info.client_id == Convert.ToInt32(hdnClientId.Value)
                                 orderby mess_info.cust_message_id descending
                                 select mess_info).ToList();
 
@@ -423,7 +425,7 @@ public partial class customerdashboard : System.Web.UI.Page
 
                     if (msg.HasAttachments == null)
                     {
-                        string strQ = "select * from message_upolad_info where customer_id=" + nCustId + " and message_id=" + msg.message_id + " and client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                        string strQ = "select * from message_upolad_info where customer_id=" + nCustId + " and message_id=" + msg.message_id + " and client_id=" + Convert.ToInt32(hdnClientId.Value);
                         IEnumerable<message_upolad_info> list = _db.ExecuteQuery<message_upolad_info>(strQ, string.Empty);
 
                         string mess_file = "";
@@ -874,10 +876,10 @@ public partial class customerdashboard : System.Web.UI.Page
             //{
             //    nEstimateId = Convert.ToInt32(cus_est.estimate_id);
             //}
-            if (_db.estimate_payments.Where(pay => pay.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pay.customer_id == Convert.ToInt32(hdnCustomerId.Value) && pay.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).SingleOrDefault() != null)
+            if (_db.estimate_payments.Where(pay => pay.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pay.customer_id == Convert.ToInt32(hdnCustomerId.Value) && pay.client_id == Convert.ToInt32(hdnClientId.Value)).SingleOrDefault() != null)
             {
                 estimate_payment objEstPay = new estimate_payment();
-                objEstPay = _db.estimate_payments.Single(pay => pay.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pay.customer_id == Convert.ToInt32(hdnCustomerId.Value) && pay.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+                objEstPay = _db.estimate_payments.Single(pay => pay.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pay.customer_id == Convert.ToInt32(hdnCustomerId.Value) && pay.client_id == Convert.ToInt32(hdnClientId.Value));
                 strContractDate = objEstPay.contract_date;
             }
 
@@ -1003,7 +1005,7 @@ public partial class customerdashboard : System.Web.UI.Page
                        tax = (decimal)co.tax
                    };
 
-        estimate_payment objEstPay = _db.estimate_payments.Single(pay => pay.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pay.customer_id == Convert.ToInt32(hdnCustomerId.Value) && pay.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])); //pay.est_payment_id == nPaymentId &&
+        estimate_payment objEstPay = _db.estimate_payments.Single(pay => pay.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pay.customer_id == Convert.ToInt32(hdnCustomerId.Value) && pay.client_id == Convert.ToInt32(hdnClientId.Value)); //pay.est_payment_id == nPaymentId &&
 
         DataTable dtPayment = (DataTable)Session["part_payment"];
         DataView dv = dtPayment.DefaultView;
@@ -1401,7 +1403,7 @@ public partial class customerdashboard : System.Web.UI.Page
             CoTaxRate = Convert.ToDecimal(cn.tax);
             decimal dEconCost = 0;
             var Coresult = (from chpl in _db.change_order_pricing_lists
-                            where chpl.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && chpl.customer_id == Convert.ToInt32(hdnCustomerId.Value) && chpl.client_id == 1 && chpl.chage_order_id == ncoeid
+                            where chpl.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && chpl.customer_id == Convert.ToInt32(hdnCustomerId.Value) && chpl.client_id == Convert.ToInt32(hdnClientId.Value) && chpl.chage_order_id == ncoeid
                             select chpl.EconomicsCost);
             int nCount = Coresult.Count();
             if (Coresult != null && nCount > 0)
@@ -1443,9 +1445,9 @@ public partial class customerdashboard : System.Web.UI.Page
                 decimal dOtherAmount = 0;
 
                 //  if (_db.Co_PaymentTerms.Where(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(cn.change_order_id) && est_p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).SingleOrDefault() != null)
-                if (_db.Co_PaymentTerms.Any(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(cn.change_order_id) && est_p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])))
+                if (_db.Co_PaymentTerms.Any(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(cn.change_order_id) && est_p.client_id == Convert.ToInt32(hdnClientId.Value)))
                 {
-                    Co_PaymentTerm objPayTerm = _db.Co_PaymentTerms.FirstOrDefault(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(cn.change_order_id) && est_p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+                    Co_PaymentTerm objPayTerm = _db.Co_PaymentTerms.FirstOrDefault(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(cn.change_order_id) && est_p.client_id == Convert.ToInt32(hdnClientId.Value));
 
                     if (objPayTerm.UponSign_value != null)
                     {
@@ -1827,7 +1829,7 @@ public partial class customerdashboard : System.Web.UI.Page
         DataTable tmpTable = LoadDataTable();
 
         var item = from it in _db.New_partial_payments
-                   where it.customer_id == Convert.ToInt32(hdnCustomerId.Value) && it.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && it.client_id == 1
+                   where it.customer_id == Convert.ToInt32(hdnCustomerId.Value) && it.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && it.client_id == Convert.ToInt32(hdnClientId.Value)
                    select new PartialPayment_new()
                    {
                        payment_id = (int)it.payment_id,
@@ -2550,7 +2552,7 @@ public partial class customerdashboard : System.Web.UI.Page
 
                 pay_cost.pay_term_ids = strPayTermId;
                 pay_cost.pay_term_desc = strPayTermDesc;
-                pay_cost.client_id = 1;
+                pay_cost.client_id = Convert.ToInt32(hdnClientId.Value);
                 pay_cost.customer_id = Convert.ToInt32(hdnCustomerId.Value);
                 pay_cost.estimate_id = Convert.ToInt32(hdnEstimateId.Value);
                 pay_cost.pay_type_id = 3;
@@ -3422,7 +3424,7 @@ public partial class customerdashboard : System.Web.UI.Page
 
                 pay_cost.pay_term_ids = strPayTermId;
                 pay_cost.pay_term_desc = strPayTermDesc;
-                pay_cost.client_id = 1;
+                pay_cost.client_id = Convert.ToInt32(hdnClientId.Value);
                 pay_cost.customer_id = Convert.ToInt32(hdnCustomerId.Value);
                 pay_cost.estimate_id = Convert.ToInt32(hdnEstimateId.Value);
                 pay_cost.pay_type_id = 2;

@@ -492,7 +492,7 @@ public partial class Confirmation : System.Web.UI.Page
             obj.est_payment_id = Convert.ToInt32(hdnEstPayId.Value);
             obj.payment_method_id = Convert.ToInt32(ht["pType"]);
             obj.status_id = 1;
-            obj.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+            obj.client_id = Convert.ToInt32(hdnClientId.Value) ;
             obj.customer_id = Convert.ToInt32(hdnCustomerId.Value);
             obj.sales_person_id = Convert.ToInt32(hdnSalesPersonId.Value);
             obj.date = DateTime.Now;

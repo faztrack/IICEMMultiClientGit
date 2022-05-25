@@ -99,9 +99,14 @@ public partial class CallActivityList : System.Web.UI.Page
         if (!IsPostBack)
         {
             KPIUtility.PageLoad(this.Page.AppRelativeVirtualPath);
+            
             if (Session["oUser"] == null)
             {
                 Response.Redirect(ConfigurationManager.AppSettings["LoginPage"].ToString());
+            }
+            else
+            {
+                hdnClientId.Value = ((userinfo)Session["oUser"]).client_id.ToString();
             }
             if (Page.User.IsInRole("calllog001") == false)
             {
@@ -129,7 +134,7 @@ public partial class CallActivityList : System.Web.UI.Page
     {
         DataClassesDataContext _db = new DataClassesDataContext();
         var item = from l in _db.lead_sources
-                   where l.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && l.is_active == Convert.ToBoolean(1)
+                   where l.client_id.ToString().Contains(hdnClientId.Value) && l.is_active == Convert.ToBoolean(1)
                    orderby l.lead_name
                    select l;
         ddlLeadSource.DataSource = item;

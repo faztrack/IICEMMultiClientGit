@@ -57,10 +57,15 @@ public partial class projectcyclereport : System.Web.UI.Page
         Session.Add("loadstarttime", DateTime.Now);
         if (!IsPostBack)
         {
+            string nClientId = "";
             KPIUtility.PageLoad(this.Page.AppRelativeVirtualPath);
             if (Session["oUser"] == null)
             {
                 Response.Redirect(ConfigurationManager.AppSettings["LoginPage"].ToString());
+            }
+            else
+            {
+                nClientId = ((userinfo)Session["oUser"]).client_id.ToString();
             }
             if (Page.User.IsInRole("pcr01") == false)
             {
@@ -75,7 +80,7 @@ public partial class projectcyclereport : System.Web.UI.Page
             // List<customer> CustomerList = _db.customers.Where(c => c.isCustomer == 1 && c.is_active == true).ToList();
             List<csCustomer> CustomerList = (from c in _db.customers
                                              join s in _db.ScheduleCalendars on c.customer_id equals s.customer_id
-                                             where c.isCustomer == 1 && c.is_active == true && s.IsEstimateActive == true && c.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                             where c.isCustomer == 1 && c.is_active == true && s.IsEstimateActive == true && c.client_id.ToString().Contains(nClientId)
                                              select new csCustomer
                                              {
                                                  first_name1 = c.first_name1,

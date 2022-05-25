@@ -9,6 +9,37 @@
             overflow: scroll;
         }
     </style>
+    <script type="text/javascript">
+
+          $(document).ready(function () {
+             
+            $("#<%=lstDivision.ClientID%>").SumoSelect({
+                selectAll: true,
+                search: true,
+                searchText: 'Search...',
+                placeholder: 'Select Here',
+                noMatch: 'No matches for "{0}"',
+            });
+
+        });
+
+        Sys.WebForms.PageRequestManager.getInstance().add_endRequest(EndRequestHandler);
+        function EndRequestHandler(sender, args) {
+
+           
+            //Binding Code Again
+            $(<%=lstDivision.ClientID%>).SumoSelect({
+                  selectAll: true,
+                  search: true,
+                  searchText: 'Search...',
+                  placeholder: 'Select Here',
+                  noMatch: 'No matches for "{0}"',
+              });
+
+
+          }
+
+    </script>
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
         <ContentTemplate>
             <table id="Table5" align="center" width="100%" border="0" cellpadding="0" cellspacing="0">
@@ -26,12 +57,20 @@
                 </tr>
                 <tr>
                     <td width="50%" valign="top">
-                        <table id="Table2" width="98%" align="center" border="0" cellpadding="0" cellspacing="3" onclick="return TABLE1_onclick()">
+                        <table id="Table2" width="98%" align="center" border="0" cellpadding="0" cellspacing="3" >
                             <tr>
                                 <td align="right">
                                     <asp:Label ID="Label5" runat="server" Font-Bold="True" ForeColor="Red" Text="* required"></asp:Label>
                                 </td>
                                 <td>&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td align="right">
+                                    <span class="required">*</span><b>Division: </b>
+                                </td>
+                                <td align="left" colspan="2">
+                                     <asp:ListBox ID="lstDivision" runat="server" SelectionMode="Multiple" Width="240px"></asp:ListBox>               
+                                </td>
                             </tr>
                             <tr>
                                 <td width="35%" align="right"><span class="required">*</span>
@@ -262,6 +301,7 @@
                                     <asp:TextBox ID="txtCom" runat="server" Width="57px" TabIndex="21">0.0</asp:TextBox>
                                 </td>
                             </tr>
+                            
                             <tr>
                                 <td align="right"><b>
                                     <asp:Label ID="lblCOComission" runat="server" Text="C/O Commission %"></asp:Label>

@@ -485,7 +485,8 @@
                                                         <ItemTemplate>
                                                             <asp:Label ID="lblSelected" runat="server"></asp:Label><br />
                                                             <asp:Label ID="lblSelectionDate" runat="server"></asp:Label>
-                                                            <asp:Image ID="imgCustomerSign" runat="server" Width="200px" Height="60px" Visible="false" /></br>
+                                                            <asp:Image ID="imgCustomerSign" runat="server" Width="200px" Height="60px" Visible="false" />
+                                                            <br></br>
                                                              <asp:Label ID="lblSignatureBy" runat="server" Visible="false"></asp:Label>
                                                         </ItemTemplate>
                                                         <HeaderStyle HorizontalAlign="Center" Width="5%" />
@@ -747,6 +748,7 @@
                         <td>
                             <asp:HiddenField ID="hdnCustomerID" runat="server" Value="0" />
                             <asp:HiddenField ID="hdnEstimateID" runat="server" Value="0" />
+                            <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
                             <asp:HiddenField ID="hdnSiteReviewId" runat="server" Value="0" />
                             <asp:HiddenField ID="hdnEmailType" runat="server" Value="2" />
                         </td>

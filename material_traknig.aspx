@@ -619,6 +619,7 @@
                                 <tr>
                                     <td>
                                         <asp:HiddenField ID="hdnCustomerID" runat="server" Value="0" />
+                                        <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
                                         <asp:HiddenField ID="hdnEstimateID" runat="server" Value="0" />
                                         <asp:HiddenField ID="hdnOrderId" runat="server" Value="0" />
                                         <asp:HiddenField ID="hdnEmailType" runat="server" Value="2" />

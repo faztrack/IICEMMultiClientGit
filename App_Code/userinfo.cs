@@ -21,7 +21,7 @@ public class userinfo
 		// TODO: Add constructor logic here
 		//
 	}
-    public int client_id { get; set; }
+    public string client_id { get; set; }
     public int user_id { get; set; }
     public int sales_person_id { get; set; }
     public string first_name { get; set; }

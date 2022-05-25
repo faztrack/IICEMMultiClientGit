@@ -17,14 +17,17 @@ public partial class companycoverletter : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        hdnClientId.Value = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]).ToString();
-
+        
         if (!IsPostBack)
         {
             KPIUtility.PageLoad(this.Page.AppRelativeVirtualPath);
             if (Session["oUser"] == null)
             {
                 Response.Redirect(ConfigurationManager.AppSettings["LoginPage"].ToString());
+            }
+            else
+            {
+                hdnClientId.Value = ((userinfo)Session["oUser"]).client_id.ToString();
             }
             if (Page.User.IsInRole("admin010") == false)
             {
@@ -33,9 +36,9 @@ public partial class companycoverletter : System.Web.UI.Page
             }
             DataClassesDataContext _db = new DataClassesDataContext();
             company_cover_letter objComcl = new company_cover_letter();
-            if (_db.company_cover_letters.Where(ccl => ccl.client_id == Convert.ToInt32(hdnClientId.Value)).SingleOrDefault() != null)
+            if (_db.company_cover_letters.Where(ccl => ccl.client_id.ToString().Contains(hdnClientId.Value)).SingleOrDefault() != null)
             {
-                objComcl = _db.company_cover_letters.Single(ccl => ccl.client_id == Convert.ToInt32(hdnClientId.Value));
+                objComcl = _db.company_cover_letters.Single(ccl => ccl.client_id.ToString().Contains(hdnClientId.Value));
 
                 txtCoverLetter.Text = objComcl.cover_letter;
             }
@@ -64,7 +67,7 @@ public partial class companycoverletter : System.Web.UI.Page
         objComcl.client_id = Convert.ToInt32(hdnClientId.Value);
         objComcl.cover_letter = txtCoverLetter.Text;
 
-        string strQ = "DELETE company_cover_letter where client_id=" + Convert.ToInt32(hdnClientId.Value);
+        string strQ = "DELETE company_cover_letter where client_id in (" + Convert.ToInt32(hdnClientId.Value) + ")";
         _db.ExecuteCommand(strQ, string.Empty);
         _db.SubmitChanges();
 

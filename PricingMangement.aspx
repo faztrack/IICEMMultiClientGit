@@ -156,6 +156,8 @@
                                                                 OnRowEditing="grdMainSection_RowEditing" OnRowUpdating="grdMainSection_RowUpdating"
                                                                 PageSize="200" TabIndex="2" Width="100%" AllowSorting="True" OnSorting="grdMainSection_Sorting">
                                                                 <Columns>
+
+                                                                    <%-- Cell 0 --%>
                                                                     <asp:TemplateField HeaderText="Section Name" SortExpression="section_name">
                                                                         <ItemTemplate>
                                                                             <asp:Label ID="lblSectionName" runat="server" Text='<%# Eval("section_name") %>' />
@@ -163,6 +165,8 @@
                                                                                 Visible="false" Width="320px" Wrap="False"></asp:TextBox>
                                                                         </ItemTemplate>
                                                                     </asp:TemplateField>
+
+                                                                    <%-- Cell 1 --%>
                                                                     <asp:TemplateField HeaderText="Color">
                                                                         <ItemTemplate>
                                                                             <asp:Label ID="lblcssClassName" runat="server" CssClass="fc-DarkBlue" />
@@ -222,13 +226,26 @@
                                                                         </ItemTemplate>
                                                                         <ItemStyle HorizontalAlign="Center" Width="12%" />
                                                                     </asp:TemplateField>
-                                                                     <asp:TemplateField HeaderText="Active">
+
+                                                                    <%-- Cell 2 --%>
+                                                                    <asp:TemplateField HeaderText="Division">
+                                                                        <ItemTemplate>
+                                                                            <asp:Label ID="lblDivision" runat="server" Text="" Visible="true"></asp:Label>
+                                                                            <asp:DropDownList ID="ddlDivision" runat="server" Visible="false" Width="70%"></asp:DropDownList>
+                                                                        </ItemTemplate>
+                                                                        <ItemStyle HorizontalAlign="Center" Width="12%" />
+                                                                    </asp:TemplateField>
+
+                                                                    <%-- Cell 3 --%>
+                                                                    <asp:TemplateField HeaderText="Active">
                                                                         <ItemTemplate>
                                                                             <asp:Label ID="lblIsActive" runat="server" />
                                                                             <asp:CheckBox ID="chkIsActive" runat="server" Checked='<%# Eval("is_active") %>' Visible="false" />
                                                                         </ItemTemplate>
                                                                         <ItemStyle HorizontalAlign="Center" Width="7%" />
                                                                     </asp:TemplateField>
+
+                                                                    <%-- Cell 4 --%>
                                                                     <asp:TemplateField HeaderText="Ex. Comm.">
                                                                         <ItemTemplate>
                                                                             <asp:Label ID="lblAExcludeCom0" runat="server" />
@@ -236,6 +253,8 @@
                                                                         </ItemTemplate>
                                                                         <ItemStyle HorizontalAlign="Center" Width="9%" />
                                                                     </asp:TemplateField>
+
+                                                                    <%-- Cell 5 --%>
                                                                     <asp:ButtonField CommandName="Edit" Text="Edit" />
 
                                                                 </Columns>
@@ -285,6 +304,7 @@
                                                                 OnRowEditing="grdSubSection_RowEditing" OnRowUpdating="grdSubSection_RowUpdating"
                                                                 PageSize="200" TabIndex="2" Width="500px" AllowSorting="True" OnSorting="grdSubSection_Sorting">
                                                                 <Columns>
+                                                                    <%-- Cell 0 --%>
                                                                     <asp:TemplateField HeaderText="Sub Section Name" SortExpression="section_name">
                                                                         <ItemTemplate>
                                                                             <asp:Label ID="lblSubSectionName" runat="server" Text='<%# Eval("section_name") %>' />
@@ -292,14 +312,26 @@
                                                                                 Visible="false" Width="320px" Wrap="False"></asp:TextBox>
                                                                         </ItemTemplate>
                                                                     </asp:TemplateField>
-                                                                    
-                                                                     <asp:TemplateField HeaderText="Active">
+
+                                                                    <%-- Cell 1 --%>
+                                                                    <asp:TemplateField HeaderText="Division">
+                                                                        <ItemTemplate>
+                                                                            <asp:Label ID="lblSubDivision" runat="server" Text="" Visible="true"></asp:Label>
+                                                                            <asp:DropDownList ID="ddlSubDivision" runat="server" Visible="false"></asp:DropDownList>
+                                                                        </ItemTemplate>
+                                                                        <ItemStyle HorizontalAlign="Center" Width="20%" />
+                                                                    </asp:TemplateField>
+
+                                                                    <%-- Cell 2 --%>
+                                                                    <asp:TemplateField HeaderText="Active">
                                                                         <ItemTemplate>
                                                                             <asp:Label ID="lblIsActive1" runat="server" />
                                                                             <asp:CheckBox ID="chkIsActive1" runat="server" Checked='<%# Eval("is_active") %>' Visible="false" />
                                                                         </ItemTemplate>
                                                                         <ItemStyle HorizontalAlign="Center" Width="7%" />
                                                                     </asp:TemplateField>
+
+                                                                    <%-- Cell 3 --%>
                                                                     <asp:TemplateField HeaderText="Ex. Comm.">
                                                                         <ItemTemplate>
                                                                             <asp:Label ID="lblAExcludeCom1" runat="server" />
@@ -307,6 +339,8 @@
                                                                         </ItemTemplate>
                                                                         <ItemStyle HorizontalAlign="Center" Width="15%" />
                                                                     </asp:TemplateField>
+
+                                                                    <%-- Cell 4 --%>
                                                                     <asp:ButtonField CommandName="Edit" Text="Edit" />
                                                                     <%-- <asp:TemplateField HeaderText="Serial">
                                                                         <ItemStyle HorizontalAlign="Center" Width="5%"></ItemStyle>
@@ -359,7 +393,7 @@
                                                             <cc1:ModalPopupExtender ID="modUpdateMultiplier" runat="server" PopupControlID="pnlUpdateMultiplier"
                                                                 TargetControlID="lnkUpdateMultiplier" BackgroundCssClass="modalBackground" DropShadow="false">
                                                             </cc1:ModalPopupExtender>
-                                                           <asp:LinkButton ID="lnkDummy3" runat="server"></asp:LinkButton>
+                                                            <asp:LinkButton ID="lnkDummy3" runat="server"></asp:LinkButton>
                                                             <asp:Button ID="InkPriceUpdate" runat="server" CssClass="button" Text="Update Selected Item(s)" OnClick="InkPriceUpdate_Click"></asp:Button>
                                                             <asp:Button ID="lnkUpdateMultiplier" runat="server" CssClass="button" Text="Update Multiplier for Selected Item(s)"></asp:Button>
                                                             <asp:Button ID="btnAddItem" runat="server" CssClass="button" OnClick="btnAddItem_Click" Text="Add New Item" Visible="false" />
@@ -373,14 +407,16 @@
                                                                 OnRowEditing="grdItem_Price_RowEditing" OnRowUpdating="grdItem_Price_RowUpdating"
                                                                 PageSize="200" TabIndex="2" Width="98%" AllowSorting="True" OnSorting="grdItem_Price_Sorting">
                                                                 <Columns>
+                                                                    <%-- Cell 0 --%>
                                                                     <asp:TemplateField HeaderText="Item Name" SortExpression="section_name">
                                                                         <ItemTemplate>
                                                                             <asp:Label ID="lblItemnName" runat="server" Text='<%# Eval("section_name") %>' />
                                                                             <asp:TextBox ID="txtItemName" runat="server" Text='<%# Eval("section_name") %>' Visible="false"
                                                                                 Width="320px" Wrap="False"></asp:TextBox>
                                                                         </ItemTemplate>
-
                                                                     </asp:TemplateField>
+
+                                                                    <%-- Cell 1 --%>
                                                                     <asp:TemplateField HeaderText="UOM" HeaderStyle-CssClass="grdItemHeaderCss">
                                                                         <ItemTemplate>
                                                                             <asp:Label ID="lblMeasureUnit" runat="server" Text='<%# Eval("measure_unit") %>' />
@@ -389,6 +425,8 @@
                                                                         </ItemTemplate>
                                                                         <ItemStyle HorizontalAlign="Center" />
                                                                     </asp:TemplateField>
+
+                                                                    <%-- Cell 2 --%>
                                                                     <asp:TemplateField HeaderText="Cost" HeaderStyle-CssClass="grdItemHeaderCss">
                                                                         <ItemTemplate>
                                                                             <asp:Label ID="lblCost" runat="server" Text='<%# Eval("item_cost") %>' />
@@ -397,6 +435,8 @@
                                                                         </ItemTemplate>
                                                                         <ItemStyle HorizontalAlign="Right" />
                                                                     </asp:TemplateField>
+
+                                                                    <%-- Cell 3 --%>
                                                                     <asp:TemplateField HeaderText="Minimum Qty" HeaderStyle-CssClass="grdItemHeaderCss">
                                                                         <ItemTemplate>
                                                                             <asp:Label ID="lblMinQty" runat="server" Text='<%# Eval("minimum_qty") %>' />
@@ -405,6 +445,8 @@
                                                                         </ItemTemplate>
                                                                         <ItemStyle HorizontalAlign="Center" />
                                                                     </asp:TemplateField>
+
+                                                                    <%-- Cell 4 --%>
                                                                     <asp:TemplateField HeaderText="Retail multiplier" HeaderStyle-CssClass="grdItemHeaderCss">
                                                                         <ItemTemplate>
                                                                             <asp:Label ID="lblRetailMulti" runat="server" Text='<%# Eval("retail_multiplier") %>' />
@@ -413,6 +455,8 @@
                                                                         </ItemTemplate>
                                                                         <ItemStyle HorizontalAlign="Center" />
                                                                     </asp:TemplateField>
+
+                                                                    <%-- Cell 5 --%>
                                                                     <asp:TemplateField HeaderText="Labor rate" HeaderStyle-CssClass="grdItemHeaderCss">
                                                                         <ItemTemplate>
                                                                             <asp:Label ID="lblLabor" runat="server" Text='<%# Eval("labor_rate") %>' />
@@ -421,6 +465,17 @@
                                                                         </ItemTemplate>
                                                                         <ItemStyle HorizontalAlign="Right" />
                                                                     </asp:TemplateField>
+
+                                                                    <%-- Cell 6 --%>
+                                                                    <asp:TemplateField HeaderText="Division">
+                                                                        <ItemTemplate>
+                                                                            <asp:Label ID="lblItemPriceDivision" runat="server" Text="" Visible="true"></asp:Label>
+                                                                            <asp:DropDownList ID="ddlItemPriceDivision" runat="server" Visible="false" Width="70%"></asp:DropDownList>
+                                                                        </ItemTemplate>
+                                                                        <ItemStyle HorizontalAlign="Center" Width="12%" />
+                                                                    </asp:TemplateField>
+
+                                                                    <%-- Cell 7 --%>
                                                                     <asp:TemplateField HeaderText="Active" HeaderStyle-CssClass="grdItemHeaderCss">
                                                                         <ItemTemplate>
                                                                             <asp:Label ID="lblActive" runat="server" />
@@ -428,6 +483,8 @@
                                                                         </ItemTemplate>
                                                                         <ItemStyle HorizontalAlign="Center" Width="7%" />
                                                                     </asp:TemplateField>
+
+                                                                    <%-- Cell 8 --%>
                                                                     <asp:TemplateField HeaderText="Mandatory" HeaderStyle-CssClass="grdItemHeaderCss">
                                                                         <ItemTemplate>
                                                                             <asp:Label ID="lblAMandatory" runat="server" />
@@ -435,6 +492,8 @@
                                                                         </ItemTemplate>
                                                                         <ItemStyle HorizontalAlign="Center" Width="9%" />
                                                                     </asp:TemplateField>
+
+                                                                    <%-- Cell 9 --%>
                                                                     <asp:TemplateField HeaderText="Ex. Comm." HeaderStyle-CssClass="grdItemHeaderCss">
                                                                         <ItemTemplate>
                                                                             <asp:Label ID="lblAExcludeCom" runat="server" />
@@ -442,7 +501,11 @@
                                                                         </ItemTemplate>
                                                                         <ItemStyle HorizontalAlign="Center" Width="9%" />
                                                                     </asp:TemplateField>
+
+                                                                    <%-- Cell 10 --%>
                                                                     <asp:ButtonField CommandName="Edit" Text="Edit" />
+
+                                                                    <%-- Cell 11 --%>
                                                                     <asp:TemplateField>
                                                                         <HeaderTemplate>
                                                                             <asp:CheckBox ID="chkAll" runat="server" onclick="checkAll(this);" TextAlign="Left" />
@@ -572,95 +635,116 @@
                         </td>
                     </tr>
                     <tr>
-                        <td align="center">
-                            
-                        </td>
+                        <td align="center"></td>
                     </tr>
                     <tr>
                         <td align="center">
                             <table cellpadding="0" cellspacing="2" width="98%">
 
                                 <tr>
-                                    <td style="width:98%">
-                                        <asp:GridView ID="grdPriceUpdate" runat="server" AutoGenerateColumns="False" CssClass="mGrid"
+                                    <td style="width: 98%">
+                                        <asp:GridView ID="grdPriceUpdate" runat="server" OnRowDataBound="grdPriceUpdate_RowDataBound" AutoGenerateColumns="False" CssClass="mGrid"
                                             PageSize="200" TabIndex="2" Width="98%">
                                             <Columns>
+
+                                                <%-- Cell 0 --%>
                                                 <asp:TemplateField HeaderText="Item Name" SortExpression="section_name">
                                                     <ItemTemplate>
-                                                        <asp:TextBox ID="txtItemName" runat="server" Text='<%# Eval("section_name") %>' 
+                                                        <asp:TextBox ID="txtItemName" runat="server" Text='<%# Eval("section_name") %>'
                                                             Width="320px" Wrap="False" TextMode="MultiLine"></asp:TextBox>
 
                                                     </ItemTemplate>
-
                                                 </asp:TemplateField>
+
+                                                <%-- Cell 1 --%>
                                                 <asp:TemplateField HeaderText="UOM" HeaderStyle-CssClass="grdItemHeaderCss">
                                                     <ItemTemplate>
-                                                       <asp:TextBox ID="txtMeasureUnit" runat="server" Text='<%# Eval("measure_unit") %>'
-                                                             Width="100px" Wrap="False"></asp:TextBox>
+                                                        <asp:TextBox ID="txtMeasureUnit" runat="server" Text='<%# Eval("measure_unit") %>'
+                                                            Width="100px" Wrap="False"></asp:TextBox>
                                                     </ItemTemplate>
                                                     <ItemStyle HorizontalAlign="Center" />
                                                 </asp:TemplateField>
+
+                                                <%-- Cell 2 --%>
                                                 <asp:TemplateField HeaderText="Cost" HeaderStyle-CssClass="grdItemHeaderCss">
                                                     <ItemTemplate>
-                                                     <asp:TextBox ID="txtCost" runat="server" Text='<%# Eval("item_cost") %>' 
+                                                        <asp:TextBox ID="txtCost" runat="server" Text='<%# Eval("item_cost") %>'
                                                             Width="80px" Wrap="False"></asp:TextBox>
-                                                         <cc1:FilteredTextBoxExtender ID="FilteredTextBoxExtender3" runat="server" TargetControlID="txtCost"
-                                                           FilterType="Custom" FilterMode="ValidChars" InvalidChars=" " ValidChars="1234567890.">
-                                                           </cc1:FilteredTextBoxExtender>
+                                                        <cc1:FilteredTextBoxExtender ID="FilteredTextBoxExtender3" runat="server" TargetControlID="txtCost"
+                                                            FilterType="Custom" FilterMode="ValidChars" InvalidChars=" " ValidChars="1234567890.">
+                                                        </cc1:FilteredTextBoxExtender>
                                                     </ItemTemplate>
                                                     <ItemStyle HorizontalAlign="Right" />
                                                 </asp:TemplateField>
+
+                                                <%-- Cell 3 --%>
                                                 <asp:TemplateField HeaderText="Minimum Qty" HeaderStyle-CssClass="grdItemHeaderCss">
                                                     <ItemTemplate>
-                                                       <asp:TextBox ID="txtMinQty" runat="server" Text='<%# Eval("minimum_qty") %>' 
+                                                        <asp:TextBox ID="txtMinQty" runat="server" Text='<%# Eval("minimum_qty") %>'
                                                             Width="80px" Wrap="False"></asp:TextBox>
-                                                          <cc1:FilteredTextBoxExtender ID="FilteredTextBoxExtender6" runat="server" TargetControlID="txtMinQty"
-                                                           FilterType="Custom" FilterMode="ValidChars" InvalidChars=" " ValidChars="1234567890.">
-                                                           </cc1:FilteredTextBoxExtender>
+                                                        <cc1:FilteredTextBoxExtender ID="FilteredTextBoxExtender6" runat="server" TargetControlID="txtMinQty"
+                                                            FilterType="Custom" FilterMode="ValidChars" InvalidChars=" " ValidChars="1234567890.">
+                                                        </cc1:FilteredTextBoxExtender>
                                                     </ItemTemplate>
                                                     <ItemStyle HorizontalAlign="Center" />
                                                 </asp:TemplateField>
+
+                                                <%-- Cell 4 --%>
                                                 <asp:TemplateField HeaderText="Retail multiplier" HeaderStyle-CssClass="grdItemHeaderCss">
                                                     <ItemTemplate>
-                                                         <asp:TextBox ID="txtRetailMulti" runat="server" Text='<%# Eval("retail_multiplier") %>'
-                                                             Width="80px" Wrap="False"></asp:TextBox>
-                                                         <cc1:FilteredTextBoxExtender ID="FilteredTextBoxExtender4" runat="server" TargetControlID="txtRetailMulti"
-                                                           FilterType="Custom" FilterMode="ValidChars" InvalidChars=" " ValidChars="1234567890.">
-                                                           </cc1:FilteredTextBoxExtender>
+                                                        <asp:TextBox ID="txtRetailMulti" runat="server" Text='<%# Eval("retail_multiplier") %>'
+                                                            Width="80px" Wrap="False"></asp:TextBox>
+                                                        <cc1:FilteredTextBoxExtender ID="FilteredTextBoxExtender4" runat="server" TargetControlID="txtRetailMulti"
+                                                            FilterType="Custom" FilterMode="ValidChars" InvalidChars=" " ValidChars="1234567890.">
+                                                        </cc1:FilteredTextBoxExtender>
                                                     </ItemTemplate>
                                                     <ItemStyle HorizontalAlign="Center" />
                                                 </asp:TemplateField>
+
+                                                <%-- Cell 5 --%>
                                                 <asp:TemplateField HeaderText="Labor rate" HeaderStyle-CssClass="grdItemHeaderCss">
                                                     <ItemTemplate>
-                                                         <asp:TextBox ID="txtLabor" runat="server" Text='<%# Eval("labor_rate") %>' 
+                                                        <asp:TextBox ID="txtLabor" runat="server" Text='<%# Eval("labor_rate") %>'
                                                             Width="80px" Wrap="False"></asp:TextBox>
                                                         <cc1:FilteredTextBoxExtender ID="FilteredTextBoxExtender5" runat="server" TargetControlID="txtLabor"
-                                                           FilterType="Custom" FilterMode="ValidChars" InvalidChars=" " ValidChars="1234567890.">
-                                                           </cc1:FilteredTextBoxExtender>
+                                                            FilterType="Custom" FilterMode="ValidChars" InvalidChars=" " ValidChars="1234567890.">
+                                                        </cc1:FilteredTextBoxExtender>
                                                     </ItemTemplate>
                                                     <ItemStyle HorizontalAlign="Right" />
                                                 </asp:TemplateField>
+
+                                                <%-- Cell 6 --%>
+                                                <asp:TemplateField HeaderText="Division">
+                                                    <ItemTemplate>
+                                                        <asp:Label ID="lblPriceUpdateDivision" runat="server" Text="" Visible="true"></asp:Label>
+                                                        <asp:DropDownList ID="ddlPriceUpdateDivision" runat="server" Visible="false"></asp:DropDownList>
+                                                    </ItemTemplate>
+                                                    <ItemStyle HorizontalAlign="Center" Width="12%" />
+                                                </asp:TemplateField>
+
+                                                <%-- Cell 7 --%>
                                                 <asp:TemplateField HeaderText="Active" HeaderStyle-CssClass="grdItemHeaderCss">
                                                     <ItemTemplate>
-                                                       <asp:CheckBox ID="chkIsActiveItem" runat="server" Checked='<%# Eval("is_active") %>' />
+                                                        <asp:CheckBox ID="chkIsActiveItem" runat="server" Checked='<%# Eval("is_active") %>' />
                                                     </ItemTemplate>
                                                     <ItemStyle HorizontalAlign="Center" Width="7%" />
                                                 </asp:TemplateField>
+
+                                                <%-- Cell 8 --%>
                                                 <asp:TemplateField HeaderText="Mandatory" HeaderStyle-CssClass="grdItemHeaderCss">
                                                     <ItemTemplate>
-                                                      <asp:CheckBox ID="chkIsMandatory" runat="server" Checked='<%# Eval("is_mandatory") %>'  />
+                                                        <asp:CheckBox ID="chkIsMandatory" runat="server" Checked='<%# Eval("is_mandatory") %>' />
                                                     </ItemTemplate>
                                                     <ItemStyle HorizontalAlign="Center" Width="9%" />
                                                 </asp:TemplateField>
+
+                                                <%-- Cell 9 --%>
                                                 <asp:TemplateField HeaderText="Ex. Comm." HeaderStyle-CssClass="grdItemHeaderCss">
                                                     <ItemTemplate>
-                                                        <asp:CheckBox ID="chkIsExcludeCom" runat="server" Checked='<%# Eval("is_CommissionExclude") %>'  />
+                                                        <asp:CheckBox ID="chkIsExcludeCom" runat="server" Checked='<%# Eval("is_CommissionExclude") %>' />
                                                     </ItemTemplate>
                                                     <ItemStyle HorizontalAlign="Center" Width="9%" />
                                                 </asp:TemplateField>
-                                               
-                                               
-                                               
                                             </Columns>
                                             <AlternatingRowStyle CssClass="alt" />
                                         </asp:GridView>
@@ -682,7 +766,7 @@
             </ContentTemplate>
         </asp:UpdatePanel>
     </asp:Panel>
-     <asp:UpdateProgress ID="UpdateProgress1" runat="server" DisplayAfter="1" AssociatedUpdatePanelID="UpdatePanel1" DynamicLayout="False">
+    <asp:UpdateProgress ID="UpdateProgress1" runat="server" DisplayAfter="1" AssociatedUpdatePanelID="UpdatePanel1" DynamicLayout="False">
         <ProgressTemplate>
             <div class="overlay" />
             <div class="overlayContent">

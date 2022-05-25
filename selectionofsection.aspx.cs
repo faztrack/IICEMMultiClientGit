@@ -57,6 +57,7 @@ public partial class selectionofsection : System.Web.UI.Page
                 {
                     objCust = _db.customers.SingleOrDefault(c => c.customer_id == nCustomerID);
                     strCustName = objCust.first_name1 + " " + objCust.last_name1;
+                    hdnClientId.Value = objCust.client_id.ToString();
                 }
 
                 lblHeaderTitle.Text = "Selection (" + strCustName + ")";
@@ -102,7 +103,7 @@ public partial class selectionofsection : System.Web.UI.Page
             
             int nCustId = Convert.ToInt32(hdnCustomerID.Value);
             string strQ = "select  estimate_id, customer_id,estimate_name,estimate_name " +
-                          " from customer_estimate where customer_id=" + nCustId + " and client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) +
+                          " from customer_estimate where customer_id=" + nCustId + " and client_id=" + Convert.ToInt32(hdnClientId.Value) +
                           " Order by convert(datetime,sale_date) desc";
              DataTable dt=csCommonUtility.GetDataTable(strQ);
              //   Session.Add("sProject", dt);
@@ -408,7 +409,7 @@ public partial class selectionofsection : System.Web.UI.Page
 
                         }
 
-                        objfui.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                        objfui.client_id = Convert.ToInt32(hdnClientId.Value);
                         objfui.CustomerId = nCustId;
                         objfui.estimate_id = nEstId;
                         objfui.Desccription = "";
@@ -1304,7 +1305,7 @@ public partial class selectionofsection : System.Web.UI.Page
                 }
 
             }
-            string strQ = "Delete file_upload_info WHERE upload_fileId=" + nUploadFileId + "  AND type = 5 AND client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+            string strQ = "Delete file_upload_info WHERE upload_fileId=" + nUploadFileId + "  AND type = 5 AND client_id =" + Convert.ToInt32(hdnClientId.Value);
             _db.ExecuteCommand(strQ, string.Empty);
 
             //Set Focus
@@ -1438,7 +1439,7 @@ public partial class selectionofsection : System.Web.UI.Page
                             }
                         }
 
-                        objfui.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                        objfui.client_id = Convert.ToInt32(hdnClientId.Value);
                         objfui.CustomerId = nCustId;
                         objfui.estimate_id = nEstId;
                         objfui.Desccription = "";
@@ -1605,11 +1606,11 @@ public partial class selectionofsection : System.Web.UI.Page
     {
         DataClassesDataContext _db = new DataClassesDataContext();
 
-        if (_db.co_pricing_masters.Where(cl => cl.customer_id == nCustId && cl.estimate_id == nEstId && cl.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).ToList().Count == 0)
+        if (_db.co_pricing_masters.Where(cl => cl.customer_id == nCustId && cl.estimate_id == nEstId && cl.client_id == Convert.ToInt32(hdnClientId.Value)).ToList().Count == 0)
         {
-            List<customer_location> Cust_LocList = _db.customer_locations.Where(cl => cl.estimate_id == nEstId && cl.customer_id == nCustId && cl.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).ToList();
-            List<customer_section> Cust_SecList = _db.customer_sections.Where(cs => cs.estimate_id == nEstId && cs.customer_id == nCustId && cs.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).ToList();
-            List<pricing_detail> Pm_List = _db.pricing_details.Where(pd => pd.estimate_id == nEstId && pd.customer_id == nCustId && pd.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && pd.pricing_type == "A").ToList();
+            List<customer_location> Cust_LocList = _db.customer_locations.Where(cl => cl.estimate_id == nEstId && cl.customer_id == nCustId && cl.client_id == Convert.ToInt32(hdnClientId.Value)).ToList();
+            List<customer_section> Cust_SecList = _db.customer_sections.Where(cs => cs.estimate_id == nEstId && cs.customer_id == nCustId && cs.client_id == Convert.ToInt32(hdnClientId.Value)).ToList();
+            List<pricing_detail> Pm_List = _db.pricing_details.Where(pd => pd.estimate_id == nEstId && pd.customer_id == nCustId && pd.client_id == Convert.ToInt32(hdnClientId.Value) && pd.pricing_type == "A").ToList();
 
             foreach (customer_location objcl in Cust_LocList)
             {
@@ -2097,7 +2098,7 @@ public partial class selectionofsection : System.Web.UI.Page
         ReportDocument subReport = rptFile.OpenSubreport("rptSubSelectionImage.rpt");
         subReport.SetDataSource(dtSelectionImage);
         customer_estimate cus_est = new customer_estimate();
-        cus_est = _db.customer_estimates.Single(ce => ce.customer_id == Convert.ToInt32(hdnCustomerID.Value) && ce.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && ce.estimate_id == Convert.ToInt32(hdnEstimateID.Value));
+        cus_est = _db.customer_estimates.SingleOrDefault(ce => ce.customer_id == Convert.ToInt32(hdnCustomerID.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value) && ce.estimate_id == Convert.ToInt32(hdnEstimateID.Value));
 
 
         customer objCust = new customer();
@@ -2965,7 +2966,7 @@ public partial class selectionofsection : System.Web.UI.Page
     
     protected void btnSubmitSelection_Click(object sender, EventArgs e)
     {
-        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnSelectionApproved.ID, btnSelectionApproved.GetType().Name, "Click"); 
+        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnSelectionApproved.ID, btnSelectionApproved.GetType().Name, "Click");
         //ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "ShowProgress", "ShowProgress();", true);
 
         try

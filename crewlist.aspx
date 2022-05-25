@@ -73,9 +73,16 @@
                                                    <%-- <asp:ListItem Value="4">All Users</asp:ListItem>--%>
                                                 </asp:DropDownList>
                                             </td>
+                                            <td align="left">
+                                                <asp:Label ID="lblResult" runat="server" Text=""></asp:Label>
+                                            </td>
                                             <td align="left" valign="middle">
                                                 <table>
                                                     <tr>
+                                                        <td><b>Division:</b></td>
+                                                        <td>
+                                                            <asp:DropDownList ID="ddlDivision" runat="server" OnSelectedIndexChanged="ddlDivision_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+                                                        </td>
                                                         <td><b>Status:</b></td>
                                                         <td>
                                                             <asp:DropDownList ID="ddlStatus" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlStatus_SelectedIndexChanged">
@@ -95,6 +102,7 @@
                                                     OnClick="btnNext_Click" CssClass="nextButton" />
                                             </td>
                                         </tr>
+                                       
 
 
                                         <tr>
@@ -106,25 +114,42 @@
                                                     OnRowDataBound="grdCrewList_RowDataBound" Width="100%" CssClass="mGrid">
                                                     <PagerSettings Position="TopAndBottom" />
                                                     <Columns>
+                                                        
+                                                        <%-- Cell 0 --%>
                                                         <asp:HyperLinkField DataNavigateUrlFields="crew_id"
                                                             DataNavigateUrlFormatString="crewdetails.aspx?crid={0}"
                                                             DataTextField="full_name" HeaderText="Crew Name" SortExpression="full_name" HeaderStyle-Font-Underline="true" ItemStyle-Font-Underline="true">
                                                             <HeaderStyle HorizontalAlign="Center" Width="15%" />
                                                             <ItemStyle HorizontalAlign="Left"  />
                                                         </asp:HyperLinkField>
+
+                                                        <%-- Cell 1 --%>
                                                         <asp:BoundField DataField="username" HeaderText="Username" SortExpression="username" HeaderStyle-Font-Underline="true">
                                                             <HeaderStyle HorizontalAlign="Center" Width="10%" />
                                                             <ItemStyle HorizontalAlign="left" />
                                                         </asp:BoundField>
+
                                                         <%-- <asp:BoundField HeaderText="Address">
                                                             <HeaderStyle HorizontalAlign="Left" Width="30%"/>
                                                             <ItemStyle HorizontalAlign="Center" />
                                                         </asp:BoundField>--%>
 
+                                                        <%-- Cell 2 --%>
+                                                        <asp:TemplateField HeaderText="Division">
+                                                            <ItemTemplate>
+                                                                <asp:Label ID="lblDivision" runat="server" Text=""></asp:Label>
+                                                            </ItemTemplate>
+                                                            <HeaderStyle HorizontalAlign="Center" Width="15%"/>
+                                                            <ItemStyle HorizontalAlign="Center" />
+                                                        </asp:TemplateField>
+
+                                                        
+                                                        <%-- Cell 3 --%>
                                                          <asp:BoundField DataField="phone" HeaderText="Phone">
                                                             <HeaderStyle HorizontalAlign="Center" Width="15%"/>
                                                             <ItemStyle HorizontalAlign="Center" />
                                                         </asp:BoundField>
+
                                                         <%--<asp:BoundField DataField="email" HeaderText="Email">
                                                             <HeaderStyle HorizontalAlign="Center" Width="15%" />
                                                             <ItemStyle HorizontalAlign="Center" />
@@ -133,10 +158,23 @@
                                                             <HeaderStyle HorizontalAlign="Center" Width="10%"/>
                                                             <ItemStyle HorizontalAlign="Right" />
                                                         </asp:BoundField>--%>
-                                                        <asp:BoundField DataField="is_active" HeaderText="Active">
+
+                                                        <%-- Cell 4 --%>
+
+                                                        <asp:TemplateField HeaderText="Active">
+                                                            <ItemTemplate>
+                                                                <asp:Label ID="lblStatus" runat="server" Text=""></asp:Label>
+                                                            </ItemTemplate>
+                                                            <HeaderStyle HorizontalAlign="Center" Width="15%"/>
+                                                            <ItemStyle HorizontalAlign="Center" />
+                                                        </asp:TemplateField>
+
+                                                        
+                                                        <%--<asp:BoundField DataField="Status" HeaderText="Active">
                                                             <HeaderStyle HorizontalAlign="Center" Width="5%" />
                                                             <ItemStyle HorizontalAlign="Center" />
-                                                        </asp:BoundField>
+                                                        </asp:BoundField>--%>
+
                                                     </Columns>
                                                     <PagerStyle HorizontalAlign="Left" CssClass="pgr" />
                                                     <AlternatingRowStyle CssClass="alt" />
@@ -166,7 +204,8 @@
                                 <td><asp:Label ID="lblSortedBy" runat="server" Visible="False"></asp:Label></td> 
                                  <td>
 
-                                    <asp:HiddenField ID="hdnOrder" runat="server" Value="DESC" />
+                                    <asp:HiddenField ID="hdnOrder" runat="server" Value="ASC" />
+                                     <asp:HiddenField ID="hdnClientId" runat="server" Value="DESC" />
 
                                 </td>
                             </tr>

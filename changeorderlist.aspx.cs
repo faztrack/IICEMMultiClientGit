@@ -48,24 +48,29 @@ public partial class changeorderlist : System.Web.UI.Page
             if (Convert.ToInt32(hdnCustomerId.Value) > 0)
             {
                 customer cust = new customer();
-                cust = _db.customers.Single(c => c.customer_id == Convert.ToInt32(hdnCustomerId.Value));
+                cust = _db.customers.SingleOrDefault(c => c.customer_id == Convert.ToInt32(hdnCustomerId.Value));
+                if (cust != null)
+                {
+                    lblCustomerName.Text = cust.first_name1 + " " + cust.last_name1;
+                    string strAddress = "";
+                    strAddress = cust.address + " </br>" + cust.city + ", " + cust.state + " " + cust.zip_code;
+                    lblAddress.Text = strAddress;
+                    lblEmail.Text = cust.email;
+                    lblPhone.Text = cust.phone;
+                    hdnSalesPersonId.Value = cust.sales_person_id.ToString();
 
-                lblCustomerName.Text = cust.first_name1 + " " + cust.last_name1;
-                string strAddress = "";
-                strAddress = cust.address + " </br>" + cust.city + ", " + cust.state + " " + cust.zip_code;
-                lblAddress.Text = strAddress;
-                lblEmail.Text = cust.email;
-                lblPhone.Text = cust.phone;
-                hdnSalesPersonId.Value = cust.sales_person_id.ToString();
+                    //hypGoogleMap.NavigateUrl = "GoogleMap.aspx?strAdd=" + strAddress.Replace("</br>", "");
+                    string address = cust.address + ",+" + cust.city + ",+" + cust.state + ",+" + cust.zip_code;
+                    hypGoogleMap.NavigateUrl = "http://maps.google.com/maps?f=q&source=s_q&hl=en&geocode=&q=" + address;
 
-                //hypGoogleMap.NavigateUrl = "GoogleMap.aspx?strAdd=" + strAddress.Replace("</br>", "");
-                string address = cust.address + ",+" + cust.city + ",+" + cust.state + ",+" + cust.zip_code;
-                hypGoogleMap.NavigateUrl = "http://maps.google.com/maps?f=q&source=s_q&hl=en&geocode=&q=" + address;
+                    hdnClientId.Value = cust.client_id.ToString();
+                }
+                
             }
             if (Convert.ToInt32(hdnEstimateId.Value) > 0)
             {
                 customer_estimate cus_est = new customer_estimate();
-                cus_est = _db.customer_estimates.Single(ce => ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value));
+                cus_est = _db.customer_estimates.Single(ce => ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value) && ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value));
                 lblEstimateName.Text = cus_est.estimate_name;
                 if ((cus_est.job_number ?? "").Length > 0)
                 {
@@ -161,11 +166,11 @@ public partial class changeorderlist : System.Web.UI.Page
 
         string strQ = " SELECT  co_pricing_list_id, customer_id, estimate_id, chage_order_id, change_order_pricing_list.location_id, sales_person_id, section_level, section_serial, item_id, section_name, item_name, total_direct_price, total_retail_price, is_direct, item_status_id, EconomicsId, EconomicsCost, create_date, last_update_date,location_name,short_notes,quantity,measure_unit FROM change_order_pricing_list  " +
                     " INNER JOIN location ON change_order_pricing_list.location_id=location.location_id AND change_order_pricing_list.client_id=location.client_id " +
-                    " WHERE chage_order_id=" + ncoId + " AND estimate_id=" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND change_order_pricing_list.client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                    " WHERE chage_order_id=" + ncoId + " AND estimate_id=" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND change_order_pricing_list.client_id=" + Convert.ToInt32(hdnClientId.Value);
         List<ChangeOrderPricingListModel> rList = _db.ExecuteQuery<ChangeOrderPricingListModel>(strQ, string.Empty).ToList();
         
         changeorder_estimate cho = new changeorder_estimate();
-        cho = _db.changeorder_estimates.Single(ce => ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && ce.chage_order_id == ncoId);
+        cho = _db.changeorder_estimates.Single(ce => ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value) && ce.chage_order_id == ncoId);
 
         decimal COAmount = 0;
         decimal CoTax = 0;
@@ -252,9 +257,9 @@ public partial class changeorderlist : System.Web.UI.Page
         decimal dBalanceDueAmount = 0;
         decimal dOtherAmount = 0;
 
-        if (_db.Co_PaymentTerms.Any(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == ncoId && est_p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])))
+        if (_db.Co_PaymentTerms.Any(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == ncoId && est_p.client_id == Convert.ToInt32(hdnClientId.Value)))
         {
-            Co_PaymentTerm objPayTerm = _db.Co_PaymentTerms.FirstOrDefault(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == ncoId && est_p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+            Co_PaymentTerm objPayTerm = _db.Co_PaymentTerms.FirstOrDefault(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == ncoId && est_p.client_id == Convert.ToInt32(hdnClientId.Value));
 
             if (objPayTerm.UponSign_value != null)
             {
@@ -357,11 +362,11 @@ public partial class changeorderlist : System.Web.UI.Page
 
         string strQ = " SELECT  co_pricing_list_id, customer_id, estimate_id, chage_order_id, change_order_pricing_list.location_id, sales_person_id, section_level, section_serial, item_id, section_name, item_name, total_direct_price, total_retail_price, is_direct, item_status_id, EconomicsId, EconomicsCost, create_date, last_update_date,location_name,short_notes FROM change_order_pricing_list  " +
                     " INNER JOIN location ON change_order_pricing_list.location_id=location.location_id AND change_order_pricing_list.client_id=location.client_id " +
-                    " WHERE chage_order_id=" + ncoId + " AND estimate_id=" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND change_order_pricing_list.client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                    " WHERE chage_order_id=" + ncoId + " AND estimate_id=" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND change_order_pricing_list.client_id=" + Convert.ToInt32(hdnClientId.Value);
         List<ChangeOrderPricingListModel> rList = _db.ExecuteQuery<ChangeOrderPricingListModel>(strQ, string.Empty).ToList();
         
         changeorder_estimate cho = new changeorder_estimate();
-        cho = _db.changeorder_estimates.Single(ce => ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && ce.chage_order_id == ncoId);
+        cho = _db.changeorder_estimates.Single(ce => ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value) && ce.chage_order_id == ncoId);
 
         decimal COAmount = 0;
         decimal CoTax = 0;
@@ -435,9 +440,9 @@ public partial class changeorderlist : System.Web.UI.Page
         decimal dBalanceDueAmount = 0;
         decimal dOtherAmount = 0;
 
-        if (_db.Co_PaymentTerms.Any(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == ncoId && est_p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])))
+        if (_db.Co_PaymentTerms.Any(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == ncoId && est_p.client_id == Convert.ToInt32(hdnClientId.Value)))
         {
-            Co_PaymentTerm objPayTerm = _db.Co_PaymentTerms.FirstOrDefault(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == ncoId && est_p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+            Co_PaymentTerm objPayTerm = _db.Co_PaymentTerms.FirstOrDefault(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == ncoId && est_p.client_id == Convert.ToInt32(hdnClientId.Value));
 
             if (objPayTerm.UponSign_value != null)
             {

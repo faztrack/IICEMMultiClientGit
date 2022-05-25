@@ -46,24 +46,30 @@ public partial class customer_locations : System.Web.UI.Page
 
 
             DataClassesDataContext _db = new DataClassesDataContext();
-
+            customer cust = new customer();
             // Get Customer Information
             if (Convert.ToInt32(hdnCustomerId.Value) > 0)
             {
-                customer cust = new customer();
-                cust = _db.customers.Single(c => c.customer_id == Convert.ToInt32(hdnCustomerId.Value));
+           
+                cust = _db.customers.SingleOrDefault(c => c.customer_id == Convert.ToInt32(hdnCustomerId.Value));
 
-                lblCustomerName.Text = cust.first_name1 + " " + cust.last_name1;
-                string strAddress = "";
-                strAddress = cust.address + " </br>" + cust.city + ", " + cust.state + " " + cust.zip_code;
-                lblAddress.Text = strAddress;
-                lblPhone.Text = cust.phone;
-                lblEmail.Text = cust.email;
-                hdnSalesPersonId.Value = cust.sales_person_id.ToString();
+                if (cust != null)
+                {
+                    lblCustomerName.Text = cust.first_name1 + " " + cust.last_name1;
+                    string strAddress = "";
+                    strAddress = cust.address + " </br>" + cust.city + ", " + cust.state + " " + cust.zip_code;
+                    lblAddress.Text = strAddress;
+                    lblPhone.Text = cust.phone;
+                    lblEmail.Text = cust.email;
+                    hdnSalesPersonId.Value = cust.sales_person_id.ToString();
 
-                //hypGoogleMap.NavigateUrl = "GoogleMap.aspx?strAdd=" + strAddress.Replace("</br>", "");
-                string address = cust.address + ",+" + cust.city + ",+" + cust.state + ",+" + cust.zip_code;
-                hypGoogleMap.NavigateUrl = "http://maps.google.com/maps?f=q&source=s_q&hl=en&geocode=&q=" + address;
+                    //hypGoogleMap.NavigateUrl = "GoogleMap.aspx?strAdd=" + strAddress.Replace("</br>", "");
+                    string address = cust.address + ",+" + cust.city + ",+" + cust.state + ",+" + cust.zip_code;
+                    hypGoogleMap.NavigateUrl = "http://maps.google.com/maps?f=q&source=s_q&hl=en&geocode=&q=" + address;
+
+                    hdnClientId.Value = cust.client_id.ToString();
+                }
+                               
 
             }
 
@@ -75,7 +81,7 @@ public partial class customer_locations : System.Web.UI.Page
                 {
                     int nEstId = 0;
                     var result = (from ce in _db.customer_estimates
-                                  where ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                  where ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value)
                                   select ce.estimate_id);
 
                     int n = result.Count();
@@ -85,7 +91,7 @@ public partial class customer_locations : System.Web.UI.Page
                     hdnEstimateId.Value = nEstId.ToString();
 
                     customer_estimate cus_est = new customer_estimate();
-                    cus_est.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                    cus_est.client_id = cust.client_id;
                     cus_est.customer_id = Convert.ToInt32(hdnCustomerId.Value);
                     cus_est.estimate_id = Convert.ToInt32(hdnEstimateId.Value);
                     cus_est.status_id = 1;
@@ -118,7 +124,7 @@ public partial class customer_locations : System.Web.UI.Page
             if (Convert.ToInt32(hdnEstimateId.Value) > 0)
             {
                 customer_estimate cus_est = new customer_estimate();
-                cus_est = _db.customer_estimates.Single(ce => ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value));
+                cus_est = _db.customer_estimates.Single(ce => ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value) && ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value));
 
                 lblEstimateName.Text = cus_est.estimate_name;
             }
@@ -249,7 +255,7 @@ public partial class customer_locations : System.Web.UI.Page
             return;
         }
         DataClassesDataContext _db = new DataClassesDataContext();
-        string strQ = "DELETE customer_locations WHERE customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " AND estimate_id =" + Convert.ToInt32(hdnEstimateId.Value);
+        string strQ = "DELETE customer_locations WHERE customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND client_id = " + Convert.ToInt32(hdnClientId.Value) + " AND estimate_id =" + Convert.ToInt32(hdnEstimateId.Value);
         _db.ExecuteCommand(strQ, string.Empty);
         for (int i = 0; i < chkLocations.Items.Count; i++)
         {
@@ -258,7 +264,7 @@ public partial class customer_locations : System.Web.UI.Page
                 int nLocationid = Convert.ToInt32(chkLocations.Items[i].Value);
                 // Add Customer locations
                 customer_location cus_loc = new customer_location();
-                cus_loc.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                cus_loc.client_id = Convert.ToInt32(hdnClientId.Value);
                 cus_loc.customer_id = Convert.ToInt32(hdnCustomerId.Value);
                 cus_loc.location_id = nLocationid;
                 cus_loc.estimate_id = Convert.ToInt32(hdnEstimateId.Value);

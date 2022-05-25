@@ -273,6 +273,7 @@
                                 <td>
 
                                     <asp:HiddenField ID="hdnOrder" runat="server" Value="DESC" />
+                                    <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
 
                                 </td>
                             </tr>

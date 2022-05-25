@@ -22,6 +22,10 @@ public partial class me_estimate_list : System.Web.UI.Page
         {
             Response.Redirect(ConfigurationManager.AppSettings["LoginPage"].ToString());
         }
+        else
+        {
+            hdnClientId.Value = ((userinfo)Session["oUser"]).client_id.ToString();
+        }
         userinfo obj = (userinfo)Session["oUser"];
         nSalesPersonId = obj.sales_person_id;
         nUserId = obj.user_id;
@@ -62,7 +66,7 @@ public partial class me_estimate_list : System.Web.UI.Page
         {
             var item = from me in _db.model_estimates
                        join sp in _db.sales_persons on me.sales_person_id equals sp.sales_person_id
-                       where me.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                       where me.client_id.ToString().Contains(hdnClientId.Value)
                        orderby me.sales_person_id, me.model_estimate_id, me.model_estimate_name
                        select new EstimateTemplateModel()
                                        {
@@ -83,7 +87,7 @@ public partial class me_estimate_list : System.Web.UI.Page
                 string str = txtSearch.Text.Trim();
                 item = from me in _db.model_estimates
                        join sp in _db.sales_persons on me.sales_person_id equals sp.sales_person_id
-                       where me.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && me.model_estimate_name.Contains(str)
+                       where me.client_id.ToString().Contains(hdnClientId.Value) && me.model_estimate_name.Contains(str)
                        orderby me.sales_person_id, me.model_estimate_id, me.model_estimate_name
                        select new EstimateTemplateModel()
                        {
@@ -105,7 +109,7 @@ public partial class me_estimate_list : System.Web.UI.Page
         {
             var item = from me in _db.model_estimates
                        join sp in _db.sales_persons on me.sales_person_id equals sp.sales_person_id
-                       where me.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && me.sales_person_id == nSalesPersonId
+                       where me.client_id.ToString().Contains(hdnClientId.Value) && me.sales_person_id == nSalesPersonId
                        orderby me.sales_person_id, me.model_estimate_id, me.model_estimate_name
                        select new EstimateTemplateModel()
                        {
@@ -126,7 +130,7 @@ public partial class me_estimate_list : System.Web.UI.Page
                 string str = txtSearch.Text.Trim();
                 item = from me in _db.model_estimates
                        join sp in _db.sales_persons on me.sales_person_id equals sp.sales_person_id
-                       where me.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && me.model_estimate_name.Contains(str) && me.sales_person_id == nSalesPersonId
+                       where me.client_id.ToString().Contains(hdnClientId.Value) && me.model_estimate_name.Contains(str) && me.sales_person_id == nSalesPersonId
                        orderby me.sales_person_id, me.model_estimate_id, me.model_estimate_name
                        select new EstimateTemplateModel()
                        {
@@ -171,7 +175,7 @@ public partial class me_estimate_list : System.Web.UI.Page
 
         var item = from me in _db.model_estimates
                    join sp in _db.sales_persons on me.sales_person_id equals sp.sales_person_id
-                   where me.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && me.sales_person_id != nSalesPersonId && me.IsPublic == true
+                   where me.client_id.ToString().Contains(hdnClientId.Value) && me.sales_person_id != nSalesPersonId && me.IsPublic == true
                    orderby me.sales_person_id, me.model_estimate_id, me.model_estimate_name
                    select new EstimateTemplateModel()
                    {
@@ -192,7 +196,7 @@ public partial class me_estimate_list : System.Web.UI.Page
             string str = txtPublicSearch.Text.Trim();
             item = from me in _db.model_estimates
                    join sp in _db.sales_persons on me.sales_person_id equals sp.sales_person_id
-                   where me.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && me.model_estimate_name.Contains(str) && me.sales_person_id != nSalesPersonId && me.IsPublic == true
+                   where me.client_id.ToString().Contains(hdnClientId.Value) && me.model_estimate_name.Contains(str) && me.sales_person_id != nSalesPersonId && me.IsPublic == true
                    orderby me.sales_person_id, me.model_estimate_id, me.model_estimate_name
                    select new EstimateTemplateModel()
                    {

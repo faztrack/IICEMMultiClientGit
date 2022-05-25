@@ -218,7 +218,8 @@ public partial class user_profile : System.Web.UI.Page
         }
 
 
-        uinfo.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        //uinfo.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        //uinfo.client_id = "1";  
         uinfo.user_id = Convert.ToInt32(hdnUserId.Value);
 
         uinfo.first_name = txtFirstName.Text;
@@ -251,7 +252,7 @@ public partial class user_profile : System.Web.UI.Page
         }
 
         // Sales person Info
-        obj.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        //obj.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
         obj.sales_person_id = Convert.ToInt32(hdnSalesPersonId.Value);
 
         obj.first_name = txtFirstName.Text;

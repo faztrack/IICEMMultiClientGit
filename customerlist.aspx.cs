@@ -22,14 +22,16 @@ public partial class customerlist : System.Web.UI.Page
     {
         if (HttpContext.Current.Session["cSearch"] != null)
         {
-            List<customer> cList = (List<customer>)HttpContext.Current.Session["cSearch"];
+            List<csCustomer> cList = (List<csCustomer>)HttpContext.Current.Session["cSearch"];
+           
             return (from c in cList
                     where c.last_name1.ToLower().Trim().StartsWith(prefixText.ToLower().Trim())
-                    select c.last_name1.Trim()).Distinct().Take<String>(count).ToArray(); 
+                    select c.last_name1.Trim()).Distinct().Take<String>(count).ToArray();
         }
         else
         {
             DataClassesDataContext _db = new DataClassesDataContext();
+
             return (from c in _db.customers
                     where c.last_name1.ToLower().Trim().StartsWith(prefixText.ToLower().Trim())
                     select c.last_name1.Trim()).Distinct().Take<String>(count).ToArray();
@@ -40,7 +42,7 @@ public partial class customerlist : System.Web.UI.Page
     {
         if (HttpContext.Current.Session["cSearch"] != null)
         {
-            List<customer> cList = (List<customer>)HttpContext.Current.Session["cSearch"];
+            List<csCustomer> cList = (List<csCustomer>)HttpContext.Current.Session["cSearch"];
             return (from c in cList
                     where c.company.ToLower().Trim().StartsWith(prefixText.ToLower().Trim())
                     select c.company.Trim()).Distinct().Take<String>(count).ToArray();
@@ -59,7 +61,7 @@ public partial class customerlist : System.Web.UI.Page
     {
         if (HttpContext.Current.Session["cSearch"] != null)
         {
-            List<customer> cList = (List<customer>)HttpContext.Current.Session["cSearch"];
+            List<csCustomer> cList = (List<csCustomer>)HttpContext.Current.Session["cSearch"];
             return (from c in cList
                     where c.first_name1.ToLower().Trim().StartsWith(prefixText.ToLower().Trim())
                     orderby c.first_name1
@@ -81,7 +83,7 @@ public partial class customerlist : System.Web.UI.Page
     {
         if (HttpContext.Current.Session["cSearch"] != null)
         {
-            List<customer> cList = (List<customer>)HttpContext.Current.Session["cSearch"];
+            List<csCustomer> cList = (List<csCustomer>)HttpContext.Current.Session["cSearch"];
             return (from c in cList
                     where c.address.ToLower().StartsWith(prefixText.ToLower())
                     select c.address).Distinct().Take<String>(count).ToArray();
@@ -99,7 +101,7 @@ public partial class customerlist : System.Web.UI.Page
     {
         if (HttpContext.Current.Session["cSearch"] != null)
         {
-            List<customer> cList = (List<customer>)HttpContext.Current.Session["cSearch"];
+            List<csCustomer> cList = (List<csCustomer>)HttpContext.Current.Session["cSearch"];
             return (from c in cList
                     where c.email.ToLower().StartsWith(prefixText.ToLower())
                     select c.email.Trim()).Distinct().Take<String>(count).ToArray();
@@ -117,7 +119,7 @@ public partial class customerlist : System.Web.UI.Page
     {
         if (HttpContext.Current.Session["lSearch"] != null)
         {
-            List<customer> cList = (List<customer>)HttpContext.Current.Session["lSearch"];
+            List<csCustomer> cList = (List<csCustomer>)HttpContext.Current.Session["cSearch"];
             return (from c in cList
                     where c.phone.ToLower().Contains(prefixText.ToLower())
                     select c.phone).Take<String>(count).ToArray();
@@ -154,12 +156,13 @@ public partial class customerlist : System.Web.UI.Page
             if (Session["oUser"] == null)
             {
                 Response.Redirect(ConfigurationManager.AppSettings["LoginPage"].ToString());
-            }
+            }            
             else
             {
                 userinfo oUser = (userinfo)Session["oUser"];
                 hdnEmailType.Value = oUser.EmailIntegrationType.ToString();
 
+                hdnClientId.Value = oUser.client_id.ToString();
             }
 
 
@@ -186,27 +189,35 @@ public partial class customerlist : System.Web.UI.Page
                 int nCustomerId = Convert.ToInt32(Session["CustomerId"]);
 
                 customer cust = new customer();
-                cust = _db.customers.Single(c => c.customer_id == nCustomerId);
-                if (cust.isCustomer == 0)
+                cust = _db.customers.SingleOrDefault(c => c.customer_id == nCustomerId);
+                if (cust != null)
                 {
-                    Session.Add("LeadId", nCustomerId.ToString());
-                    Session.Remove("CustomerId");
-                    nCustomerId = 0;
-                    Response.Redirect("leadlist.aspx");
+                    if (cust.isCustomer == 0)
+                    {
+                        Session.Add("LeadId", nCustomerId.ToString());
+                        Session.Remove("CustomerId");
+                        nCustomerId = 0;
+                        Response.Redirect("leadlist.aspx");
+                    }
+                    hdnCustomerId.Value = nCustomerId.ToString();
                 }
-                hdnCustomerId.Value = nCustomerId.ToString();
             }
             Session.Remove("LeadSreach");
             Session.Remove("CustSreach");
             Session.Remove("SelectionFilter");
 
             // Get Customers
-            # region Get Customers
+            #region Get Customers
 
-            List<customer> CustomerList = _db.customers.ToList();
+            // List<customer> CustomerList = _db.customers.Where(c => c.client_id.ToString().Contains(hdnClientId.Value)).ToList();
+            
+            string strQ = "select * from customers where client_id in (" + hdnClientId.Value + " )  ";
+            IEnumerable<csCustomer> CustomerList = _db.ExecuteQuery<csCustomer>(strQ, string.Empty).ToList();
+           
             Session.Add("cSearch", CustomerList);
 
             # endregion
+            BindDivision();
             BindSalesPerson();
             BindSuperintendent();
           // updateCustomersLatLng();
@@ -271,7 +282,7 @@ public partial class customerlist : System.Web.UI.Page
                            else   ce.job_number end as jobNumber
                            from customers as c
                            inner join customer_estimate as ce on c.customer_id = ce.customer_id
-                           where ce.status_id = 3 " + strCondition;
+                           where ce.status_id = 3 AND c.client_id in ( "+ hdnClientId.Value + " ) " + strCondition;
             List<csCustomer> mList = _db.ExecuteQuery<csCustomer>(strQ, string.Empty).ToList();
             Session.Add("JobSearch", mList);
         }
@@ -380,7 +391,7 @@ public partial class customerlist : System.Web.UI.Page
     private void BindSalesPerson()
     {
         DataClassesDataContext _db = new DataClassesDataContext();
-        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1  and is_sales=1 and sales_person.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " order by sales_person_id asc";
+        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1  and is_sales=1 and sales_person.client_id in (" + hdnClientId.Value + ") order by sales_person_id asc";
         List<userinfo> mList = _db.ExecuteQuery<userinfo>(strQ, string.Empty).ToList();
         ddlSalesRep.DataSource = mList;
         ddlSalesRep.DataTextField = "sales_person_name";
@@ -422,7 +433,7 @@ public partial class customerlist : System.Web.UI.Page
 
 
         string strCondition = "";
-
+        strCondition = " Where customers.client_id in (" + obj.client_id + ") ";
 
         if (txtSearch.Text.Trim() != "")
         {
@@ -431,30 +442,33 @@ public partial class customerlist : System.Web.UI.Page
 
             string str = txtSearch.Text.Trim();
 
+
             if (ddlSearchBy.SelectedValue == "1")
             {
-                strCondition = " customers.first_name1 LIKE '%" + str.Replace("'", "''") + "%'";
+                strCondition += " AND customers.first_name1 LIKE '%" + str.Replace("'", "''") + "%'";
             }
             else if (ddlSearchBy.SelectedValue == "2")
             {
-                strCondition = "  customers.last_name1 LIKE '%" + str.Replace("'", "''") + "%'";
+                strCondition += " AND customers.last_name1 LIKE '%" + str.Replace("'", "''") + "%'";
             }
             else if (ddlSearchBy.SelectedValue == "3")
             {
 
-                strCondition = "  customers.email LIKE '%" + str + "%'";
+                strCondition += " AND customers.email LIKE '%" + str + "%'";
             }
             else if (ddlSearchBy.SelectedValue == "4")
             {
-                strCondition = "  customers.address LIKE '%" + str.Replace("'", "''") + "%'";
+                strCondition += " AND customers.address LIKE '%" + str.Replace("'", "''") + "%'";
             }
+           
             else if (ddlSearchBy.SelectedValue == "7")
             {
-                strCondition = "  customers.phone LIKE '%" + str.Replace("'", "''") + "%'";
+                strCondition += " AND customers.phone LIKE '%" + str.Replace("'", "''") + "%'";
             }
+
             else if (ddlSearchBy.SelectedValue == "5")
             {
-                strCondition = "  (ce.job_number LIKE '%" + str.Replace("'", "''") + "%' OR ce.alter_job_number LIKE '%" + str.Replace("'", "''") + "%')";
+                strCondition += " AND (ce.job_number LIKE '%" + str.Replace("'", "''") + "%' OR ce.alter_job_number LIKE '%" + str.Replace("'", "''") + "%')";
             }
         }
         else
@@ -524,6 +538,15 @@ public partial class customerlist : System.Web.UI.Page
                 }
 
             }
+
+            if (ddlDivision.SelectedItem.Text != "All")
+            {
+                if (strCondition.Length > 2)
+                    strCondition += " AND customers.client_id in (" + ddlDivision.SelectedValue + ") ";
+                else
+                    strCondition = " WHERE  customers.client_id in (" + ddlDivision.SelectedValue + ") ";
+            }
+
             if (ddlSuperintendent.SelectedItem.Text != "All")
             {
                 if (strCondition.Length > 0)
@@ -537,10 +560,10 @@ public partial class customerlist : System.Web.UI.Page
 
             }
         }
-        if (strCondition.Length > 0)
-        {
-            strCondition = "Where " + strCondition;
-        }
+        //if (strCondition.Length > 0)
+        //{
+        //    strCondition = "Where " + strCondition;
+        //}
         //if (strCondition.Length > 0)
         //{
         //    strCondition = "Where " + strCondition + " AND isCustomer = 1 ";
@@ -755,7 +778,7 @@ public partial class customerlist : System.Web.UI.Page
         Session.Remove("CustomerId");
         Response.Redirect("customer_details.aspx");
     }
-    private decimal GetRetailTotal(int EstID, int ncustid)
+    private decimal GetRetailTotal(int EstID, int ncustid, int clientId)
     {
         decimal dRetail = 0;
         DataClassesDataContext _db = new DataClassesDataContext();
@@ -765,9 +788,9 @@ public partial class customerlist : System.Web.UI.Page
         decimal tax_amount = 0;
         decimal total_incentives = 0;
         estimate_payment esp = new estimate_payment();
-        if (_db.estimate_payments.Where(ep => ep.estimate_id == EstID && ep.customer_id == ncustid && ep.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).SingleOrDefault() != null)
+        if (_db.estimate_payments.Where(ep => ep.estimate_id == EstID && ep.customer_id == ncustid && ep.client_id == clientId).SingleOrDefault() != null)
         {
-            esp = _db.estimate_payments.Single(ep => ep.estimate_id == EstID && ep.customer_id == ncustid && ep.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+            esp = _db.estimate_payments.Single(ep => ep.estimate_id == EstID && ep.customer_id == ncustid && ep.client_id == clientId);
             totalwithtax = Convert.ToDecimal(esp.new_total_with_tax);
             total_incentives = Convert.ToDecimal(esp.total_incentives);
             if (Convert.ToDecimal(esp.adjusted_price) > 0)
@@ -785,11 +808,11 @@ public partial class customerlist : System.Web.UI.Page
             {
                 var result = (from pd in _db.pricing_details
                               where (from clc in _db.customer_locations
-                                     where clc.estimate_id == EstID && clc.customer_id == ncustid && clc.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                     where clc.estimate_id == EstID && clc.customer_id == ncustid && clc.client_id == clientId
                                      select clc.location_id).Contains(pd.location_id) &&
                                      (from cs in _db.customer_sections
-                                      where cs.estimate_id == EstID && cs.customer_id == ncustid && cs.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
-                                      select cs.section_id).Contains(pd.section_level) && pd.estimate_id == EstID && pd.customer_id == Convert.ToInt32(hdnCustomerId.Value) && pd.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && pd.pricing_type == "A" && pd.is_CommissionExclude == false
+                                      where cs.estimate_id == EstID && cs.customer_id == ncustid && cs.client_id == clientId
+                                      select cs.section_id).Contains(pd.section_level) && pd.estimate_id == EstID && pd.customer_id == Convert.ToInt32(hdnCustomerId.Value) && pd.client_id == clientId && pd.pricing_type == "A" && pd.is_CommissionExclude == false
                               select pd.total_retail_price);
                 int n = result.Count();
                 if (result != null && n > 0)
@@ -802,6 +825,21 @@ public partial class customerlist : System.Web.UI.Page
 
         return totalwithtax;
     }
+
+    private void BindDivision()
+    {
+        
+        string sql = "select id, division_name from division order by division_name";
+        DataTable dt = csCommonUtility.GetDataTable(sql);
+        ddlDivision.DataSource = dt;
+        ddlDivision.DataTextField = "division_name";
+        ddlDivision.DataValueField = "id";
+        ddlDivision.DataBind();
+        ddlDivision.Items.Insert(0, "All");
+
+    }
+
+
     protected void grdCustomerList_RowDataBound(object sender, GridViewRowEventArgs e)
     {
         if (e.Row.RowType == DataControlRowType.DataRow)
@@ -818,7 +856,8 @@ public partial class customerlist : System.Web.UI.Page
                 sDate = grdCustomerList.DataKeys[e.Row.RowIndex].Values[2].ToString();
             }
 
-
+            Label lblDivision = (Label)e.Row.FindControl("lblDivision");
+            
 
             string strSalesPerson = string.Empty;
             sales_person sp = new sales_person();
@@ -869,6 +908,8 @@ public partial class customerlist : System.Web.UI.Page
             cust = _db.customers.Single(c => c.customer_id == ncid);
             string strAddress = cust.address + " </br>" + cust.city + ", " + cust.state + " " + cust.zip_code;
             //e.Row.Cells[2].Text = strAddress;
+
+            lblDivision.Text = "<span style='font-weight:bold'>Division: </span>" + csCommonUtility.GetDivisionName(cust.client_id.ToString());
 
             //Label lblPhone = (Label)e.Row.FindControl("lblPhone");
             //lblPhone.Text = cust.phone;
@@ -965,7 +1006,7 @@ public partial class customerlist : System.Web.UI.Page
                           " ELSE estimate_name END AS estimate_name, " +
                           " create_date, last_update_date, sale_date, estimate_comments, job_start_date, tax_rate, " +
                           " job_number, IsEstimateActive, IsCustDisplay, JobId " +
-                          " from customer_estimate where customer_id=" + ncid + " and client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) +
+                          " from customer_estimate where customer_id=" + ncid + " and client_id = " + cust.client_id +
                           " Order by convert(datetime,sale_date) desc";
             IEnumerable<customer_estimate_model> list = _db.ExecuteQuery<customer_estimate_model>(strQ, string.Empty);
 
@@ -1009,11 +1050,11 @@ public partial class customerlist : System.Web.UI.Page
             if (ddlEst.Items.Count > 0)
             {
 
-                decimal TotalExCom_WithIntevcise = GetRetailTotal(Convert.ToInt32(ddlEst.SelectedValue), ncid);
+                decimal TotalExCom_WithIntevcise = GetRetailTotal(Convert.ToInt32(ddlEst.SelectedValue), ncid, (int)cust.client_id);
 
                 lblJobJost.Text = "Estimate Amount: " + TotalExCom_WithIntevcise.ToString("c");
 
-                string strQ2 = "select * from customer_estimate where customer_id=" + ncid + " AND estimate_id != " + Convert.ToInt32(ddlEst.SelectedValue) + " and client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " Order by convert(datetime,sale_date) desc";
+                string strQ2 = "select * from customer_estimate where customer_id=" + ncid + " AND estimate_id != " + Convert.ToInt32(ddlEst.SelectedValue) + " and client_id = " + cust.client_id + " Order by convert(datetime,sale_date) desc";
                 IEnumerable<customer_estimate_model> list2 = _db.ExecuteQuery<customer_estimate_model>(strQ2, string.Empty);
 
                 string strOtherJobNum = string.Empty;
@@ -1067,7 +1108,7 @@ public partial class customerlist : System.Web.UI.Page
                 }
                 lblOtherJob.Text = strOtherJobNum;
 
-                string strQ1 = "select * from customer_estimate where customer_id=" + ncid + " AND estimate_id = " + Convert.ToInt32(ddlEst.SelectedValue) + " and client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " Order by convert(datetime,sale_date) desc";
+                string strQ1 = "select * from customer_estimate where customer_id=" + ncid + " AND estimate_id = " + Convert.ToInt32(ddlEst.SelectedValue) + " and client_id = " + cust.client_id + " Order by convert(datetime,sale_date) desc";
                 IEnumerable<customer_estimate_model> list1 = _db.ExecuteQuery<customer_estimate_model>(strQ1, string.Empty);
 
                 Label lblActiveCust = (Label)e.Row.FindControl("lblActiveCust");
@@ -1182,7 +1223,7 @@ public partial class customerlist : System.Web.UI.Page
                         lblSaleDate.Text = Convert.ToDateTime(cus_est.sale_date).ToShortDateString();
 
                         // Estimate Change Order
-                        string strQuery = "select change_order_estimate_id, chage_order_id, estimate_id, customer_id, client_id, sales_person_id, change_order_status_id, changeorder_name, change_order_type_id, payment_terms, other_terms, is_total, is_tax, tax, total_payment_due, execute_date, is_close, comments, notes1, changeorder_date, create_date, last_updated_date from changeorder_estimate where customer_id=" + ncid + " AND estimate_id = " + nestid + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                        string strQuery = "select change_order_estimate_id, chage_order_id, estimate_id, customer_id, client_id, sales_person_id, change_order_status_id, changeorder_name, change_order_type_id, payment_terms, other_terms, is_total, is_tax, tax, total_payment_due, execute_date, is_close, comments, notes1, changeorder_date, create_date, last_updated_date from changeorder_estimate where customer_id=" + ncid + " AND estimate_id = " + nestid + " AND client_id = " + cust.client_id ;
                         IEnumerable<ChangeOrderEstimateModel> COlistItem = _db.ExecuteQuery<ChangeOrderEstimateModel>(strQuery, string.Empty);
                         ddlEstCO.DataSource = COlistItem;
                         ddlEstCO.DataTextField = "changeorder_name";
@@ -1215,7 +1256,7 @@ public partial class customerlist : System.Web.UI.Page
                         {
                             nCOID = Convert.ToInt32(ddlEstCO.SelectedValue);
                         }
-                        string strQueryCO = "select change_order_estimate_id, chage_order_id, estimate_id, customer_id, client_id, sales_person_id, change_order_status_id, changeorder_name, change_order_type_id, payment_terms, other_terms, is_total, is_tax, tax, total_payment_due, execute_date, is_close, comments, notes1, changeorder_date, create_date, last_updated_date from changeorder_estimate where chage_order_id =" + nCOID + " and  customer_id=" + ncid + " AND estimate_id = " + nestid + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                        string strQueryCO = "select change_order_estimate_id, chage_order_id, estimate_id, customer_id, client_id, sales_person_id, change_order_status_id, changeorder_name, change_order_type_id, payment_terms, other_terms, is_total, is_tax, tax, total_payment_due, execute_date, is_close, comments, notes1, changeorder_date, create_date, last_updated_date from changeorder_estimate where chage_order_id =" + nCOID + " and  customer_id=" + ncid + " AND estimate_id = " + nestid + " AND client_id = " + cust.client_id;
                         IEnumerable<ChangeOrderEstimateModel> listItemCO = _db.ExecuteQuery<ChangeOrderEstimateModel>(strQueryCO, string.Empty);
 
 
@@ -1602,9 +1643,12 @@ public partial class customerlist : System.Web.UI.Page
 
         int ncid = Convert.ToInt32(grdCustomerList.DataKeys[diitem.RowIndex].Values[0]);
 
-        decimal TotalExCom_WithIntevcise = GetRetailTotal(Convert.ToInt32(ddlEst.SelectedValue), ncid);
+        customer cust = new customer();
+        cust = _db.customers.Single(c => c.customer_id == ncid);
+
+        decimal TotalExCom_WithIntevcise = GetRetailTotal(Convert.ToInt32(ddlEst.SelectedValue), ncid, (int)cust.client_id);
         lblJobJost.Text = "Estimate Amount: " + TotalExCom_WithIntevcise.ToString("c");
-        string strQ2 = "select * from customer_estimate where customer_id=" + ncid + " AND estimate_id != " + Convert.ToInt32(ddlEst.SelectedValue) + " and client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " Order by convert(datetime,sale_date) desc";
+        string strQ2 = "select * from customer_estimate where customer_id=" + ncid + " AND estimate_id != " + Convert.ToInt32(ddlEst.SelectedValue) + " and client_id=" + Convert.ToInt32(cust.client_id) + " Order by convert(datetime,sale_date) desc";
         IEnumerable<customer_estimate_model> list2 = _db.ExecuteQuery<customer_estimate_model>(strQ2, string.Empty);
         string strOtherJobNum = string.Empty;
         foreach (customer_estimate_model cus_est2 in list2)
@@ -1658,7 +1702,7 @@ public partial class customerlist : System.Web.UI.Page
         }
         lblOtherJob.Text = strOtherJobNum;
 
-        string strQ1 = "select * from customer_estimate where customer_id=" + ncid + " AND estimate_id = " + Convert.ToInt32(ddlEst.SelectedValue) + " and client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " Order by convert(datetime,sale_date) desc";
+        string strQ1 = "select * from customer_estimate where customer_id=" + ncid + " AND estimate_id = " + Convert.ToInt32(ddlEst.SelectedValue) + " and client_id=" + Convert.ToInt32(cust.client_id) + " Order by convert(datetime,sale_date) desc";
         IEnumerable<customer_estimate_model> list1 = _db.ExecuteQuery<customer_estimate_model>(strQ1, string.Empty);
 
         foreach (customer_estimate_model cus_est in list1)
@@ -1742,7 +1786,7 @@ public partial class customerlist : System.Web.UI.Page
                 hyp_Sow.NavigateUrl = "composite_sow.aspx?eid=" + nestid + "&cid=" + ncid;
                 hyp_PreCon.NavigateUrl = "PreconstructionCheckList.aspx?eid=" + nestid + "&cid=" + ncid;
 
-                if (_db.estimate_payments.Where(est_p => est_p.estimate_id == nestid && est_p.customer_id == ncid && est_p.client_id == 1).SingleOrDefault() == null)
+                if (_db.estimate_payments.Where(est_p => est_p.estimate_id == nestid && est_p.customer_id == ncid && est_p.client_id == cust.client_id).SingleOrDefault() == null)
                 {
                     hyp_Payment.NavigateUrl = "payment_info.aspx?eid=" + nestid + "&cid=" + ncid;
 
@@ -1750,26 +1794,26 @@ public partial class customerlist : System.Web.UI.Page
                 else
                 {
                     estimate_payment objEstPay = new estimate_payment();
-                    objEstPay = _db.estimate_payments.Single(pay => pay.estimate_id == nestid && pay.customer_id == ncid && pay.client_id == 1);
+                    objEstPay = _db.estimate_payments.Single(pay => pay.estimate_id == nestid && pay.customer_id == ncid && pay.client_id == cust.client_id);
                     hyp_Payment.NavigateUrl = "payment_recieved.aspx?cid=" + ncid + "&epid=" + objEstPay.est_payment_id + "&eid=" + nestid;
 
                 }
 
                 // Estimate Change Order
-                string strQuery = "select change_order_estimate_id, chage_order_id, estimate_id, customer_id, client_id, sales_person_id, change_order_status_id, changeorder_name, change_order_type_id, payment_terms, other_terms, is_total, is_tax, tax, total_payment_due, execute_date, is_close, comments, notes1, changeorder_date, create_date, last_updated_date from changeorder_estimate where customer_id=" + ncid + " AND estimate_id = " + nestid + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                string strQuery = "select change_order_estimate_id, chage_order_id, estimate_id, customer_id, client_id, sales_person_id, change_order_status_id, changeorder_name, change_order_type_id, payment_terms, other_terms, is_total, is_tax, tax, total_payment_due, execute_date, is_close, comments, notes1, changeorder_date, create_date, last_updated_date from changeorder_estimate where customer_id=" + ncid + " AND estimate_id = " + nestid + " AND client_id=" + Convert.ToInt32(cust.client_id);
                 IEnumerable<ChangeOrderEstimateModel> COlistItem = _db.ExecuteQuery<ChangeOrderEstimateModel>(strQuery, string.Empty);
                 ddlEstCO.DataSource = COlistItem;
                 ddlEstCO.DataTextField = "changeorder_name";
                 ddlEstCO.DataValueField = "chage_order_id";
                 ddlEstCO.DataBind();
                 int nChOrderId = 0;
-                if (_db.changeorder_estimates.Where(ce => ce.customer_id == ncid && ce.estimate_id == nestid && ce.client_id == 1).ToList().Count > 0)
+                if (_db.changeorder_estimates.Where(ce => ce.customer_id == ncid && ce.estimate_id == nestid && ce.client_id == cust.client_id).ToList().Count > 0)
                 {
                     ddlEstCO.Visible = true;
                     hypEstCODetail.Visible = true;
                     int nEstCOId = 0;
                     var result = (from ce in _db.changeorder_estimates
-                                  where ce.customer_id == ncid && ce.estimate_id == nestid && ce.client_id == 1
+                                  where ce.customer_id == ncid && ce.estimate_id == nestid && ce.client_id == cust.client_id
                                   select ce.chage_order_id);
 
                     int n = result.Count();
@@ -1785,7 +1829,7 @@ public partial class customerlist : System.Web.UI.Page
                     ddlEstCO.Visible = false;
 
                 }
-                string strQueryCO = "select change_order_estimate_id, chage_order_id, estimate_id, customer_id, client_id, sales_person_id, change_order_status_id, changeorder_name, change_order_type_id, payment_terms, other_terms, is_total, is_tax, tax, total_payment_due, execute_date, is_close, comments, notes1, changeorder_date, create_date, last_updated_date from changeorder_estimate where chage_order_id =" + nChOrderId + " and  customer_id=" + ncid + " AND estimate_id = " + nestid + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                string strQueryCO = "select change_order_estimate_id, chage_order_id, estimate_id, customer_id, client_id, sales_person_id, change_order_status_id, changeorder_name, change_order_type_id, payment_terms, other_terms, is_total, is_tax, tax, total_payment_due, execute_date, is_close, comments, notes1, changeorder_date, create_date, last_updated_date from changeorder_estimate where chage_order_id =" + nChOrderId + " and  customer_id=" + ncid + " AND estimate_id = " + nestid + " AND client_id=" + Convert.ToInt32(cust.client_id);
                 IEnumerable<ChangeOrderEstimateModel> listItemCO = _db.ExecuteQuery<ChangeOrderEstimateModel>(strQueryCO, string.Empty);
 
                 foreach (ChangeOrderEstimateModel cho in listItemCO)
@@ -1817,7 +1861,7 @@ public partial class customerlist : System.Web.UI.Page
                     hypEstCODetail.NavigateUrl = "change_order_locations.aspx?coestid=" + nChangeOrderId + "&eid=" + nestid + "&cid=" + ncid;
 
                 }
-                if (_db.changeorder_estimates.Where(ce => ce.customer_id == ncid && ce.estimate_id == nestid && ce.client_id == 1 && ce.is_close == false).ToList().Count > 0)
+                if (_db.changeorder_estimates.Where(ce => ce.customer_id == ncid && ce.estimate_id == nestid && ce.client_id == cust.client_id && ce.is_close == false).ToList().Count > 0)
                 {
                     hypCOCommon.Visible = false;
 
@@ -1882,10 +1926,12 @@ public partial class customerlist : System.Web.UI.Page
 
         int ncid = Convert.ToInt32(grdCustomerList.DataKeys[diitem.RowIndex].Values[0]);
 
+        customer cust = _db.customers.Single(c => c.customer_id == ncid);
+
         int nestid = Convert.ToInt32(ddlEst.SelectedValue);
 
 
-        string strQueryCO = "select change_order_estimate_id, chage_order_id, estimate_id, customer_id, client_id, sales_person_id, change_order_status_id, changeorder_name, change_order_type_id, payment_terms, other_terms, is_total, is_tax, tax, total_payment_due, execute_date, is_close, comments, notes1, changeorder_date, create_date, last_updated_date from changeorder_estimate where chage_order_id =" + Convert.ToInt32(ddlEstCO.SelectedValue) + " and  customer_id=" + ncid + " AND estimate_id = " + nestid + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        string strQueryCO = "select change_order_estimate_id, chage_order_id, estimate_id, customer_id, client_id, sales_person_id, change_order_status_id, changeorder_name, change_order_type_id, payment_terms, other_terms, is_total, is_tax, tax, total_payment_due, execute_date, is_close, comments, notes1, changeorder_date, create_date, last_updated_date from changeorder_estimate where chage_order_id =" + Convert.ToInt32(ddlEstCO.SelectedValue) + " and  customer_id=" + ncid + " AND estimate_id = " + nestid + " AND client_id=" + Convert.ToInt32(cust.client_id);
         IEnumerable<ChangeOrderEstimateModel> listItemCO = _db.ExecuteQuery<ChangeOrderEstimateModel>(strQueryCO, string.Empty);
 
 
@@ -1920,7 +1966,7 @@ public partial class customerlist : System.Web.UI.Page
             hypEstCODetail.NavigateUrl = "change_order_locations.aspx?coestid=" + nChangeOrderId + "&eid=" + nestid + "&cid=" + ncid;
 
         }
-        if (_db.changeorder_estimates.Where(ce => ce.customer_id == ncid && ce.estimate_id == nestid && ce.client_id == 1 && ce.is_close == false).ToList().Count > 0)
+        if (_db.changeorder_estimates.Where(ce => ce.customer_id == ncid && ce.estimate_id == nestid && ce.client_id == cust.client_id && ce.is_close == false).ToList().Count > 0)
         {
             hypCOCommon.Visible = false;
 
@@ -1937,5 +1983,10 @@ public partial class customerlist : System.Web.UI.Page
     protected void btnOperationCalendar_Click(object sender, ImageClickEventArgs e)
     {
         Response.Redirect("schedulecalendar.aspx?TypeID=1");
+    }
+
+    protected void ddlDivision_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        GetCustomersNew(0);
     }
 }

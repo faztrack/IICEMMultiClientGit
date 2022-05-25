@@ -114,9 +114,10 @@ public partial class mlandingpage : System.Web.UI.Page
             if (Session["oUser"] != null)
             {
                 userinfo obj = (userinfo)Session["oUser"];
+                string clientId = obj.client_id;
                 if (obj.role_id!=3)
                 {
-                    StrCondition = " where  c.status_id NOT IN(4,5) and ce.status_id=3 and ce.IsEstimateActive=1 ";
+                    StrCondition = " where  c.status_id NOT IN(4,5) and ce.status_id=3 and ce.IsEstimateActive=1 and c.client_id in (" + clientId + ") ";
                 }
                 else
                 {
@@ -141,21 +142,8 @@ public partial class mlandingpage : System.Web.UI.Page
             }
             if (Session["oCrew"] != null)
             {
-                //Crew_Detail objC = (Crew_Detail)Session["oCrew"];
-                //string CrewName = objC.first_name.Trim() + " " + objC.last_name.Trim();
-                //StrCondition = " where c.IsCustomer=1 AND c.status_id NOT IN(4,5) and ce.status_id=3 and ce.IsEstimateActive=1 AND s.IsEstimateActive = 1 AND s.employee_name  LIKE '%" + CrewName + "%' ";
-                //string strQ = " select distinct case when ce.alter_job_number!='' then c.last_name1 + ',' + c.first_name1 + ' (' + ce.alter_job_number + ')' " +
-                //              " else  c.last_name1 + ',' + c.first_name1 + ' (' + ce.job_number + ')' end as customer_name,ce.customer_estimate_id," +
-                //              " c.customer_id,c.last_name1 " +
-                //              " from customers as c  " +
-                //              " Right join ScheduleCalendar as s ON c.customer_id = s.customer_id "+
-                //              " INNER JOIN  customer_estimate  AS ce on ce.customer_id=s.customer_id and ce.estimate_id=s.estimate_id " +
-                //              " " + StrCondition + " ";
-
-
-
-               
-               StrCondition = " where  c.status_id NOT IN(4,5) and ce.status_id=3 and ce.IsEstimateActive=1 ";
+                Crew_Detail objC = (Crew_Detail)Session["oCrew"];
+                StrCondition = " where  c.status_id NOT IN(4,5) and ce.status_id=3 and ce.IsEstimateActive=1 AND ce.client_id = " + objC.client_id;
                 
                 
                 string strQ = " select distinct case when ce.alter_job_number!='' then c.last_name1 + ',' + c.first_name1 + ' (' + ce.alter_job_number + ')' " +
@@ -193,12 +181,12 @@ public partial class mlandingpage : System.Web.UI.Page
         if (Session["oUser"] != null)
         {
             userinfo obj = (userinfo)Session["oUser"];
-            strWhere = " WHERE ce.job_number!='' and  userId =" + obj.user_id + " AND IsCrew=0 order by searchDate DESC";
+            strWhere = " WHERE ce.job_number!='' and  userId =" + obj.user_id + " AND ce.client_id in ("+ obj.client_id +") AND IsCrew=0 order by searchDate DESC";
         }
         if (Session["oCrew"] != null)
         {
             Crew_Detail objC = (Crew_Detail)Session["oCrew"];
-            strWhere = " WHERE ce.job_number!='' and  userId =" + objC.crew_id + " AND IsCrew=1 order by searchDate DESC";
+            strWhere = " WHERE ce.job_number!='' and  userId =" + objC.crew_id + " AND ce.client_id = "+ objC.client_id +" AND IsCrew=1 order by searchDate DESC";
         }
         strQ = " SELECT  searchCustomerId,ce.client_id, ce.customer_id, first_name1, last_name1, first_name2, last_name2, address, cross_street, city, state, zip_code, fax, email, phone, is_active, registration_date,mobile, " +
                       " ce.sales_person_id, update_date, ce.status_id, notes, appointment_date, lead_source_id, status_note, company, email2, SuperintendentId, " +

@@ -117,6 +117,10 @@ public partial class ProjectNotesReport : System.Web.UI.Page
             {
                 Response.Redirect(ConfigurationManager.AppSettings["LoginPage"].ToString());
             }
+            else
+            {
+                hdnClientId.Value = ((userinfo)Session["oUser"]).client_id.ToString();
+            }
             if (Page.User.IsInRole("rpt009") == false)
             {
                 // No Permission Page.
@@ -362,11 +366,11 @@ public partial class ProjectNotesReport : System.Web.UI.Page
 
             int nEstId = 0;
 
-            if (_db.customer_estimates.Where(ce => ce.customer_id == ncid && ce.client_id == 1 && ce.status_id == 3 && ce.IsEstimateActive == true).ToList().Count > 0)
+            if (_db.customer_estimates.Where(ce => ce.customer_id == ncid && ce.client_id.ToString().Contains(hdnClientId.Value) && ce.status_id == 3 && ce.IsEstimateActive == true).ToList().Count > 0)
             {
 
                 var result = (from ce in _db.customer_estimates
-                              where ce.customer_id == ncid && ce.client_id == 1 && ce.status_id == 3 && ce.IsEstimateActive == true
+                              where ce.customer_id == ncid && ce.client_id.ToString().Contains(hdnClientId.Value) && ce.status_id == 3 && ce.IsEstimateActive == true
                               select ce.estimate_id);
 
                 int n = result.Count();
@@ -377,7 +381,7 @@ public partial class ProjectNotesReport : System.Web.UI.Page
             {
 
                 var result = (from ce in _db.customer_estimates
-                              where ce.customer_id == ncid && ce.client_id == 1 && ce.IsEstimateActive == true
+                              where ce.customer_id == ncid && ce.client_id.ToString().Contains(hdnClientId.Value) && ce.IsEstimateActive == true
                               select ce.estimate_id);
 
                 int n = result.Count();

@@ -61,18 +61,15 @@ public partial class compse_email : System.Web.UI.Page
                 cust_est = _db.customer_estimates.Single(c => c.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && c.customer_id == Convert.ToInt32(hdnCustomerId.Value));
                 strEstName = cust_est.estimate_name;
 
-            }
-            changeorder_estimate cho = new changeorder_estimate();
-            cho = _db.changeorder_estimates.Single(ce => ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && ce.chage_order_id == Convert.ToInt32(hdnChEstId.Value));
-
-            COName = cho.changeorder_name;
+            }            
 
             if (Convert.ToInt32(hdnCustomerId.Value) > 0)
             {
                 customer cust = new customer();
-                cust = _db.customers.Single(c => c.customer_id == Convert.ToInt32(hdnCustomerId.Value));
+                cust = _db.customers.SingleOrDefault(c => c.customer_id == Convert.ToInt32(hdnCustomerId.Value));
                 txtTo.Text = cust.email;
                 strCustName = cust.first_name1 + "" + cust.last_name1;
+                hdnClientId.Value = cust.client_id.ToString();
 
                 company_profile com = new company_profile();
                 if (_db.company_profiles.Where(cp => cp.client_id == 1).SingleOrDefault() != null)
@@ -88,6 +85,11 @@ public partial class compse_email : System.Web.UI.Page
                 }
 
             }
+
+            changeorder_estimate cho = new changeorder_estimate();
+            cho = _db.changeorder_estimates.Single(ce => ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value) && ce.chage_order_id == Convert.ToInt32(hdnChEstId.Value));
+
+            COName = cho.changeorder_name;
         }
     }
     private void CreateReportfor_Mail()
@@ -95,11 +97,11 @@ public partial class compse_email : System.Web.UI.Page
         DataClassesDataContext _db = new DataClassesDataContext();
         string strQ = " SELECT  co_pricing_list_id, customer_id, estimate_id, chage_order_id, change_order_pricing_list.location_id, sales_person_id, section_level, section_serial, item_id, section_name, item_name, total_direct_price, total_retail_price, is_direct, item_status_id, EconomicsId, EconomicsCost, create_date, last_update_date,location_name,short_notes FROM change_order_pricing_list  " +
                     " INNER JOIN location ON change_order_pricing_list.location_id=location.location_id AND change_order_pricing_list.client_id=location.client_id " +
-                    " WHERE chage_order_id=" + Convert.ToInt32(hdnChEstId.Value) + " AND estimate_id=" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND change_order_pricing_list.client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                    " WHERE chage_order_id=" + Convert.ToInt32(hdnChEstId.Value) + " AND estimate_id=" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND change_order_pricing_list.client_id=" + Convert.ToInt32(hdnClientId.Value);
         List<ChangeOrderPricingListModel> rList = _db.ExecuteQuery<ChangeOrderPricingListModel>(strQ, string.Empty).ToList();
 
         changeorder_estimate cho = new changeorder_estimate();
-        cho = _db.changeorder_estimates.Single(ce => ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && ce.chage_order_id == Convert.ToInt32(hdnChEstId.Value));
+        cho = _db.changeorder_estimates.Single(ce => ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value) && ce.chage_order_id == Convert.ToInt32(hdnChEstId.Value));
 
         ReportDocument rptFile = new ReportDocument();
         string strReportPath = Server.MapPath(@"Reports\rpt\rptchange_order.rpt");

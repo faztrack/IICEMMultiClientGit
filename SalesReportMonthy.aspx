@@ -30,8 +30,7 @@
                                     <b>Salesperson: </b>
                                 </td>
                                 <td align="left" valign="middle">
-                                    <asp:DropDownList ID="ddlSalesPersons" runat="server">
-                                    </asp:DropDownList>
+                                    <asp:DropDownList ID="ddlSalesPersons" runat="server" Width="153px"></asp:DropDownList>
                                 </td>
                             </tr>
                            
@@ -40,7 +39,7 @@
                                      <b>Status: </b>
                                 </td>
                                 <td align="left" valign="middle">
-                                    <asp:DropDownList ID="ddlStatus" runat="server" TabIndex="20">
+                                    <asp:DropDownList ID="ddlStatus" runat="server" Width="153px">
                                                     <asp:ListItem Value="1" Selected="True">All</asp:ListItem>
                                                     <asp:ListItem  Value="2">Active</asp:ListItem>
                                                     <asp:ListItem Value="4">Archive</asp:ListItem>
@@ -55,7 +54,7 @@
                                      <b>Estimate Status: </b>
                                 </td>
                                 <td align="left" valign="middle">
-                                    <asp:DropDownList ID="ddlEstimateStatus" runat="server" TabIndex="20">
+                                    <asp:DropDownList ID="ddlEstimateStatus" runat="server" Width="153px">
                                         <asp:ListItem Value="All" Selected="True">All</asp:ListItem>
                                         <asp:ListItem Value="1">Active</asp:ListItem>
                                         <asp:ListItem Value="0">InActive</asp:ListItem>
@@ -139,7 +138,9 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td align="right"></td>
+                                <td align="right">
+                                    <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
+                                </td>
                                 <td align="left"></td>
                             </tr>
                         </table>

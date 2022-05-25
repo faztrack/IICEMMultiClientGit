@@ -24,6 +24,10 @@ public partial class salesperson : System.Web.UI.Page
             {
                 Response.Redirect(ConfigurationManager.AppSettings["LoginPage"].ToString());
             }
+            else
+            {
+                hdnClientId.Value = ((userinfo)Session["oUser"]).client_id.ToString();
+            }
             if (Page.User.IsInRole("sales002") == false)
             {
                 // No Permission Page.
@@ -62,7 +66,7 @@ public partial class salesperson : System.Web.UI.Page
     {
          DataClassesDataContext _db = new DataClassesDataContext();
         var item = from cus in _db.customers
-                   where cus.status_id != 5 && cus.status_id != 4 && cus.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && cus.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                   where cus.status_id != 5 && cus.status_id != 4 && cus.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && cus.client_id.ToString().Contains(hdnClientId.Value)
                        orderby cus.registration_date descending, cus.last_name1 ascending
                        select cus;
 
@@ -120,7 +124,7 @@ public partial class salesperson : System.Web.UI.Page
 
             // Customer Estimates
             Table tdLink = (Table)e.Row.FindControl("tdLink");
-            string strQ = "select * from customer_estimate where customer_id=" + ncid + " and client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+            string strQ = "select * from customer_estimate where customer_id=" + ncid + " and client_id in (" + hdnClientId.Value + ")";
             IEnumerable<customer_estimate_model> list = _db.ExecuteQuery<customer_estimate_model>(strQ, string.Empty);
 
             foreach (customer_estimate_model cus_est in list)
@@ -141,7 +145,7 @@ public partial class salesperson : System.Web.UI.Page
 
                     // Estimate Change Order
                     Table tblChangeOrder = (Table)e.Row.FindControl("tblChangeOrder");
-                    string strQuery = "select * from changeorder_estimate where customer_id=" + ncid + " AND estimate_id = " + nestid + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                    string strQuery = "select * from changeorder_estimate where customer_id=" + ncid + " AND estimate_id = " + nestid + " AND client_id in (" + hdnClientId.Value + ")";
                     IEnumerable<changeorder_estimate> listItem = _db.ExecuteQuery<changeorder_estimate>(strQuery, string.Empty);
                     bool bFlag = true;
                     foreach (changeorder_estimate cho in listItem)

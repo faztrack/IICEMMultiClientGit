@@ -56,8 +56,8 @@
                                                         </td>
                                                         <td align="left">
                                                             <asp:TextBox ID="txtSearch" onkeypress="return SearchKeyPress(event);" runat="server"></asp:TextBox>
-                                                            <cc1:AutoCompleteExtender ID="txtSearch_AutoCompleteExtender" runat="server" CompletionInterval="500" CompletionListCssClass="AutoExtender" 
-                                                                CompletionSetCount="10" DelimiterCharacters="" EnableCaching="true" Enabled="True" MinimumPrefixLength="1" OnClientItemSelected="selected_LastName" 
+                                                            <cc1:AutoCompleteExtender ID="txtSearch_AutoCompleteExtender" runat="server" CompletionInterval="500" CompletionListCssClass="AutoExtender"
+                                                                CompletionSetCount="10" DelimiterCharacters="" EnableCaching="true" Enabled="True" MinimumPrefixLength="1" OnClientItemSelected="selected_LastName"
                                                                 ServiceMethod="GetLastName" TargetControlID="txtSearch" UseContextKey="True">
                                                             </cc1:AutoCompleteExtender>
                                                             <cc1:TextBoxWatermarkExtender ID="wtmFileNumber" runat="server" TargetControlID="txtSearch" WatermarkText="Search by Last Name" />
@@ -86,7 +86,8 @@
                                                             </asp:DropDownList>
                                                         </td>
                                                         <td>&nbsp;&nbsp;<b>Count:</b></td>
-                                                        <td><asp:Label runat="server" ID="lblCount"></asp:Label></td>
+                                                        <td>
+                                                            <asp:Label runat="server" ID="lblCount"></asp:Label></td>
                                                     </tr>
                                                 </table>
                                             </td>
@@ -103,6 +104,34 @@
                                                     <asp:ListItem Value="4">All Users</asp:ListItem>
                                                 </asp:DropDownList>
                                             </td>
+
+
+
+                                            <td align="left" valign="middle">
+                                                <table>
+                                                    <tr>
+                                                        <td align="right">
+                                                            <b>Role:</b>
+                                                        </td>
+                                                        <td align="left">
+                                                            <asp:DropDownList ID="ddlRole" runat="server" OnSelectedIndexChanged="ddlRole_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+                                                        </td>
+
+                                                       
+                                                        <td align="right">
+                                                            <b>Division:</b>
+                                                        </td>
+                                                        <td align="left" colspan="2">
+                                                            <asp:DropDownList ID="ddlDivision" runat="server" OnSelectedIndexChanged="ddlDivision_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>               
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                             
+
+
+
+
                                             <td align="right">
                                                 <asp:Button ID="btnAddNew" runat="server" OnClick="btnAddNew_Click" Text="Add New User" CssClass="button" />
                                             </td>
@@ -119,44 +148,71 @@
                                                     OnRowDataBound="grdUserList_RowDataBound" Width="100%" CssClass="mGrid">
                                                     <PagerSettings Position="TopAndBottom" />
                                                     <Columns>
+                                                        <%-- Cell 0 --%>
                                                         <asp:HyperLinkField DataNavigateUrlFields="user_id" ItemStyle-Font-Underline="true"
                                                             DataNavigateUrlFormatString="user_details.aspx?uid={0}"
                                                             DataTextField="last_name" HeaderText="Last Name">
                                                             <HeaderStyle HorizontalAlign="Center" />
                                                             <ItemStyle HorizontalAlign="Left" Width="8%" />
                                                         </asp:HyperLinkField>
+
+                                                        <%-- Cell 1 --%>
                                                         <asp:BoundField DataField="first_name" HeaderText="First Name">
                                                             <HeaderStyle HorizontalAlign="Center" />
                                                             <ItemStyle HorizontalAlign="Left" Width="8%" />
                                                         </asp:BoundField>
+
+                                                        <%-- Cell 2 --%>
+                                                        <asp:BoundField DataField="email" HeaderText="Email">
+                                                            <HeaderStyle HorizontalAlign="Center" />
+                                                            <ItemStyle HorizontalAlign="Center" Width="10%" />
+                                                        </asp:BoundField>
+
+
                                                         <%-- <asp:BoundField HeaderText="Address">
                                                             <HeaderStyle HorizontalAlign="Center" />
                                                             <ItemStyle HorizontalAlign="Left" Width="18%"/>
                                                         </asp:BoundField>
-                                                        <asp:BoundField DataField="email" HeaderText="Email">
-                                                            <HeaderStyle HorizontalAlign="Center" />
-                                                            <ItemStyle HorizontalAlign="Left" Width="14%"/>
-                                                        </asp:BoundField>--%>
+                                                        --%>
                                                         <%-- <asp:BoundField DataField="company_email" HeaderText="Outlook / Exchange Email">
                                                             <HeaderStyle HorizontalAlign="Center" />
                                                             <ItemStyle HorizontalAlign="Left" />
                                                         </asp:BoundField>--%>
+
+                                                        <%-- Cell 3 --%>
                                                         <asp:BoundField DataField="EmailIntegration" HeaderText="Outlook / Exchange">
                                                             <HeaderStyle HorizontalAlign="Center" />
                                                             <ItemStyle HorizontalAlign="Center" Width="6%" />
                                                         </asp:BoundField>
+
+                                                        <%-- Cell 4 --%>
                                                         <asp:BoundField DataField="phone" HeaderText="Phone">
                                                             <HeaderStyle HorizontalAlign="Center" />
                                                             <ItemStyle HorizontalAlign="Center" Width="10%" />
                                                         </asp:BoundField>
+
+                                                        <%-- Cell 5 --%>
                                                         <asp:BoundField DataField="last_login_time" HeaderText="Last Login">
                                                             <HeaderStyle HorizontalAlign="Center" />
                                                             <ItemStyle HorizontalAlign="Center" Width="10%" />
                                                         </asp:BoundField>
+
+                                                        <%-- Cell 6 --%>
                                                         <asp:BoundField DataField="role_id" HeaderText="Role">
                                                             <HeaderStyle HorizontalAlign="Center" />
                                                             <ItemStyle HorizontalAlign="Center" Width="8%" />
                                                         </asp:BoundField>
+
+                                                        <%-- Cell 7 --%>
+                                                        <asp:TemplateField HeaderText="Division">
+                                                            <ItemTemplate>
+                                                                <asp:Label ID="lblDivision" runat="server" Text=""></asp:Label>
+                                                            </ItemTemplate>
+                                                            <HeaderStyle Width="8%" HorizontalAlign="Center" />
+                                                            <ItemStyle Width="8%" HorizontalAlign="Center" />
+                                                        </asp:TemplateField>
+
+                                                        <%-- Cell 8 --%>
                                                         <asp:BoundField HeaderText="Active">
                                                             <HeaderStyle HorizontalAlign="Center" />
                                                             <ItemStyle HorizontalAlign="Center" Width="6%" />
@@ -186,12 +242,12 @@
                                     </table>
 
                                 </td>
-                            </tr>
-                            <tr>
-                                <td>&nbsp;</td>
-                            </tr>
-                        </table>
-                    </td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                </tr>
+            </table>
+            </td>
                 </tr>
             </table>
         </ContentTemplate>

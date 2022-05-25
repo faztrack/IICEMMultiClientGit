@@ -547,7 +547,32 @@ public class csCommonUtility
 
 
 
+    public static string GetDivisionName(string nClientId)
+    {
 
+        string Ssql = " SELECT distinct  STUFF((SELECT ', ' + CAST(division_name AS VARCHAR(100))[text()] " +
+                     " FROM  division "+
+                     " where status = 1 AND  Id in ( " + nClientId + " ) order by division_name " +
+                     " FOR XML PATH(''), TYPE) " +
+                     " .value('.', 'NVARCHAR(MAX)'),1,2,' ') division  " +
+                     " FROM division t ";
+        DataTable dt = csCommonUtility.GetDataTable(Ssql);
+        string divisionName = "";
+        if (dt.Rows.Count > 0)
+        {
+            try
+            {
+                divisionName = dt.Rows[0].Field<string>("division");
+            }
+            catch
+            {
+                divisionName = "";
+            }
+        }
+
+        return divisionName;
+
+    }
 
 
 

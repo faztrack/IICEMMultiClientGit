@@ -56,6 +56,10 @@ public partial class graphics_snapshot : System.Web.UI.Page
             {
                 Response.Redirect(ConfigurationManager.AppSettings["LoginPage"].ToString());
             }
+            else
+            {
+                hdnClientId.Value = ((userinfo)Session["oUser"]).client_id.ToString();
+            }
             if (Page.User.IsInRole("calllog001") == false)
             {
                 // No Permission Page.
@@ -508,9 +512,9 @@ public partial class graphics_snapshot : System.Web.UI.Page
         decimal tax_amount = 0;
         decimal total_incentives = 0;
         estimate_payment esp = new estimate_payment();
-        if (_db.estimate_payments.Where(ep => ep.estimate_id == EstID && ep.customer_id == ncustid && ep.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).SingleOrDefault() != null)
+        if (_db.estimate_payments.Where(ep => ep.estimate_id == EstID && ep.customer_id == ncustid && ep.client_id == Convert.ToInt32(hdnClientId.Value)).SingleOrDefault() != null)
         {
-            esp = _db.estimate_payments.Single(ep => ep.estimate_id == EstID && ep.customer_id == ncustid && ep.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+            esp = _db.estimate_payments.Single(ep => ep.estimate_id == EstID && ep.customer_id == ncustid && ep.client_id == Convert.ToInt32(hdnClientId.Value));
             totalwithtax = Convert.ToDecimal(esp.new_total_with_tax);
             total_incentives = Convert.ToDecimal(esp.total_incentives);
             if (Convert.ToDecimal(esp.adjusted_price) > 0)
@@ -528,11 +532,11 @@ public partial class graphics_snapshot : System.Web.UI.Page
             {
                 var result = (from pd in _db.pricing_details
                               where (from clc in _db.customer_locations
-                                     where clc.estimate_id == EstID && clc.customer_id == ncustid && clc.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                     where clc.estimate_id == EstID && clc.customer_id == ncustid && clc.client_id == Convert.ToInt32(hdnClientId.Value)
                                      select clc.location_id).Contains(pd.location_id) &&
                                      (from cs in _db.customer_sections
-                                      where cs.estimate_id == EstID && cs.customer_id == ncustid && cs.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
-                                      select cs.section_id).Contains(pd.section_level) && pd.estimate_id == EstID && pd.customer_id == ncustid && pd.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && pd.pricing_type == "A" && pd.is_CommissionExclude == false
+                                      where cs.estimate_id == EstID && cs.customer_id == ncustid && cs.client_id == Convert.ToInt32(hdnClientId.Value)
+                                      select cs.section_id).Contains(pd.section_level) && pd.estimate_id == EstID && pd.customer_id == ncustid && pd.client_id == Convert.ToInt32(hdnClientId.Value) && pd.pricing_type == "A" && pd.is_CommissionExclude == false
                               select pd.total_retail_price);
                 int n = result.Count();
                 if (result != null && n > 0)

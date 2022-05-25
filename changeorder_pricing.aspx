@@ -102,7 +102,7 @@
                                                 <td style="width: 390px;" align="left" valign="top">
                                                     <table style="width: 390px;">
                                                         <tr>
-                                                            <td style="width: 112px;" align="left" valign="top"><b>Customer Name: </b></td>
+                                                            <td style="width: 113px;" align="left" valign="top"><b>Customer Name: </b></td>
                                                             <td>
                                                                 <asp:Label ID="lblCustomerName" runat="server" Text=""></asp:Label></td>
                                                         </tr>
@@ -968,6 +968,7 @@
                                         <tr>
                                             <td align="right">
                                                 <asp:HiddenField ID="hdnSectionLevel" runat="server" Value="0" />
+                                                <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
                                             </td>
                                             <td align="left">
                                                 <asp:HiddenField ID="hdnParentId" runat="server" Value="0" />

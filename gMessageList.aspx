@@ -171,6 +171,11 @@
                                                 <asp:Label ID="lblResult" runat="server" Text=""></asp:Label>
                                             </td>
                                         </tr>
+                                        <tr>
+                                            <td align="center">
+                                                <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
+                                            </td>
+                                        </tr>
                                     </table>
                                 </td>
                             </tr>

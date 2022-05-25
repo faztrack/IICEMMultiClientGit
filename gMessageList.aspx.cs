@@ -75,6 +75,10 @@ public partial class gMessageList : System.Web.UI.Page
             {
                 Response.Redirect(ConfigurationManager.AppSettings["LoginPage"].ToString());
             }
+            else
+            {
+	            hdnClientId.Value = ((userinfo)Session["oUser"]).client_id.ToString();
+            }
             if (Page.User.IsInRole("GM01") == false)
             {
                 // No Permission Page.
@@ -122,15 +126,15 @@ public partial class gMessageList : System.Web.UI.Page
                 DataClassesDataContext _db = new DataClassesDataContext();
                  var messList = (from mess_info in _db.customer_messages
                                   join c in _db.customers on mess_info.customer_id equals c.customer_id
-                                 where typelist.Contains((int)c.status_id) && c.is_active == true && (mess_info.mess_to.Contains(UserEmail) || mess_info.mess_from.Contains(UserEmail)) && mess_info.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                 where typelist.Contains((int)c.status_id) && c.is_active == true && (mess_info.mess_to.Contains(UserEmail) || mess_info.mess_from.Contains(UserEmail)) && mess_info.client_id.ToString().Contains(hdnClientId.Value)
                                 orderby mess_info.cust_message_id descending
                                 select mess_info).ToList();
                 if (chkGlobal.Checked)
                 {
                      messList = (from mess_info in _db.customer_messages
                                  join c in _db.customers on mess_info.customer_id equals c.customer_id
-                                 where typelist.Contains((int)c.status_id) && c.is_active == true && mess_info.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
-                                    orderby mess_info.cust_message_id descending
+                                 where typelist.Contains((int)c.status_id) && c.is_active == true && mess_info.client_id.ToString().Contains(hdnClientId.Value)
+                                 orderby mess_info.cust_message_id descending
                                     select mess_info).ToList();
  
                 }
@@ -144,7 +148,7 @@ public partial class gMessageList : System.Web.UI.Page
 
                     if (msg.HasAttachments == null)
                     {
-                        string strQ = "select * from message_upolad_info where customer_id=" + msg.customer_id + " and message_id=" + msg.message_id + " and client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                        string strQ = "select * from message_upolad_info where customer_id=" + msg.customer_id + " and message_id=" + msg.message_id + " and client_id in ( " + hdnClientId.Value + " )";
                         IEnumerable<message_upolad_info> list = _db.ExecuteQuery<message_upolad_info>(strQ, string.Empty);
 
                         string mess_file = "";

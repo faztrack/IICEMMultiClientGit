@@ -391,6 +391,7 @@
                                                 </td>
                                                 <td align="left">
                                                     <asp:HiddenField ID="hdnCustomerId" runat="server" Value="0" />
+                                                    <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
                                                 </td>
                                             </tr>
                                         </table>

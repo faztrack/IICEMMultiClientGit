@@ -36,16 +36,23 @@ public partial class CustomerSelectionInfoSec : System.Web.UI.Page
 
             hdnCustomerID.Value = nCustomerId.ToString();
 
-            string strQ = "select * from customer_estimate where customer_id=" + nCustomerId + " and client_id= 1 and status_id = 3 order by estimate_id desc ";
+            if (_db.customers.Where(c => c.customer_id == nCustomerId).Count() > 0)
+            {
+                objCust = _db.customers.SingleOrDefault(c => c.customer_id == nCustomerId);
+                strCustName = objCust.first_name1 + " " + objCust.last_name1;
+                hdnClientId.Value = objCust.client_id.ToString();
+            }
+
+            string strQ = "select * from customer_estimate where customer_id=" + nCustomerId + " and client_id= "+ hdnClientId.Value +" and status_id = 3 order by estimate_id desc ";
             IEnumerable<customer_estimate_model> clist = _db.ExecuteQuery<customer_estimate_model>(strQ, string.Empty);
             grdEstimates.DataSource = clist;
             grdEstimates.DataKeyNames = new string[] { "customer_id", "estimate_id", "status_id", "sale_date", "estimate_name" };
             grdEstimates.DataBind();
-            if (_db.customer_estimates.Where(ce => ce.customer_id == Convert.ToInt32(hdnCustomerID.Value) && ce.client_id == 1 && ce.status_id == 3 && ce.IsEstimateActive == true).ToList().Count > 0)
+            if (_db.customer_estimates.Where(ce => ce.customer_id == Convert.ToInt32(hdnCustomerID.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value) && ce.status_id == 3 && ce.IsEstimateActive == true).ToList().Count > 0)
             {
                 int nEstId = 0;
                 var result = (from ce in _db.customer_estimates
-                              where ce.customer_id == Convert.ToInt32(hdnCustomerID.Value) && ce.client_id == 1 && ce.status_id == 3 && ce.IsEstimateActive == true
+                              where ce.customer_id == Convert.ToInt32(hdnCustomerID.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value) && ce.status_id == 3 && ce.IsEstimateActive == true
                               select ce.estimate_id);
 
                 int n = result.Count();
@@ -55,11 +62,7 @@ public partial class CustomerSelectionInfoSec : System.Web.UI.Page
                 hdnEstimateID.Value = nEstId.ToString();
 
             }
-            if (_db.customers.Where(c => c.customer_id == nCustomerId).Count() > 0)
-            {
-                objCust = _db.customers.SingleOrDefault(c => c.customer_id == nCustomerId);
-                strCustName = objCust.first_name1 + " " + objCust.last_name1;
-            }
+            
 
             lblHeaderTitle.Text = "Selection (" + strCustName + ")";
 

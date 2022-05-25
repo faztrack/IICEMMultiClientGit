@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.Security;
@@ -35,7 +36,9 @@ public partial class crewdetails : System.Web.UI.Page
             hdnCrewId.Value = ncrid.ToString();
 
             BindSections();
-           
+            BindDivision();
+
+
             if (Convert.ToInt32(hdnCrewId.Value) > 0)
             {
                 lblHeaderTitle.Text = "Crew Details";
@@ -43,6 +46,7 @@ public partial class crewdetails : System.Web.UI.Page
                 Crew_Detail objCrew = new Crew_Detail();
                 objCrew = _db.Crew_Details.Single(c => c.crew_id == Convert.ToInt32(hdnCrewId.Value));
 
+                ddlDivision.SelectedValue = objCrew.client_id.ToString();
                 txtFirstName.Text = objCrew.first_name;
                 txtLastName.Text = objCrew.last_name;
                // txtAddress.Text = objCrew.Address;
@@ -92,6 +96,23 @@ public partial class crewdetails : System.Web.UI.Page
             csCommonUtility.SetPagePermission(this.Page, new string[] { "chkIsActive", "chkSubcntractor", "chkIsSMS", "ChkTravel", "chkSections", "Submit", "btnSubmit" });
         }
 
+    }
+
+    private void BindDivision()
+    {
+        try
+        {
+            string sql = "select id, division_name from division order by division_name";
+            DataTable dt = csCommonUtility.GetDataTable(sql);
+            ddlDivision.DataSource = dt;
+            ddlDivision.DataTextField = "division_name";
+            ddlDivision.DataValueField = "id";
+            ddlDivision.DataBind();
+        }
+        catch (Exception ex)
+        {
+            lblResult.Text = csCommonUtility.GetSystemErrorMessage(ex.ToString());
+        }
     }
 
     private void BindSections()
@@ -207,7 +228,7 @@ public partial class crewdetails : System.Web.UI.Page
             txtPhone.Text = csCommonUtility.GetPhoneFormat(txtPhone.Text.Trim());
             // txtFax.Text = csCommonUtility.GetPhoneFormat(txtFax.Text.Trim());
 
-            objCrew.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+            objCrew.client_id = Convert.ToInt32(ddlDivision.SelectedValue);
             objCrew.crew_id = Convert.ToInt32(hdnCrewId.Value);
             objCrew.first_name = txtFirstName.Text;
             objCrew.last_name = txtLastName.Text;

@@ -252,6 +252,7 @@
                         </table>
                         <asp:HiddenField ID="hdnAllowance" runat="server" Value="0" />
                         <asp:HiddenField ID="hdnCustomerId" runat="server" Value="0" />
+                        <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
                         <asp:HiddenField ID="hdnProjectSubTotal" runat="server" Value="0" />
                         <asp:HiddenField ID="hdnEstimateId" runat="server" Value="0" />
                         <asp:HiddenField ID="hdnEstPaymentId" runat="server" Value="0" />

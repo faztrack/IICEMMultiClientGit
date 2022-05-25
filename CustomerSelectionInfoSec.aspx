@@ -406,6 +406,7 @@
         </tr>
     </table>
     <asp:HiddenField ID="hdnCustomerID" runat="server" Value="0" />
+    <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
     <asp:HiddenField ID="hdnEstimateID" runat="server" Value="0" />
     <asp:HiddenField ID="hdnSiteReviewId" runat="server" Value="0" />
     <asp:HiddenField ID="hdnSetCollapsiblePanel" runat="server" Value="" />

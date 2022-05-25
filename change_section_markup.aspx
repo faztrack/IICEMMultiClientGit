@@ -158,6 +158,7 @@
                                     </table>
                                     <asp:HiddenField ID="hdnSectionLevel" runat="server" Value="0" />
                                     <asp:HiddenField ID="hdnParentId" runat="server" Value="0" />
+                                    <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
                                     <asp:HiddenField ID="hdnItem" runat="server" Value="0" />
                                     &nbsp;<asp:HiddenField ID="hdnSectionId" runat="server" Value="0" />
                                     <asp:HiddenField ID="hdnTrvSelectedValue" runat="server" Value="0" />

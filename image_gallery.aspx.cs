@@ -36,6 +36,7 @@ public partial class image_gallery : System.Web.UI.Page
 
                 lblCustomerName.Text = objCust.first_name1 + " " + objCust.last_name1;
 
+                hdnClientId.Value = objCust.client_id.ToString();
 
 
                 lblJobStatusFor.Text = "Image Gallery";
@@ -130,7 +131,7 @@ public partial class image_gallery : System.Web.UI.Page
             File.Delete(DMSImgPath + "\\" + ImageName);
         }
 
-        string strQ = "Delete file_upload_info WHERE upload_fileId=" + Convert.ToInt32(upload_ImageId) + " AND client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        string strQ = "Delete file_upload_info WHERE upload_fileId=" + Convert.ToInt32(upload_ImageId) + " AND client_id =" + Convert.ToInt32(hdnClientId.Value);
         _db.ExecuteCommand(strQ, string.Empty);
 
         string strQ2 = "Delete FilesTable WHERE FileId=" + Convert.ToInt32(dms_fileid) + " AND CustomerId =" + Convert.ToInt32(hdnCustomerId.Value);
@@ -166,7 +167,7 @@ public partial class image_gallery : System.Web.UI.Page
         ImageButton imgEdit = (ImageButton)grdCustomersImage.Rows[e.RowIndex].FindControl("imgEdit");
         ImageButton imgDelete = (ImageButton)grdCustomersImage.Rows[e.RowIndex].FindControl("imgDelete");
 
-        string StrQ = "UPDATE file_upload_info SET Desccription='" + txtDescription.Text.Replace("'", "''") + "' WHERE upload_fileId=" + Convert.ToInt32(upload_ImageId) + " AND client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        string StrQ = "UPDATE file_upload_info SET Desccription='" + txtDescription.Text.Replace("'", "''") + "' WHERE upload_fileId=" + Convert.ToInt32(upload_ImageId) + " AND client_id =" + Convert.ToInt32(hdnClientId.Value);
         _db.ExecuteCommand(StrQ, string.Empty);
         GetCustomerImageInfo(Convert.ToInt32(hdnCustomerId.Value));
 
@@ -188,7 +189,7 @@ public partial class image_gallery : System.Web.UI.Page
             {
                 var itemImage = from f in _db.file_upload_infos
                                 where f.CustomerId == nCustId
-                                && f.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                && f.client_id == Convert.ToInt32(hdnClientId.Value)
                                 && f.type != 1
                                 && (f.ImageName.ToString().ToLower().Contains("jpg") || f.ImageName.ToString().ToLower().Contains("png") || f.ImageName.ToString().ToLower().Contains("jpeg"))
                                 orderby f.upload_fileId ascending
@@ -220,7 +221,7 @@ public partial class image_gallery : System.Web.UI.Page
 
     //        ImageButton btn = (ImageButton)sender;
     //        int upload_ImageId = Convert.ToInt32(btn.CommandArgument);
-    //        string strQ = "Delete Image_upload_info WHERE upload_ImageId=" + Convert.ToInt32(upload_ImageId) + " AND client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+    //        string strQ = "Delete Image_upload_info WHERE upload_ImageId=" + Convert.ToInt32(upload_ImageId) + " AND client_id =" + Convert.ToInt32(hdnCustomerId.Value);
     //        _db.ExecuteCommand(strQ, string.Empty);
     //        GetCustomerImageInfo(Convert.ToInt32(hdnCustomerId.Value));
     //    }

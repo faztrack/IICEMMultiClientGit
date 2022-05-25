@@ -98,8 +98,11 @@
                                     </asp:DropDownList>
                                 </td>
 
+
                                 <td align="right" valign="middle">
-                                    <b>Sales Person:</b>
+                                    <b>Division:</b>
+                                    <asp:DropDownList ID="ddlDivision" runat="server" OnSelectedIndexChanged="ddlDivision_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+                                    <b>Sales Person:</b> 
                                     <asp:DropDownList ID="ddlSalesRep" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlSalesRep_SelectedIndexChanged">
                                     </asp:DropDownList>
                                     <b>Source:</b>
@@ -176,10 +179,19 @@
                                     <HeaderStyle HorizontalAlign="Center" Width="9%" />
                                     <ItemStyle HorizontalAlign="Left" />
                                 </asp:TemplateField>
-                                <asp:BoundField DataField="sales_person_id" HeaderText="Sales Person">
+
+                                <asp:TemplateField HeaderText="Sales Person">
+                                    <ItemTemplate>
+                                        <asp:Label ID="lblSalesPerson" runat="server" Text=""></asp:Label><br />
+                                        <asp:Label ID="lblDivision" runat="server" Text=""></asp:Label>
+                                    </ItemTemplate>
                                     <HeaderStyle Width="5%" />
                                     <ItemStyle HorizontalAlign="Center" />
-                                </asp:BoundField>
+                                </asp:TemplateField>
+
+                              
+
+
                                 <asp:TemplateField HeaderText="Projects">
                                     <ItemTemplate>
                                         <div style="width: 100%;">
@@ -292,6 +304,7 @@
                 </tr>
                 <tr>
                     <td>
+                        <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
                         <asp:HiddenField ID="hdnLeadId" runat="server" Value="0" />
                         <asp:HiddenField ID="hdnEmailType" runat="server" Value="2" />
                     </td>

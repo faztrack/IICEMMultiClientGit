@@ -42,35 +42,43 @@ public partial class change_order_sections : System.Web.UI.Page
             hdnChEstId.Value = nChEstId.ToString();
 
 
-            chkSections.DataSource = _db.sectioninfos.Where(si => si.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && si.parent_id == 0 && si.is_active==true).ToList();
-            chkSections.DataTextField = "section_name";
-            chkSections.DataValueField = "section_id";
-            chkSections.DataBind();
 
             // Get Customer Information
             if (Convert.ToInt32(hdnCustomerId.Value) > 0)
             {
                 customer cust = new customer();
-                cust = _db.customers.Single(c => c.customer_id == Convert.ToInt32(hdnCustomerId.Value));
+                cust = _db.customers.SingleOrDefault(c => c.customer_id == Convert.ToInt32(hdnCustomerId.Value));
 
-                lblCustomerName.Text = cust.first_name1 + " " + cust.last_name1;
-                string strAddress = "";
-                strAddress = cust.address + " </br>" + cust.city + ", " + cust.state + " " + cust.zip_code;
-                lblAddress.Text = strAddress;
-                lblPhone.Text = cust.phone;
-                lblEmail.Text = cust.email;
-                hdnSalesPersonId.Value = cust.sales_person_id.ToString();
+                if (cust != null)
+                {
+                    lblCustomerName.Text = cust.first_name1 + " " + cust.last_name1;
+                    string strAddress = "";
+                    strAddress = cust.address + " </br>" + cust.city + ", " + cust.state + " " + cust.zip_code;
+                    lblAddress.Text = strAddress;
+                    lblPhone.Text = cust.phone;
+                    lblEmail.Text = cust.email;
+                    hdnSalesPersonId.Value = cust.sales_person_id.ToString();
 
-                //hypGoogleMap.NavigateUrl = "GoogleMap.aspx?strAdd=" + strAddress.Replace("</br>", "");
-                string address = cust.address + ",+" + cust.city + ",+" + cust.state + ",+" + cust.zip_code;
-                hypGoogleMap.NavigateUrl = "http://maps.google.com/maps?f=q&source=s_q&hl=en&geocode=&q=" + address;
+                    //hypGoogleMap.NavigateUrl = "GoogleMap.aspx?strAdd=" + strAddress.Replace("</br>", "");
+                    string address = cust.address + ",+" + cust.city + ",+" + cust.state + ",+" + cust.zip_code;
+                    hypGoogleMap.NavigateUrl = "http://maps.google.com/maps?f=q&source=s_q&hl=en&geocode=&q=" + address;
+
+                    hdnClientId.Value = cust.client_id.ToString();
+                }
 
             }
+
+
+            chkSections.DataSource = _db.sectioninfos.Where(si => si.client_id == Convert.ToInt32(hdnClientId.Value) && si.parent_id == 0 && si.is_active == true).ToList();
+            chkSections.DataTextField = "section_name";
+            chkSections.DataValueField = "section_id";
+            chkSections.DataBind();
+
             // Get Estimate Info
             if (Convert.ToInt32(hdnEstimateId.Value) > 0)
             {
                 customer_estimate cus_est = new customer_estimate();
-                cus_est = _db.customer_estimates.Single(ce => ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value));
+                cus_est = _db.customer_estimates.Single(ce => ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value) && ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value));
 
                 lblEstimateName.Text = cus_est.estimate_name;
             }
@@ -78,7 +86,7 @@ public partial class change_order_sections : System.Web.UI.Page
             if (Convert.ToInt32(hdnChEstId.Value) > 0)
             {
                 changeorder_estimate cho = new changeorder_estimate();
-                cho = _db.changeorder_estimates.Single(ce => ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && ce.chage_order_id == Convert.ToInt32(hdnChEstId.Value));
+                cho = _db.changeorder_estimates.Single(ce => ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value) && ce.chage_order_id == Convert.ToInt32(hdnChEstId.Value));
 
                 lblChangeOrderName.Text = cho.changeorder_name;
             }
@@ -149,7 +157,7 @@ public partial class change_order_sections : System.Web.UI.Page
             return;
         }
          DataClassesDataContext _db = new DataClassesDataContext();
-                string strQ = "DELETE changeorder_sections WHERE  customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + "  AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " AND estimate_id =" + Convert.ToInt32(hdnEstimateId.Value);
+                string strQ = "DELETE changeorder_sections WHERE  customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + "  AND client_id=" + Convert.ToInt32(hdnClientId.Value) + " AND estimate_id =" + Convert.ToInt32(hdnEstimateId.Value);
                 _db.ExecuteCommand(strQ, string.Empty);
       
         for (int i = 0; i < chkSections.Items.Count; i++)
@@ -159,7 +167,7 @@ public partial class change_order_sections : System.Web.UI.Page
                 int nSectionId = Convert.ToInt32(chkSections.Items[i].Value);
                 // Add Customer locations
                 changeorder_section co_sec = new changeorder_section();
-                co_sec.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                co_sec.client_id = Convert.ToInt32(hdnClientId.Value);
                 co_sec.customer_id = Convert.ToInt32(hdnCustomerId.Value);
                 co_sec.section_id = nSectionId;
                 co_sec.estimate_id = Convert.ToInt32(hdnEstimateId.Value);
