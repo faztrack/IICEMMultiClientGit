@@ -470,6 +470,15 @@ public partial class customerlist : System.Web.UI.Page
             {
                 strCondition += " AND (ce.job_number LIKE '%" + str.Replace("'", "''") + "%' OR ce.alter_job_number LIKE '%" + str.Replace("'", "''") + "%')";
             }
+
+
+            if (ddlDivision.SelectedItem.Text != "All")
+            {
+                if (strCondition.Length > 2)
+                    strCondition += " AND customers.client_id in (" + ddlDivision.SelectedValue + ") ";
+                else
+                    strCondition = " WHERE  customers.client_id in (" + ddlDivision.SelectedValue + ") ";
+            }
         }
         else
         {
