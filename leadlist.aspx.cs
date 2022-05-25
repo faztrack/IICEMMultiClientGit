@@ -351,6 +351,14 @@ public partial class leadlist : System.Web.UI.Page
             {
                 strCondition += " AND customers.phone LIKE '%" + str.Replace("'", "''") + "%'";
             }
+
+            if (ddlDivision.SelectedItem.Text != "All")
+            {
+                if (strCondition.Length > 2)
+                    strCondition += " AND customers.client_id in (" + ddlDivision.SelectedValue + ") ";
+                else
+                    strCondition = " WHERE  customers.client_id in (" + ddlDivision.SelectedValue + ") ";
+            }
         }
         else
         {
