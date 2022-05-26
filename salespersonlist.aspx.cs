@@ -105,7 +105,6 @@ public partial class salespersonlist : System.Web.UI.Page
     {
         DataClassesDataContext _db = new DataClassesDataContext();
         string strCondition = "";
-        int nClientId = Convert.ToInt32(hdnClientId.Value);
         grdSalesPersonList.PageIndex = nPageNo;
                
 
@@ -146,9 +145,9 @@ public partial class salespersonlist : System.Web.UI.Page
         else
         {
             if (strCondition.Length > 0)
-                strCondition += " AND sales_person_id != 0 AND client_id ="+ nClientId;
+                strCondition += " AND sales_person_id != 0 AND client_id in (" + hdnClientId.Value + ")";
             else
-                strCondition = " sales_person_id != 0 AND client_id =" + nClientId;
+                strCondition = " sales_person_id != 0 AND client_id in (" + hdnClientId.Value + ")";
         }
 
         if (strCondition.Length > 0)

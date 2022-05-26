@@ -554,8 +554,9 @@
                                         <table width="100%" id="tblMultiPricing" runat="server" visible="false" class="wrapper">
                                             <tr>
                                                 <td align="left" valign="top" width="70%">
+                                                    <div id="listPlacement" style="max-height:400px; height:auto; overflow-y:scroll;" ></div>
                                                     <asp:TextBox ID="txtSearchAll" onkeypress="return SearchAllPress(event);" runat="server" Width="50%"></asp:TextBox>
-                                                    <cc1:AutoCompleteExtender ID="AutoCompleteExtender1" runat="server" CompletionInterval="500" CompletionListCssClass="AutoExtender" CompletionSetCount="10" DelimiterCharacters="" EnableCaching="true" Enabled="True" MinimumPrefixLength="1" OnClientItemSelected="selected_ItemNameAll" ServiceMethod="GetItemNameAll" TargetControlID="txtSearchAll" UseContextKey="True">
+                                                    <cc1:AutoCompleteExtender ID="AutoCompleteExtender1" runat="server" CompletionInterval="500" CompletionListCssClass="AutoExtender" CompletionSetCount="10" DelimiterCharacters="" EnableCaching="true" Enabled="True" MinimumPrefixLength="1" OnClientItemSelected="selected_ItemNameAll" ServiceMethod="GetItemNameAll" TargetControlID="txtSearchAll" UseContextKey="True" CompletionListElementID="listPlacement">
                                                     </cc1:AutoCompleteExtender>
                                                     <cc1:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender1" runat="server" TargetControlID="txtSearchAll" WatermarkText="Search by Item Name" />
                                                     <asp:Button ID="btnSearchAll" runat="server" CssClass="button" OnClick="btnSearchAll_Click" Text="Search" />

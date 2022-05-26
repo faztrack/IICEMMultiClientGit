@@ -191,14 +191,19 @@
                                                             <ItemStyle HorizontalAlign="Center" Width="10%" />
                                                         </asp:BoundField>
 
-                                                        <%-- Cell 5 --%>
-                                                        <asp:BoundField DataField="last_login_time" HeaderText="Last Login">
-                                                            <HeaderStyle HorizontalAlign="Center" />
-                                                            <ItemStyle HorizontalAlign="Center" Width="10%" />
-                                                        </asp:BoundField>
+                                                        <%-- Cell 5 --%>                                                       
 
-                                                        <%-- Cell 6 --%>
-                                                        <asp:BoundField DataField="role_id" HeaderText="Role">
+                                                        <asp:TemplateField HeaderText="Last Login">
+                                                            <ItemTemplate>
+                                                                <asp:Label ID="lblLastLoginTime" runat="server" Text='<%#Eval("last_login_time")%>'></asp:Label>
+                                                            </ItemTemplate>
+                                                            <HeaderStyle Width="8%" HorizontalAlign="Center" />
+                                                            <ItemStyle Width="8%" HorizontalAlign="Center" />
+                                                        </asp:TemplateField>
+
+                                                        <%-- Cell 6 --%>                                                      
+
+                                                        <asp:BoundField DataField="role_name" HeaderText="Role">
                                                             <HeaderStyle HorizontalAlign="Center" />
                                                             <ItemStyle HorizontalAlign="Center" Width="8%" />
                                                         </asp:BoundField>
@@ -213,7 +218,7 @@
                                                         </asp:TemplateField>
 
                                                         <%-- Cell 8 --%>
-                                                        <asp:BoundField HeaderText="Active">
+                                                        <asp:BoundField HeaderText="Active" DataField="status">
                                                             <HeaderStyle HorizontalAlign="Center" />
                                                             <ItemStyle HorizontalAlign="Center" Width="6%" />
                                                         </asp:BoundField>

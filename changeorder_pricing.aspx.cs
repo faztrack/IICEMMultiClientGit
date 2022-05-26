@@ -36,18 +36,21 @@ public partial class changeorder_pricing : System.Web.UI.Page
         if (HttpContext.Current.Session["gspSearch"] != null)
         {
             DataTable dt = (DataTable)(HttpContext.Current.Session["gspSearch"]);
-            return (from c in dt.AsEnumerable()
-                    where c.Field<string>("section_name").ToLower().Contains(prefixText.ToLower())
-                    select c.Field<string>("section_name")).ToArray();
+            var abc = (from c in dt.AsEnumerable()
+                       where c.Field<string>("section_name").ToLower().Contains(prefixText.ToLower())
+                       select c.Field<string>("section_name")).ToArray();
+            return abc;
 
         }
         else
         {
 
             DataTable dt = LoadFullSection();
-            return (from c in dt.AsEnumerable()
-                    where c.Field<string>("section_name").ToLower().Contains(prefixText.ToLower())
-                    select c.Field<string>("section_name")).ToArray();
+
+            var abc = (from c in dt.AsEnumerable()
+                       where c.Field<string>("section_name").ToLower().Contains(prefixText.ToLower())
+                       select c.Field<string>("section_name")).ToArray();
+            return abc;
         }
 
     }

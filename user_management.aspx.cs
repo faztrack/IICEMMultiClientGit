@@ -170,12 +170,22 @@ public partial class user_management : System.Web.UI.Page
         grdUserList.PageIndex = nPageNo;
 
 
-        string strQ = "SELECT user_id, first_name, last_name, address, city, state, zip, phone, fax, email, client_id,  role_id, is_active, last_login_time, " +
-                      " company_email, case when EmailIntegrationType = 1 then 'Yes' else 'No' END  AS EmailIntegration FROM user_info " + strCondition + " order by last_name asc";
+        //string strQ = "SELECT user_id, first_name, last_name, address, city, state, zip, phone, fax, email, client_id,  role_id, is_active, last_login_time, " +
+        //              " company_email, case when EmailIntegrationType = 1 then 'Yes' else 'No' END  AS EmailIntegration FROM user_info " + strCondition + " order by last_name asc";
 
 
-        IEnumerable<userinfo> uList = _db.ExecuteQuery<userinfo>(strQ, string.Empty).ToList();
-        lblCount.Text = uList.Count().ToString();
+        string strQ = "SELECT user_info.client_id, user_id, first_name, last_name, address, city, state, zip, phone, fax, email,  user_info.role_id, is_active,  last_login_time, " +
+                    " company_email, case when EmailIntegrationType = 1 then 'Yes' else 'No' END  AS EmailIntegration, " +
+                    "case when is_active = 1 then 'Yes' else 'No' END  AS status, roles.role_name " +
+                    "FROM user_info " +
+                   " inner join roles on roles.role_id=user_info.role_id "
+                    + strCondition + " order by last_name asc";
+
+
+        //IEnumerable<userinfo> uList = _db.ExecuteQuery<userinfo>(strQ, string.Empty).ToList();
+
+        DataTable uList = csCommonUtility.GetDataTable(strQ);
+        lblCount.Text = uList.Rows.Count.ToString();
 
         if (ddlItemPerPage.SelectedValue != "4")
         {
@@ -222,40 +232,17 @@ public partial class user_management : System.Web.UI.Page
             DataClassesDataContext _db = new DataClassesDataContext();
             int nuid = Convert.ToInt32(grdUserList.DataKeys[e.Row.RowIndex].Values[0]);
             bool bAcitve = Convert.ToBoolean(grdUserList.DataKeys[e.Row.RowIndex].Values[1]);
-            string client_id = grdUserList.DataKeys[e.Row.RowIndex].Values[2].ToString().TrimEnd(',');            
-            string divisionName = csCommonUtility.GetDivisionName(client_id);
+            string client_id = grdUserList.DataKeys[e.Row.RowIndex].Values[2].ToString().TrimEnd(',');        
+            Label lblLastLoginTime = e.Row.FindControl("lblLastLoginTime") as Label;
+
 
             Label lblDivision = (Label)e.Row.FindControl("lblDivision");
-            lblDivision.Text = divisionName;
+            lblDivision.Text = csCommonUtility.GetDivisionName(client_id);
 
-            if (bAcitve)
-            {
-                e.Row.Cells[8].Text = "Yes";
-            }
-            else
-            {
-                e.Row.Cells[8].Text = "No";
-            }
-            int nRoleId = Convert.ToInt32(e.Row.Cells[6].Text);
 
-            if (nRoleId == 1)
-                e.Row.Cells[6].Text = "Admin";
-            else if (nRoleId == 2)
-                e.Row.Cells[6].Text = "Manager";
-            else if (nRoleId == 3)
-                e.Row.Cells[6].Text = "Sales";
-            else if (nRoleId == 4)
-                e.Row.Cells[6].Text = "Superintendent";
-            else if (nRoleId == 5)
-                e.Row.Cells[6].Text = "Operation";
+            lblLastLoginTime.Text = DateTime.Parse(Convert.ToDateTime(lblLastLoginTime.Text).ToShortDateString() + " " + Convert.ToDateTime(lblLastLoginTime.Text).ToLongTimeString()).ToString("g");
 
-            e.Row.Cells[5].Text = DateTime.Parse(Convert.ToDateTime(e.Row.Cells[5].Text).ToShortDateString() + " " + Convert.ToDateTime(e.Row.Cells[5].Text).ToLongTimeString()).ToString("g");
-
-            // Customer Address
-            //user_info uinfo = new user_info();
-            //uinfo = _db.user_infos.Single(c => c.user_id == nuid);
-            //string strAddress = uinfo.address + "</br>" + uinfo.city + " " + uinfo.state + " " + uinfo.zip;
-            //e.Row.Cells[2].Text = strAddress;
+            
         }
     }
     protected void grdUserList_PageIndexChanging(object sender, GridViewPageEventArgs e)
