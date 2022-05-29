@@ -42,7 +42,8 @@ public partial class labor_hour_list : System.Web.UI.Page
                 Response.Redirect("nopermission.aspx");
             }
 
-           
+
+            BindDivision();
 
             BindCrew();
           
@@ -83,6 +84,8 @@ public partial class labor_hour_list : System.Web.UI.Page
            
             BindLaborHourTracking();
 
+            txtStartDate.Text = Convert.ToDateTime("04/01/2022").ToString("dd/MM/yy");
+            txtEndDate.Text = Convert.ToDateTime("05/29/2022").ToString("dd/MM/yy");
 
 
             csCommonUtility.SetPagePermission(this.Page, new string[] {  "btnExpCustList", "btnGMap1" });
@@ -90,7 +93,25 @@ public partial class labor_hour_list : System.Web.UI.Page
         }
     }
 
+    private void BindDivision()
+    {
+        try
+        {
+            string sql = "select id, division_name from division order by division_name";
+            DataTable dt = csCommonUtility.GetDataTable(sql);
+            ddlDivision.DataSource = dt;
+            ddlDivision.DataTextField = "division_name";
+            ddlDivision.DataValueField = "id";
+            ddlDivision.DataBind();
+            ddlDivision.Items.Insert(0, "All");
+        }
+        catch (Exception ex)
+        {
+            lblResult.Text = csCommonUtility.GetSystemErrorMessage(ex.Message);
+        }
+        
 
+    }
 
     private void BindLaborHourTracking()
     {
@@ -159,9 +180,17 @@ public partial class labor_hour_list : System.Web.UI.Page
                
             }
 
-         
+            if (ddlDivision.SelectedItem.Text != "All")
+            {
+                if (strCondition.Length > 2)
+                    strCondition += " AND gps.division_name like '%" + ddlDivision.SelectedItem.Text + "%'";
+                else
+                    strCondition = " WHERE gps.division_name like '%" + ddlDivision.SelectedItem.Text + "%'";
+            }
 
-            string strQ= " SELECT GPSTrackID, StartPlace, MakeStopPlace, EndPlace, Distance, Time, UserID, IsCrew,"+
+
+            //imran ch
+            string strQ= " SELECT GPSTrackID, gps.client_id, StartPlace, MakeStopPlace, gps.division_name, EndPlace, Distance, Time, UserID, IsCrew," +                      
                      // " c.last_name1 + ' ' + c.first_name1 + '(' + ce.job_number + ')'  as CustomerName, " +
                      " case when ce.alter_job_number!='' then c.last_name1 + ' ' + c.first_name1 + '(' + ce.alter_job_number + ')' " +
                       " else  c.last_name1 + ' ' + c.first_name1 + '(' + ce.job_number + ')' end as CustomerName, " +
@@ -174,7 +203,7 @@ public partial class labor_hour_list : System.Web.UI.Page
                        " left join customer_estimate as ce on ce.customer_id = gps.customer_id and ce.estimate_id = gps.Estimate_id " +
                        " " + strCondition + 
                        " UNION " +
-                       " SELECT   GPSTrackID, StartPlace, MakeStopPlace, EndPlace, Distance, Time, UserID, IsCrew,"+
+                       " SELECT   GPSTrackID, gps.client_id, StartPlace, MakeStopPlace, gps.division_name, EndPlace, Distance, Time, UserID, IsCrew," +
                        //" c.last_name1 + ' ' + c.first_name1 + '(' + ce.job_number + ')'  as CustomerName, " +
                        " case when ce.alter_job_number!='' then c.last_name1 + ' ' + c.first_name1 + '(' + ce.alter_job_number + ')' " +
                       " else  c.last_name1 + ' ' + c.first_name1 + '(' + ce.job_number + ')' end as CustomerName, " +
@@ -187,20 +216,19 @@ public partial class labor_hour_list : System.Web.UI.Page
                        " left join customer_estimate as ce on ce.customer_id = gps.customer_id and ce.estimate_id = gps.Estimate_id "+
                        " " + strCondition + " order by labor_date desc ";
 
-            IEnumerable<CrewTrack> clist = _db.ExecuteQuery<CrewTrack>(strQ, string.Empty);
+            DataTable clist = csCommonUtility.GetDataTable(strQ);
 
             DateTime EndTimedt = new DateTime(2000, 01, 01);
            
-            DataTable DTLoaborHour = csCommonUtility.LINQToDataTable(clist);
+            
 
 
+            Session.Add("nLoaborHour", clist);
 
-            Session.Add("nLoaborHour", DTLoaborHour);
-
-           // var nList = clist;
-            var nCount = from myRow in DTLoaborHour.AsEnumerable()
-                       where myRow.Field<DateTime>("EndTime") == EndTimedt
-                       select myRow;
+            // var nList = clist;
+            var nCount = from myRow in clist.AsEnumerable()
+                         where myRow.Field<DateTime>("EndTime") == EndTimedt
+                         select myRow;
 
             Activecrew = nCount.Count();
 
@@ -234,6 +262,11 @@ public partial class labor_hour_list : System.Web.UI.Page
                 strCondition2 += " AND gps.labor_date >= '" + dt1 + "' and gps.labor_date <'" + dt2.AddDays(1) + "'";
             }
 
+            if (ddlDivision.SelectedItem.Text != "All")
+            {
+                strCondition2 += " AND gps.division_name like '%" + ddlDivision.SelectedItem.Text + "%'";
+            }
+
             String aSql = "SELECT  distinct  ce.customer_estimate_id "+
                             "FROM GPSTracking AS gps inner JOIN "+
                             " customer_estimate AS ce ON gps.Estimate_id = ce.estimate_id  and gps.customer_id = ce.customer_id "+
@@ -245,7 +278,7 @@ public partial class labor_hour_list : System.Web.UI.Page
         }
         catch (Exception ex)
         {
-            throw ex;
+            lblResult.Text = csCommonUtility.GetSystemErrorMessage(ex.Message);
         }
     }
     private void BindCrew()
@@ -302,57 +335,63 @@ public partial class labor_hour_list : System.Web.UI.Page
 
     protected void GetLaberTracking(int nPageNo)
     {
-
-        if (Session["nLoaborHour"] != null)
+        try
         {
-            DataTable dtLaborHour = (DataTable)Session["nLoaborHour"];
-            grdLaberTrack.DataSource = dtLaborHour;
-            grdLaberTrack.PageIndex = nPageNo;
-            grdLaberTrack.AllowPaging = true;
-            grdLaberTrack.PageSize = Convert.ToInt32(ddlItemPerPage.SelectedValue);
-            grdLaberTrack.DataKeyNames = new string[] { "GPSTrackID", "SectionName", "EndPlace", "UserID", "StartPlace", "StartTime", "EndTime", "StartCustomerAddress", "EndCustomerAddress", "labor_date", "WorkingDayName", "CustomerName" };
-            grdLaberTrack.DataBind();
+            if (Session["nLoaborHour"] != null)
+            {
+                DataTable dtLaborHour = (DataTable)Session["nLoaborHour"];
+                grdLaberTrack.DataSource = dtLaborHour;
+                grdLaberTrack.PageIndex = nPageNo;
+                grdLaberTrack.AllowPaging = true;
+                grdLaberTrack.PageSize = Convert.ToInt32(ddlItemPerPage.SelectedValue);
+                grdLaberTrack.DataKeyNames = new string[] { "GPSTrackID", "SectionName", "EndPlace", "UserID", "StartPlace", "StartTime", "EndTime", "StartCustomerAddress", "EndCustomerAddress", "labor_date", "WorkingDayName", "CustomerName", "client_id" };
+                grdLaberTrack.DataBind();
 
 
-            Hashtable ht = new Hashtable();
-            ht.Add("ItemPerPage", ddlItemPerPage.SelectedIndex);
-            if (selectedvalue.Length > 0)
-                ht.Add("Installer", selectedvalue);
+                Hashtable ht = new Hashtable();
+                ht.Add("ItemPerPage", ddlItemPerPage.SelectedIndex);
+                if (selectedvalue.Length > 0)
+                    ht.Add("Installer", selectedvalue);
+                else
+                    ht.Add("Installer", 0);
+                ht.Add("PageNo", nPageNo);
+                ht.Add("StartDate", txtStartDate.Text);
+                ht.Add("EndDate", txtEndDate.Text);
+
+                Session["CPUFilter"] = ht;
+            }
+
+            lblCurrentPageNo.Text = Convert.ToString(nPageNo + 1);
+            if (nPageNo == 0)
+            {
+                btnPrevious.Enabled = false;
+                btnPrevious0.Enabled = false;
+            }
             else
-                ht.Add("Installer", 0);
-            ht.Add("PageNo", nPageNo);
-            ht.Add("StartDate", txtStartDate.Text);
-            ht.Add("EndDate", txtEndDate.Text);
+            {
+                btnPrevious.Enabled = true;
+                btnPrevious0.Enabled = true;
+            }
 
-            Session["CPUFilter"] = ht;
-        }
-
-        lblCurrentPageNo.Text = Convert.ToString(nPageNo + 1);
-        if (nPageNo == 0)
-        {
-            btnPrevious.Enabled = false;
-            btnPrevious0.Enabled = false;
-        }
-        else
-        {
-            btnPrevious.Enabled = true;
-            btnPrevious0.Enabled = true;
+            if (grdLaberTrack.PageCount == nPageNo + 1)
+            {
+                btnNext.Enabled = false;
+                btnNext0.Enabled = false;
+            }
+            else
+            {
+                btnNext.Enabled = true;
+                btnNext0.Enabled = true;
+            }
         }
 
-        if (grdLaberTrack.PageCount == nPageNo + 1)
+        catch (Exception ex)
         {
-            btnNext.Enabled = false;
-            btnNext0.Enabled = false;
+            lblResult.Text = csCommonUtility.GetSystemErrorMessage(ex.Message);
         }
-        else
-        {
-            btnNext.Enabled = true;
-            btnNext0.Enabled = true;
-        }
+
+        
     }
-
-
-
 
     protected void grdLaberTrack_RowDataBound(object sender, GridViewRowEventArgs e)
     {
@@ -387,6 +426,8 @@ public partial class labor_hour_list : System.Web.UI.Page
                 lblLaborDayName.Text= dayName;
                 InkLaborDate.Text = LaborDate.ToString("MM/dd/yyyy");
                 InkLaborDate.NavigateUrl = "laborhourdetails.aspx?gpid=" + nGPSId;
+
+                
 
 
                 if (SectionName != "Select")
@@ -455,43 +496,43 @@ public partial class labor_hour_list : System.Web.UI.Page
                 }
                 else
                 {
-                    e.Row.Cells[7].Text = "";
+                    e.Row.Cells[8].Text = "";  //imran
                     lblTotalHours.Text = "";
                     lblOTHours.Text = "";
                     lblRegular.Text = "";
                 }
                 if (StartPlace.Contains("USA") || StartPlace.Contains("usa"))
                 {
-                    e.Row.Cells[4].Text = StartPlace.Remove(StartPlace.Length - 5, 5);
+                    e.Row.Cells[5].Text = StartPlace.Remove(StartPlace.Length - 5, 5);  //imran
                 }
                 else
                 {
                     if (StartPlace == "0" || StartPlace == "" || StartPlace == null)
                     {
-                        e.Row.Cells[4].Text = "";
+                        e.Row.Cells[5].Text = "";  //imran
                     }
                     else
                     {
-                        e.Row.Cells[4].Text = StartPlace;
-                       
+                        e.Row.Cells[5].Text = StartPlace;  //imran
+
                     }
 
                 }
                 if (EndPlace == "0")
                 {
-                    e.Row.Cells[5].Text = "";
+                    e.Row.Cells[6].Text = "";  //imran
                 }
                 else
                 {
                     if (EndPlace.Contains("USA") || EndPlace.Contains("usa"))
                     {
-                        e.Row.Cells[5].Text = EndPlace.Remove(EndPlace.Length - 5, 5);
-                       
+                        e.Row.Cells[7].Text = EndPlace.Remove(EndPlace.Length - 5, 5);  //imran
+
                     }
                     else
                     {
-                        e.Row.Cells[5].Text = EndPlace;
-                       
+                        e.Row.Cells[6].Text = EndPlace;  //imran
+
                     }
                 }
                 ImageButton imgDelete = (ImageButton)e.Row.FindControl("imgDelete");
@@ -501,7 +542,9 @@ public partial class labor_hour_list : System.Web.UI.Page
 
             }
             catch (Exception ex)
-            { throw ex; }
+            {
+                lblResult.Text = csCommonUtility.GetSystemErrorMessage(ex.Message);
+            }
         }
     }
 
@@ -664,8 +707,16 @@ public partial class labor_hour_list : System.Web.UI.Page
 
 
             }
-           
-            string strQ = " SELECT GPSTrackID, StartPlace, MakeStopPlace, EndPlace, Distance, Time, UserID, IsCrew," +
+
+            if (ddlDivision.SelectedItem.Text != "All")
+            {
+                if (strCondition.Length > 2)
+                    strCondition += " AND gps.division_name like '%" + ddlDivision.SelectedItem.Text + "%' ";
+                else
+                    strCondition = " WHERE  gps.division_name like '%" + ddlDivision.SelectedItem.Text + "%' ";
+            }
+
+            string strQ = " SELECT  GPSTrackID, gps.division_name, StartPlace, MakeStopPlace, EndPlace, Distance, Time, UserID, IsCrew," +
                       //" c.last_name1 + ' ' + c.first_name1 + '(' + ce.job_number + ')'  as CustomerName, " +
                       " case when ce.alter_job_number!='' then c.last_name1 + ' ' + c.first_name1 + '(' + ce.alter_job_number + ')' " +
                      " else  c.last_name1 + ' ' + c.first_name1 + '(' + ce.job_number + ')' end as CustomerName, " +
@@ -678,7 +729,7 @@ public partial class labor_hour_list : System.Web.UI.Page
                        " left join customer_estimate as ce on ce.customer_id = gps.customer_id and ce.estimate_id = gps.Estimate_id " +
                        " " + strCondition +
                        " UNION " +
-                       " SELECT   GPSTrackID, StartPlace, MakeStopPlace, EndPlace, Distance, Time, UserID, IsCrew," +
+                       " SELECT   GPSTrackID, StartPlace, gps.division_name, MakeStopPlace, EndPlace, Distance, Time, UserID, IsCrew," +
                        //" c.last_name1 + ' ' + c.first_name1 + '(' + ce.job_number + ')'  as CustomerName, " +
                        " case when ce.alter_job_number!='' then c.last_name1 + ' ' + c.first_name1 + '(' + ce.alter_job_number + ')' " +
                      " else  c.last_name1 + ' ' + c.first_name1 + '(' + ce.job_number + ')' end as CustomerName, " +
@@ -690,14 +741,17 @@ public partial class labor_hour_list : System.Web.UI.Page
                        " left join customers as c on c.customer_id = gps.customer_id" +
                        " left join customer_estimate as ce on ce.customer_id = gps.customer_id and ce.estimate_id = gps.Estimate_id " +
                        " " + strCondition + " order by UserID,labor_date desc ";
-            IEnumerable<CrewTrack> clist = _db.ExecuteQuery<CrewTrack>(strQ, string.Empty);
             
 
-            DataTable dataTable = csCommonUtility.LINQToDataTable(clist);
+            DataTable clist = csCommonUtility.GetDataTable(strQ);
 
-            if (dataTable.Rows.Count > 0)
+
+
+            //DataTable dataTable = csCommonUtility.LINQToDataTable(clist);
+
+            if (clist.Rows.Count > 0)
             {
-                grdLaberTrack.DataSource = dataTable;
+                grdLaberTrack.DataSource = clist;
                 grdLaberTrack.PageIndex = 0;
                 grdLaberTrack.AllowPaging = false;
                 grdLaberTrack.DataKeyNames = new string[] { "GPSTrackID", "SectionName", "EndPlace", "UserID", "StartPlace", "StartTime", "EndTime", "StartCustomerAddress", "EndCustomerAddress", "labor_date", "WorkingDayName", "CustomerName" };
@@ -716,7 +770,7 @@ public partial class labor_hour_list : System.Web.UI.Page
         }
         catch (Exception ex)
         {
-            throw ex;
+            lblResult.Text = csCommonUtility.GetSystemErrorMessage(ex.Message);
         }
     }
     protected void grdLaberTrack_DataBound(object sender, EventArgs e)
@@ -728,17 +782,17 @@ public partial class labor_hour_list : System.Web.UI.Page
                 for (int i = subTotalRowIndex; i < grdLaberTrack.Rows.Count; i++)
                 {
 
-                    DateTime StartTime = Convert.ToDateTime(grdLaberTrack.Rows[i].Cells[16].Text);
-                    string eTime = (grdLaberTrack.Rows[i].Cells[17].Text).ToString();
-                  
-                   
+                    DateTime StartTime = Convert.ToDateTime(grdLaberTrack.Rows[i].Cells[17].Text); //imran
+                    string eTime = (grdLaberTrack.Rows[i].Cells[18].Text).ToString();  //imran
+
+
                     if (eTime != null && eTime != "")
                     {
-                        DateTime EndTime = Convert.ToDateTime(grdLaberTrack.Rows[i].Cells[17].Text);
+                        DateTime EndTime = Convert.ToDateTime(grdLaberTrack.Rows[i].Cells[18].Text);   //imran
                         if (EndTime.Year != 2000)
                         {
-                            string dayName = grdLaberTrack.Rows[i].Cells[18].Text;
-                            StartTime = StartTime.AddMilliseconds(-StartTime.Millisecond);
+                            string dayName = grdLaberTrack.Rows[i].Cells[19].Text;   //imran
+                            StartTime = StartTime.AddMilliseconds(-StartTime.Millisecond); 
                             StartTime = StartTime.AddSeconds(-StartTime.Second);
                             EndTime = EndTime.AddMilliseconds(-EndTime.Millisecond);
                             EndTime = EndTime.AddSeconds(-EndTime.Second);
@@ -806,7 +860,7 @@ public partial class labor_hour_list : System.Web.UI.Page
         }
         catch (Exception ex)
         {
-            throw ex;
+            lblResult.Text = csCommonUtility.GetSystemErrorMessage(ex.Message);
         }
 
     }
@@ -848,15 +902,15 @@ public partial class labor_hour_list : System.Web.UI.Page
                             {
                                 for (int i = subTotalRowIndex; i < e.Row.RowIndex; i++)
                                 {
-                                    DateTime StartTime = Convert.ToDateTime(grdLaberTrack.Rows[i].Cells[16].Text);
-                                    string eTime = (grdLaberTrack.Rows[i].Cells[17].Text).ToString();
+                                    DateTime StartTime = Convert.ToDateTime(grdLaberTrack.Rows[i].Cells[17].Text);  //imran
+                                    string eTime = (grdLaberTrack.Rows[i].Cells[18].Text).ToString();    //imran
                                     if (eTime != null && eTime != "")
                                     {
-                                        DateTime EndTime = Convert.ToDateTime(grdLaberTrack.Rows[i].Cells[17].Text);
-                                        
+                                        DateTime EndTime = Convert.ToDateTime(grdLaberTrack.Rows[i].Cells[18].Text);    //imran
+
                                         if (EndTime.Year != 2000)
                                         {
-                                            string dayName = grdLaberTrack.Rows[i].Cells[18].Text;
+                                            string dayName = grdLaberTrack.Rows[i].Cells[19].Text;    //imran
                                             StartTime = StartTime.AddMilliseconds(-StartTime.Millisecond);
                                             StartTime = StartTime.AddSeconds(-StartTime.Second);
                                             EndTime = EndTime.AddMilliseconds(-EndTime.Millisecond);
@@ -928,7 +982,7 @@ public partial class labor_hour_list : System.Web.UI.Page
         }
         catch (Exception ex)
         {
-            throw ex;
+            lblResult.Text = csCommonUtility.GetSystemErrorMessage(ex.Message);
         }
     }
     private void AddTotalRow(string labelText, string RegularHour,  string OTValue, string TotalHour)
@@ -936,7 +990,7 @@ public partial class labor_hour_list : System.Web.UI.Page
         GridViewRow row = new GridViewRow(0, 0, DataControlRowType.DataRow, DataControlRowState.Normal);
         row.BackColor = ColorTranslator.FromHtml("#F9F9F9");
 
-        row.Cells.AddRange(new TableCell[16] {new TableCell() ,new TableCell (),new TableCell (),  new TableCell (),new TableCell (),new TableCell (),new TableCell (),new TableCell (),new TableCell (),new TableCell (),new TableCell (),//Empty Cell
+        row.Cells.AddRange(new TableCell[17] {new TableCell() ,new TableCell (),new TableCell (), new TableCell(),  new TableCell (),new TableCell (),new TableCell (),new TableCell (),new TableCell (),new TableCell (),new TableCell (),new TableCell (),//Empty Cell
                                         new TableCell { Text = labelText, HorizontalAlign = HorizontalAlign.Right,CssClass="cellColor"},
                                         new TableCell { Text = RegularHour, HorizontalAlign = HorizontalAlign.Center,CssClass="cellColor" },new TableCell {Text = OTValue, HorizontalAlign = HorizontalAlign.Center,CssClass="cellColor" },new TableCell {Text = TotalHour, HorizontalAlign = HorizontalAlign.Center,CssClass="cellColor" },new TableCell () });
 
@@ -1103,10 +1157,19 @@ public partial class labor_hour_list : System.Web.UI.Page
                 {
                     strCondition = " where labor_date >= '" + dt1 + "' and labor_date <'" + dt2.AddDays(1) + "'";
                 }
-
+                              
 
 
             }
+
+            if (ddlDivision.SelectedItem.Text != "All")
+            {
+                if(strCondition.Length > 2)
+                    strCondition += " AND gps.division_name like '%" + ddlDivision.SelectedItem.Text + "%' ";
+                else
+                    strCondition += " where  gps.division_name like '%" + ddlDivision.SelectedItem.Text + "%' ";
+            }
+
 
             //string strMaster = " SELECT DISTINCT UserID, Full_Name FROM GPSTracking " +
             //                   " INNER JOIN Crew_Details ON GPSTracking.UserID = Crew_Details.crew_id " +
@@ -1124,7 +1187,7 @@ public partial class labor_hour_list : System.Web.UI.Page
             DataTable dtMaster = csCommonUtility.GetDataTable(strMaster);
 
          
-            string strQ = " SELECT GPSTrackID, StartPlace, MakeStopPlace, EndPlace, Distance, Time, UserID, IsCrew," +
+            string strQ = " SELECT GPSTrackID, StartPlace, gps.division_name, MakeStopPlace, EndPlace, Distance, Time, UserID, IsCrew," +
                      // " c.last_name1 + ' ' + c.first_name1 + '(' + ce.job_number + ')'  as CustomerName, " +
                      " case when ce.alter_job_number!='' then c.last_name1 + ' ' + c.first_name1 + '(' + ce.alter_job_number + ')' " +
                       " else  c.last_name1 + ' ' + c.first_name1 + '(' + ce.job_number + ')' end as CustomerName, " +
@@ -1137,7 +1200,7 @@ public partial class labor_hour_list : System.Web.UI.Page
                        " left join customer_estimate as ce on ce.customer_id = gps.customer_id and ce.estimate_id = gps.Estimate_id " +
                        " " + strCondition +
                        " UNION " +
-                       " SELECT   GPSTrackID, StartPlace, MakeStopPlace, EndPlace, Distance, Time, UserID, IsCrew," +
+                       " SELECT   GPSTrackID, StartPlace, gps.division_name, MakeStopPlace, EndPlace, Distance, Time, UserID, IsCrew," +
                        //" c.last_name1 + ' ' + c.first_name1 + '(' + ce.job_number + ')'  as CustomerName, " +
                        " case when ce.alter_job_number!='' then c.last_name1 + ' ' + c.first_name1 + '(' + ce.alter_job_number + ')' " +
                       " else  c.last_name1 + ' ' + c.first_name1 + '(' + ce.job_number + ')' end as CustomerName, " +
@@ -1198,54 +1261,60 @@ public partial class labor_hour_list : System.Web.UI.Page
                             {
                                 worksheet.Cells[nCount, 3].Value = dr["CustomerName"].ToString();
                             }
-                            if (dr["SectionName"].ToString() != "Select")
-                                worksheet.Cells[nCount, 4].Value = dr["SectionName"].ToString();
 
-                            worksheet.Cells[nCount, 5].Value = dr["Notes"].ToString();
+
+                            worksheet.Cells[nCount, 4].Value = dr["division_name"].ToString();
+
+
+
+                            if (dr["SectionName"].ToString() != "Select")
+                                worksheet.Cells[nCount, 5].Value = dr["SectionName"].ToString();
+
+                            worksheet.Cells[nCount, 6].Value = dr["Notes"].ToString();
 
                             if (StartPlace.Contains("USA") || StartPlace.Contains("usa"))
                             {
 
-                                worksheet.Cells[nCount, 6].Value = StartPlace.Remove(StartPlace.Length - 5, 5);
+                                worksheet.Cells[nCount, 7].Value = StartPlace.Remove(StartPlace.Length - 5, 5);
                             }
                             else
                             {
                                 if (StartPlace == "0" || StartPlace == "" || StartPlace == null)
                                 {
 
-                                    worksheet.Cells[nCount, 6].Value = "";
+                                    worksheet.Cells[nCount, 7].Value = "";
                                 }
                                 else
                                 {
 
-                                    worksheet.Cells[nCount, 6].Value = StartPlace;
+                                    worksheet.Cells[nCount, 7].Value = StartPlace;
                                 }
                             }
 
                             if (EndPlace == "0")
                             {
 
-                                worksheet.Cells[nCount, 7].Value = "";
+                                worksheet.Cells[nCount, 8].Value = "";
                             }
                             else
                             {
                                 if (EndPlace.Contains("USA") || EndPlace.Contains("usa"))
                                 {
-                                    worksheet.Cells[nCount, 7].Value = EndPlace.Remove(EndPlace.Length - 5, 5); ;
+                                    worksheet.Cells[nCount, 8].Value = EndPlace.Remove(EndPlace.Length - 5, 5); ;
 
                                 }
                                 else
                                 {
 
-                                    worksheet.Cells[nCount, 7].Value = EndPlace;
+                                    worksheet.Cells[nCount, 8].Value = EndPlace;
                                 }
                             }
 
-                            worksheet.Cells[nCount, 8].Value = Convert.ToDateTime(dr["StartTime"]).ToShortTimeString();
+                            worksheet.Cells[nCount, 9].Value = Convert.ToDateTime(dr["StartTime"]).ToShortTimeString();
 
                             if (Convert.ToDateTime(dr["EndTime"]).Year != 2000)
                             {
-                                worksheet.Cells[nCount, 9].Value = Convert.ToDateTime(dr["EndTime"]).ToShortTimeString();
+                                worksheet.Cells[nCount, 10].Value = Convert.ToDateTime(dr["EndTime"]).ToShortTimeString();
                                 DateTime StartTime = Convert.ToDateTime(dr["StartTime"].ToString());
                                 DateTime EndTime = Convert.ToDateTime(dr["EndTime"].ToString());
                                 StartTime = StartTime.AddMilliseconds(-StartTime.Millisecond);
@@ -1258,9 +1327,9 @@ public partial class labor_hour_list : System.Web.UI.Page
                                 dTotalMin += span.TotalMinutes;// (span.Days * 24 * 60 + span.Hours * 60 + span.Minutes);
                                 grandTotalMin += span.TotalMinutes;
                                 if (span.Days > 0)
-                                    worksheet.Cells[nCount, 12].Value = span.Days + ":" + span.Hours + ":" + span.Minutes;
+                                    worksheet.Cells[nCount, 13].Value = span.Days + ":" + span.Hours + ":" + span.Minutes;
                                 else
-                                    worksheet.Cells[nCount, 12].Value = span.ToString(@"hh\:mm");
+                                    worksheet.Cells[nCount, 13].Value = span.ToString(@"hh\:mm");
                                 if (dr["WorkingDayName"].ToString().ToLower() == "saturday" || dr["WorkingDayName"].ToString().ToLower() == "sunday")
                                 {
                                     OtH = span.TotalHours;
@@ -1303,18 +1372,18 @@ public partial class labor_hour_list : System.Web.UI.Page
 
                                         dRegularGTotalMin += span.TotalMinutes;
                                         grandRegularMin += span.TotalMinutes;
-                                        worksheet.Cells[nCount, 10].Value = span.ToString(@"hh\:mm");
-                                        worksheet.Cells[nCount, 11].Value = "00:00";
+                                        worksheet.Cells[nCount, 11].Value = span.ToString(@"hh\:mm");
+                                        worksheet.Cells[nCount, 12].Value = "00:00";
 
                                     }
                                 }
                             }
                             else
                             {
-                                worksheet.Cells[nCount, 10].Value = "00:00";
                                 worksheet.Cells[nCount, 11].Value = "00:00";
                                 worksheet.Cells[nCount, 12].Value = "00:00";
-                                worksheet.Cells[nCount, 9].Value = "";
+                                worksheet.Cells[nCount, 13].Value = "00:00";
+                                worksheet.Cells[nCount, 10].Value = "";
 
                             }
 
@@ -1325,15 +1394,15 @@ public partial class labor_hour_list : System.Web.UI.Page
                         int nMin = 0;
 
 
-                        worksheet.Cells[nCount, 9].Value = "Total:";
-                        worksheet.Cells[nCount, 9].Style.Font.Bold = true;
-                        worksheet.Cells[nCount, 9].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+                        worksheet.Cells[nCount, 10].Value = "Total:";
+                        worksheet.Cells[nCount, 10].Style.Font.Bold = true;
+                        worksheet.Cells[nCount, 10].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
 
                         ///Regular
                         nHour = (int)dRegularGTotalMin / 60;
                         nMin = (int)Math.Round(dRegularGTotalMin % 60, 6);
-                        worksheet.Cells[nCount, 10].Value = nHour.ToString().PadLeft(2, '0') + ":" + nMin.ToString().PadLeft(2, '0');
-                        worksheet.Cells[nCount, 10].Style.Font.Bold = true;
+                        worksheet.Cells[nCount, 11].Value = nHour.ToString().PadLeft(2, '0') + ":" + nMin.ToString().PadLeft(2, '0');
+                        worksheet.Cells[nCount, 11].Style.Font.Bold = true;
 
                         //OT
 
@@ -1341,8 +1410,8 @@ public partial class labor_hour_list : System.Web.UI.Page
                         nMin = 0;
                         nHour = (int)dOTTotalMin / 60;
                         nMin = (int)Math.Round(dOTTotalMin % 60, 6);
-                        worksheet.Cells[nCount, 11].Value = nHour.ToString().PadLeft(2, '0') + ":" + nMin.ToString().PadLeft(2, '0'); ;
-                        worksheet.Cells[nCount, 11].Style.Font.Bold = true;
+                        worksheet.Cells[nCount, 12].Value = nHour.ToString().PadLeft(2, '0') + ":" + nMin.ToString().PadLeft(2, '0'); ;
+                        worksheet.Cells[nCount, 12].Style.Font.Bold = true;
 
 
                         //Total
@@ -1351,8 +1420,8 @@ public partial class labor_hour_list : System.Web.UI.Page
                         nMin = 0;
                         nHour = (int)dTotalMin / 60;
                         nMin = (int)Math.Round(dTotalMin % 60, 6);
-                        worksheet.Cells[nCount, 12].Value = nHour.ToString().PadLeft(2, '0') + ":" + nMin.ToString().PadLeft(2, '0');
-                        worksheet.Cells[nCount, 12].Style.Font.Bold = true;
+                        worksheet.Cells[nCount, 13].Value = nHour.ToString().PadLeft(2, '0') + ":" + nMin.ToString().PadLeft(2, '0');
+                        worksheet.Cells[nCount, 13].Style.Font.Bold = true;
                         nCount++;
                     }
 
@@ -1362,15 +1431,15 @@ public partial class labor_hour_list : System.Web.UI.Page
                 {
                     nCount++;
 
-                    worksheet.Cells[nCount, 9].Value = "Grand Total:";
-                    worksheet.Cells[nCount, 9].Style.Font.Bold = true;
-                    worksheet.Cells[nCount, 9].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+                    worksheet.Cells[nCount, 10].Value = "Grand Total:";
+                    worksheet.Cells[nCount, 10].Style.Font.Bold = true;
+                    worksheet.Cells[nCount, 10].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
 
                     //Regular 
                     int nHour2 = (int)grandRegularMin / 60;
                     int nMin2 = (int)Math.Round(grandRegularMin % 60, 6);
-                    worksheet.Cells[nCount, 10].Value = nHour2.ToString().PadLeft(2, '0') + ":" + nMin2.ToString().PadLeft(2, '0');
-                    worksheet.Cells[nCount, 10].Style.Font.Bold = true;
+                    worksheet.Cells[nCount, 11].Value = nHour2.ToString().PadLeft(2, '0') + ":" + nMin2.ToString().PadLeft(2, '0');
+                    worksheet.Cells[nCount, 11].Style.Font.Bold = true;
 
 
                     //OT
@@ -1378,16 +1447,16 @@ public partial class labor_hour_list : System.Web.UI.Page
                     nMin2 = 0;
                     nHour2 = (int)grandOTMin / 60;
                     nMin2 = (int)Math.Round(grandOTMin % 60, 6);
-                    worksheet.Cells[nCount, 11].Value = nHour2.ToString().PadLeft(2, '0') + ":" + nMin2.ToString().PadLeft(2, '0'); ;
-                    worksheet.Cells[nCount, 11].Style.Font.Bold = true;
+                    worksheet.Cells[nCount, 12].Value = nHour2.ToString().PadLeft(2, '0') + ":" + nMin2.ToString().PadLeft(2, '0'); ;
+                    worksheet.Cells[nCount, 12].Style.Font.Bold = true;
 
                     //Total
                     nHour2 = 0;
                     nMin2 = 0;
                     nHour2 = (int)grandTotalMin / 60;
                     nMin2 = (int)Math.Round(grandTotalMin % 60, 6);
-                    worksheet.Cells[nCount, 12].Value = nHour2.ToString().PadLeft(2, '0') + ":" + nMin2.ToString().PadLeft(2, '0'); ;
-                    worksheet.Cells[nCount, 12].Style.Font.Bold = true;
+                    worksheet.Cells[nCount, 13].Value = nHour2.ToString().PadLeft(2, '0') + ":" + nMin2.ToString().PadLeft(2, '0'); ;
+                    worksheet.Cells[nCount, 13].Style.Font.Bold = true;
 
                     worksheet.Cells["A:I"].AutoFitColumns();
                     package.Save();
@@ -1444,36 +1513,52 @@ public partial class labor_hour_list : System.Web.UI.Page
     //arefin 09-14-2019 -- Formate StartCustomerAddress (Customer Start Address) & EndCustomerAddress (Customer End Address)
     private void UpdateData()
     {
-        DataClassesDataContext _db = new DataClassesDataContext();
-        string strQ = "select [GPSTrackID],[StartPlace] ,[MakeStopPlace],[EndPlace],[Distance],[Time],[UserID],[IsCrew],[CustomerName],[section_id], " +
-                      " [SectionName],[StartTime] ,[EndTime],[customer_id],[Estimate_id],[labor_date],DeviceName,StartCustomerAddress,EndCustomerAddress,Notes from GPSTracking  WHERE     (CrewLastLangitude IS NOT NULL) ";
-        IEnumerable<CrewTrack> clist = _db.ExecuteQuery<CrewTrack>(strQ, string.Empty);
-
-        foreach (var c in clist)
+        try
         {
-            GPSTracking objGT = _db.GPSTrackings.Where(g => g.GPSTrackID == c.GPSTrackID).FirstOrDefault();
+            DataClassesDataContext _db = new DataClassesDataContext();
+            string strQ = "select [GPSTrackID],[StartPlace] ,[MakeStopPlace],[EndPlace],[Distance],[Time],[UserID],[IsCrew],[CustomerName],[section_id], " +
+                          " [SectionName],[StartTime] ,[EndTime],[customer_id],[Estimate_id],[labor_date],DeviceName,StartCustomerAddress,EndCustomerAddress,Notes from GPSTracking  WHERE     (CrewLastLangitude IS NOT NULL) ";
+            IEnumerable<CrewTrack> clist = _db.ExecuteQuery<CrewTrack>(strQ, string.Empty);
 
-            objGT.StartCustomerAddress = c.StartCustomerAddress.Replace("Customer Name: ", "").Replace("Address: ", Environment.NewLine).Replace(",", ", ").Replace("AZ, ", "AZ ");
-            objGT.EndCustomerAddress = c.EndCustomerAddress.Replace("Customer Name: ", "").Replace("Address: ", Environment.NewLine).Replace(",", ", ").Replace("AZ, ", "AZ ");
-            _db.SubmitChanges();
+            foreach (var c in clist)
+            {
+                GPSTracking objGT = _db.GPSTrackings.Where(g => g.GPSTrackID == c.GPSTrackID).FirstOrDefault();
 
+                objGT.StartCustomerAddress = c.StartCustomerAddress.Replace("Customer Name: ", "").Replace("Address: ", Environment.NewLine).Replace(",", ", ").Replace("AZ, ", "AZ ");
+                objGT.EndCustomerAddress = c.EndCustomerAddress.Replace("Customer Name: ", "").Replace("Address: ", Environment.NewLine).Replace(",", ", ").Replace("AZ, ", "AZ ");
+                _db.SubmitChanges();
+
+            }
         }
+        catch (Exception ex)
+        {
+            lblResult.Text = csCommonUtility.GetSystemErrorMessage(ex.Message);
+        }
+        
     }
 
     protected void btnSearch_Click(object sender, EventArgs e)
     {
-        lblResult.Text = "";
-
-        if (chkTotalhours.Checked == true)
+        try
         {
-            BindSubTotalHours();
+            lblResult.Text = "";
+            if (chkTotalhours.Checked == true)
+            {
+                BindSubTotalHours();
 
+            }
+            else
+            {
+                chkTotalhours.Checked = false;
+                BindLaborHourTracking();
+            }
         }
-        else
+        catch (Exception ex)
         {
-            chkTotalhours.Checked = false;
-            BindLaborHourTracking();
+            lblResult.Text = csCommonUtility.GetSystemErrorMessage(ex.Message);
         }
+
+        
     }
     protected void btnGMap_Click(object sender, EventArgs e)
     {
@@ -1483,17 +1568,40 @@ public partial class labor_hour_list : System.Web.UI.Page
 
     protected void radEmployeeType_SelectedIndexChanged(object sender, EventArgs e)
     {
-        lblResult.Text = "";
-
-        if (chkTotalhours.Checked == true)
+        try
         {
-            BindSubTotalHours();
+            lblResult.Text = "";
 
+            if (chkTotalhours.Checked == true)
+            {
+                BindSubTotalHours();
+
+            }
+            else
+            {
+                chkTotalhours.Checked = false;
+                BindLaborHourTracking();
+            }
         }
-        else
+        catch (Exception ex)
         {
-            chkTotalhours.Checked = false;
+            lblResult.Text = csCommonUtility.GetSystemErrorMessage(ex.Message);
+        }
+       
+    }
+
+    protected void ddlDivision_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        try
+        {
+            Session.Remove("nLoaborHour");
             BindLaborHourTracking();
+            GetLaberTracking(0);
         }
+        catch (Exception ex)
+        {
+            lblResult.Text = csCommonUtility.GetSystemErrorMessage(ex.Message);
+        }
+        
     }
 }

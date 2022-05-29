@@ -48,6 +48,7 @@ public partial class laborhourdetails : System.Web.UI.Page
             {
                 hdnClientId.Value = ((userinfo)Session["oUser"]).client_id.ToString();
             }
+            BindDivision();
             BindJob();
             BindCrewMember();
             if (Request.QueryString.Get("gpid") != null)
@@ -152,6 +153,9 @@ public partial class laborhourdetails : System.Web.UI.Page
                 hdnCustomerEstimateId.Value = objGPS.customer_estimate_id.ToString();
             }
 
+            ddlDivision.SelectedValue = objGPS.client_id;
+            
+
             txtLaberDate.Text = Convert.ToDateTime(objGPS.labor_date).ToShortDateString();
             lblHeaderTitle.Text = "Labor Time Tracking Details";
             ddCrewMember.SelectedValue = objGPS.UserID.ToString();
@@ -216,7 +220,7 @@ public partial class laborhourdetails : System.Web.UI.Page
             string eTime = "";
             DataClassesDataContext _db = new DataClassesDataContext();
             GPSTracking objGPS = new GPSTracking();
-            GPSTrackingDetail objGPSD = new GPSTrackingDetail();
+            //GPSTrackingDetail objGPSD = new GPSTrackingDetail();
 
             if (txtLaberDate.Text.Trim() == "")
             {
@@ -257,7 +261,7 @@ public partial class laborhourdetails : System.Web.UI.Page
 
                 }
            
-          }
+            }
 
             if (Convert.ToInt32(hdnGpsId.Value) > 0)
                 objGPS = _db.GPSTrackings.Single(c => c.GPSTrackID == Convert.ToInt32(hdnGpsId.Value));
@@ -348,6 +352,9 @@ public partial class laborhourdetails : System.Web.UI.Page
             {
                 lblTotalTime.Text = "";
             }
+            objGPS.client_id = ddlDivision.SelectedValue;
+            objGPS.division_name = ddlDivision.SelectedItem.Text.Trim();
+
             if (Convert.ToInt32(hdnGpsId.Value) == 0)
             {
             
@@ -544,4 +551,23 @@ public partial class laborhourdetails : System.Web.UI.Page
             throw ex;
         }
     }
+
+    private void BindDivision()
+    {
+        try
+        {
+            string sql = "select id, division_name from division order by division_name";
+            DataTable dt = csCommonUtility.GetDataTable(sql);
+            ddlDivision.DataSource = dt;
+            ddlDivision.DataTextField = "division_name";
+            ddlDivision.DataValueField = "id";
+            ddlDivision.DataBind();
+        }
+        catch (Exception ex)
+        {
+            lblResult.Text = csCommonUtility.GetSystemErrorMessage(ex.ToString());
+        }
+    }
+
+    
 }

@@ -46,6 +46,15 @@
                                 <td>&nbsp;</td>
                             </tr>
                             <tr>
+
+                                <td align="right">
+                                    <b>Division: </b>
+                                </td>
+                                <td align="left">
+                                    <asp:DropDownList ID="ddlDivision" runat="server" Width="200px" ></asp:DropDownList>
+                                </td>                               
+                            </tr>
+                            <tr>
                                 <td colspan="2">
                                     <table width="100%">
                                         <tr>
@@ -53,7 +62,7 @@
                                                 <span class="required">* </span><b>Labor Date: </b>
                                             </td>
                                             <td align="left" width="125px">
-                                                <asp:TextBox ID="txtLaberDate" runat="server" CssClass="textBox" Width="120px" TabIndex="1"></asp:TextBox>
+                                                <asp:TextBox ID="txtLaberDate" runat="server" CssClass="textBox" Width="189px" TabIndex="1"></asp:TextBox>
                                                 <cc1:CalendarExtender ID="txtLaberDate_CalendarExtender" runat="server" Format="MM/dd/yyyy" PopupButtonID="imgStartDate" PopupPosition="BottomLeft" TargetControlID="txtLaberDate">
                                                 </cc1:CalendarExtender>
                                                 <cc1:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender1" runat="server" TargetControlID="txtLaberDate" WatermarkText="Date" />
@@ -71,7 +80,7 @@
                                         <span class="required">* </span><b>Crew/Employee Name:</b>
                                     </td>
                                     <td align="left">
-                                        <asp:DropDownList ID="ddCrewMember" runat="server" CssClass="form-control" TabIndex="2"></asp:DropDownList>
+                                        <asp:DropDownList ID="ddCrewMember" runat="server" Width="200px" CssClass="form-control" TabIndex="2"></asp:DropDownList>
 
 
                                     </td>
@@ -85,7 +94,7 @@
                                     <b>Customer Name: </b>
                                 </td>
                                 <td align="left">
-                                    <asp:TextBox ID="txtSearch" CssClass="form-control form-control-ext" runat="server" TabIndex="3" onkeypress="return searchKeyPress(event);" Width="200px"></asp:TextBox>
+                                    <asp:TextBox ID="txtSearch" CssClass="form-control form-control-ext" runat="server" TabIndex="3" onkeypress="return searchKeyPress(event);" Width="189px"></asp:TextBox>
                                     <span class="input-group-btn">
                                         <asp:LinkButton ID="btnSearch" runat="server" CssClass="noEffectNew"
                                             TabIndex="3" Text="" OnClick="btnSearch_Click"></asp:LinkButton>&nbsp;
@@ -108,7 +117,7 @@
                                     <b>Section: </b>
                                 </td>
                                 <td align="left">
-                                    <asp:DropDownList ID="ddlSection" runat="server" CssClass="form-control" TabIndex="4"></asp:DropDownList>
+                                    <asp:DropDownList ID="ddlSection" runat="server" CssClass="form-control" Width="200px" TabIndex="4"></asp:DropDownList>
                                 </td>
                             </tr>
                             <tr>

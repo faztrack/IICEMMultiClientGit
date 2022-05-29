@@ -211,7 +211,7 @@
                                                         <%-- Cell 7 --%>
                                                         <asp:TemplateField HeaderText="Division">
                                                             <ItemTemplate>
-                                                                <asp:Label ID="lblDivision" runat="server" Text=""></asp:Label>
+                                                                <asp:Label ID="lblDivision" runat="server" Text='<%#Eval("division_name")%>'></asp:Label>
                                                             </ItemTemplate>
                                                             <HeaderStyle Width="8%" HorizontalAlign="Center" />
                                                             <ItemStyle Width="8%" HorizontalAlign="Center" />

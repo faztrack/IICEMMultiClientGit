@@ -391,8 +391,10 @@ public partial class customerlist : System.Web.UI.Page
     private void BindSalesPerson()
     {
         DataClassesDataContext _db = new DataClassesDataContext();
-        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1  and is_sales=1 and sales_person.client_id in (" + hdnClientId.Value + ") order by sales_person_id asc";
-        List<userinfo> mList = _db.ExecuteQuery<userinfo>(strQ, string.Empty).ToList();
+        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1  and is_sales=1 and sales_person.client_id in ('" + hdnClientId.Value + "') order by sales_person_id asc";
+
+        DataTable mList = csCommonUtility.GetDataTable(strQ);
+        //List<userinfo> mList = _db.ExecuteQuery<userinfo>(strQ, string.Empty).ToList();
         ddlSalesRep.DataSource = mList;
         ddlSalesRep.DataTextField = "sales_person_name";
         ddlSalesRep.DataValueField = "sales_person_id";
@@ -918,7 +920,7 @@ public partial class customerlist : System.Web.UI.Page
             string strAddress = cust.address + " </br>" + cust.city + ", " + cust.state + " " + cust.zip_code;
             //e.Row.Cells[2].Text = strAddress;
 
-            lblDivision.Text = "<span style='font-weight:bold'>Division: </span>" + csCommonUtility.GetDivisionName(cust.client_id.ToString());
+            lblDivision.Text = "<span style='font-weight:bold; color:#000;'>Division: </span>" + csCommonUtility.GetDivisionName(cust.client_id.ToString());
 
             //Label lblPhone = (Label)e.Row.FindControl("lblPhone");
             //lblPhone.Text = cust.phone;

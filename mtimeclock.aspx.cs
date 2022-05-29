@@ -221,7 +221,7 @@ public partial class mtimeclock : System.Web.UI.Page
                         GPSTracking objCrew = new GPSTracking();
                         objCrew.deviceName = hdnDeviceName.Value;
                         objCrew.StartLatitude = hdnLatitude.Value;
-                        objCrew.StartLogitude = hdnLongitude.Value;
+                        objCrew.client_id = ((Crew_Detail)Session["oCrew"]).client_id.ToString();
                         objCrew.CreatedDate = DateTime.Now;
                         objCrew.labor_date = DateTime.Now;
                         objCrew.UserID = objC.MaxCrewId;
@@ -280,6 +280,7 @@ public partial class mtimeclock : System.Web.UI.Page
                         objCrew.StartLatitude = hdnLatitude.Value;
                         objCrew.StartLogitude = hdnLongitude.Value;
                         objCrew.CreatedDate = DateTime.Now;
+                        objCrew.client_id = ((userinfo)Session["oUser"]).client_id.ToString();
                         objCrew.labor_date = DateTime.Now;
                         objCrew.UserID = objUser.user_id;
                         objCrew.IsCrew = false;

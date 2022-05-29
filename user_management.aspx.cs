@@ -161,9 +161,9 @@ public partial class user_management : System.Web.UI.Page
         if (ddlDivision.SelectedItem.Text != "All")
         {
             if (strCondition.Length > 2)
-                strCondition += " AND user_info.client_id in (" + ddlDivision.SelectedValue +") ";
+                strCondition += " AND user_info.division_name like '%" + ddlDivision.SelectedItem.Text.Trim() +"%' ";
             else
-                strCondition = " WHERE  user_info.client_id in (" + ddlDivision.SelectedValue + ") ";
+                strCondition = " WHERE  user_info.division_name like '%" + ddlDivision.SelectedItem.Text.Trim() + "%' ";
         }
 
         DataClassesDataContext _db = new DataClassesDataContext();
@@ -174,7 +174,7 @@ public partial class user_management : System.Web.UI.Page
         //              " company_email, case when EmailIntegrationType = 1 then 'Yes' else 'No' END  AS EmailIntegration FROM user_info " + strCondition + " order by last_name asc";
 
 
-        string strQ = "SELECT user_info.client_id, user_id, first_name, last_name, address, city, state, zip, phone, fax, email,  user_info.role_id, is_active,  last_login_time, " +
+        string strQ = "SELECT division_name, user_id, first_name, last_name, address, city, state, zip, phone, fax, email,  user_info.role_id, is_active,  last_login_time, " +
                     " company_email, case when EmailIntegrationType = 1 then 'Yes' else 'No' END  AS EmailIntegration, " +
                     "case when is_active = 1 then 'Yes' else 'No' END  AS status, roles.role_name " +
                     "FROM user_info " +
@@ -196,7 +196,7 @@ public partial class user_management : System.Web.UI.Page
             grdUserList.PageSize = 200;
         }
         grdUserList.DataSource = uList;
-        grdUserList.DataKeyNames = new string[] { "user_id", "is_active", "client_id" };
+        grdUserList.DataKeyNames = new string[] { "user_id", "is_active" };
         grdUserList.DataBind();
         lblCurrentPageNo.Text = Convert.ToString(nPageNo + 1);
         if (nPageNo == 0)
@@ -232,12 +232,8 @@ public partial class user_management : System.Web.UI.Page
             DataClassesDataContext _db = new DataClassesDataContext();
             int nuid = Convert.ToInt32(grdUserList.DataKeys[e.Row.RowIndex].Values[0]);
             bool bAcitve = Convert.ToBoolean(grdUserList.DataKeys[e.Row.RowIndex].Values[1]);
-            string client_id = grdUserList.DataKeys[e.Row.RowIndex].Values[2].ToString().TrimEnd(',');        
-            Label lblLastLoginTime = e.Row.FindControl("lblLastLoginTime") as Label;
-
-
-            Label lblDivision = (Label)e.Row.FindControl("lblDivision");
-            lblDivision.Text = csCommonUtility.GetDivisionName(client_id);
+            //string client_id = grdUserList.DataKeys[e.Row.RowIndex].Values[2].ToString().TrimEnd(',');        
+            Label lblLastLoginTime = e.Row.FindControl("lblLastLoginTime") as Label;                     
 
 
             lblLastLoginTime.Text = DateTime.Parse(Convert.ToDateTime(lblLastLoginTime.Text).ToShortDateString() + " " + Convert.ToDateTime(lblLastLoginTime.Text).ToLongTimeString()).ToString("g");

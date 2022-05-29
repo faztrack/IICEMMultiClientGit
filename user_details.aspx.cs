@@ -304,11 +304,13 @@ public partial class user_details : System.Web.UI.Page
         sales_person obj = new sales_person();
 
         string selectedvalue = "";
+        string selectDivisionName = "";
         foreach (ListItem item in lstDivision.Items)
         {
             if (item.Selected)
             {
                 selectedvalue += item.Value + ",";
+                selectDivisionName += item.Text + ", ";
             }
         }
         if(selectedvalue == "")
@@ -523,9 +525,10 @@ public partial class user_details : System.Web.UI.Page
         uinfo.IsEnableSMS = chkIsSMS.Checked;
         txtPhone.Text = csCommonUtility.GetPhoneFormat(txtPhone.Text.Trim());
         txtFax.Text = csCommonUtility.GetPhoneFormat(txtFax.Text.Trim());
-                
 
-        uinfo.client_id = selectedvalue.TrimEnd(',');
+
+        uinfo.division_name = selectDivisionName.Trim().TrimEnd(',');
+        uinfo.client_id = selectedvalue.Trim().TrimEnd(',');
         uinfo.user_id = Convert.ToInt32(hdnUserId.Value);
 
         uinfo.first_name = txtFirstName.Text;

@@ -360,7 +360,7 @@ public partial class mobile : System.Web.UI.Page
 
             //Session.Clear();
 
-            string role = GetUserRoles(userName, password, nClientId);
+            string role = ""; //GetUserRoles(userName, password, nClientId);
 
             if (_db.user_infos.Where(sp =>  sp.username == userName && sp.password == password && sp.is_active == Convert.ToBoolean(1)).SingleOrDefault() == null)
             {
