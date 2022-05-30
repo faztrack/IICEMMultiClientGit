@@ -17,7 +17,10 @@
                     </td>
                 </tr>
                 <tr>
-                    <td align="center" height="15px"></td>
+                    <td align="center" height="15px">
+                        <label><b>Division: </b></label>
+                        <asp:DropDownList ID="ddlDivision" runat="server" Width="200px" OnSelectedIndexChanged="ddlDivision_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+                    </td>
                 </tr>
                 <tr>
                     <td align="center">

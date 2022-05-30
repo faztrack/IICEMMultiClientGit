@@ -39,7 +39,7 @@
                 </tr>
                 <tr>
                     <td align="center">
-                        <table cellpadding="4px" cellspacing="4px"  width="80%">
+                        <table cellpadding="4px" cellspacing="4px" width="80%">
                             <tr>
                                 <td align="left">
                                     <asp:Button ID="btnPrevious" runat="server" CssClass="prevButton" OnClick="btnPrevious_Click" Text="Previous" />
@@ -77,7 +77,7 @@
                                             <td align="left">
                                                 <asp:Label ID="lblCurrentPageNo" runat="server" Font-Bold="true"
                                                     ForeColor="#992a24"></asp:Label>
-                                            </td>                                           
+                                            </td>
                                             <%-- <td align="right">
                                                 <b>Item per page: </b></td>
                                            <td align="left">
@@ -89,13 +89,27 @@
                                                     <asp:ListItem>40</asp:ListItem>
                                                     <asp:ListItem Value="4">All</asp:ListItem>
                                                 </asp:DropDownList>
-                                            </td>--%>                                            
+                                            </td>--%>
                                         </tr>
                                     </table>
                                 </td>
+
+
+
+                                
+
                                 <td align="right">
                                     <table style="padding: 0px; margin: 0px;">
                                         <tr>
+                                            <td>
+                                                <asp:Label ID="lblResult" runat="server" Text=""></asp:Label>
+                                            </td>
+                                            <td>
+                                                <b>Division:</b>
+                                            </td>
+                                            <td>
+                                                <asp:DropDownList ID="ddlDivision" runat="server" OnSelectedIndexChanged="ddlDivision_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+                                            </td>
                                             <td align="right">
                                                 <b>Status: </b></td>
                                             <td align="left">
@@ -106,7 +120,7 @@
                                                     <asp:ListItem Value="0">All</asp:ListItem>
                                                 </asp:DropDownList>
                                             </td>
-                                             <td align="right">&nbsp;</td>
+                                            <td align="right">&nbsp;</td>
                                             <td align="right">
                                                 <b>Section: </b>
                                             </td>
@@ -118,7 +132,7 @@
                                     </table>
                                 </td>
                                 <td align="right">
-                                     <asp:Button ID="btnNext" runat="server" CssClass="nextButton" OnClick="btnNext_Click"
+                                    <asp:Button ID="btnNext" runat="server" CssClass="nextButton" OnClick="btnNext_Click"
                                         Text="Next" />
                                 </td>
                             </tr>
@@ -130,12 +144,15 @@
                                         OnRowDataBound="grdVendorList_RowDataBound" Width="100%" CssClass="mGrid">
                                         <PagerSettings Position="TopAndBottom" />
                                         <Columns>
+                                            <%-- Cell 0 --%>
                                             <asp:HyperLinkField DataNavigateUrlFields="vendor_id" ItemStyle-Font-Underline="true"
                                                 DataNavigateUrlFormatString="VendorDetails.aspx?vid={0}"
                                                 DataTextField="vendor_name" HeaderText="Vendor Name">
                                                 <HeaderStyle HorizontalAlign="Left" />
                                                 <ItemStyle HorizontalAlign="Left" Width="25%" />
                                             </asp:HyperLinkField>
+
+                                            <%-- Cell 1 --%>
                                             <asp:BoundField HeaderText="Address">
                                                 <HeaderStyle HorizontalAlign="Left" />
                                                 <ItemStyle HorizontalAlign="Left" Width="25%" />
@@ -157,18 +174,35 @@
                                                             <ItemStyle HorizontalAlign="Left" />
                                                         </asp:BoundField>--%>
 
+
+                                            <%-- Cell 2 --%>
+                                            <asp:TemplateField HeaderText="Division">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblDivision" runat="server"></asp:Label>
+                                                </ItemTemplate>
+                                                <HeaderStyle HorizontalAlign="Center" />
+                                                <ItemStyle HorizontalAlign="Center" Width="10%" />
+                                            </asp:TemplateField>
+
+                                            <%-- Cell 3 --%>
                                             <asp:BoundField DataField="phone" HeaderText="Phone">
                                                 <HeaderStyle HorizontalAlign="Center" />
                                                 <ItemStyle HorizontalAlign="Center" Width="10%" />
                                             </asp:BoundField>
+
+                                            <%-- Cell 4 --%>
                                             <asp:BoundField DataField="fax" HeaderText="Fax">
                                                 <HeaderStyle HorizontalAlign="Center" />
                                                 <ItemStyle HorizontalAlign="Center" Width="10%" />
                                             </asp:BoundField>
+
+                                            <%-- Cell 5 --%>
                                             <asp:BoundField DataField="section" HeaderText="section" ItemStyle-CssClass="VendSectionCss">
                                                 <HeaderStyle HorizontalAlign="Center" />
                                                 <ItemStyle HorizontalAlign="Left" Width="25%" />
                                             </asp:BoundField>
+
+                                            <%-- Cell 6 --%>
                                             <asp:BoundField DataField="is_active" HeaderText="Active">
                                                 <HeaderStyle HorizontalAlign="Center" />
                                                 <ItemStyle HorizontalAlign="Center" Width="5%" />
@@ -179,11 +213,11 @@
                                     </asp:GridView>
                                 </td>
                             </tr>
-                              <tr>
+                            <tr>
                                 <td align="left">
-                                     <asp:Button ID="btnPrevious0" runat="server"
-                                                    Text="Previous" CssClass="prevButton"
-                                                    OnClick="btnPrevious_Click" />
+                                    <asp:Button ID="btnPrevious0" runat="server"
+                                        Text="Previous" CssClass="prevButton"
+                                        OnClick="btnPrevious_Click" />
                                 </td>
                                 <td align="right">&nbsp;</td>
                                 <td align="left">&nbsp;</td>
@@ -191,8 +225,8 @@
                                     <asp:Label ID="lblLoadTime" runat="server" Text="" ForeColor="White"></asp:Label></td>
                                 <td align="right">
                                     <asp:Button ID="btnNext0" runat="server"
-                                                    Text="Next" CssClass="nextButton"
-                                                    OnClick="btnNext_Click" />
+                                        Text="Next" CssClass="nextButton"
+                                        OnClick="btnNext_Click" />
 
 
                                 </td>

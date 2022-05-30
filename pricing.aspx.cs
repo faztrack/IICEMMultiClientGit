@@ -269,7 +269,7 @@ public partial class pricing : System.Web.UI.Page
 
                 var item = from loc in _db.locations
                            join cl in _db.customer_locations on loc.location_id equals cl.location_id
-                           where cl.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cl.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cl.client_id == Convert.ToInt32(hdnClientId.Value)
+                           where cl.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cl.customer_id == Convert.ToInt32(hdnCustomerId.Value) 
                            orderby loc.location_name
                            select new LocationModel()
                            {
@@ -302,7 +302,7 @@ public partial class pricing : System.Web.UI.Page
 
                 var section = from sec in _db.sectioninfos
                               join cs in _db.customer_sections on sec.section_id equals cs.section_id
-                              where cs.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cs.client_id == Convert.ToInt32(hdnClientId.Value)
+                              where cs.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.customer_id == Convert.ToInt32(hdnCustomerId.Value) 
                               orderby sec.section_name
                               select new SectionInfo()
                               {
@@ -433,7 +433,7 @@ public partial class pricing : System.Web.UI.Page
     private void LoadTree(int nSectionLevel)
     {
         DataClassesDataContext _db = new DataClassesDataContext();
-        string strQ = " SELECT * FROM sectioninfo WHERE is_disable = 0 and is_active=1 AND section_level=" + nSectionLevel + " AND client_id=" + Convert.ToInt32(hdnClientId.Value) + " ORDER BY section_name";
+        string strQ = " SELECT * FROM sectioninfo WHERE is_disable = 0 and is_active=1 AND section_level=" + nSectionLevel + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ORDER BY section_name";
         IEnumerable<sectioninfo> list = _db.ExecuteQuery<sectioninfo>(strQ, string.Empty);
         trvSection.Nodes.Clear();
         foreach (sectioninfo sec in list)
@@ -450,7 +450,7 @@ public partial class pricing : System.Web.UI.Page
     private void AddChildMenu(TreeNode parentNode, sectioninfo sec)
     {
         DataClassesDataContext _db = new DataClassesDataContext();
-        string strQ = " SELECT * FROM sectioninfo WHERE is_disable = 0 and is_active=1 AND client_id=" + Convert.ToInt32(hdnClientId.Value) + " AND section_id NOT IN (SELECT item_id FROM item_price WHERE client_id=" + Convert.ToInt32(hdnClientId.Value) + ")  ORDER BY section_name";
+        string strQ = " SELECT * FROM sectioninfo WHERE is_disable = 0 and is_active=1 AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " AND section_id NOT IN (SELECT item_id FROM item_price WHERE client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + ")  ORDER BY section_name";
         IEnumerable<sectioninfo> list = _db.ExecuteQuery<sectioninfo>(strQ, string.Empty);
         //List<sectioninfo> list = _db.sectioninfos.Where(c => c.client_id == 1).ToList();
         foreach (sectioninfo subsec in list)
@@ -509,7 +509,7 @@ public partial class pricing : System.Web.UI.Page
                     strCondition = "  AND si.section_name LIKE '%" + txtSearchItemName.Text.Trim() + "%'";
                 }
                 sectioninfo sinfo = new sectioninfo();
-                sinfo = _db.sectioninfos.Single(c => c.section_id == Convert.ToInt32(hdnSectionId.Value) && c.client_id == Convert.ToInt32(hdnClientId.Value));
+                sinfo = _db.sectioninfos.Single(c => c.section_id == Convert.ToInt32(hdnSectionId.Value) && c.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
                 hdnSectionLevel.Value = Convert.ToInt32(sinfo.section_level).ToString();
                 hdnParentId.Value = Convert.ToInt32(sinfo.parent_id).ToString();
                 hdnSectionSerial.Value = Convert.ToDecimal(sinfo.section_serial).ToString();
@@ -660,7 +660,7 @@ public partial class pricing : System.Web.UI.Page
     public string GetItemDetialsForUpdateItem(int SectionId)
     {
         DataClassesDataContext _db = new DataClassesDataContext();
-        List<sectioninfo> list = _db.sectioninfos.Where(c => c.section_id == SectionId && c.parent_id > 0 && c.client_id == Convert.ToInt32(hdnClientId.Value)).ToList();
+        List<sectioninfo> list = _db.sectioninfos.Where(c => c.section_id == SectionId && c.parent_id > 0 && c.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).ToList();
         foreach (sectioninfo sec1 in list)
         {
             strDetails = sec1.section_name + " >> " + strDetails;
@@ -668,10 +668,12 @@ public partial class pricing : System.Web.UI.Page
         }
         return strDetails;
     }
+
+    //error
     public string GetItemDetials_forBreadCome(int SectionId)
     {
         DataClassesDataContext _db = new DataClassesDataContext();
-        List<sectioninfo> list = _db.sectioninfos.Where(c => c.section_id == SectionId && c.client_id == Convert.ToInt32(hdnClientId.Value)).ToList();
+        List<sectioninfo> list = _db.sectioninfos.Where(c => c.section_id == SectionId && c.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).ToList();
         foreach (sectioninfo sec1 in list)
         {
             strDetails = sec1.section_name + " >> " + strDetails;
@@ -684,7 +686,7 @@ public partial class pricing : System.Web.UI.Page
         string str = "";
         DataClassesDataContext _db = new DataClassesDataContext();
         sectioninfo si = new sectioninfo();
-        si = _db.sectioninfos.SingleOrDefault(c => c.section_level == section_level && c.parent_id == 0 && c.client_id == Convert.ToInt32(hdnClientId.Value));
+        si = _db.sectioninfos.SingleOrDefault(c => c.section_level == section_level && c.parent_id == 0 && c.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
         if (si != null)
             str = si.section_name;
         return str;
@@ -1023,7 +1025,7 @@ public partial class pricing : System.Web.UI.Page
                 }
             }
 
-            sectioninfo sinfo = _db.sectioninfos.Single(s => s.section_id == Convert.ToInt32(hdnSectionId.Value) && s.client_id == Convert.ToInt32(hdnClientId.Value));
+            sectioninfo sinfo = _db.sectioninfos.Single(s => s.section_id == Convert.ToInt32(hdnSectionId.Value) && s.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
             hdnParentId.Value = Convert.ToInt32(sinfo.parent_id).ToString();
             hdnSectionLevel.Value = Convert.ToInt32(sinfo.section_level).ToString();
             hdnSectionSerial.Value = Convert.ToDecimal(sinfo.section_serial).ToString();
@@ -2536,7 +2538,7 @@ public partial class pricing : System.Web.UI.Page
 
         decimal Other_TotalPrice = nOtherUnitPrice * nOtherQty;
 
-        sectioninfo sinfo = _db.sectioninfos.Single(s => s.section_id == Convert.ToInt32(hdnSectionId.Value) && s.client_id == Convert.ToInt32(hdnClientId.Value));
+        sectioninfo sinfo = _db.sectioninfos.Single(s => s.section_id == Convert.ToInt32(hdnSectionId.Value) && s.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
         hdnParentId.Value = Convert.ToInt32(sinfo.parent_id).ToString();
         hdnSectionLevel.Value = Convert.ToInt32(sinfo.section_level).ToString();
         hdnSectionSerial.Value = Convert.ToDecimal(sinfo.section_serial).ToString();
@@ -4950,7 +4952,7 @@ public partial class pricing : System.Web.UI.Page
                 }
 
 
-                sectioninfo sinfo = _db.sectioninfos.Single(s => s.section_id == nSectionId && s.client_id == Convert.ToInt32(hdnClientId.Value));
+                sectioninfo sinfo = _db.sectioninfos.Single(s => s.section_id == nSectionId && s.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
 
                 bool IsCommissionExclude = Convert.ToBoolean(sinfo.is_CommissionExclude);
                 pricing_detail price_detail = new pricing_detail();
@@ -7071,7 +7073,7 @@ public partial class pricing : System.Web.UI.Page
           nRetailMul = nTotalPrice / nUnitPrice / nQty;
        }
         
-        sectioninfo sinfo = _db.sectioninfos.Single(s => s.section_id == Convert.ToInt32(hdnSectionId.Value) && s.client_id == Convert.ToInt32(hdnClientId.Value));
+        sectioninfo sinfo = _db.sectioninfos.Single(s => s.section_id == Convert.ToInt32(hdnSectionId.Value) && s.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
         hdnParentId.Value = Convert.ToInt32(sinfo.parent_id).ToString();
         hdnSectionLevel.Value = Convert.ToInt32(sinfo.section_level).ToString();
         hdnSectionSerial.Value = Convert.ToDecimal(sinfo.section_serial).ToString();

@@ -84,8 +84,8 @@ public partial class labor_hour_list : System.Web.UI.Page
            
             BindLaborHourTracking();
 
-            txtStartDate.Text = Convert.ToDateTime("04/01/2022").ToString("dd/MM/yy");
-            txtEndDate.Text = Convert.ToDateTime("05/29/2022").ToString("dd/MM/yy");
+            //txtStartDate.Text = Convert.ToDateTime("04/01/2022").ToString("dd/MM/yy");
+            //txtEndDate.Text = Convert.ToDateTime("05/29/2022").ToString("dd/MM/yy");
 
 
             csCommonUtility.SetPagePermission(this.Page, new string[] {  "btnExpCustList", "btnGMap1" });

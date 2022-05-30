@@ -162,9 +162,9 @@ public partial class payment_info : System.Web.UI.Page
             // Pull Project Subtotal            
             lblTotalWithTax.Text = lblProjectSubtotal.Text.Trim();
             Company_special_note objCSN = new Company_special_note();
-            if (_db.Company_special_notes.Where(csn => csn.client_id == 1).SingleOrDefault() != null)
+            if (_db.Company_special_notes.Where(csn => csn.client_id == Convert.ToInt32(hdnClientId.Value)).SingleOrDefault() != null)
             {
-                objCSN = _db.Company_special_notes.Single(csn => csn.client_id == 1);
+                objCSN = _db.Company_special_notes.Single(csn => csn.client_id == Convert.ToInt32(hdnClientId.Value));
 
                 txtSpecialNote.Text = objCSN.special_note;
             }
@@ -1568,11 +1568,11 @@ public partial class payment_info : System.Web.UI.Page
         customer_estimate cus_est = new customer_estimate();
         cus_est = _db.customer_estimates.SingleOrDefault(ce => ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value) && ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value));
 
-        string strQ1 = " SELECT  * from disclaimers WHERE disclaimers.section_level IN (Select section_id from customer_sections  WHERE customer_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " )  AND disclaimers.client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " " +
+        string strQ1 = " SELECT  * from disclaimers WHERE disclaimers.section_level IN (Select section_id from customer_sections  WHERE customer_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " )  AND disclaimers.client_id=" + Convert.ToInt32(hdnClientId.Value) + " " +
                         "  Union " +
-                        " SELECT  * from disclaimers WHERE disclaimers.section_level IN (410001,420001)";
+                        " SELECT  * from disclaimers WHERE disclaimers.section_level IN (410001,420001)  AND disclaimers.client_id=" + Convert.ToInt32(hdnClientId.Value);
         List<SectionDisclaimer> des_List = _db.ExecuteQuery<SectionDisclaimer>(strQ1, string.Empty).ToList();
-        string strQ2 = " SELECT  * from company_terms_condition WHERE client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        string strQ2 = " SELECT  * from company_terms_condition WHERE client_id =" + Convert.ToInt32(hdnClientId.Value);
         List<TermsAndCondition> term_List = _db.ExecuteQuery<TermsAndCondition>(strQ2, string.Empty).ToList();
 
 
@@ -3003,7 +3003,7 @@ public partial class payment_info : System.Web.UI.Page
         customer_estimate cus_est = new customer_estimate();
         cus_est = _db.customer_estimates.Single(ce => ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value) && ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value));
 
-        string strQ1 = " SELECT  * from disclaimers WHERE disclaimers.section_level IN (Select section_id from customer_sections  WHERE customer_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) AND disclaimers.client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        string strQ1 = " SELECT  * from disclaimers WHERE disclaimers.section_level IN (Select section_id from customer_sections  WHERE customer_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) AND disclaimers.client_id=" + Convert.ToInt32(hdnClientId.Value);
         List<SectionDisclaimer> des_List = _db.ExecuteQuery<SectionDisclaimer>(strQ1, string.Empty).ToList();
 
         #region
@@ -4041,11 +4041,11 @@ public partial class payment_info : System.Web.UI.Page
         customer_estimate cus_est = new customer_estimate();
         cus_est = _db.customer_estimates.Single(ce => ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value) && ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value));
 
-        string strQ1 = " SELECT  * from disclaimers WHERE disclaimers.section_level IN (Select section_id from customer_sections  WHERE customer_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " )  AND disclaimers.client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " " +
+        string strQ1 = " SELECT  * from disclaimers WHERE disclaimers.section_level IN (Select section_id from customer_sections  WHERE customer_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " )  AND disclaimers.client_id=" + Convert.ToInt32(hdnClientId.Value) + " " +
                         "  Union " +
-                        " SELECT  * from disclaimers WHERE disclaimers.section_level IN (410001,420001)";
+                        " SELECT  * from disclaimers WHERE disclaimers.section_level IN (410001,420001)  AND disclaimers.client_id=" + Convert.ToInt32(hdnClientId.Value);
         List<SectionDisclaimer> des_List = _db.ExecuteQuery<SectionDisclaimer>(strQ1, string.Empty).ToList();
-        string strQ2 = " SELECT  * from company_terms_condition WHERE client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        string strQ2 = " SELECT  * from company_terms_condition WHERE client_id =" + Convert.ToInt32(hdnClientId.Value);
         List<TermsAndCondition> term_List = _db.ExecuteQuery<TermsAndCondition>(strQ2, string.Empty).ToList();
 
 
@@ -5446,11 +5446,11 @@ public partial class payment_info : System.Web.UI.Page
         customer_estimate cus_est = new customer_estimate();
         cus_est = _db.customer_estimates.SingleOrDefault(ce => ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value) && ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value));
 
-        string strQ1 = " SELECT  * from disclaimers WHERE disclaimers.section_level IN (Select section_id from customer_sections  WHERE customer_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " )  AND disclaimers.client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " " +
+        string strQ1 = " SELECT  * from disclaimers WHERE disclaimers.section_level IN (Select section_id from customer_sections  WHERE customer_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " )  AND disclaimers.client_id=" + Convert.ToInt32(hdnClientId.Value) + " " +
                         "  Union " +
-                          " SELECT  * from disclaimers WHERE disclaimers.section_level IN (410001,420001)";
+                          " SELECT  * from disclaimers WHERE disclaimers.section_level IN (410001,420001) AND disclaimers.client_id=" + Convert.ToInt32(hdnClientId.Value);
         List<SectionDisclaimer> des_List = _db.ExecuteQuery<SectionDisclaimer>(strQ1, string.Empty).ToList();
-        string strQ2 = " SELECT  * from company_terms_condition WHERE client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        string strQ2 = " SELECT  * from company_terms_condition WHERE client_id =" + Convert.ToInt32(hdnClientId.Value);
         List<TermsAndCondition> term_List = _db.ExecuteQuery<TermsAndCondition>(strQ2, string.Empty).ToList();
 
         string strQBath = "select * from BathroomSheetSelections where  estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id =" + Convert.ToInt32(hdnCustomerId.Value);
@@ -6448,7 +6448,7 @@ public partial class payment_info : System.Web.UI.Page
         customer_estimate cus_est = new customer_estimate();
         cus_est = _db.customer_estimates.Single(ce => ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value) && ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value));
 
-        string strQ1 = " SELECT  * from disclaimers WHERE disclaimers.section_level IN (Select section_id from customer_sections  WHERE customer_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) AND disclaimers.client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        string strQ1 = " SELECT  * from disclaimers WHERE disclaimers.section_level IN (Select section_id from customer_sections  WHERE customer_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) AND disclaimers.client_id=" + Convert.ToInt32(hdnClientId.Value);
         List<SectionDisclaimer> des_List = _db.ExecuteQuery<SectionDisclaimer>(strQ1, string.Empty).ToList();
         string strQBath = "select * from BathroomSheetSelections where  estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id =" + Convert.ToInt32(hdnCustomerId.Value);
         DataTable dtBath = csCommonUtility.GetDataTable(strQBath);

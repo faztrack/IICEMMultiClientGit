@@ -79,8 +79,27 @@ public partial class VendorList : System.Web.UI.Page
             Session.Add("vSearch", VendorList);
 
             BindSection();
+            BindDivision();
 
             GetVendor(0);
+        }
+    }
+
+    private void BindDivision()
+    {
+        try
+        {
+            string sql = "select id, division_name from division order by division_name";
+            DataTable dt = csCommonUtility.GetDataTable(sql);
+            ddlDivision.DataSource = dt;
+            ddlDivision.DataTextField = "division_name";
+            ddlDivision.DataValueField = "id";
+            ddlDivision.DataBind();
+            ddlDivision.Items.Insert(0, "All");
+        }
+        catch (Exception ex)
+        {
+            lblResult.Text = csCommonUtility.GetSystemErrorMessage(ex.ToString());
         }
     }
 
@@ -180,7 +199,17 @@ public partial class VendorList : System.Web.UI.Page
 
         }
 
-        string StrQ = " SELECT DISTINCT v.vendor_id, v.client_id, v.vendor_name, v.Address, v.city, v.state, v.zip_code, v.phone, v.fax, v.email, v.is_active, '' AS section " +
+        if(ddlDivision.SelectedItem.Text != "All")
+        {
+            if(strCondition.Length > 2)
+                strCondition += " AND v.client_id = " +  Convert.ToInt32(ddlDivision.SelectedValue);
+            else
+                strCondition += " Where v.client_id = " + Convert.ToInt32(ddlDivision.SelectedValue);
+
+        }
+
+
+        string StrQ = " SELECT DISTINCT v.vendor_id, v.client_id, v.client_id, v.vendor_name, v.Address, v.city, v.state, v.zip_code, v.phone, v.fax, v.email, v.is_active, '' AS section " +
                       "  FROM Vendor AS v " +
                       " LEFT OUTER JOIN vendor_section vs on vs.vendor_id = v.vendor_id " +
                       " " + strCondition + " order by v.vendor_name asc";
@@ -198,7 +227,7 @@ public partial class VendorList : System.Web.UI.Page
         grdVendorList.PageSize = 20;
 
         grdVendorList.DataSource = dtVendor;
-        grdVendorList.DataKeyNames = new string[] { "vendor_id", "Address", "city", "state", "zip_code", "is_active" };
+        grdVendorList.DataKeyNames = new string[] { "vendor_id", "Address", "city", "state", "zip_code", "is_active", "client_id" };
         grdVendorList.DataBind();
         lblCurrentPageNo.Text = Convert.ToString(nPageNo + 1);
         if (nPageNo == 0)
@@ -238,13 +267,18 @@ public partial class VendorList : System.Web.UI.Page
             string state = grdVendorList.DataKeys[e.Row.RowIndex].Values[3].ToString();
             string zip = grdVendorList.DataKeys[e.Row.RowIndex].Values[4].ToString();
             bool bAcitve = Convert.ToBoolean(grdVendorList.DataKeys[e.Row.RowIndex].Values[5]);
+            string clientId = grdVendorList.DataKeys[e.Row.RowIndex].Values[6].ToString();
+
+            Label lblDivision = e.Row.FindControl("lblDivision") as Label;
+            lblDivision.Text = csCommonUtility.GetDivisionName(clientId);
+
             if (bAcitve)
             {
-                e.Row.Cells[5].Text = "Yes";
+                e.Row.Cells[6].Text = "Yes";
             }
             else
             {
-                e.Row.Cells[5].Text = "No";
+                e.Row.Cells[6].Text = "No";
             }
             //  Address
 
@@ -260,7 +294,7 @@ public partial class VendorList : System.Web.UI.Page
                 }
                 strSecion = strSecion.Trim().TrimEnd(',');
 
-                e.Row.Cells[4].Text = strSecion;
+                e.Row.Cells[5].Text = strSecion;
             }
 
             string strAddress = address + "</br>" + city + ", " + state + " " + zip;
@@ -325,6 +359,11 @@ public partial class VendorList : System.Web.UI.Page
         txtSearch.Text = "";
         ddlStatus.SelectedValue = "0";
         ddlSection.SelectedValue = "All";
+        GetVendor(0);
+    }
+
+    protected void ddlDivision_SelectedIndexChanged(object sender, EventArgs e)
+    {
         GetVendor(0);
     }
 }

@@ -35,6 +35,7 @@ public partial class VendorDetails : System.Web.UI.Page
             int nvid = Convert.ToInt32(Request.QueryString.Get("vid"));
             hdnVendorId.Value = nvid.ToString();
 
+            BindDivision();
             BindSections();
             BindVendorSection();
             GetVendorDetails(Convert.ToInt32(hdnVendorId.Value));
@@ -52,6 +53,7 @@ public partial class VendorDetails : System.Web.UI.Page
                 txtPhone.Text = objVendor.phone;
                 txtFax.Text = objVendor.fax;
                 txtEmailAddress.Text = objVendor.email;
+                ddlDivision.SelectedValue = objVendor.client_id.ToString();
 
                 if (_db.vendor_sections.Any(v => v.Vendor_Id == Convert.ToInt32(hdnVendorId.Value)))
                 {
@@ -73,6 +75,23 @@ public partial class VendorDetails : System.Web.UI.Page
             csCommonUtility.SetPagePermission(this.Page, new string[] { "chkIsActive", "chkSections", "btnSubmit", "btnSaveVD" });
         }
 
+    }
+
+    private void BindDivision()
+    {
+        try
+        {
+            string sql = "select id, division_name from division order by division_name";
+            DataTable dt = csCommonUtility.GetDataTable(sql);
+            ddlDivision.DataSource = dt;
+            ddlDivision.DataTextField = "division_name";
+            ddlDivision.DataValueField = "id";
+            ddlDivision.DataBind();
+        }
+        catch (Exception ex)
+        {
+            lblResult.Text = csCommonUtility.GetSystemErrorMessage(ex.ToString());
+        }
     }
     private void BindSections()
     {
@@ -117,7 +136,7 @@ public partial class VendorDetails : System.Web.UI.Page
                 return;
             }
 
-        objVendor.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        objVendor.client_id = Convert.ToInt32(ddlDivision.SelectedValue);
         objVendor.vendor_id = Convert.ToInt32(hdnVendorId.Value);
         objVendor.vendor_name = txtVendorName.Text;
         objVendor.Address = txtAddress.Text;

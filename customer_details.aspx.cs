@@ -145,6 +145,13 @@ public partial class customer_details : System.Web.UI.Page
                 HyperLink2.Attributes.Add("onClick", "DisplayWindow();");
             }
 
+            if (Convert.ToInt32(hdnCustomerId.Value) > 0)
+            {
+                customer custForClientId = _db.customers.Single(c => c.customer_id == Convert.ToInt32(hdnCustomerId.Value));
+                hdnClientId.Value = custForClientId.client_id.ToString();
+            }
+
+
             BindStates();
             BindSalesPerson();
             BindLeadSource();
@@ -183,7 +190,7 @@ public partial class customer_details : System.Web.UI.Page
                 string strAddress = cust.address + ",+" + cust.city + ",+" + cust.state + ",+" + cust.zip_code;
                 hypMap.NavigateUrl = "http://maps.google.com/maps?f=q&source=s_q&hl=en&geocode=&q=" + strAddress;
 
-                hdnClientId.Value = cust.client_id.ToString();
+                
 
                 txtCompany.Text = cust.company;
                 txtCrossStreet.Text = cust.cross_street;
@@ -266,6 +273,10 @@ public partial class customer_details : System.Web.UI.Page
                 GetCallLogInfo(Convert.ToInt32(hdnCustomerId.Value));
                 GetCustomerContactInfo(Convert.ToInt32(hdnCustomerId.Value));
             }
+
+
+
+
             else
             {
 
@@ -455,9 +466,8 @@ public partial class customer_details : System.Web.UI.Page
     }
     private void BindSalesPerson()
     {
-        DataClassesDataContext _db = new DataClassesDataContext();
-        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1  and is_sales=1 and sales_person.client_id =" + Convert.ToInt32(hdnClientId.Value) + " order by sales_person_id asc";
-        List<userinfo> mList = _db.ExecuteQuery<userinfo>(strQ, string.Empty).ToList();
+        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1  and is_sales=1 and sales_person.client_id in ('" + Convert.ToInt32(hdnClientId.Value) + "') order by sales_person_id asc";
+        DataTable mList = csCommonUtility.GetDataTable(strQ);
         ddlSalesPerson.DataSource = mList;
         ddlSalesPerson.DataTextField = "sales_person_name";
         ddlSalesPerson.DataValueField = "sales_person_id";

@@ -18,7 +18,10 @@
                     </td>
                 </tr>
                 <tr>
-                    <td align="left"></td>
+                    <td align="center">
+                        <label><b>Division: </b></label>
+                        <asp:DropDownList ID="ddlDivision" runat="server" Width="200px" OnSelectedIndexChanged="ddlDivision_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+                    </td>
                 </tr>
                 <tr>
                     <td align="center" valign="top" width="80%">
@@ -27,15 +30,16 @@
                             PageSize="200" TabIndex="2" Width="80%"
                             OnRowCommand="grdDisclaimer_RowCommand" OnRowDataBound="grdDisclaimer_RowDataBound">
                             <Columns>
+                                <%-- Cell 0 --%>
                                 <asp:TemplateField HeaderText="Section">
                                     <ItemTemplate>
                                         <asp:DropDownList ID="ddlSectiong" CssClass="secDD" runat="server" Width="250px">
                                         </asp:DropDownList>
-
                                     </ItemTemplate>
                                     <ItemStyle Width="15%" HorizontalAlign="Left" />
                                 </asp:TemplateField>
 
+                                <%-- Cell 1 --%>
                                 <asp:TemplateField HeaderText="Section Header">
                                     <ItemTemplate>
                                         <asp:TextBox ID="txtHeader" runat="server" Text='<%# Eval("section_heading") %>' TextMode="MultiLine" Width="90%" Height="40px"></asp:TextBox>
@@ -43,6 +47,8 @@
                                     <HeaderStyle HorizontalAlign="Center" />
                                     <ItemStyle HorizontalAlign="Left" Width="28%" />
                                 </asp:TemplateField>
+
+                                <%-- Cell 2 --%>
                                 <asp:TemplateField HeaderText="Disclaimer Details">
                                     <ItemTemplate>
                                         <asp:TextBox ID="txtDetails" runat="server" Text='<%# Eval("disclaimer_name") %>' TextMode="MultiLine" Width="95%" Height="40px"></asp:TextBox>
@@ -50,16 +56,31 @@
                                     <HeaderStyle HorizontalAlign="Center" />
                                     <ItemStyle HorizontalAlign="Left" Width="60%" />
                                 </asp:TemplateField>
+
+                                <%-- Cell 3 --%>
                                 <asp:TemplateField HeaderText="Initial Req'red" >
                                     <ItemTemplate>
                                         <asp:CheckBox ID="chkInitial" runat="server" Checked='<%# Eval("IsInitilal") %>' />
                                     </ItemTemplate>
                                     <ItemStyle HorizontalAlign="Center" Width="6%" />
                                 </asp:TemplateField>
+
+                                  <%-- Cell 4 --%>
+                                <asp:TemplateField HeaderText="Division">
+                                    <ItemTemplate>
+                                        <asp:DropDownList ID="ddlDivision" runat="server"></asp:DropDownList>
+                                    </ItemTemplate>
+                                    <HeaderStyle HorizontalAlign="Center" />
+                                    <ItemStyle HorizontalAlign="Left" Width="15%" />
+                                </asp:TemplateField>
+
+                                <%-- Cell 5 --%>
                                 <asp:ButtonField CommandName="Add" Text="Add">
                                     <ItemStyle HorizontalAlign="Center" Width="6%" />
                                 </asp:ButtonField>
-                                <asp:TemplateField>
+
+                                <%-- Cell 6 --%>
+                                <asp:TemplateField Visible="false">
                                     <ItemTemplate>
                                         <asp:ImageButton ID="imgDelete" runat="server" CssClass="iconDeleteCss blindInput" ImageUrl="~/images/icon_delete_16x16.png" ToolTip="Delete" OnClick="DeleteFile" />
                                     </ItemTemplate>
@@ -89,5 +110,16 @@
             </table>
         </ContentTemplate>
     </asp:UpdatePanel>
+    <asp:UpdateProgress ID="UpdateProgress1" runat="server" DisplayAfter="1" AssociatedUpdatePanelID="UpdatePanel1" DynamicLayout="False">
+        <ProgressTemplate>
+            <div class="overlay" />
+            <div class="overlayContent">
+                <p>
+                    Please wait while your data is being processed
+                </p>
+                <img src="images/ajax_loader.gif" alt="Loading" border="1" />
+            </div>
+        </ProgressTemplate>
+    </asp:UpdateProgress>
 </asp:Content>
 

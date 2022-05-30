@@ -245,8 +245,8 @@ public partial class leadlist : System.Web.UI.Page
     private void BindSalesPerson()
     {
         DataClassesDataContext _db = new DataClassesDataContext();
-        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1  and is_sales=1 and sales_person.client_id in (" + hdnClientId.Value + ") order by sales_person_id asc";
-        List<userinfo> mList = _db.ExecuteQuery<userinfo>(strQ, string.Empty).ToList();
+        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1  and is_sales=1 and sales_person.client_id in ('" + hdnClientId.Value + "') order by sales_person_id asc";
+        DataTable mList = csCommonUtility.GetDataTable(strQ);
         ddlSalesRep.DataSource = mList;
         ddlSalesRep.DataTextField = "sales_person_name";
         ddlSalesRep.DataValueField = "sales_person_id";
@@ -294,7 +294,7 @@ public partial class leadlist : System.Web.UI.Page
     {
         DataClassesDataContext _db = new DataClassesDataContext();
         string strQ = "select first_name+' '+last_name AS Superintendent_name,user_id from user_info WHERE role_id = 4";
-        List<userinfo> mList = _db.ExecuteQuery<userinfo>(strQ, string.Empty).ToList();
+        DataTable mList = csCommonUtility.GetDataTable(strQ);
         ddlSuperintendent.DataSource = mList;
         ddlSuperintendent.DataTextField = "Superintendent_name";
         ddlSuperintendent.DataValueField = "user_id";

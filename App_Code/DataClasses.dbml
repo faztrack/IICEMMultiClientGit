@@ -176,18 +176,6 @@
       <Column Name="last_update_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
     </Type>
   </Table>
-  <Table Name="dbo.company_cover_letter" Member="company_cover_letters">
-    <Type Name="company_cover_letter">
-      <Column Name="client_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="cover_letter" Type="System.String" DbType="Text" CanBeNull="true" UpdateCheck="Never" />
-    </Type>
-  </Table>
-  <Table Name="dbo.Company_special_note" Member="Company_special_notes">
-    <Type Name="Company_special_note">
-      <Column Name="client_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="special_note" Type="System.String" DbType="Text" CanBeNull="true" UpdateCheck="Never" />
-    </Type>
-  </Table>
   <Table Name="dbo.company_terms_condition" Member="company_terms_conditions">
     <Type Name="company_terms_condition">
       <Column Name="terms_condition_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -2325,32 +2313,6 @@
       <Column Name="PageName" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
     </Type>
   </Table>
-  <Table Name="dbo.sales_person" Member="sales_persons">
-    <Type Name="sales_person">
-      <Column Name="sales_person_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="first_name" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="last_name" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="address" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="city" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="state" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="zip" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="phone" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="fax" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="email" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="role_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="is_active" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="is_sales" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="is_service" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="is_install" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="create_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="last_login_time" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="client_id" Type="System.String" DbType="VarChar(5)" CanBeNull="true" />
-      <Column Name="com_per" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
-      <Column Name="google_calendar_account" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="google_calendar_id" Type="System.String" DbType="VarChar(150)" CanBeNull="true" />
-      <Column Name="co_com_per" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
-    </Type>
-  </Table>
   <Table Name="dbo.division" Member="divisions">
     <Type Name="division">
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -2431,6 +2393,47 @@
       <Column Name="Notes" Type="System.String" DbType="VarChar(1500)" CanBeNull="true" />
       <Column Name="customer_estimate_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="client_id" Type="System.String" DbType="VarChar(5)" CanBeNull="true" />
+      <Column Name="division_name" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.company_cover_letter" Member="company_cover_letters">
+    <Type Name="company_cover_letter">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="client_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="cover_letter" Type="System.String" DbType="Text" CanBeNull="true" UpdateCheck="Never" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Company_special_note" Member="Company_special_notes">
+    <Type Name="Company_special_note">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="client_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="special_note" Type="System.String" DbType="Text" CanBeNull="true" UpdateCheck="Never" />
+    </Type>
+  </Table>
+  <Table Name="dbo.sales_person" Member="sales_persons">
+    <Type Name="sales_person">
+      <Column Name="sales_person_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="first_name" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="last_name" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="address" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="city" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="state" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="zip" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="phone" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="fax" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="email" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="role_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="is_active" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="is_sales" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="is_service" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="is_install" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="create_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="last_login_time" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="client_id" Type="System.String" DbType="VarChar(5)" CanBeNull="true" />
+      <Column Name="com_per" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="google_calendar_account" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="google_calendar_id" Type="System.String" DbType="VarChar(150)" CanBeNull="true" />
+      <Column Name="co_com_per" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
       <Column Name="division_name" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
     </Type>
   </Table>

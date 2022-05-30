@@ -395,7 +395,8 @@ public partial class user_details : System.Web.UI.Page
             }
         }
         else
-        {///////////////////////
+        {
+            ///////////////////////
             if (_db.user_infos.Where(sp => sp.email == txtEmail.Text).SingleOrDefault() != null)
             {
                 lblResult.Text = csCommonUtility.GetSystemErrorMessage("Email already exist. Please try another Email.");

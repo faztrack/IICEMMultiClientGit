@@ -374,7 +374,7 @@ public partial class PricingMangement : System.Web.UI.Page
 
         Session.Add("MainSection", tmpTable);
         grdMainSection.DataSource = tmpTable;
-        grdMainSection.DataKeyNames = new string[] { "section_id", "parent_id", "section_level", "section_serial", "cssClassName", "client_id" };
+        grdMainSection.DataKeyNames = new string[] { "section_id", "parent_id", "section_level", "section_serial", "cssClassName" };
         grdMainSection.DataBind();
 
     }
@@ -409,20 +409,18 @@ public partial class PricingMangement : System.Web.UI.Page
 
             foreach (GridViewRow di in grdMainSection.Rows)
             {
-                
+                {
                     CheckBox chkIsActive = (CheckBox)di.FindControl("chkIsActive");
                     TextBox txtSectionName = (TextBox)di.FindControl("txtSectionName");
                     Label lblSectionName = (Label)di.FindControl("lblSectionName");
                     DataRow dr = table.Rows[di.RowIndex];
                     DropDownList ddlcssClassName = (DropDownList)di.FindControl("ddlcssClassName");
 
-                    DropDownList ddlDivision = (DropDownList)di.FindControl("ddlDivision");
-
-                CheckBox chkIsExcludeCom0 = (CheckBox)di.FindControl("chkIsExcludeCom0");
+                    CheckBox chkIsExcludeCom0 = (CheckBox)di.FindControl("chkIsExcludeCom0");
                     Label lblAExcludeCom0 = (Label)di.FindControl("lblAExcludeCom0");
 
                     dr["section_id"] = Convert.ToInt32(grdMainSection.DataKeys[di.RowIndex].Values[0]);
-                    dr["client_id"] = ddlDivision.SelectedValue;
+                    dr["client_id"] = 1;
                     dr["section_name"] = txtSectionName.Text;
                     dr["parent_id"] = Convert.ToInt32(grdMainSection.DataKeys[di.RowIndex].Values[1]);
                     dr["section_notes"] = "";
@@ -432,7 +430,7 @@ public partial class PricingMangement : System.Web.UI.Page
                     dr["create_date"] = DateTime.Now;
                     dr["cssClassName"] = ddlcssClassName.SelectedValue;// grdMainSection.DataKeys[di.RowIndex].Values[4].ToString();
                     dr["is_CommissionExclude"] = Convert.ToBoolean(chkIsExcludeCom0.Checked);
-                
+                }
 
             }
             foreach (DataRow dr in table.Rows)
@@ -510,9 +508,6 @@ public partial class PricingMangement : System.Web.UI.Page
         Label lblcssClassName = (Label)grdMainSection.Rows[e.NewEditIndex].FindControl("lblcssClassName");
         DropDownList ddlcssClassName = (DropDownList)grdMainSection.Rows[e.NewEditIndex].FindControl("ddlcssClassName");
 
-        Label lblDivision = (Label)grdMainSection.Rows[e.NewEditIndex].FindControl("lblDivision");
-        DropDownList ddlDivision = (DropDownList)grdMainSection.Rows[e.NewEditIndex].FindControl("ddlDivision");
-
         CheckBox chkIsExcludeCom0 = (CheckBox)grdMainSection.Rows[e.NewEditIndex].FindControl("chkIsExcludeCom0");
         Label lblAExcludeCom0 = (Label)grdMainSection.Rows[e.NewEditIndex].FindControl("lblAExcludeCom0");
         Label lblIsActive = (Label)grdMainSection.Rows[e.NewEditIndex].FindControl("lblIsActive");
@@ -527,9 +522,6 @@ public partial class PricingMangement : System.Web.UI.Page
         lblcssClassName.Visible = false;
         ddlcssClassName.Visible = true;
 
-        lblDivision.Visible = false;
-        ddlDivision.Visible = true;
-
         lblAExcludeCom0.Visible = false;
         chkIsExcludeCom0.Visible = true;
 
@@ -537,7 +529,7 @@ public partial class PricingMangement : System.Web.UI.Page
         lblSectionName.Visible = false;
         chkIsActive.Visible = true;
         lblIsActive.Visible = false;
-        LinkButton btn = (LinkButton)grdMainSection.Rows[e.NewEditIndex].Cells[5].Controls[0];
+        LinkButton btn = (LinkButton)grdMainSection.Rows[e.NewEditIndex].Cells[4].Controls[0];
         btn.Text = "Update";
         btn.CommandName = "Update";
 
@@ -572,8 +564,6 @@ public partial class PricingMangement : System.Web.UI.Page
         DropDownList ddlcssClassName = (DropDownList)grdMainSection.Rows[e.RowIndex].FindControl("ddlcssClassName");
         string strClassName = ddlcssClassName.SelectedItem.Value;
 
-        DropDownList ddlDivision = (DropDownList)grdMainSection.Rows[e.RowIndex].FindControl("ddlDivision");
-
         CheckBox chkIsExcludeCom0 = (CheckBox)grdMainSection.Rows[e.RowIndex].FindControl("chkIsExcludeCom0");
         Label lblAExcludeCom0 = (Label)grdMainSection.Rows[e.RowIndex].FindControl("lblAExcludeCom0");
 
@@ -593,10 +583,10 @@ public partial class PricingMangement : System.Web.UI.Page
             }
 
         }
-        string strQ = "UPDATE sectioninfo SET section_name='" + txtSectionName.Text.Replace("'", "''") + "' , is_active='" + Convert.ToBoolean(chkIsActive.Checked) + "',is_CommissionExclude='" + Convert.ToBoolean(chkIsExcludeCom0.Checked) + "', cssClassName='" + strClassName + "'  WHERE section_id=" + nSectionId ;
+        string strQ = "UPDATE sectioninfo SET section_name='" + txtSectionName.Text.Replace("'", "''") + "' , is_active='" + Convert.ToBoolean(chkIsActive.Checked) + "',is_CommissionExclude='" + Convert.ToBoolean(chkIsExcludeCom0.Checked) + "', cssClassName='" + strClassName + "'  WHERE section_id=" + nSectionId + "  AND client_id=1";
         _db.ExecuteCommand(strQ, string.Empty);
 
-        string strItemQ = "UPDATE sectioninfo SET  client_id = "+ ddlDivision.SelectedValue + ", is_CommissionExclude ='" + Convert.ToBoolean(chkIsExcludeCom0.Checked) + "'  WHERE section_level  =" + nSectionId;
+        string strItemQ = "UPDATE sectioninfo SET is_CommissionExclude ='" + Convert.ToBoolean(chkIsExcludeCom0.Checked) + "'  WHERE section_level  =" + nSectionId + "  AND client_id=1";
         _db.ExecuteCommand(strItemQ, string.Empty);
 
         LoadMainSectionInfo();
@@ -620,10 +610,6 @@ public partial class PricingMangement : System.Web.UI.Page
             DropDownList ddlcssClassName = (DropDownList)e.Row.FindControl("ddlcssClassName");
             string strClassName = grdMainSection.DataKeys[e.Row.RowIndex].Values[4].ToString();
             Label lblcssClassName = (Label)e.Row.FindControl("lblcssClassName");
-            int clientId = Convert.ToInt32(grdMainSection.DataKeys[e.Row.RowIndex].Values[5]);
-            
-            Label lblDivision = (Label)e.Row.FindControl("lblDivision");
-            DropDownList ddlDivision = (DropDownList)e.Row.FindControl("ddlDivision");
 
             ddlcssClassName.SelectedValue = strClassName;
 
@@ -647,21 +633,6 @@ public partial class PricingMangement : System.Web.UI.Page
                 lblIsActive0.Text = "No";
             }
 
-
-            BindDivition(ddlDivision);
-
-
-            DataClassesDataContext _db = new DataClassesDataContext();
-            division dv = _db.divisions.FirstOrDefault(x => x.Id == clientId);
-            if(dv != null)
-            {
-                lblDivision.Text = dv.division_name;
-            }
-
-            
-
-
-
             string str = txtSectionName.Text.Replace("&nbsp;", "");
             if (str == "" || Convert.ToInt32(grdMainSection.DataKeys[Convert.ToInt32(e.Row.RowIndex)].Values[0]) == 0)
             {
@@ -673,17 +644,13 @@ public partial class PricingMangement : System.Web.UI.Page
                 chkIsExcludeCom0.Visible = true;
                 lblAExcludeCom0.Visible = false;
 
-
-                lblDivision.Visible = false;
-                ddlDivision.Visible = true;
-
                 if (strClassName == "")
                 {
                     ddlcssClassName.SelectedValue = "fc-RoyalBlue";
                     ddlcssClassName.CssClass = "fc-RoyalBlue";
                 }
 
-                LinkButton btn = (LinkButton)e.Row.Cells[5].Controls[0];
+                LinkButton btn = (LinkButton)e.Row.Cells[4].Controls[0];
                 btn.Text = "Save";
                 btn.CommandName = "Save";
 
@@ -692,14 +659,6 @@ public partial class PricingMangement : System.Web.UI.Page
 
     }
 
-    private void BindDivition(DropDownList ddlDivision)
-    {
-        DataTable dt = csCommonUtility.GetDataTable("select Id, division_name from division order by division_name");
-        ddlDivision.DataSource = dt;
-        ddlDivision.DataTextField = "division_name";
-        ddlDivision.DataValueField = "id";
-        ddlDivision.DataBind();
-    }
 
     protected void btnAddnewRow_Click(object sender, EventArgs e)
     {
@@ -731,21 +690,16 @@ public partial class PricingMangement : System.Web.UI.Page
 
         foreach (GridViewRow di in grdMainSection.Rows)
         {
-           
+            {
                 CheckBox chkIsActive = (CheckBox)di.FindControl("chkIsActive");
                 TextBox txtSectionName = (TextBox)di.FindControl("txtSectionName");
                 Label lblSectionName = (Label)di.FindControl("lblSectionName");
                 DropDownList ddlcssClassName = (DropDownList)di.FindControl("ddlcssClassName");
                 DataRow dr = table.Rows[di.RowIndex];
 
-                Label lblDivision = (Label)di.FindControl("lblDivision");
-                DropDownList ddlDivision = (DropDownList)di.FindControl("ddlDivision");
-
                 CheckBox chkIsExcludeCom0 = (CheckBox)di.FindControl("chkIsExcludeCom0");
                 Label lblAExcludeCom0 = (Label)di.FindControl("lblAExcludeCom0");
-           
-                 //  ddlcssClassName.Visible = true;
-
+                //  ddlcssClassName.Visible = true;
 
                 dr["section_id"] = Convert.ToInt32(grdMainSection.DataKeys[di.RowIndex].Values[0]);
                 dr["client_id"] = 1;
@@ -760,7 +714,7 @@ public partial class PricingMangement : System.Web.UI.Page
                 dr["is_CommissionExclude"] = Convert.ToBoolean(chkIsExcludeCom0.Checked);
 
 
-            
+            }
 
         }
 
@@ -783,7 +737,7 @@ public partial class PricingMangement : System.Web.UI.Page
 
         Session.Add("MainSection", table);
         grdMainSection.DataSource = table;
-        grdMainSection.DataKeyNames = new string[] { "section_id", "parent_id", "section_level", "section_serial", "cssClassName", "client_id" };
+        grdMainSection.DataKeyNames = new string[] { "section_id", "parent_id", "section_level", "section_serial", "cssClassName" };
         grdMainSection.DataBind();
         lblResult.Text = "";
         lblMainSecResult.Text = "";
@@ -892,7 +846,7 @@ public partial class PricingMangement : System.Web.UI.Page
         }
         Session.Add("SubSection", tmpTable);
         grdSubSection.DataSource = tmpTable;
-        grdSubSection.DataKeyNames = new string[] { "section_id", "parent_id", "section_level", "section_serial", "client_id" };
+        grdSubSection.DataKeyNames = new string[] { "section_id", "parent_id", "section_level", "section_serial" };
         grdSubSection.DataBind();
 
     }
@@ -909,17 +863,16 @@ public partial class PricingMangement : System.Web.UI.Page
 
             foreach (GridViewRow di in grdSubSection.Rows)
             {
-                
+                {
                     CheckBox chkIsActive1 = (CheckBox)di.FindControl("chkIsActive1");
                     TextBox txtSubSectionName = (TextBox)di.FindControl("txtSubSectionName");
                     Label lblSubSectionName = (Label)di.FindControl("lblSubSectionName");
                     CheckBox chkIsExcludeCom1 = (CheckBox)di.FindControl("chkIsExcludeCom1");
                     Label lblAExcludeCom1 = (Label)di.FindControl("lblAExcludeCom1");
                     DataRow dr = table.Rows[di.RowIndex];
-                    DropDownList ddlSubDivision = (DropDownList)di.FindControl("ddlSubDivision");
 
                     dr["section_id"] = Convert.ToInt32(grdSubSection.DataKeys[di.RowIndex].Values[0]);
-                    dr["client_id"] = ddlSubDivision.SelectedValue;
+                    dr["client_id"] = 1;
                     dr["section_name"] = txtSubSectionName.Text;
                     dr["parent_id"] = Convert.ToInt32(grdSubSection.DataKeys[di.RowIndex].Values[1]);
                     dr["section_notes"] = "";
@@ -929,7 +882,7 @@ public partial class PricingMangement : System.Web.UI.Page
                     dr["is_CommissionExclude"] = Convert.ToBoolean(chkIsExcludeCom1.Checked);
                     dr["create_date"] = DateTime.Now;
 
-                
+                }
 
             }
             foreach (DataRow dr in table.Rows)
@@ -1002,12 +955,6 @@ public partial class PricingMangement : System.Web.UI.Page
         CheckBox chkIsActive = (CheckBox)grdSubSection.Rows[e.NewEditIndex].FindControl("chkIsActive1");
         Label lblIsActive = (Label)grdSubSection.Rows[e.NewEditIndex].FindControl("lblIsActive1");
 
-        Label lblSubDivision = (Label)grdSubSection.Rows[e.NewEditIndex].FindControl("lblSubDivision");
-        DropDownList ddlSubDivision = (DropDownList)grdSubSection.Rows[e.NewEditIndex].FindControl("ddlSubDivision");
-
-        lblSubDivision.Visible = false;
-        ddlSubDivision.Visible = true;
-
         chkIsExcludeCom1.Visible = true;
         lblAExcludeCom1.Visible = false;
 
@@ -1015,7 +962,7 @@ public partial class PricingMangement : System.Web.UI.Page
         lblSubSectionName.Visible = false;
         chkIsActive.Visible = true;
         lblIsActive.Visible = false;
-        LinkButton btn = (LinkButton)grdSubSection.Rows[e.NewEditIndex].Cells[4].Controls[0];
+        LinkButton btn = (LinkButton)grdSubSection.Rows[e.NewEditIndex].Cells[3].Controls[0];
         btn.Text = "Update";
         btn.CommandName = "Update";
 
@@ -1030,8 +977,6 @@ public partial class PricingMangement : System.Web.UI.Page
 
         CheckBox chkIsExcludeCom1 = (CheckBox)grdSubSection.Rows[e.RowIndex].FindControl("chkIsExcludeCom1");
         Label lblAExcludeCom1 = (Label)grdSubSection.Rows[e.RowIndex].FindControl("lblAExcludeCom1");
-
-        DropDownList ddlSubDivision = (DropDownList)grdSubSection.Rows[e.RowIndex].FindControl("ddlSubDivision");
 
         int nSectionId = Convert.ToInt32(grdSubSection.DataKeys[Convert.ToInt32(e.RowIndex)].Values[0]);
         int nParentId = Convert.ToInt32(grdSubSection.DataKeys[Convert.ToInt32(e.RowIndex)].Values[1]);
@@ -1051,16 +996,10 @@ public partial class PricingMangement : System.Web.UI.Page
 
         }
 
-
-        //imran
-        //string strQ = "UPDATE sectioninfo SET section_name='" + txtSubSectionName.Text.Replace("'", "''") + "' , is_active='" + Convert.ToBoolean(chkIsActive1.Checked) + "',is_CommissionExclude ='" + Convert.ToBoolean(chkIsExcludeCom1.Checked) + "'  WHERE section_id=" + nSectionId + "  AND client_id=1";
-        //_db.ExecuteCommand(strQ, string.Empty);
-        //string strItemQ = "UPDATE sectioninfo SET is_CommissionExclude ='" + Convert.ToBoolean(chkIsExcludeCom1.Checked) + "'  WHERE parent_id =" + nSectionId + "  AND client_id=1";
-
-        string strQ = "UPDATE sectioninfo SET section_name='" + txtSubSectionName.Text.Replace("'", "''") + "' , is_active='" + Convert.ToBoolean(chkIsActive1.Checked) + "',is_CommissionExclude ='" + Convert.ToBoolean(chkIsExcludeCom1.Checked) + "'  WHERE section_id=" + nSectionId;
+        string strQ = "UPDATE sectioninfo SET section_name='" + txtSubSectionName.Text.Replace("'", "''") + "' , is_active='" + Convert.ToBoolean(chkIsActive1.Checked) + "',is_CommissionExclude ='" + Convert.ToBoolean(chkIsExcludeCom1.Checked) + "'  WHERE section_id=" + nSectionId + "  AND client_id=1";
         _db.ExecuteCommand(strQ, string.Empty);
 
-        string strItemQ = "UPDATE sectioninfo SET client_id = " + ddlSubDivision.SelectedValue + ", is_CommissionExclude ='" + Convert.ToBoolean(chkIsExcludeCom1.Checked) + "'  WHERE parent_id =" + nSectionId ;
+        string strItemQ = "UPDATE sectioninfo SET is_CommissionExclude ='" + Convert.ToBoolean(chkIsExcludeCom1.Checked) + "'  WHERE parent_id =" + nSectionId + "  AND client_id=1";
         _db.ExecuteCommand(strItemQ, string.Empty);
 
         LoadTree();
@@ -1087,21 +1026,6 @@ public partial class PricingMangement : System.Web.UI.Page
             Label lblAExcludeCom1 = (Label)e.Row.FindControl("lblAExcludeCom1");
             CheckBox chkIsActive = (CheckBox)e.Row.FindControl("chkIsActive1");
             Label lblIsActive0 = (Label)e.Row.FindControl("lblIsActive1");
-
-            int clientId = Convert.ToInt32(grdSubSection.DataKeys[e.Row.RowIndex].Values[4]);
-            Label lblSubDivision = (Label)e.Row.FindControl("lblSubDivision");
-            DropDownList ddlSubDivision = (DropDownList)e.Row.FindControl("ddlSubDivision");
-
-            BindDivition(ddlSubDivision);
-
-            DataClassesDataContext _db = new DataClassesDataContext();
-            division dv = _db.divisions.FirstOrDefault(x => x.Id == clientId);
-            if (dv != null)
-            {
-                lblSubDivision.Text = dv.division_name;
-            }
-
-
             if (chkIsExcludeCom1.Checked)
             {
                 lblAExcludeCom1.Text = "Yes";
@@ -1128,10 +1052,7 @@ public partial class PricingMangement : System.Web.UI.Page
                 chkIsExcludeCom1.Visible = true;
                 lblAExcludeCom1.Visible = false;
 
-                lblSubDivision.Visible = false;
-                ddlSubDivision.Visible = true;
-
-                LinkButton btn = (LinkButton)e.Row.Cells[4].Controls[0];
+                LinkButton btn = (LinkButton)e.Row.Cells[3].Controls[0];
                 btn.Text = "Save";
                 btn.CommandName = "Save";
 
@@ -1222,7 +1143,7 @@ public partial class PricingMangement : System.Web.UI.Page
 
         Session.Add("SubSection", table);
         grdSubSection.DataSource = table;
-        grdSubSection.DataKeyNames = new string[] { "section_id", "parent_id", "section_level", "section_serial", "client_id" };
+        grdSubSection.DataKeyNames = new string[] { "section_id", "parent_id", "section_level", "section_serial" };
         grdSubSection.DataBind();
         lblResult.Text = "";
         lblMainSecResult.Text = "";
@@ -1383,7 +1304,7 @@ public partial class PricingMangement : System.Web.UI.Page
         }
         Session.Add("NewItem", tmpTable);
         grdItem_Price.DataSource = tmpTable;
-        grdItem_Price.DataKeyNames = new string[] { "section_id", "parent_id", "section_level", "section_serial", "labor_id", "is_mandatory", "is_CommissionExclude", "client_id" };
+        grdItem_Price.DataKeyNames = new string[] { "section_id", "parent_id", "section_level", "section_serial", "labor_id", "is_mandatory", "is_CommissionExclude" };
         grdItem_Price.DataBind();
 
     }
@@ -1422,13 +1343,10 @@ public partial class PricingMangement : System.Web.UI.Page
 
                     TextBox txtLabor = (TextBox)di.FindControl("txtLabor");
                     Label lblLabor = (Label)di.FindControl("lblLabor");
-
-                    DropDownList ddlItemPriceDivision = (DropDownList)di.FindControl("ddlItemPriceDivision");
-
                     DataRow dr = table.Rows[di.RowIndex];
 
                     dr["section_id"] = Convert.ToInt32(grdItem_Price.DataKeys[di.RowIndex].Values[0]);
-                    dr["client_id"] = ddlItemPriceDivision.SelectedValue;
+                    dr["client_id"] = 1;
                     dr["section_name"] = txtItemName.Text;
                     dr["parent_id"] = Convert.ToInt32(grdItem_Price.DataKeys[di.RowIndex].Values[1]);
                     dr["section_notes"] = "";
@@ -1561,12 +1479,6 @@ public partial class PricingMangement : System.Web.UI.Page
         TextBox txtLabor = (TextBox)grdItem_Price.Rows[e.NewEditIndex].FindControl("txtLabor");
         Label lblLabor = (Label)grdItem_Price.Rows[e.NewEditIndex].FindControl("lblLabor");
 
-        Label lblItemPriceDivision = (Label)grdItem_Price.Rows[e.NewEditIndex].FindControl("lblItemPriceDivision");
-        DropDownList ddlItemPriceDivision = (DropDownList)grdItem_Price.Rows[e.NewEditIndex].FindControl("ddlItemPriceDivision");
-
-        lblItemPriceDivision.Visible = false;
-        ddlItemPriceDivision.Visible = true;
-
 
         chkIsActiveItem.Visible = true;
         lblActive.Visible = false;
@@ -1602,7 +1514,7 @@ public partial class PricingMangement : System.Web.UI.Page
         txtLabor.Visible = true;
         lblLabor.Visible = false;
 
-        LinkButton btn = (LinkButton)grdItem_Price.Rows[e.NewEditIndex].Cells[10].Controls[0];
+        LinkButton btn = (LinkButton)grdItem_Price.Rows[e.NewEditIndex].Cells[9].Controls[0];
         btn.Text = "Update";
         btn.CommandName = "Update";
 
@@ -1632,8 +1544,6 @@ public partial class PricingMangement : System.Web.UI.Page
         TextBox txtRetailMulti = (TextBox)grdItem_Price.Rows[e.RowIndex].FindControl("txtRetailMulti");
         Label lblRetailMulti = (Label)grdItem_Price.Rows[e.RowIndex].FindControl("lblRetailMulti");
 
-        DropDownList ddlItemPriceDivision = (DropDownList)grdItem_Price.Rows[e.RowIndex].FindControl("ddlItemPriceDivision");
-
         TextBox txtLabor = (TextBox)grdItem_Price.Rows[e.RowIndex].FindControl("txtLabor");
         Label lblLabor = (Label)grdItem_Price.Rows[e.RowIndex].FindControl("lblLabor");
         int nLaborId = 1;
@@ -1660,16 +1570,9 @@ public partial class PricingMangement : System.Web.UI.Page
 
         }
 
-        //string strQ = "UPDATE sectioninfo SET section_name='" + txtItemName.Text.Replace("'", "''") + "' , is_mandatory ='" + Convert.ToBoolean(chkIsMandatory.Checked) + "',is_CommissionExclude ='" + Convert.ToBoolean(chkIsExcludeCom.Checked) + "',  is_active='" + Convert.ToBoolean(chkIsActiveItem.Checked) + "'  WHERE section_id=" + nSectionId + "  AND client_id=1";
-        //_db.ExecuteCommand(strQ, string.Empty);
-        //string strQItem = "UPDATE item_price SET measure_unit='" + txtMeasureUnit.Text + "', item_cost=" + Convert.ToDecimal(txtCost.Text) + ", minimum_qty=" + Convert.ToDecimal(txtMinQty.Text) + ", retail_multiplier=" + Convert.ToDecimal(txtRetailMulti.Text) + ", labor_rate=" + Convert.ToDecimal(txtLabor.Text) + ", update_time='" + DateTime.Now + "',labor_id=" + nLaborId + " WHERE item_id =" + nSectionId + " AND client_id=1";
-
-
-        string strQ = "UPDATE sectioninfo SET section_name='" + txtItemName.Text.Replace("'", "''") + "' , is_mandatory ='" + Convert.ToBoolean(chkIsMandatory.Checked) + "',is_CommissionExclude ='" + Convert.ToBoolean(chkIsExcludeCom.Checked) + "',  is_active='" + Convert.ToBoolean(chkIsActiveItem.Checked) + "'  WHERE section_id=" + nSectionId;
+        string strQ = "UPDATE sectioninfo SET section_name='" + txtItemName.Text.Replace("'", "''") + "' , is_mandatory ='" + Convert.ToBoolean(chkIsMandatory.Checked) + "',is_CommissionExclude ='" + Convert.ToBoolean(chkIsExcludeCom.Checked) + "',  is_active='" + Convert.ToBoolean(chkIsActiveItem.Checked) + "'  WHERE section_id=" + nSectionId + "  AND client_id=1";
         _db.ExecuteCommand(strQ, string.Empty);
-
-        string strQItem = "UPDATE item_price SET client_id = " + ddlItemPriceDivision.SelectedValue + ", measure_unit='" + txtMeasureUnit.Text + "', item_cost=" + Convert.ToDecimal(txtCost.Text) + ", minimum_qty=" + Convert.ToDecimal(txtMinQty.Text) + ", retail_multiplier=" + Convert.ToDecimal(txtRetailMulti.Text) + ", labor_rate=" + Convert.ToDecimal(txtLabor.Text) + ", update_time='" + DateTime.Now + "',labor_id=" + nLaborId + " WHERE item_id =" + nSectionId;
-
+        string strQItem = "UPDATE item_price SET measure_unit='" + txtMeasureUnit.Text + "', item_cost=" + Convert.ToDecimal(txtCost.Text) + ", minimum_qty=" + Convert.ToDecimal(txtMinQty.Text) + ", retail_multiplier=" + Convert.ToDecimal(txtRetailMulti.Text) + ", labor_rate=" + Convert.ToDecimal(txtLabor.Text) + ", update_time='" + DateTime.Now + "',labor_id=" + nLaborId + " WHERE item_id =" + nSectionId + " AND client_id=1";
         _db.ExecuteCommand(strQItem, string.Empty);
 
         LoadItemInfo();
@@ -1712,20 +1615,6 @@ public partial class PricingMangement : System.Web.UI.Page
 
             TextBox txtLabor = (TextBox)e.Row.FindControl("txtLabor");
             Label lblLabor = (Label)e.Row.FindControl("lblLabor");
-
-            int clientId = Convert.ToInt32(grdItem_Price.DataKeys[e.Row.RowIndex].Values[7]);
-
-            Label lblItemPriceDivision = (Label)e.Row.FindControl("lblItemPriceDivision");
-            DropDownList ddlItemPriceDivision = (DropDownList)e.Row.FindControl("ddlItemPriceDivision");
-
-            BindDivition(ddlItemPriceDivision);
-
-            DataClassesDataContext _db = new DataClassesDataContext();
-            division dv = _db.divisions.FirstOrDefault(x => x.Id == clientId);
-            if (dv != null)
-            {
-                lblItemPriceDivision.Text = dv.division_name;
-            }
 
 
             if (chkIsMandatory.Checked)
@@ -1776,9 +1665,6 @@ public partial class PricingMangement : System.Web.UI.Page
                 txtMeasureUnit.Visible = true;
                 lblMeasureUnit.Visible = false;
 
-                lblItemPriceDivision.Visible = false;
-                ddlItemPriceDivision.Visible = true;
-
                 txtCost.Visible = true;
                 lblCost.Visible = false;
 
@@ -1791,7 +1677,7 @@ public partial class PricingMangement : System.Web.UI.Page
                 txtLabor.Visible = true;
                 lblLabor.Visible = false;
 
-                LinkButton btn = (LinkButton)e.Row.Cells[10].Controls[0];
+                LinkButton btn = (LinkButton)e.Row.Cells[9].Controls[0];
                 btn.Text = "Save";
                 btn.CommandName = "Save";
 
@@ -1806,10 +1692,9 @@ public partial class PricingMangement : System.Web.UI.Page
             e.Row.Cells[3].Attributes.Add("title", "Minimum quantity to be sold");
             e.Row.Cells[4].Attributes.Add("title", "This determines the margin for your item");
             e.Row.Cells[5].Attributes.Add("title", "Hourly labor cost");
-            e.Row.Cells[6].Attributes.Add("title", "");
-            e.Row.Cells[7].Attributes.Add("title", "Mark 'Yes' if you want an item to be selectable during an estimate");
-            e.Row.Cells[8].Attributes.Add("title", "Mark 'Yes' if you want an item to be a mandatory part of the estimate for this section");
-            e.Row.Cells[9].Attributes.Add("title", "Mark 'Yes' if you want the sales commission to be excluded for an item");            
+            e.Row.Cells[6].Attributes.Add("title", "Mark 'Yes' if you want an item to be selectable during an estimate");
+            e.Row.Cells[7].Attributes.Add("title", "Mark 'Yes' if you want an item to be a mandatory part of the estimate for this section");
+            e.Row.Cells[8].Attributes.Add("title", "Mark 'Yes' if you want the sales commission to be excluded for an item");            
         }
 
     }
@@ -1939,7 +1824,7 @@ public partial class PricingMangement : System.Web.UI.Page
 
         Session.Add("NewItem", table);
         grdItem_Price.DataSource = table;
-        grdItem_Price.DataKeyNames = new string[] { "section_id", "parent_id", "section_level", "section_serial", "labor_id", "is_mandatory", "is_CommissionExclude", "client_id" }; ;
+        grdItem_Price.DataKeyNames = new string[] { "section_id", "parent_id", "section_level", "section_serial", "labor_id", "is_mandatory", "is_CommissionExclude" };
         grdItem_Price.DataBind();
         lblResult.Text = "";
         lblMainSecResult.Text = "";
@@ -2094,7 +1979,7 @@ public partial class PricingMangement : System.Web.UI.Page
         Session["NewItem"] = dv.ToTable();
         dtItems = (DataTable)Session["NewItem"];
         grdItem_Price.DataSource = dtItems;
-        grdItem_Price.DataKeyNames = new string[] { "section_id", "parent_id", "section_level", "section_serial", "labor_id", "is_mandatory", "is_CommissionExclude", "client_id" };
+        grdItem_Price.DataKeyNames = new string[] { "section_id", "parent_id", "section_level", "section_serial", "labor_id", "is_mandatory", "is_CommissionExclude" };
         grdItem_Price.DataBind();
 
     }
@@ -2118,7 +2003,7 @@ public partial class PricingMangement : System.Web.UI.Page
         Session["SubSection"] = dv.ToTable();
         dtSubSection = (DataTable)Session["SubSection"];
         grdSubSection.DataSource = dtSubSection;
-        grdSubSection.DataKeyNames = new string[] { "section_id", "parent_id", "section_level", "section_serial", "client_id" };
+        grdSubSection.DataKeyNames = new string[] { "section_id", "parent_id", "section_level", "section_serial" };
         grdSubSection.DataBind();
 
     }
@@ -2143,8 +2028,7 @@ public partial class PricingMangement : System.Web.UI.Page
         dtMainSection = (DataTable)Session["MainSection"];
 
         grdMainSection.DataSource = dtMainSection;
-        
-        grdMainSection.DataKeyNames = new string[] { "section_id", "parent_id", "section_level", "section_serial", "cssClassName", "client_id" };
+        grdMainSection.DataKeyNames = new string[] { "section_id", "parent_id", "section_level", "section_serial" };
         grdMainSection.DataBind();
 
     }
@@ -2610,19 +2494,6 @@ public partial class PricingMangement : System.Web.UI.Page
         {
             lblResult.Text = csCommonUtility.GetSystemErrorMessage(ex.Message);
             lblItemResult.Text = csCommonUtility.GetSystemErrorMessage(ex.Message);
-        }
-    }
-
-    protected void grdPriceUpdate_RowDataBound(object sender, GridViewRowEventArgs e)
-    {
-        if (e.Row.RowType == DataControlRowType.DataRow)
-        {
-            Label lblPriceUpdateDivision = (Label)e.Row.FindControl("lblPriceUpdateDivision");
-            DropDownList ddlPriceUpdateDivision = (DropDownList)e.Row.FindControl("ddlPriceUpdateDivision");
-            BindDivition(ddlPriceUpdateDivision);
-
-            lblPriceUpdateDivision.Visible = false;
-            ddlPriceUpdateDivision.Visible = true;
         }
     }
 }

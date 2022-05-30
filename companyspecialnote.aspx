@@ -16,8 +16,14 @@
                     </td>
                 </tr>
                 <tr>
+                    <td align="left" style="padding-left:150px">
+                        <label><b>Division: </b></label>
+                        <asp:DropDownList ID="ddlDivision" runat="server" Width="200px" OnSelectedIndexChanged="ddlDivision_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+                    </td>
+                </tr>
+                <tr>
                     <td>
-                        <table style="padding-left:20px;" cellpadding="0" cellspacing="0" width="680px">
+                        <table style="padding-left: 20px;" cellpadding="0" cellspacing="0" width="680px">
                             <tr align="right">
                                 <td align="left">Write your special notes below:(500 Chars Max)
                                     <asp:TextBox
