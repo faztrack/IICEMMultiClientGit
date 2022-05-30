@@ -101,7 +101,7 @@ public partial class user_details : System.Web.UI.Page
 
 
 
-                        if (uinfo.ViewPassword!=null && uinfo.ViewPassword!="")
+                    if (uinfo.ViewPassword!=null && uinfo.ViewPassword!="")
                     {
                         txtPassword.Attributes.Add("value", uinfo.ViewPassword);
                         txtConfirmPass.Attributes.Add("value", uinfo.ViewPassword);
@@ -667,7 +667,7 @@ public partial class user_details : System.Web.UI.Page
                 }
                 else
                 {
-                    string strQ = "UPDATE sales_person SET first_name='" + obj.first_name + "',last_name='" + obj.last_name + "',address='" + obj.address + "',city='" + obj.city + "', state='" + obj.state + "', zip='" + obj.zip + "',phone='" + obj.phone + "',fax='" + obj.fax + "',email='" + obj.email + "', role_id=" + obj.role_id + ", is_active='" + obj.is_active + "',is_sales='" + obj.is_sales + "',is_service='" + obj.is_service + "',is_install='" + obj.is_install + "',client_id=" + obj.client_id + ", com_per =" + Convert.ToDecimal(txtCom.Text.Replace("%", "").Replace("$", "")) + ", co_com_per =" + Convert.ToDecimal(txtCOCom.Text.Replace("%", "").Replace("$", "")) + "  WHERE sales_person_id =" + obj.sales_person_id + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                    string strQ = "UPDATE sales_person SET first_name='" + obj.first_name + "',last_name='" + obj.last_name + "',address='" + obj.address + "',division_name='" + selectDivisionName.Trim().TrimEnd(',') + "',city='" + obj.city + "', state='" + obj.state + "', zip='" + obj.zip + "',phone='" + obj.phone + "',fax='" + obj.fax + "',email='" + obj.email + "', role_id=" + obj.role_id + ", is_active='" + obj.is_active + "',is_sales='" + obj.is_sales + "',is_service='" + obj.is_service + "',is_install='" + obj.is_install + "',client_id=" + selectedvalue.Trim().TrimEnd(',') + ", com_per =" + Convert.ToDecimal(txtCom.Text.Replace("%", "").Replace("$", "")) + ", co_com_per =" + Convert.ToDecimal(txtCOCom.Text.Replace("%", "").Replace("$", "")) + "  WHERE sales_person_id =" + obj.sales_person_id;
                     _db.ExecuteCommand(strQ, string.Empty);
 
                 }
@@ -719,7 +719,7 @@ public partial class user_details : System.Web.UI.Page
                 }
                 else
                 {
-                    string strQ = "UPDATE sales_person SET first_name='" + obj.first_name + "',last_name='" + obj.last_name + "',address='" + obj.address + "',city='" + obj.city + "', state='" + obj.state + "', zip='" + obj.zip + "',phone='" + obj.phone + "',fax='" + obj.fax + "',email='" + obj.email + "', role_id=" + obj.role_id + ", is_active='" + obj.is_active + "',is_sales='" + obj.is_sales + "',is_service='" + obj.is_service + "',is_install='" + obj.is_install + "',client_id= '" + obj.client_id + "' , com_per =" + Convert.ToDecimal(txtCom.Text.Replace("%", "").Replace("$", "")) + ",  co_com_per =" + Convert.ToDecimal(txtCOCom.Text.Replace("%", "").Replace("$", "")) + "   WHERE sales_person_id =" + obj.sales_person_id + " AND client_id= '" + selectedvalue.TrimEnd(',')+"'";
+                    string strQ = "UPDATE sales_person SET first_name='" + obj.first_name + "',last_name='" + obj.last_name + "',address='" + obj.address + "',division_name='" + selectDivisionName.Trim().TrimEnd(',') + "',city='" + obj.city + "', state='" + obj.state + "', zip='" + obj.zip + "',phone='" + obj.phone + "',fax='" + obj.fax + "',email='" + obj.email + "', role_id=" + obj.role_id + ", is_active='" + obj.is_active + "',is_sales='" + obj.is_sales + "',is_service='" + obj.is_service + "',is_install='" + obj.is_install + "',client_id= '" + selectedvalue.Trim().TrimEnd(',') + "' , com_per =" + Convert.ToDecimal(txtCom.Text.Replace("%", "").Replace("$", "")) + ",  co_com_per =" + Convert.ToDecimal(txtCOCom.Text.Replace("%", "").Replace("$", "")) + "   WHERE sales_person_id =" + obj.sales_person_id;
                     _db.ExecuteCommand(strQ, string.Empty);
 
                 }

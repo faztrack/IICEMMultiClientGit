@@ -70,6 +70,11 @@
                                 <td align="left" valign="middle">
                                     <table>
                                         <tr>
+                                            <td><b>Division: </b></td>
+                                            <td>
+                                                <asp:DropDownList ID="ddlDivision" runat="server" OnSelectedIndexChanged="ddlDivision_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+                                            </td>
+
                                             <td><b>Status:</b></td>
                                             <td>
                                                 <asp:DropDownList ID="ddlStatus" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlStatus_SelectedIndexChanged">
@@ -127,6 +132,10 @@
                                                 <ItemStyle HorizontalAlign="Left" />
                                             </asp:BoundField>
                                             <asp:BoundField DataField="address" HeaderText="Address">
+                                                <HeaderStyle HorizontalAlign="Left" />
+                                                <ItemStyle HorizontalAlign="Left" />
+                                            </asp:BoundField>
+                                            <asp:BoundField DataField="division_name" HeaderText="Division">
                                                 <HeaderStyle HorizontalAlign="Left" />
                                                 <ItemStyle HorizontalAlign="Left" />
                                             </asp:BoundField>

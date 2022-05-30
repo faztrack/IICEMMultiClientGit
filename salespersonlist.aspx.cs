@@ -98,9 +98,23 @@ public partial class salespersonlist : System.Web.UI.Page
             DataClassesDataContext _db = new DataClassesDataContext();
             List<sales_person> salesList = _db.sales_persons.ToList();
             Session.Add("sSearch", salesList);
+
+            BindDivision();
             GetSalesPersons(0);
         }
     }
+
+    private void BindDivision()
+    {
+        string sql = "select id, division_name from division order by division_name";
+        DataTable dt = csCommonUtility.GetDataTable(sql);
+        ddlDivision.DataSource = dt;
+        ddlDivision.DataTextField = "division_name";
+        ddlDivision.DataValueField = "id";
+        ddlDivision.DataBind();
+        ddlDivision.Items.Insert(0, "All");        
+    }
+
     protected void GetSalesPersons(int nPageNo)
     {
         DataClassesDataContext _db = new DataClassesDataContext();
@@ -155,15 +169,23 @@ public partial class salespersonlist : System.Web.UI.Page
             strCondition = "Where " + strCondition;
         }
 
+        if(ddlDivision.SelectedItem.Text != "All")
+        {
+            strCondition += " AND division_name like '%" + ddlDivision.SelectedItem.Text + "%'";
+        }
+
         string strQ = string.Empty;
-        strQ = "SELECT sales_person_id, first_name, last_name, address, city, state, zip, phone, fax, email, " +
+        strQ = "SELECT sales_person_id, first_name, last_name, address, division_name, city, state, zip, phone, fax, email, " +
                 " role_id, is_active, is_sales, is_service, is_install,  " +
                 " create_date, last_login_time, client_id, com_per, " +
                 " google_calendar_account, google_calendar_id, co_com_per " +
                 " FROM  sales_person " +
                 " " + strCondition + " ORDER BY first_name ";
 
-        IEnumerable<SalesPersonModel> sList = _db.ExecuteQuery<SalesPersonModel>(strQ, string.Empty).ToList();
+        //IEnumerable<SalesPersonModel> sList = _db.ExecuteQuery<SalesPersonModel>(strQ, string.Empty).ToList();
+
+        DataTable dt = csCommonUtility.GetDataTable(strQ);
+
         if (ddlItemPerPage.SelectedValue != "4")
         {
             grdSalesPersonList.PageSize = Convert.ToInt32(ddlItemPerPage.SelectedValue);
@@ -172,7 +194,7 @@ public partial class salespersonlist : System.Web.UI.Page
         {
             grdSalesPersonList.PageSize = 200;
         }
-        grdSalesPersonList.DataSource = sList;
+        grdSalesPersonList.DataSource = dt;
         grdSalesPersonList.DataBind();
 
         lblCurrentPageNo.Text = Convert.ToString(nPageNo + 1);
@@ -223,10 +245,10 @@ public partial class salespersonlist : System.Web.UI.Page
     {
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
-            if (Convert.ToBoolean(e.Row.Cells[4].Text) == true)
-                e.Row.Cells[4].Text = "Yes";
+            if (Convert.ToBoolean(e.Row.Cells[5].Text) == true)
+                e.Row.Cells[5].Text = "Yes";
             else
-                e.Row.Cells[4].Text = "No";
+                e.Row.Cells[5].Text = "No";
         }
     }
     protected void ddlItemPerPage_SelectedIndexChanged(object sender, EventArgs e)
@@ -268,6 +290,11 @@ public partial class salespersonlist : System.Web.UI.Page
     protected void lnkViewAll_Click(object sender, EventArgs e)
     {
         txtSearch.Text = "";
+        GetSalesPersons(0);
+    }
+
+    protected void ddlDivision_SelectedIndexChanged(object sender, EventArgs e)
+    {
         GetSalesPersons(0);
     }
 }
