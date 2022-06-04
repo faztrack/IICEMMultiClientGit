@@ -160,6 +160,7 @@ public partial class leadlist : System.Web.UI.Page
                 userinfo oUser = (userinfo)Session["oUser"];
                 hdnEmailType.Value = oUser.EmailIntegrationType.ToString();
                 hdnClientId.Value = oUser.client_id.ToString();
+                hdnDivisionName.Value = oUser.divisionName.ToString();
             }
 
             if (Page.User.IsInRole("le01") == false)
@@ -242,18 +243,22 @@ public partial class leadlist : System.Web.UI.Page
         {
         }
     }
+
+
+   
+
+
     private void BindSalesPerson()
-    {
-        DataClassesDataContext _db = new DataClassesDataContext();
-        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1  and is_sales=1 and sales_person.client_id in ('" + hdnClientId.Value + "') order by sales_person_id asc";
+    {       
+
+        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1 and is_sales=1 " + csCommonUtility.GetSalesPersonSql(hdnDivisionName.Value) + " order by sales_person_id asc";
+
         DataTable mList = csCommonUtility.GetDataTable(strQ);
         ddlSalesRep.DataSource = mList;
         ddlSalesRep.DataTextField = "sales_person_name";
         ddlSalesRep.DataValueField = "sales_person_id";
         ddlSalesRep.DataBind();
         ddlSalesRep.Items.Insert(0, "All");
-
-
 
     }
 
@@ -273,11 +278,15 @@ public partial class leadlist : System.Web.UI.Page
 
     private void BindLeadSource()
     {
-        DataClassesDataContext _db = new DataClassesDataContext();
-        var item = from l in _db.lead_sources
-                   where l.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && l.is_active == Convert.ToBoolean(1)
-                   orderby l.lead_name
-                   select l;
+        //DataClassesDataContext _db = new DataClassesDataContext();
+        //var item = from l in _db.lead_sources
+        //           where l.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && l.is_active == Convert.ToBoolean(1)
+        //           orderby l.lead_name
+        //           select l;
+
+
+        string sql = "select * from lead_source where client_id in (" + hdnClientId.Value + ") AND is_active = 1";
+        DataTable item = csCommonUtility.GetDataTable(sql);
 
         ddlLeadSource.DataSource = item;
         ddlLeadSource.DataTextField = "lead_name";
@@ -1048,6 +1057,7 @@ public partial class leadlist : System.Web.UI.Page
         ddlStatus.SelectedValue = "2";
         // ddlStatus.SelectedIndex = -1;
         ddlSalesRep.SelectedIndex = -1;
+        ddlDivision.SelectedIndex = 0;
         ddlLeadSource.SelectedIndex = -1;
         ddlSuperintendent.SelectedIndex = -1;
         Session.Remove("LeadId");

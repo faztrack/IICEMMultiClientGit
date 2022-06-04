@@ -53,7 +53,7 @@ public partial class change_order_worksheet_readonly : System.Web.UI.Page
             int nChEstid = Convert.ToInt32(Request.QueryString.Get("coestid"));
             hdnChEstId.Value = nChEstid.ToString();
             DataClassesDataContext _db = new DataClassesDataContext();
-            company_profile com = _db.company_profiles.SingleOrDefault(cp => cp.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+            company_profile com = _db.company_profiles.SingleOrDefault(cp => cp.client_id == Convert.ToInt32(hdnClientId.Value));
             if (com != null)
             {
                 hdnChangeOrderView.Value = com.ChangeQtyView.ToString();
@@ -889,7 +889,7 @@ public partial class change_order_worksheet_readonly : System.Web.UI.Page
         ReportDocument rptFile = new ReportDocument();
         string strReportPath = "";
         company_profile oCom = new company_profile();
-        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(hdnClientId.Value));
         if (oCom != null)
         {
             if (oCom.ChangeQtyView == 1)
@@ -1076,7 +1076,7 @@ public partial class change_order_worksheet_readonly : System.Web.UI.Page
         }
 
         company_profile oCom = new company_profile();
-        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(hdnClientId.Value));
         string strCompanyName = oCom.company_name;
         string strComPhone = oCom.phone;
         string strComFax = oCom.fax;

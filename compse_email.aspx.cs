@@ -72,7 +72,7 @@ public partial class compse_email : System.Web.UI.Page
                 hdnClientId.Value = cust.client_id.ToString();
 
                 company_profile com = new company_profile();
-                if (_db.company_profiles.Where(cp => cp.client_id == 1).SingleOrDefault() != null)
+                if (_db.company_profiles.Where(cp => cp.client_id == Convert.ToInt32(hdnClientId.Value)).SingleOrDefault() != null)
                 {
                     com = _db.company_profiles.Single(cp => cp.client_id == 1);
 
@@ -124,7 +124,7 @@ public partial class compse_email : System.Web.UI.Page
         }
 
         company_profile oCom = new company_profile();
-        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(hdnClientId.Value));
         string strCompanyName = oCom.company_name;
         string strComPhone = oCom.phone;
         string strComFax = oCom.fax;

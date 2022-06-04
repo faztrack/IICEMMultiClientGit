@@ -42,7 +42,7 @@ public partial class lead_details : System.Web.UI.Page
         else
         {
             userinfo oUser = (userinfo)Session["oUser"];
-            hdnEmailType.Value = oUser.EmailIntegrationType.ToString();
+            hdnEmailType.Value = oUser.EmailIntegrationType.ToString();           
 
         }
         string test = hdnCustomerId.Value;
@@ -68,7 +68,11 @@ public partial class lead_details : System.Web.UI.Page
 
             BindDivision();
 
+
             hdnClientId.Value = ddlDivision.SelectedValue;
+
+
+
 
             if (Convert.ToInt32(hdnCustomerId.Value) > 0)
             {
@@ -158,7 +162,7 @@ public partial class lead_details : System.Web.UI.Page
 
             BindStates();
             BindLeadStatus();
-            BindSalesPerson();
+            
             BindLeadSource();
             
 
@@ -277,6 +281,7 @@ public partial class lead_details : System.Web.UI.Page
                 Session.Remove("LeadId");
             }
 
+            BindSalesPerson();
 
             csCommonUtility.SetPagePermission(this.Page, new string[] { "btnSubmit", "rdbEstimateIsActive", "btnUpload", "HyperLink1", "HyperLink2", "btnSaveCall", "btnSalesCalendar", "btnSaveContact", "ddlLeadSource", "ddlSalesPerson", "ddlLeadStatus", "hypMap", "btnImageGallery" });
 
@@ -462,11 +467,15 @@ public partial class lead_details : System.Web.UI.Page
         ddlLeadStatus.DataValueField = "lead_status_id";
         ddlLeadStatus.DataBind();
     }
-    private void BindSalesPerson()
+    private void BindSalesPerson() 
     {
-       
         DataClassesDataContext _db = new DataClassesDataContext();
-        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1  and is_sales=1 and sales_person.client_id in ('" + Convert.ToInt32(hdnClientId.Value) + "') order by sales_person_id asc";
+
+        division dv = _db.divisions.FirstOrDefault(x => x.Id == Convert.ToInt32(hdnClientId.Value));
+        string divisionName = dv.division_name;
+
+        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1 and is_sales=1 " + csCommonUtility.GetSalesPersonSql(divisionName) + " order by sales_person_id asc";
+
         DataTable mList = csCommonUtility.GetDataTable(strQ);
         ddlSalesPerson.DataSource = mList;
         ddlSalesPerson.DataTextField = "sales_person_name";
@@ -513,7 +522,7 @@ public partial class lead_details : System.Web.UI.Page
         Response.Redirect("leadlist.aspx");
     }
 
-    public void SaveCustomerData()
+    public void SaveCustomerData() 
     {
         DataClassesDataContext _db = new DataClassesDataContext();
         if (Request.QueryString.Get("cid") == null)
@@ -529,8 +538,10 @@ public partial class lead_details : System.Web.UI.Page
        
         customer cust = new customer();
         int nCount = GetCountCustomer();
-        if (Convert.ToInt32(hdnCustomerId.Value) > 0)
+        if(Convert.ToInt32(hdnCustomerId.Value) > 0)
             cust = _db.customers.Single(c => c.customer_id == Convert.ToInt32(hdnCustomerId.Value));
+
+
 
         txtPhone.Text = csCommonUtility.GetPhoneFormat(txtPhone.Text.Trim());
         txtFax.Text = csCommonUtility.GetPhoneFormat(txtFax.Text.Trim());
@@ -635,6 +646,11 @@ public partial class lead_details : System.Web.UI.Page
             Session.Add("LeadId", hdnCustomerId.Value);
 
         }
+
+
+
+
+
         #region Schedule Calendar Block Code
         /* userinfo objUName = (userinfo)Session["oUser"];
         string strUName = objUName.first_name;
@@ -788,14 +804,24 @@ public partial class lead_details : System.Web.UI.Page
                     xdoc = XDocument.Load(response.GetResponseStream());
 
                     XElement result = xdoc.Element("GeocodeResponse").Element("result");
-                    XElement locationElement = result.Element("geometry").Element("location");
-                    XElement Latitude = locationElement.Element("lat");
-                    XElement Longitude = locationElement.Element("lng");
+                    try
+                    {
+                        XElement locationElement = result.Element("geometry").Element("location");
+                        XElement Latitude = locationElement.Element("lat");
+                        XElement Longitude = locationElement.Element("lng");
+                   
+              
+                   
 
                     string lat = (string)Latitude.Value;
                     string lang = (string)Longitude.Value;
                     Cuustomer.Latitude = lat;
                     Cuustomer.Longitude = lang;
+                    }
+                    catch
+                    {
+
+                    }
 
                 }
                 catch
@@ -952,7 +978,7 @@ public partial class lead_details : System.Web.UI.Page
         DataClassesDataContext _db = new DataClassesDataContext();
 
         company_profile oCom = new company_profile();
-        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(ddlDivision.SelectedValue));
         decimal totalwithtax = 0;
         decimal project_subtotal = 0;
         decimal tax_amount = 0;
@@ -1251,7 +1277,7 @@ public partial class lead_details : System.Web.UI.Page
         DataClassesDataContext _db = new DataClassesDataContext();
 
         company_profile oCom = new company_profile();
-        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(ddlDivision.SelectedValue));
         decimal totalwithtax = 0;
         decimal project_subtotal = 0;
         decimal tax_amount = 0;
@@ -2901,6 +2927,7 @@ public partial class lead_details : System.Web.UI.Page
 
     protected void ddlDivision_SelectedIndexChanged(object sender, EventArgs e)
     {
+        hdnClientId.Value = ddlDivision.SelectedValue;
         BindSalesPerson();
     }
 }

@@ -69,7 +69,8 @@ public partial class ChangeOrderListAll : System.Web.UI.Page
             }
             else
             {
-                hdnClientId.Value = ((userinfo)Session["oUser"]).client_id.ToString();
+                hdnClientId.Value = ((userinfo)Session["oUser"]).client_id.ToString(); 
+                hdnDivisionName.Value = ((userinfo)Session["oUser"]).divisionName;
             }
             if (Page.User.IsInRole("GC01") == false)
             {
@@ -99,10 +100,10 @@ public partial class ChangeOrderListAll : System.Web.UI.Page
                 nLeadSourceId = Convert.ToInt32(Session["sSalePerson"]);
             }
 
-            if (nLeadSourceId > 0)
-                ddlSalesRep.SelectedValue = nLeadSourceId.ToString();
-            else
-                ddlSalesRep.SelectedIndex = -1;
+            //if (nLeadSourceId > 0)
+            //    ddlSalesRep.SelectedValue = nLeadSourceId.ToString();
+            //else
+            //    ddlSalesRep.SelectedIndex = -1;
 
             txtSearch.Text = "";
 
@@ -118,9 +119,9 @@ public partial class ChangeOrderListAll : System.Web.UI.Page
 
     private void BindSalesPerson()
     {
-        DataClassesDataContext _db = new DataClassesDataContext();
-        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1  and is_sales=1 and sales_person.client_id in (" + hdnClientId.Value + ") order by sales_person_id asc";
-        List<userinfo> mList = _db.ExecuteQuery<userinfo>(strQ, string.Empty).ToList();
+        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1 and is_sales=1 " + csCommonUtility.GetSalesPersonSql(hdnDivisionName.Value) + " order by sales_person_id asc";
+
+        DataTable mList = csCommonUtility.GetDataTable(strQ);
         ddlSalesRep.DataSource = mList;
         ddlSalesRep.DataTextField = "sales_person_name";
         ddlSalesRep.DataValueField = "sales_person_id";

@@ -73,9 +73,9 @@ public partial class contract_email : System.Web.UI.Page
                 hdnClientId.Value = cust.client_id.ToString();
 
                 company_profile com = new company_profile();
-                if (_db.company_profiles.Where(cp => cp.client_id == 1).SingleOrDefault() != null)
+                if (_db.company_profiles.Where(cp => cp.client_id == Convert.ToInt32(hdnClientId.Value)).SingleOrDefault() != null)
                 {
-                    com = _db.company_profiles.Single(cp => cp.client_id == 1);
+                    com = _db.company_profiles.Single(cp => cp.client_id == Convert.ToInt32(hdnClientId.Value));
 
                     txtCc.Text = com.email;
 

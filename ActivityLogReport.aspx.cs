@@ -19,7 +19,11 @@ public partial class ActivityLogReport : System.Web.UI.Page
             if (Session["oUser"] == null)
             {
                 Response.Redirect(ConfigurationManager.AppSettings["LoginPage"].ToString());
-            }            
+            }
+            else
+            {
+                hdnDivisionName.Value = ((userinfo)Session["oUser"]).divisionName;
+            }
             
             if (Page.User.IsInRole("rpt008") == false)
             {
@@ -34,25 +38,14 @@ public partial class ActivityLogReport : System.Web.UI.Page
     private void BindSalesPersons()
     {
 
-        string nclient_id = "0";
-        if (Session["oUser"] != null)
-        {
-            userinfo objuser = (userinfo)Session["oUser"];
-            nclient_id = objuser.client_id;
-        }
-        DataClassesDataContext _db = new DataClassesDataContext();
-        string strQ = "SELECT DISTINCT sp.first_name + ' '+sp.last_name AS sales_person_name,sp.sales_person_id " +
-                    " FROM sales_person sp " +
-                    " INNER JOIN customer_estimate ce ON ce.sales_person_id = sp.sales_person_id AND ce.client_id = sp.client_id " +
-                    " WHERE sp.is_active = 1 AND ce.client_id in (" + nclient_id + ") AND sp.client_id in (" + nclient_id + ")"+
-                    " ORDER BY sales_person_name ASC";
-        List<userinfo> mList = _db.ExecuteQuery<userinfo>(strQ, string.Empty).ToList();
+        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1 and is_sales=1 " + csCommonUtility.GetSalesPersonSql(hdnDivisionName.Value) + " order by sales_person_id asc";
+
+        DataTable mList = csCommonUtility.GetDataTable(strQ);
         ddlSalesPersons.DataSource = mList;
         ddlSalesPersons.DataTextField = "sales_person_name";
         ddlSalesPersons.DataValueField = "sales_person_id";
         ddlSalesPersons.DataBind();
         ddlSalesPersons.Items.Insert(0, "All");
-        ddlSalesPersons.SelectedIndex = 0;
     }
 
     protected void btnCancel_Click(object sender, EventArgs e)

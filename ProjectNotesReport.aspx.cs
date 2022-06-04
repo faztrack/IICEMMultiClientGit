@@ -316,9 +316,9 @@ public partial class ProjectNotesReport : System.Web.UI.Page
 
 
 
-            if (str != "" && str.Length > 250)
+            if (str != "" && str.Length > 90)
             {
-                lblDescription.Text = str.Substring(0, 250) + " ...";
+                lblDescription.Text = str.Substring(0, 90) + " ...";
                 lblDescription.ToolTip = str;
                 lnkOpen.Visible = true;
             }
@@ -328,9 +328,9 @@ public partial class ProjectNotesReport : System.Web.UI.Page
                 lnkOpen.Visible = false;
             }
 
-            if (lblMaterialTrack.Text != "" && lblMaterialTrack.Text.Length > 250)
+            if (lblMaterialTrack.Text != "" && lblMaterialTrack.Text.Length > 90)
             {
-                lblMaterialTrack.Text = lblMaterialTrack.Text.Substring(0, 250) + " ...";
+                lblMaterialTrack.Text = lblMaterialTrack.Text.Substring(0, 90) + " ...";
                 lblMaterialTrack.ToolTip = lblMaterialTrack.Text;
                 lnkOpenMaterialTrack.Visible = true;
             }
@@ -340,9 +340,9 @@ public partial class ProjectNotesReport : System.Web.UI.Page
                 lnkOpenMaterialTrack.Visible = false;
             }
 
-            if (lblDesignUpdates.Text != "" && lblDesignUpdates.Text.Length > 250)
+            if (lblDesignUpdates.Text != "" && lblDesignUpdates.Text.Length > 90)
             {
-                lblDesignUpdates.Text = lblDesignUpdates.Text.Substring(0, 250) + " ...";
+                lblDesignUpdates.Text = lblDesignUpdates.Text.Substring(0, 90) + " ...";
                 lblDesignUpdates.ToolTip = lblDesignUpdates.Text;
                 lnkOpenDesignUpdates.Visible = true;
             }
@@ -352,9 +352,9 @@ public partial class ProjectNotesReport : System.Web.UI.Page
                 lnkOpenDesignUpdates.Visible = false;
             }
 
-            if (lblSuperintendentNotes.Text != "" && lblSuperintendentNotes.Text.Length > 250)
+            if (lblSuperintendentNotes.Text != "" && lblSuperintendentNotes.Text.Length > 90)
             {
-                lblSuperintendentNotes.Text = lblSuperintendentNotes.Text.Substring(0, 250) + " ...";
+                lblSuperintendentNotes.Text = lblSuperintendentNotes.Text.Substring(0, 90) + " ...";
                 lblSuperintendentNotes.ToolTip = lblSuperintendentNotes.Text;
                 lnkOpenSuperintendentNotes.Visible = true;
             }

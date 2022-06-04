@@ -120,7 +120,7 @@ public partial class salespersonlist : System.Web.UI.Page
         DataClassesDataContext _db = new DataClassesDataContext();
         string strCondition = "";
         grdSalesPersonList.PageIndex = nPageNo;
-               
+        
 
         if (txtSearch.Text.Trim() != "")
         {
@@ -159,9 +159,9 @@ public partial class salespersonlist : System.Web.UI.Page
         else
         {
             if (strCondition.Length > 0)
-                strCondition += " AND sales_person_id != 0 AND client_id in (" + hdnClientId.Value + ")";
+                strCondition += " AND sales_person_id != 0 AND client_id in ('" + hdnClientId.Value + "')";
             else
-                strCondition = " sales_person_id != 0 AND client_id in (" + hdnClientId.Value + ")";
+                strCondition = " sales_person_id != 0 AND client_id in ('" + hdnClientId.Value + "')";
         }
 
         if (strCondition.Length > 0)
@@ -258,7 +258,7 @@ public partial class salespersonlist : System.Web.UI.Page
     }
     protected void ddlStatus_SelectedIndexChanged(object sender, EventArgs e)
     {
-        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, ddlStatus.ID, ddlStatus.GetType().Name, "PageIndexChanging"); 
+        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, ddlStatus.ID, ddlStatus.GetType().Name, "PageIndexChanging");
         GetSalesPersons(0);
     }
     protected void btnSearch_Click(object sender, EventArgs e)
@@ -290,6 +290,8 @@ public partial class salespersonlist : System.Web.UI.Page
     protected void lnkViewAll_Click(object sender, EventArgs e)
     {
         txtSearch.Text = "";
+        ddlDivision.SelectedIndex = 0;
+        ddlStatus.SelectedValue = "1";
         GetSalesPersons(0);
     }
 

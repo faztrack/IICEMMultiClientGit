@@ -143,7 +143,7 @@ public partial class composite_sow : System.Web.UI.Page
 
 
             DataClassesDataContext _db = new DataClassesDataContext();
-            company_profile com = _db.company_profiles.SingleOrDefault(cp => cp.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+            company_profile com = _db.company_profiles.SingleOrDefault(cp => cp.client_id == Convert.ToInt32(hdnClientId.Value));
             if (com != null)
                 hdnSuperExCostDecrease.Value = com.ExCostPercentage.ToString();
             else
@@ -425,7 +425,7 @@ public partial class composite_sow : System.Web.UI.Page
         }
         catch (Exception ex)
         {
-            string ext = ex.StackTrace;
+            string ext = ex.StackTrace; 
             throw ex;
         }
 
@@ -2205,7 +2205,7 @@ public partial class composite_sow : System.Web.UI.Page
         DataClassesDataContext _db = new DataClassesDataContext();
 
         company_profile oCom = new company_profile();
-        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(hdnClientId.Value));
         decimal totalwithtax = 0;
         decimal project_subtotal = 0;
         decimal tax_amount = 0;
@@ -3167,9 +3167,9 @@ public partial class composite_sow : System.Web.UI.Page
         string strCompanyName = "";
 
         company_profile com = new company_profile();
-        if (_db.company_profiles.Where(cp => cp.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).SingleOrDefault() != null)
+        if (_db.company_profiles.Where(cp => cp.client_id == Convert.ToInt32(hdnClientId.Value)).SingleOrDefault() != null)
         {
-            com = _db.company_profiles.Single(cp => cp.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+            com = _db.company_profiles.Single(cp => cp.client_id == Convert.ToInt32(hdnClientId.Value));
             strCompanyName = com.company_name;
         }
 
@@ -3260,7 +3260,7 @@ public partial class composite_sow : System.Web.UI.Page
         DataClassesDataContext _db = new DataClassesDataContext();
 
         company_profile oCom = new company_profile();
-        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(hdnClientId.Value));
 
 
         string strQ = string.Empty;

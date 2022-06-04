@@ -38,7 +38,8 @@ public partial class sectionemail : System.Web.UI.Page
             hdnTypeId.Value = ndirectId.ToString();
 
             company_profile com = new company_profile();
-            if (_db.company_profiles.Where(cp => cp.client_id == 1).SingleOrDefault() != null)
+            int clientId = Convert.ToInt32(((userinfo)Session["oUser"]).client_id);
+            if (_db.company_profiles.Where(cp => cp.client_id == clientId).SingleOrDefault() != null)
             {
                 com = _db.company_profiles.Single(cp => cp.client_id == 1);
 

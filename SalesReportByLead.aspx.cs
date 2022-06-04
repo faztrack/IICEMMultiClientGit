@@ -23,6 +23,7 @@ public partial class SalesReportByLead : System.Web.UI.Page
             else
             {
                 hdnClientId.Value = ((userinfo)Session["oUser"]).client_id.ToString();
+                hdnDivisionName.Value = ((userinfo)Session["oUser"]).divisionName.ToString();
             }
             if (Page.User.IsInRole("rpt006") == false)
             {
@@ -34,20 +35,14 @@ public partial class SalesReportByLead : System.Web.UI.Page
     }
     private void BindSalesPersons()
     {
-        //int nclient_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
-        DataClassesDataContext _db = new DataClassesDataContext();
-        string strQ = "SELECT DISTINCT sp.first_name + ' '+sp.last_name AS sales_person_name,sp.sales_person_id " +
-                    " FROM sales_person sp " +
-                    " INNER JOIN customer_estimate ce ON ce.sales_person_id = sp.sales_person_id AND ce.client_id = sp.client_id " +
-                    " WHERE  sp.is_active = 1 AND ce.client_id in (" + hdnClientId.Value + ") AND sp.client_id in (" + hdnClientId.Value + ") " + 
-                    " ORDER BY sales_person_name ASC";
-        List<userinfo> mList = _db.ExecuteQuery<userinfo>(strQ, string.Empty).ToList();
+        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1 and is_sales=1 " + csCommonUtility.GetSalesPersonSql(hdnDivisionName.Value) + " order by sales_person_id asc";
+
+        DataTable mList = csCommonUtility.GetDataTable(strQ);
         ddlSalesPersons.DataSource = mList;
         ddlSalesPersons.DataTextField = "sales_person_name";
         ddlSalesPersons.DataValueField = "sales_person_id";
         ddlSalesPersons.DataBind();
         ddlSalesPersons.Items.Insert(0, "All");
-        ddlSalesPersons.SelectedIndex = 0;
     }
     protected void btnCancel_Click(object sender, EventArgs e)
     {

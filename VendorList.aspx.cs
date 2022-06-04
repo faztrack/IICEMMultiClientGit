@@ -359,6 +359,7 @@ public partial class VendorList : System.Web.UI.Page
         txtSearch.Text = "";
         ddlStatus.SelectedValue = "0";
         ddlSection.SelectedValue = "All";
+        ddlDivision.SelectedIndex = 0;
         GetVendor(0);
     }
 

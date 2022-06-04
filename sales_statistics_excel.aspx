@@ -94,7 +94,9 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td align="right"></td>
+                                <td align="right">
+                                    <asp:HiddenField ID="hdnDivisionName" runat="server" Value="" />
+                                </td>
                                 <td align="left"></td>
                             </tr>
                         </table>

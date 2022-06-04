@@ -63,6 +63,8 @@ public partial class payment : System.Web.UI.Page
                 lblPhone.Text = cust.phone;
                 lblEmail.Text = cust.email;
 
+                hdnClientId.Value = cust.client_id.ToString();
+
                 hdnSalesPersonId.Value = cust.sales_person_id.ToString();
 
                 //hypGoogleMap.NavigateUrl = "GoogleMap.aspx?strAdd=" + strAddress.Replace("</br>", "");
@@ -73,7 +75,7 @@ public partial class payment : System.Web.UI.Page
                 if (Convert.ToInt32(hdnEstimateId.Value) > 0)
                 {
                     customer_estimate cus_est = new customer_estimate();
-                    cus_est = _db.customer_estimates.Single(ce => ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value));
+                    cus_est = _db.customer_estimates.Single(ce => ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value) && ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value));
 
                     lblEstimateName.Text = cus_est.estimate_name;
                 }
@@ -93,7 +95,7 @@ public partial class payment : System.Web.UI.Page
                 pnlPaymentHistory.Visible = true;
                 GetPaymentData();
             }
-            if (_db.finance_projects.Where(fp => fp.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && fp.customer_id == Convert.ToInt32(hdnCustomerId.Value) && fp.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).SingleOrDefault() == null)
+            if (_db.finance_projects.Where(fp => fp.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && fp.customer_id == Convert.ToInt32(hdnCustomerId.Value) && fp.client_id == Convert.ToInt32(hdnClientId.Value)).SingleOrDefault() == null)
             {
                 chkFinancedProjects.Checked = false;
                 pnlFinanceProjects.Visible = false;
@@ -105,7 +107,7 @@ public partial class payment : System.Web.UI.Page
                 pnlFinanceProjects.Visible = true;
 
                 finance_project objfp = new finance_project();
-                objfp = _db.finance_projects.Single(fip => fip.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && fip.customer_id == Convert.ToInt32(hdnCustomerId.Value) && fip.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+                objfp = _db.finance_projects.Single(fip => fip.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && fip.customer_id == Convert.ToInt32(hdnCustomerId.Value) && fip.client_id == Convert.ToInt32(hdnClientId.Value));
                 txtLendingInst.Text = objfp.lending_inst;
                 txtApprovalCode.Text = objfp.approval_code;
                 txtAmountApproved.Text = Convert.ToDecimal(objfp.amount_approved).ToString();
@@ -203,7 +205,7 @@ public partial class payment : System.Web.UI.Page
         estimate_payment objEstPay = new estimate_payment();
 
 
-        objEstPay = _db.estimate_payments.Single(pay => pay.est_payment_id == nPaymentId && pay.estimate_id == nEstimateId && pay.customer_id == nCustomerId && pay.sales_person_id == nSalesPersonId && pay.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+        objEstPay = _db.estimate_payments.Single(pay => pay.est_payment_id == nPaymentId && pay.estimate_id == nEstimateId && pay.customer_id == nCustomerId && pay.sales_person_id == nSalesPersonId && pay.client_id == Convert.ToInt32(hdnClientId.Value));
 
 
         txtnDeposit.Text = Convert.ToDecimal(objEstPay.deposit_amount).ToString("c");
@@ -412,7 +414,7 @@ public partial class payment : System.Web.UI.Page
         DataClassesDataContext _db = new DataClassesDataContext();
 
         company_profile oCom = new company_profile();
-        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(hdnClientId.Value));
 
         string strCity = oCom.city;
         if (strCity.Trim().Length > 0)
@@ -594,12 +596,12 @@ public partial class payment : System.Web.UI.Page
         if (chkFinancedProjects.Checked)
         {
             if (Convert.ToInt32(hdnfpId.Value) > 0)
-                objfp = _db.finance_projects.Single(fip => fip.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && fip.customer_id == Convert.ToInt32(hdnCustomerId.Value) && fip.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+                objfp = _db.finance_projects.Single(fip => fip.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && fip.customer_id == Convert.ToInt32(hdnCustomerId.Value) && fip.client_id == Convert.ToInt32(hdnClientId.Value));
 
             objfp.lending_inst = txtLendingInst.Text;
             objfp.approval_code = txtApprovalCode.Text;
             objfp.amount_approved = Convert.ToDecimal(txtAmountApproved.Text);
-            objfp.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+            objfp.client_id = Convert.ToInt32(hdnClientId.Value);
             objfp.customer_id = Convert.ToInt32(hdnCustomerId.Value);
             objfp.estimate_id = Convert.ToInt32(hdnEstimateId.Value);
 

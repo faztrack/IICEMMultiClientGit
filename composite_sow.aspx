@@ -359,7 +359,7 @@
                                                                 <asp:BoundField DataField="measure_unit" HeaderStyle-Width="6%" HeaderText="UoM" NullDisplayText=" ">
                                                                     <HeaderStyle Width="6%" />
                                                                 </asp:BoundField>
-                                                                <asp:TemplateField HeaderText="Unit Cost">
+                                                                <asp:TemplateField HeaderText="Unit Cost"> 
                                                                     <FooterTemplate>
                                                                         <asp:Label ID="lblTotalUnitCost" runat="server" Font-Bold="true" Font-Size="13px" />
                                                                     </FooterTemplate>

@@ -1283,20 +1283,6 @@
       <Column Name="is_active" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
     </Type>
   </Table>
-  <Table Name="dbo.incentives" Member="incentives">
-    <Type Name="incentive">
-      <Column Name="incentive_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="incentive_name" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="incentive_desc" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="is_active" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="start_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="end_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="discount" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
-      <Column Name="client_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="incentive_type" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="amount" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
-    </Type>
-  </Table>
   <Table Name="dbo.co_pricing_master" Member="co_pricing_masters">
     <Type Name="co_pricing_master">
       <Column Name="co_pricing_list_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -2434,6 +2420,21 @@
       <Column Name="google_calendar_account" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
       <Column Name="google_calendar_id" Type="System.String" DbType="VarChar(150)" CanBeNull="true" />
       <Column Name="co_com_per" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="division_name" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.incentives" Member="incentives">
+    <Type Name="incentive">
+      <Column Name="incentive_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="incentive_name" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="incentive_desc" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="is_active" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="start_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="end_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="discount" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="client_id" Type="System.String" DbType="VarChar(25)" CanBeNull="true" />
+      <Column Name="incentive_type" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="amount" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
       <Column Name="division_name" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
     </Type>
   </Table>

@@ -3028,7 +3028,7 @@ public partial class customerdashboard : System.Web.UI.Page
             objcu = _db.customeruserinfos.Single(cu => cu.customerid == nCustomerId);
 
             company_profile oCom = new company_profile();
-            oCom = _db.company_profiles.Single(c => c.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+            oCom = _db.company_profiles.Single(c => c.client_id == Convert.ToInt32(hdnClientId.Value));
 
             string strTable = "<table align='center' width='704px' border='0'>" + Environment.NewLine +
                     "<tr><td align='left'>Dear " + objCust.first_name1 + " " + objCust.last_name1 + ",</td></tr>" + Environment.NewLine +
@@ -3143,7 +3143,7 @@ public partial class customerdashboard : System.Web.UI.Page
             objcu = _db.customeruserinfos.Single(cu => cu.customerid == nCustomerId);
 
             company_profile oCom = new company_profile();
-            oCom = _db.company_profiles.Single(c => c.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+            oCom = _db.company_profiles.Single(c => c.client_id == Convert.ToInt32(hdnClientId.Value));
 
             string strTable = "<table align='center' width='704px' border='0'>" + Environment.NewLine +
                     "<tr><td align='left'>Dear " + objCust.first_name1 + " " + objCust.last_name1 + ",</td></tr>" + Environment.NewLine +

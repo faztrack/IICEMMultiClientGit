@@ -41,6 +41,8 @@ public partial class incentivedetails : System.Web.UI.Page
             pnlDiscount.Visible = true;
             pnlAmount.Visible = false;
 
+            BindDivision();
+
             if (Convert.ToInt32(hdnIncentiveId.Value) > 0)
             {
                 lblHeaderTitle.Text = "Incentive Details";
@@ -54,6 +56,7 @@ public partial class incentivedetails : System.Web.UI.Page
                 chkActive.Checked = Convert.ToBoolean(inc.is_active);
                 txtStartDate.Text = Convert.ToDateTime(inc.start_date).ToShortDateString();
                 txtEndDate.Text = Convert.ToDateTime(inc.end_date).ToShortDateString();
+               
                 if (inc.incentive_type == 1)
                 {
                     pnlDiscount.Visible = true;
@@ -70,6 +73,30 @@ public partial class incentivedetails : System.Web.UI.Page
                    
                     
                 }
+                //ddlDivision.SelectedValue = inc.client_id.ToString();
+
+                if (inc.client_id.ToString().Contains(','))
+                {
+                    string[] ary = inc.client_id.Split(',');
+                    foreach (ListItem item in lstDivision.Items)
+                    {
+                        foreach (var a in ary)
+                        {
+                            if (a == item.Value)
+                            {
+                                item.Selected = true;
+
+                            }
+                        }
+
+                    }
+                }
+                else
+                {
+                    lstDivision.SelectedValue = inc.client_id;
+                }
+
+
             }
             else
             {
@@ -81,6 +108,25 @@ public partial class incentivedetails : System.Web.UI.Page
             csCommonUtility.SetPagePermission(this.Page, new string[] { "btnSubmit", "btnAddNew" });
         }
     }
+
+    private void BindDivision()
+    {
+        try
+        {
+            string sql = "select id, division_name from division order by division_name";
+            DataTable dt = csCommonUtility.GetDataTable(sql);
+            lstDivision.DataSource = dt;
+            lstDivision.DataTextField = "division_name";
+            lstDivision.DataValueField = "id";
+            lstDivision.DataBind();
+        }
+        catch (Exception ex)
+        {
+            lblResult.Text = csCommonUtility.GetSystemErrorMessage(ex.ToString());
+        }
+    }
+
+
     protected void btnCancel_Click(object sender, EventArgs e)
     {
         Response.Redirect("incentive_list.aspx");
@@ -94,6 +140,25 @@ public partial class incentivedetails : System.Web.UI.Page
     {
         KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnSubmit.ID, btnSubmit.GetType().Name, "Click"); 
         lblResult.Text = "";
+
+        string selectedvalue = "";
+        string selectDivisionName = "";
+        foreach (ListItem item in lstDivision.Items)
+        {
+            if (item.Selected)
+            {
+                selectedvalue += item.Value + ",";
+                selectDivisionName += item.Text + ", ";
+            }
+        }
+        if (selectedvalue == "")
+        {
+            lblResult.Text = csCommonUtility.GetSystemErrorMessage("Missing required field: Division.");
+            lblResult.Focus();
+            return;
+        }
+
+
 
         if (txtIncentiveName.Text.Trim() == "")
         {
@@ -216,11 +281,14 @@ public partial class incentivedetails : System.Web.UI.Page
         }
         inc.incentive_name = txtIncentiveName.Text;
         inc.incentive_desc = txtDescription.Text;
-      
+
+        inc.division_name = selectDivisionName.Trim().TrimEnd(',');
+        inc.client_id = selectedvalue.Trim().TrimEnd(',');
+
         inc.is_active = Convert.ToBoolean(chkActive.Checked);
         inc.start_date = Convert.ToDateTime(txtStartDate.Text);
         inc.end_date = Convert.ToDateTime(txtEndDate.Text);
-        inc.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        //inc.client_id = Convert.ToInt32(ddlDivision.SelectedValue);
 
         if (Convert.ToInt32(hdnIncentiveId.Value) == 0)
         {

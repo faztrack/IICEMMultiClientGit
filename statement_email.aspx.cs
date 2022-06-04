@@ -48,9 +48,9 @@ public partial class statement_email : System.Web.UI.Page
                 txtTo.Text = cust.email;
                 strCustName = cust.last_name1;
                 company_profile com = new company_profile();
-                if (_db.company_profiles.Where(cp => cp.client_id == 1).SingleOrDefault() != null)
+                if (_db.company_profiles.Where(cp => cp.client_id == cust.client_id).SingleOrDefault() != null)
                 {
-                    com = _db.company_profiles.Single(cp => cp.client_id == 1);
+                    com = _db.company_profiles.Single(cp => cp.client_id == cust.client_id);
 
                     txtCc.Text = com.email;
                     txtBcc.Text = "info@interiorinnovations.biz";

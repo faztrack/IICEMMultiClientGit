@@ -798,6 +798,7 @@
                                 <asp:Button ID="btnBack" runat="server" CssClass="button" Text="Back" OnClick="btnBack_Click" CausesValidation="false" Visible="false" />&nbsp;                           
                                 <asp:Button ID="btnClose" runat="server" Text="Close" CssClass="button" Width="60px" OnClick="btnClose_Click" />
                                 <asp:HiddenField ID="hdnLeadId" runat="server" Value="0" />
+                                <asp:HiddenField ID="hdnDivisionName" runat="server" Value="" />
                             </td>
                         </tr>
                     </table>

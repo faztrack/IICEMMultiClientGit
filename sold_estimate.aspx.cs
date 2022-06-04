@@ -2369,9 +2369,9 @@ public partial class sold_estimate : System.Web.UI.Page
         string strCompanyName = "";
 
         company_profile com = new company_profile();
-        if (_db.company_profiles.Where(cp => cp.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).SingleOrDefault() != null)
+        if (_db.company_profiles.Where(cp => cp.client_id == Convert.ToInt32(hdnClientId.Value)).SingleOrDefault() != null)
         {
-            com = _db.company_profiles.Single(cp => cp.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+            com = _db.company_profiles.Single(cp => cp.client_id == Convert.ToInt32(hdnClientId.Value));
             strCompanyName = com.company_name;
         }
 
@@ -2451,7 +2451,7 @@ public partial class sold_estimate : System.Web.UI.Page
         DataClassesDataContext _db = new DataClassesDataContext();
 
         company_profile oCom = new company_profile();
-        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(hdnClientId.Value));
 
 
         string strQ = string.Empty;
@@ -2626,7 +2626,7 @@ public partial class sold_estimate : System.Web.UI.Page
         DataClassesDataContext _db = new DataClassesDataContext();
 
         company_profile oCom = new company_profile();
-        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(hdnClientId.Value));
 
 
         string strQ = string.Empty;

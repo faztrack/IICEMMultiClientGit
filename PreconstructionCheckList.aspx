@@ -475,9 +475,10 @@
                                                 <tr>
                                                     <td></td>
                                                     <td align="left">
-                                                        <asp:TextBox
-                                                            ID="txtDisplay" runat="server" CssClass="textBoxNone" Font-Bold="True"
-                                                            Height="16px" ReadOnly="True"></asp:TextBox>
+                                                        
+                                                        <asp:TextBox ID="txtDisplay" runat="server" BackColor="Transparent" BorderColor="Transparent" BorderStyle="None" BorderWidth="0px" CssClass="nostyle" Font-Bold="True" ReadOnly="True"></asp:TextBox>
+
+
                                                     </td>
                                                 </tr>
                                                 <tr>

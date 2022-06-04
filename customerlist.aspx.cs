@@ -163,6 +163,7 @@ public partial class customerlist : System.Web.UI.Page
                 hdnEmailType.Value = oUser.EmailIntegrationType.ToString();
 
                 hdnClientId.Value = oUser.client_id.ToString();
+                hdnDivisionName.Value = oUser.divisionName;
             }
 
 
@@ -390,11 +391,8 @@ public partial class customerlist : System.Web.UI.Page
     }
     private void BindSalesPerson()
     {
-        DataClassesDataContext _db = new DataClassesDataContext();
-        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1  and is_sales=1 and sales_person.client_id in ('" + hdnClientId.Value + "') order by sales_person_id asc";
-
+        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1 and is_sales=1 " + csCommonUtility.GetSalesPersonSql(hdnDivisionName.Value) + " order by sales_person_id asc";
         DataTable mList = csCommonUtility.GetDataTable(strQ);
-        //List<userinfo> mList = _db.ExecuteQuery<userinfo>(strQ, string.Empty).ToList();
         ddlSalesRep.DataSource = mList;
         ddlSalesRep.DataTextField = "sales_person_name";
         ddlSalesRep.DataValueField = "sales_person_id";
@@ -473,14 +471,7 @@ public partial class customerlist : System.Web.UI.Page
                 strCondition += " AND (ce.job_number LIKE '%" + str.Replace("'", "''") + "%' OR ce.alter_job_number LIKE '%" + str.Replace("'", "''") + "%')";
             }
 
-
-            if (ddlDivision.SelectedItem.Text != "All")
-            {
-                if (strCondition.Length > 2)
-                    strCondition += " AND customers.client_id in (" + ddlDivision.SelectedValue + ") ";
-                else
-                    strCondition = " WHERE  customers.client_id in (" + ddlDivision.SelectedValue + ") ";
-            }
+                       
         }
         else
         {
@@ -537,6 +528,8 @@ public partial class customerlist : System.Web.UI.Page
 
             }
 
+            
+
             if (ddlSalesRep.SelectedItem.Text != "All")
             {
                 if (strCondition.Length > 0)
@@ -549,6 +542,7 @@ public partial class customerlist : System.Web.UI.Page
                 }
 
             }
+           
 
             if (ddlDivision.SelectedItem.Text != "All")
             {
@@ -584,6 +578,16 @@ public partial class customerlist : System.Web.UI.Page
         //    strCondition = "Where  isCustomer = 1 ";
 
         //}
+
+        if (ddlDivision.SelectedItem.Text != "All")
+        {
+            if (strCondition.Length > 2)
+                strCondition += " AND customers.client_id in ('" + ddlDivision.SelectedValue + "') ";
+            else
+                strCondition = " WHERE  customers.client_id in ('" + ddlDivision.SelectedValue + "') ";
+        }
+
+
         string strQ = string.Empty;
         if (Convert.ToInt32(hdnCustomerId.Value) > 0)
         {
@@ -1468,6 +1472,7 @@ public partial class customerlist : System.Web.UI.Page
         txtSearch.Text = "";
         ddlStatus.SelectedValue = "2";
         ddlSalesRep.SelectedIndex = -1;
+        ddlDivision.SelectedIndex = 0;
         ddlSuperintendent.SelectedIndex = -1;
         ddlSearchBy.SelectedValue = "2";
         ddlSearchBy_SelectedIndexChanged(sender, e);

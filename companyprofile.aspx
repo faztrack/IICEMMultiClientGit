@@ -1,4 +1,5 @@
 <%@ Page Language="C#" MasterPageFile="~/Main.master" AutoEventWireup="true" CodeFile="companyprofile.aspx.cs" Inherits="companyprofile" Title="Company Profile" %>
+
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
     <script language="javascript" type="text/javascript">
@@ -31,20 +32,26 @@
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
         <ContentTemplate>
 
-            <table cellpadding="0" cellspacing="0" width="100%">
+
+            <table width="100%">
                 <tr>
-                    <td align="center" class="cssHeader">
-                        <table cellpadding="0" cellspacing="0" width="100%">
-                            <tr>
-                                <td align="left"><span class="titleNu">Company Profile</span></td>
-                                <td align="right"></td>
-                            </tr>
-                        </table>
+                    <td align="left" class="cssHeader">
+                        <span class="titleNu">Company Profile</span>
                     </td>
                 </tr>
+            </table>
+
+            <table cellpadding="0" cellspacing="0" width="100%" style="background-color: #f4f6f9;margin-bottom:10px">
                 <tr>
                     <td align="center">
-                        <table cellpadding="4" cellspacing="4" width="850px" align="center">
+                        <table align="left" width="30%" style="margin-left: 11%">
+                            <tr>
+                                <td align="right">
+                                    <b>Division: </b></td>
+                                <td align="left">
+                                    <asp:DropDownList ID="ddlDivision" runat="server" Width="210px" OnSelectedIndexChanged="ddlDivision_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+                                </td>
+                            </tr>
                             <tr>
                                 <td align="right">
                                     <b>Company Name: </b></td>
@@ -111,6 +118,65 @@
                                     </table>
                                 </td>
                             </tr>
+
+                            <tr>
+                                <td align="right">
+                                    <b>Website: </b></td>
+                                <td align="left">
+                                    <asp:TextBox ID="txtWebsite" runat="server" TabIndex="14" Width="200px"></asp:TextBox>
+                                </td>
+                            </tr>
+
+                            <%--  <tr>
+                                <td align="right">
+                                    <b>Markup:</b>
+                                </td>
+                                <td align="left">
+                                    <asp:TextBox ID="txtMarkup" runat="server" TabIndex="12" Width="200px"
+                                        OnTextChanged="txtMarkup_TextChanged" AutoPostBack="True"></asp:TextBox>
+                                </td>
+                            </tr>--%>
+                            <tr>
+                                <td align="right">
+                                    <b>Project Completion Duration:</b></td>
+                                <td align="left">
+                                    <asp:RadioButtonList ID="rdoCompletionType" runat="server"
+                                        RepeatDirection="Horizontal" TabIndex="15">
+                                        <asp:ListItem Value="1" Selected="True">Lead Time Based</asp:ListItem>
+                                        <asp:ListItem Value="2">Start &amp; End Date Based</asp:ListItem>
+                                    </asp:RadioButtonList>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="right">
+                                    <b>Change Order Detail View:</b></td>
+                                <td align="left">
+                                    <asp:RadioButtonList ID="rdoChangeOrderQTY" runat="server"
+                                        RepeatDirection="Horizontal" TabIndex="16">
+                                        <asp:ListItem Value="1" Selected="True">Without QTY</asp:ListItem>
+                                        <asp:ListItem Value="2">With  QTY</asp:ListItem>
+                                    </asp:RadioButtonList>
+                                </td>
+                            </tr>
+
+
+
+
+                            <tr>
+                                <td colspan="2">&nbsp;</td>
+                            </tr>
+
+                            <tr>
+                                <td align="center" colspan="2">
+                                    <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
+                                    <asp:HiddenField ID="hdnSID" runat="server" Value="0" />
+                                    <asp:HiddenField ID="hdnMarkup" runat="server" Value="0" />
+                                    <asp:HiddenField ID="hdnCompanyProfileId" runat="server" Value="0" />
+                                </td>
+                            </tr>
+                        </table>
+
+                        <table align="left" width="45%">
                             <tr>
                                 <td align="right">
                                     <b>Email be printed on Contract (<font style="color: #2196f3; font-style: italic;">Payment Page</font>) : </b>
@@ -127,6 +193,8 @@
                                     </table>
                                 </td>
                             </tr>
+
+
                             <tr>
                                 <td align="right" valign="top">
                                     <b>Transaction related Emails to be sent to: </b>
@@ -147,7 +215,7 @@
                                     </table>
                                 </td>
                             </tr>
-                             <tr>
+                            <tr>
                                 <td align="right" valign="top">
                                     <b>Project Notes related Emails to be sent to: </b>
                                     <br />
@@ -167,7 +235,7 @@
                                     </table>
                                 </td>
                             </tr>
-                             <tr>
+                            <tr>
                                 <td align="right" valign="top">
                                     <b>Change Orders related Emails to be sent to: </b>
                                     <br />
@@ -187,7 +255,7 @@
                                     </table>
                                 </td>
                             </tr>
-                              <tr>
+                            <tr>
                                 <td align="right" valign="top">
                                     <b>Selection related Emails to be sent to: </b>
                                     <br />
@@ -209,81 +277,45 @@
                             </tr>
                             <tr>
                                 <td align="right">
-                                    <b>Website: </b></td>
-                                <td align="left">
-                                    <asp:TextBox ID="txtWebsite" runat="server" TabIndex="14" Width="200px"></asp:TextBox>
-                                </td>
-                            </tr>
-                             
-                            <%--  <tr>
-                                <td align="right">
-                                    <b>Markup:</b>
-                                </td>
-                                <td align="left">
-                                    <asp:TextBox ID="txtMarkup" runat="server" TabIndex="12" Width="200px"
-                                        OnTextChanged="txtMarkup_TextChanged" AutoPostBack="True"></asp:TextBox>
-                                </td>
-                            </tr>--%>
-                            <tr>
-                                <td align="right">
-                                    <b>Project Completion Duration:</b></td>
-                                <td align="left">
-                                    <asp:RadioButtonList ID="rdoCompletionType" runat="server"
-                                        RepeatDirection="Horizontal" TabIndex="15">
-                                        <asp:ListItem Value="1" Selected="True">Lead Time Based</asp:ListItem>
-                                        <asp:ListItem Value="2">Start &amp; End Date Based</asp:ListItem>
-                                    </asp:RadioButtonList>
-                                </td>
-                            </tr>
-                             <tr>
-                                <td align="right">
-                                    <b>Change Order Detail View:</b></td>
-                                <td align="left">
-                                    <asp:RadioButtonList ID="rdoChangeOrderQTY" runat="server"
-                                        RepeatDirection="Horizontal" TabIndex="16">
-                                        <asp:ListItem Value="1" Selected="True">Without QTY</asp:ListItem>
-                                        <asp:ListItem Value="2">With  QTY</asp:ListItem>
-                                    </asp:RadioButtonList>
-                                </td>
-                            </tr>
-                             <tr>
-                                <td align="right">
                                     <b>Superintendent SOW view with % Decrease:</b></td>
 
-                                 <td align="left">
+                                <td align="left">
                                     <table cellpadding="0" cellspacing="0">
                                         <tr>
                                             <td>
                                                 <asp:TextBox ID="txtExCostDecrease" runat="server" TabIndex="17" Width="70px"></asp:TextBox>
-                                    <cc1:FilteredTextBoxExtender ID="FilteredTextBoxExtender5" runat="server" TargetControlID="txtExCostDecrease"
-                                                           FilterType="Custom" FilterMode="ValidChars" InvalidChars=" " ValidChars="1234567890.">
-                                                           </cc1:FilteredTextBoxExtender>
+                                                <cc1:FilteredTextBoxExtender ID="FilteredTextBoxExtender5" runat="server" TargetControlID="txtExCostDecrease"
+                                                    FilterType="Custom" FilterMode="ValidChars" InvalidChars=" " ValidChars="1234567890.">
+                                                </cc1:FilteredTextBoxExtender>
                                             </td>
                                             <td>(<font style="color: #2196f3; font-style: italic;">Superintendent login will see Ext Cost with less amount than actual</font>)</td>
                                         </tr>
                                     </table>
                                 </td>
-                               
-                            </tr>
 
-                             <tr>
+                            </tr>
+                            <tr>
                                 <td align="right">
                                     <b>Customer Portal URL: </b></td>
                                 <td align="left">
-                                   <asp:TextBox ID="txtCustomerPortalURL" runat="server" TabIndex="18" Width="200px"></asp:TextBox>
+                                    <asp:TextBox ID="txtCustomerPortalURL" runat="server" TabIndex="18" Width="200px"></asp:TextBox>
                                 </td>
                             </tr>
+                        </table>                       
+
+                    </td>
+
+                    
+                </tr>
+                <tr>
+                    <table align="center" width="100%">
                             <tr>
                                 <td align="center" colspan="2">
                                     <asp:Label ID="lblResult" runat="server"></asp:Label>
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="2">&nbsp;</td>
-                            </tr>
-                            <tr>
-                                <td>&nbsp;</td>
-                                <td align="left">
+                                <td align="center">
                                     <asp:Button ID="btnSave" runat="server" TabIndex="19" Text="Save" OnClick="btnSave_Click"
                                         Width="80px" CssClass="button" />
                                     &nbsp;<asp:Button ID="btnClose" TabIndex="20" runat="server" Text="Close"
@@ -291,16 +323,7 @@
                                         CssClass="button" />
                                 </td>
                             </tr>
-                            <tr>
-                                <td align="center" colspan="2">
-                                    <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
-                                    <asp:HiddenField ID="hdnSID" runat="server" Value="0" />
-                                    <asp:HiddenField ID="hdnMarkup" runat="server" Value="0" />
-                                    <asp:HiddenField ID="hdnCompanyProfileId" runat="server" Value="0" />
-                                </td>
-                            </tr>
                         </table>
-                    </td>
                 </tr>
             </table>
         </ContentTemplate>

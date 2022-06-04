@@ -295,6 +295,7 @@ public partial class user_management : System.Web.UI.Page
     {
         txtSearch.Text = "";
         ddlStatus.SelectedValue = "3";
+        ddlDivision.SelectedIndex = 0;
         GetUsers(0);
     }
 

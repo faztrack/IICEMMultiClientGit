@@ -315,6 +315,7 @@ public partial class crewlist : System.Web.UI.Page
     protected void lnkViewAll_Click(object sender, EventArgs e)
     {
         ddlStatus.SelectedValue = "1";
+        ddlDivision.SelectedIndex = 0;
         txtSearch.Text = "";
         GetCrew();
     }

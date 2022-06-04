@@ -1018,6 +1018,7 @@ public partial class labor_hour_list : System.Web.UI.Page
         txtStartDate.Text = "";
         txtEndDate.Text = "";
         chkTotalhours.Checked = false;
+        ddlDivision.SelectedIndex = 0;
         Session.Remove("Installer");
         Session.Remove("");
         radEmployeeType.SelectedValue = "3";

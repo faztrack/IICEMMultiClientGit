@@ -126,17 +126,25 @@ public partial class CallActivityList : System.Web.UI.Page
             ddlCallType.SelectedValue = "7";
             GetCustomerCallLog_FollowUp(0);
 
+            //GetCustomerCallLog(0);
+
 
         }
     }
 
     private void BindLeadSource()
     {
-        DataClassesDataContext _db = new DataClassesDataContext();
-        var item = from l in _db.lead_sources
-                   where l.client_id.ToString().Contains(hdnClientId.Value) && l.is_active == Convert.ToBoolean(1)
-                   orderby l.lead_name
-                   select l;
+        //DataClassesDataContext _db = new DataClassesDataContext();
+        //var item = from l in _db.lead_sources
+        //           where l.client_id.ToString().Contains(hdnClientId.Value) && l.is_active == Convert.ToBoolean(1)
+        //           orderby l.lead_name
+        //           select l;
+
+
+        string sql = "select * from lead_source where client_id in (" + hdnClientId.Value + ") AND is_active = 1";
+        DataTable item = csCommonUtility.GetDataTable(sql);
+
+        ddlLeadSource.DataSource = item;
         ddlLeadSource.DataSource = item;
         ddlLeadSource.DataTextField = "lead_name";
         ddlLeadSource.DataValueField = "lead_source_id";

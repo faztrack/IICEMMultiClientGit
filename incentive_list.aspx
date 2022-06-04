@@ -1,4 +1,5 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/Main.master" AutoEventWireup="true" CodeFile="incentive_list.aspx.cs" Inherits="incentive_list" Title="Incentive List" %>
+
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
     <script language="javascript" type="text/javascript">
@@ -39,27 +40,27 @@
                                         Text="Previous" OnClick="btnPrevious_Click" />
                                 </td>
                                 <td align="left">
-                                    <table>
+                                    <table width="80%">
                                         <tr>
                                             <td align="right">
                                                 <b>Incentive Name:</b>
                                             </td>
                                             <td align="left">
                                                 <asp:TextBox ID="txtSearch" onkeypress="return SearchKeyPress(event);" runat="server"></asp:TextBox>
-                                                <cc1:autocompleteextender id="txtSearch_AutoCompleteExtender" runat="server" completioninterval="500" completionlistcssclass="AutoExtender" completionsetcount="10" delimitercharacters="" enablecaching="true" enabled="True" minimumprefixlength="1" onclientitemselected="selected_LastName" servicemethod="GetIncentiveName" targetcontrolid="txtSearch" usecontextkey="True">
-                                                            </cc1:autocompleteextender>
-                                                <cc1:textboxwatermarkextender id="wtmFileNumber" runat="server" targetcontrolid="txtSearch" watermarktext="Search by Incentive Name" />
+                                                <cc1:AutoCompleteExtender ID="txtSearch_AutoCompleteExtender" runat="server" CompletionInterval="500" CompletionListCssClass="AutoExtender" CompletionSetCount="10" DelimiterCharacters="" EnableCaching="true" Enabled="True" MinimumPrefixLength="1" OnClientItemSelected="selected_LastName" ServiceMethod="GetIncentiveName" TargetControlID="txtSearch" UseContextKey="True">
+                                                </cc1:AutoCompleteExtender>
+                                                <cc1:TextBoxWatermarkExtender ID="wtmFileNumber" runat="server" TargetControlID="txtSearch" WatermarkText="Search by Incentive Name" />
                                             </td>
                                             <td align="left">
                                                 <asp:Button ID="btnSearch" runat="server" Text="Search" OnClick="btnSearch_Click" CssClass="button" />
                                             </td>
                                             <td>
-                                                <asp:LinkButton ID="LinkButton1" runat="server" OnClick="lnkViewAll_Click">View All</asp:LinkButton>
+                                                <asp:LinkButton  ID="LinkButton1" runat="server" OnClick="lnkViewAll_Click">View All</asp:LinkButton>
                                             </td>
                                         </tr>
-                                    </table>                                  
+                                    </table>
                                 </td>
-                                <td align="center">
+                                <td width="290px">
                                     <b>Page:</b>
                                     <asp:Label ID="lblCurrentPageNo" runat="server" Font-Bold="true" ForeColor="#000000"></asp:Label>
                                     &nbsp;
@@ -72,91 +73,111 @@
                                         <asp:ListItem>40</asp:ListItem>
                                         <asp:ListItem Value="4">All Lead Status</asp:ListItem>
                                     </asp:DropDownList>
+
                                 </td>
-                                <td align="right">
+
+                                <td width="150px">
+                                    <b>Division:</b>
+                                    <asp:DropDownList ID="ddlDivision" runat="server" OnSelectedIndexChanged="ddlDivision_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+
+                                </td>
+
+
+                                <td width="298px">
                                     <asp:CheckBox ID="chkIsActive" runat="server" AutoPostBack="true" Text="Active on Payment Page" OnCheckedChanged="chkIsActive_click" />
                                     <asp:Button ID="btnAddNew" runat="server" Text="Add New Incentive"
                                         OnClick="btnAddNew_Click" CssClass="button" />
                                 </td>
+
                                 <td align="right">
                                     <asp:Button ID="btnNext" runat="server" CssClass="nextButton" Text="Next"
                                         OnClick="btnNext_Click" />
                                 </td>
                             </tr>
-                            <tr>
-                                 <td colspan="5" align="center"><asp:Label ID="lblResult" runat="server"></asp:Label></td>
-                            </tr>
-                            <tr>
-                                <td colspan="5">
-                                    <asp:GridView ID="grdIncentive" runat="server" AllowPaging="True"
-                                        AutoGenerateColumns="False" PageSize="15" Width="100%"
-                                        OnPageIndexChanging="grdIncentive_PageIndexChanging"
-                                        OnRowDataBound="grdIncentive_RowDataBound" CssClass="mGrid">
-                                        <PagerSettings Position="TopAndBottom" />
-                                        <Columns>
-                                            <asp:HyperLinkField DataNavigateUrlFields="incentive_id" ItemStyle-Font-Underline="true"
-                                                DataNavigateUrlFormatString="incentivedetails.aspx?iid={0}"
-                                                DataTextField="incentive_name" HeaderText="Incentive Name">
-                                                <HeaderStyle HorizontalAlign="Left" />
-                                                <ItemStyle HorizontalAlign="Left" />
-                                            </asp:HyperLinkField>
-                                            <asp:BoundField DataField="start_date" HeaderText="Start Date"
-                                                DataFormatString="{0:d}" />
-                                            <asp:BoundField DataField="end_date" HeaderText="End Date"
-                                                DataFormatString="{0:d}" />
-                                            <asp:BoundField DataField="is_active" HeaderText="Active">
-                                                <HeaderStyle HorizontalAlign="Center" />
-                                                <ItemStyle HorizontalAlign="Center" />
-                                            </asp:BoundField>
-                                            <%--  <asp:BoundField DataField="discount" HeaderText="Discount (%)">
+                <tr>
+                    <td colspan="5" align="center">
+                        <asp:Label ID="lblResult" runat="server"></asp:Label></td>
+                </tr>
+                <tr>
+                    <td colspan="6">
+                        <asp:GridView ID="grdIncentive" runat="server" AllowPaging="True"
+                            AutoGenerateColumns="False" PageSize="15" Width="100%"
+                            OnPageIndexChanging="grdIncentive_PageIndexChanging"
+                            OnRowDataBound="grdIncentive_RowDataBound" CssClass="mGrid">
+                            <PagerSettings Position="TopAndBottom" />
+                            <Columns>
+                                <asp:HyperLinkField DataNavigateUrlFields="incentive_id" ItemStyle-Font-Underline="true"
+                                    DataNavigateUrlFormatString="incentivedetails.aspx?iid={0}"
+                                    DataTextField="incentive_name" HeaderText="Incentive Name">
+                                    <HeaderStyle HorizontalAlign="Left" />
+                                    <ItemStyle HorizontalAlign="Left" />
+                                </asp:HyperLinkField>
+                                <asp:BoundField DataField="start_date" HeaderText="Start Date"
+                                    DataFormatString="{0:d}" />
+                                <asp:BoundField DataField="end_date" HeaderText="End Date"
+                                    DataFormatString="{0:d}" />
+
+                                <asp:TemplateField HeaderText="Division">
+                                    <ItemTemplate>
+                                        <asp:Label ID="lblDivision" runat="server" Text='<%#Eval("division_name")%>'></asp:Label>
+                                    </ItemTemplate>
+                                    <HeaderStyle HorizontalAlign="Center" />
+                                    <ItemStyle HorizontalAlign="Center" />
+                                </asp:TemplateField>
+
+                                <asp:BoundField DataField="is_active" HeaderText="Active">
+                                    <HeaderStyle HorizontalAlign="Center" />
+                                    <ItemStyle HorizontalAlign="Center" />
+                                </asp:BoundField>
+                                <%--  <asp:BoundField DataField="discount" HeaderText="Discount (%)">
                                                 <HeaderStyle HorizontalAlign="Center" />
                                                 <ItemStyle HorizontalAlign="Center" />
                                             </asp:BoundField>--%>
-                                            <asp:TemplateField HeaderText="Discount" SortExpression="MohavePrice">
-                                                <ItemTemplate>
-                                                    <asp:Label ID="lblDiscount" runat="server"></asp:Label>
+                                <asp:TemplateField HeaderText="Discount" SortExpression="MohavePrice">
+                                    <ItemTemplate>
+                                        <asp:Label ID="lblDiscount" runat="server"></asp:Label>
 
-                                                </ItemTemplate>
-                                                <HeaderStyle HorizontalAlign="Center" />
-                                                <ItemStyle HorizontalAlign="Center" />
-                                            </asp:TemplateField>
-                                            <asp:BoundField DataField="incentive_desc" HeaderText="Description">
-                                                <HeaderStyle HorizontalAlign="Left" />
-                                                <ItemStyle HorizontalAlign="Left" />
-                                            </asp:BoundField>
-                                        </Columns>
-                                        <PagerStyle HorizontalAlign="Left" CssClass="pgr" />
-                                        <AlternatingRowStyle CssClass="alt" />
-                                    </asp:GridView>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td align="left">
-                                    <asp:Button ID="btnPrevious0" runat="server" CssClass="prevButton"
-                                        Text="Previous" OnClick="btnPrevious_Click" />
-                                </td>
-                                <td align="right">&nbsp;</td>
-                                <td align="left">&nbsp;</td>
-                                <td align="left">&nbsp;</td>
-                                <td align="right">
-                                    <asp:Button ID="btnNext0" runat="server" CssClass="nextButton" Text="Next"
-                                        OnClick="btnNext_Click" />
-                                    <br />
-                                    <asp:Label ID="Label1" runat="server" Text="" ForeColor="White"></asp:Label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td align="center">
-                                    <asp:Label ID="lblLoadTime" runat="server" Text="" ForeColor="White"></asp:Label>
-                                </td>
-                            </tr>
-                             <tr>
-                                <td align="center">
-                                    <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
-                                </td>
-                            </tr>
-                        </table>
+                                    </ItemTemplate>
+                                    <HeaderStyle HorizontalAlign="Center" />
+                                    <ItemStyle HorizontalAlign="Center" />
+                                </asp:TemplateField>
+                                <asp:BoundField DataField="incentive_desc" HeaderText="Description">
+                                    <HeaderStyle HorizontalAlign="Left" />
+                                    <ItemStyle HorizontalAlign="Left" />
+                                </asp:BoundField>
+                            </Columns>
+                            <PagerStyle HorizontalAlign="Left" CssClass="pgr" />
+                            <AlternatingRowStyle CssClass="alt" />
+                        </asp:GridView>
                     </td>
+                </tr>
+                <tr>
+                    <td align="left">
+                        <asp:Button ID="btnPrevious0" runat="server" CssClass="prevButton"
+                            Text="Previous" OnClick="btnPrevious_Click" />
+                    </td>
+                    <td align="right">&nbsp;</td>
+                    <td align="left">&nbsp;</td>
+                    <td align="left">&nbsp;</td>
+                    <td align="right">
+                        <asp:Button ID="btnNext0" runat="server" CssClass="nextButton" Text="Next"
+                            OnClick="btnNext_Click" />
+                        <br />
+                        <asp:Label ID="Label1" runat="server" Text="" ForeColor="White"></asp:Label>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center">
+                        <asp:Label ID="lblLoadTime" runat="server" Text="" ForeColor="White"></asp:Label>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center">
+                        <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
+                    </td>
+                </tr>
+            </table>
+            </td>
                 </tr>
             </table>
         </ContentTemplate>

@@ -16,8 +16,7 @@ public partial class companyprofile : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        hdnClientId.Value = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]).ToString();
-
+        
         if (!IsPostBack)
         {
             KPIUtility.PageLoad(this.Page.AppRelativeVirtualPath);
@@ -40,40 +39,106 @@ public partial class companyprofile : System.Web.UI.Page
             ddlState.DataValueField = "abbreviation";
             ddlState.DataBind();
 
-            company_profile com = new company_profile();
-            if (_db.company_profiles.Where(cp => cp.client_id == Convert.ToInt32(hdnClientId.Value)).SingleOrDefault() != null)
-            {
-                com = _db.company_profiles.Single(cp => cp.client_id == Convert.ToInt32(hdnClientId.Value));
-                txtCompanyName.Text = com.company_name;
-                txtAddress.Text = com.address;
-                txtCity.Text = com.city;
-                ddlState.SelectedValue = com.state;
-                txtZipCode.Text = com.zip_code;
-                txtPhone.Text = com.phone;
-                txtFax.Text = com.fax;
-                txtEmail.Text = com.email;
-                txtContractEmail.Text = com.contract_email;
-                txtCOEmail.Text = com.co_email; // using as Transaction related Emails
-                txtProjectNotesEmail.Text = com.ProjectNotesEmail;
-                txtChangeOrdersEmail.Text = com.ChangeOrdersEmail;
-                txtSelectionEmail.Text = com.SelectionEmail;
-                txtWebsite.Text = com.website;
-                txtCustomerPortalURL.Text = com.CustomerPortalURL;
-                //txtMarkup.Text = com.markup.ToString();
-                hdnMarkup.Value = com.markup.ToString();
-                hdnCompanyProfileId.Value = com.company_profile_id.ToString();
-                if (com.CompletionTypeId != null)
-                    rdoCompletionType.SelectedValue = com.CompletionTypeId.ToString();
-                if (com.ChangeQtyView != null)
-                    rdoChangeOrderQTY.SelectedValue = com.ChangeQtyView.ToString();
-                txtExCostDecrease.Text = com.ExCostPercentage.ToString();
-            }
+            BindDivision();
+            GetCompanyProfile();
+
+
+
             btnSave.Attributes.Add("OnClick", "return ValueChanged();");
 
 
             csCommonUtility.SetPagePermission(this.Page, new string[] { "lnkCusServiceEmailAddress", "lnkEmailBilling", "txtEmailInfoPassword", "rdoCompletionType", "chkShowSOW", "rdoChangeOrderQTY", "rdoChangeOrderQTY", "chkIsShowPriceInSOW", "btnSave" });
         }
     }
+
+    private void GetCompanyProfile()
+    {
+        try
+        {
+            DataClassesDataContext _db = new DataClassesDataContext();
+            company_profile com = new company_profile();
+            if (_db.company_profiles.Any(cp => cp.client_id == Convert.ToInt32(ddlDivision.SelectedValue)))
+            {
+               com = _db.company_profiles.SingleOrDefault(cp => cp.client_id == Convert.ToInt32(ddlDivision.SelectedValue));
+               if(com != null)
+               {
+                    txtCompanyName.Text = com.company_name;
+                    txtAddress.Text = com.address;
+                    txtCity.Text = com.city;
+                    ddlState.SelectedValue = com.state;
+                    txtZipCode.Text = com.zip_code;
+                    txtPhone.Text = com.phone;
+                    txtFax.Text = com.fax;
+                    txtEmail.Text = com.email;
+                    txtContractEmail.Text = com.contract_email;
+                    txtCOEmail.Text = com.co_email; // using as Transaction related Emails
+                    txtProjectNotesEmail.Text = com.ProjectNotesEmail;
+                    txtChangeOrdersEmail.Text = com.ChangeOrdersEmail;
+                    txtSelectionEmail.Text = com.SelectionEmail;
+                    txtWebsite.Text = com.website;
+                    txtCustomerPortalURL.Text = com.CustomerPortalURL;
+                    //txtMarkup.Text = com.markup.ToString();
+                    hdnMarkup.Value = com.markup.ToString();
+                    hdnCompanyProfileId.Value = com.company_profile_id.ToString();
+                    if (com.CompletionTypeId != null)
+                        rdoCompletionType.SelectedValue = com.CompletionTypeId.ToString();
+                    if (com.ChangeQtyView != null)
+                        rdoChangeOrderQTY.SelectedValue = com.ChangeQtyView.ToString();
+                    txtExCostDecrease.Text = com.ExCostPercentage.ToString();
+               }                
+            }
+            else
+            {
+                Reset();
+            }
+        }
+        catch
+        {
+
+        }
+    }
+
+    private void Reset()
+    {
+        txtCompanyName.Text = "";
+        txtAddress.Text = "";
+        txtCity.Text = "";
+        ddlState.SelectedIndex = 3;
+        txtZipCode.Text = "";
+        txtPhone.Text = "";
+        txtFax.Text = "";
+        txtEmail.Text = "";
+        txtContractEmail.Text = "";
+        txtCOEmail.Text = ""; // using as Transaction related Emails
+        txtProjectNotesEmail.Text = ""; ;
+        txtChangeOrdersEmail.Text = "";
+        txtSelectionEmail.Text = "";
+        txtWebsite.Text = ""; 
+        txtCustomerPortalURL.Text = "";
+        hdnMarkup.Value = "0";
+        hdnCompanyProfileId.Value = "0";
+        rdoCompletionType.SelectedValue = "1";
+        txtExCostDecrease.Text = "";
+    }
+
+
+    private void BindDivision()
+    {
+        try
+        {
+            string sql = "select id, division_name from division order by division_name";
+            DataTable dt = csCommonUtility.GetDataTable(sql);
+            ddlDivision.DataSource = dt;
+            ddlDivision.DataTextField = "division_name";
+            ddlDivision.DataValueField = "id";
+            ddlDivision.DataBind();
+        }
+        catch (Exception ex)
+        {
+            lblResult.Text = csCommonUtility.GetSystemErrorMessage(ex.ToString());
+        }
+    }
+
     protected void btnSave_Click(object sender, EventArgs e)
     {
         KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnSave.ID, btnSave.GetType().Name, "Click"); 
@@ -203,13 +268,30 @@ public partial class companyprofile : System.Web.UI.Page
         DataClassesDataContext _db = new DataClassesDataContext();
 
         company_profile com = new company_profile();
-        if (_db.company_profiles.Where(cp => cp.client_id == Convert.ToInt32(hdnCompanyProfileId.Value)).SingleOrDefault() != null)
-            com = _db.company_profiles.Single(cp => cp.client_id == Convert.ToInt32(hdnCompanyProfileId.Value));
+
+        //update 
+        if (_db.company_profiles.Any(cp => cp.client_id == Convert.ToInt32(ddlDivision.SelectedValue)))
+        {
+            com = _db.company_profiles.SingleOrDefault(cp => cp.client_id == Convert.ToInt32(ddlDivision.SelectedValue));
+            if (com == null)
+            {
+                lblResult.Text = csCommonUtility.GetSystemErrorMessage("Data not found");
+                return;
+            }                
+        }
+       
+       
+       
+
+
+
+        //if (_db.company_profiles.Where(cp => cp.client_id == Convert.ToInt32(ddlDivision.SelectedValue)).SingleOrDefault() != null)
+             
 
         txtPhone.Text = csCommonUtility.GetPhoneFormat(txtPhone.Text.Trim());
         txtFax.Text = csCommonUtility.GetPhoneFormat(txtFax.Text.Trim());
 
-        com.client_id = Convert.ToInt32(hdnClientId.Value);
+        com.client_id = Convert.ToInt32(ddlDivision.SelectedValue);
         com.company_name = txtCompanyName.Text;
         com.address = txtAddress.Text;
         com.city = txtCity.Text;
@@ -255,11 +337,19 @@ public partial class companyprofile : System.Web.UI.Page
 
         // _db.SubmitChanges();
         if (Convert.ToInt32(hdnCompanyProfileId.Value) == 0)
+        {
             _db.company_profiles.InsertOnSubmit(com);
+            lblResult.Text = csCommonUtility.GetSystemMessage("Data saved successfully.");
+        }
+        else
+        {
+            lblResult.Text = csCommonUtility.GetSystemMessage("Data updated successfully.");
+        }
+            
 
         _db.SubmitChanges();
 
-        lblResult.Text = csCommonUtility.GetSystemMessage("Data saved successfully.");
+        
 
 
     }
@@ -298,4 +388,9 @@ public partial class companyprofile : System.Web.UI.Page
     //    }
     //}
 
+
+    protected void ddlDivision_SelectedIndexChanged(object sender, EventArgs e)
+    {       
+        GetCompanyProfile();
+    }
 }

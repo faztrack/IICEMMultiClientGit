@@ -95,7 +95,7 @@ public partial class coverpage : System.Web.UI.Page
         DataClassesDataContext _db = new DataClassesDataContext();
 
         company_profile oCom = new company_profile();
-        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(hdnClientId.Value));
         decimal totalwithtax = 0;
         decimal project_subtotal = 0;
         decimal total_incentives = 0;

@@ -111,6 +111,10 @@ public partial class lead_report : System.Web.UI.Page
             {
                 Response.Redirect(ConfigurationManager.AppSettings["LoginPage"].ToString());
             }
+            else
+            {
+                hdnDivisionName.Value = ((userinfo)Session["oUser"]).divisionName;
+            }
             if (Page.User.IsInRole("lead001") == false)
             {
                 // No Permission Page.
@@ -135,15 +139,15 @@ public partial class lead_report : System.Web.UI.Page
             BindSuperintendent();
             BindLeadStatus();
             BindLeadSource();
-           ddlStatus.SelectedValue = "7";
+            ddlStatus.SelectedValue = "7";
             GetCustomersNew(0);
         }
     }
     private void BindSalesPerson()
     {
-        DataClassesDataContext _db = new DataClassesDataContext();
-        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1  and is_sales=1 and sales_person.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " order by sales_person_id asc";
-        List<userinfo> mList = _db.ExecuteQuery<userinfo>(strQ, string.Empty).ToList();
+        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1 and is_sales=1 " + csCommonUtility.GetSalesPersonSql(hdnDivisionName.Value) + " order by sales_person_id asc";
+
+        DataTable mList = csCommonUtility.GetDataTable(strQ);
         ddlSalesRep.DataSource = mList;
         ddlSalesRep.DataTextField = "sales_person_name";
         ddlSalesRep.DataValueField = "sales_person_id";

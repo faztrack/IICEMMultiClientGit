@@ -55,15 +55,7 @@ public partial class sendemailoutlook : System.Web.UI.Page
                 obj = (userinfo)Session["oUser"];
                 txtFrom.Text = obj.company_email;
             }
-            company_profile com = new company_profile();
-            if (_db.company_profiles.Where(cp => cp.client_id == 1).SingleOrDefault() != null)
-            {
-                com = _db.company_profiles.Single(cp => cp.client_id == 1);
-
-                txtCc.Text = "";// com.email;
-
-
-            }
+            
             if (Convert.ToInt32(hdnCustomerId.Value) > 0)
             {
 
@@ -102,6 +94,17 @@ public partial class sendemailoutlook : System.Web.UI.Page
                         strEmailSignature = objuser.EmailSignature ?? "";
                     }
                 }
+            }
+
+
+            company_profile com = new company_profile();
+            if (_db.company_profiles.Where(cp => cp.client_id == Convert.ToInt32(hdnClientId.Value)).SingleOrDefault() != null)
+            {
+                com = _db.company_profiles.Single(cp => cp.client_id == Convert.ToInt32(hdnClientId.Value));
+
+                txtCc.Text = "";// com.email;
+
+
             }
 
             if (Request.QueryString.Get("cfn") != null)
@@ -379,9 +382,9 @@ public partial class sendemailoutlook : System.Web.UI.Page
                 string strCustomerPortalURL = "";
 
                 company_profile objCom = new company_profile();
-                if (_db.company_profiles.Where(cp => cp.client_id == 1).SingleOrDefault() != null)
+                if (_db.company_profiles.Where(cp => cp.client_id == Convert.ToInt32(hdnClientId.Value)).SingleOrDefault() != null)
                 {
-                    objCom = _db.company_profiles.Single(cp => cp.client_id == 1);
+                    objCom = _db.company_profiles.Single(cp => cp.client_id == Convert.ToInt32(hdnClientId.Value));
                     strCompanyName = objCom.company_name;
                     strCustomerPortalURL = objCom.CustomerPortalURL + "?sc=sc";
                 }

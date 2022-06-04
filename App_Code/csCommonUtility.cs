@@ -210,6 +210,38 @@ public class csCommonUtility
         }
     }
 
+    public static string GetSalesPersonSql(string divisionName)
+    {
+        string condition = "  ";
+        if (divisionName.Contains(','))
+        {
+
+            string[] ary = divisionName.Split(',');
+
+            int count = 0;
+            foreach (var a in ary)
+            {
+                if (count > 0)
+                {
+                    condition += " OR division_name like '%" + a.Trim() + "%' ";
+                }
+                else
+                {
+                    condition += " division_name like '%" + a.Trim() + "%' ";
+                }
+                count++;
+            }
+        }
+        else
+        {
+            condition += "  division_name like '%" + divisionName + "%' ";
+        }
+
+        condition = "  AND (" + condition + " )";
+
+        return condition;
+    }
+
 
     public static DataTable GetDataTable(string strQ)
     {
@@ -324,6 +356,8 @@ public class csCommonUtility
         return Phone;
 
     }
+
+    
 
     public class setDMUserData
     {

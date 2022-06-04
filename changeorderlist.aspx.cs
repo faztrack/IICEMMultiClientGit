@@ -203,7 +203,7 @@ public partial class changeorderlist : System.Web.UI.Page
         ReportDocument rptFile = new ReportDocument();
         string strReportPath = "";
         company_profile oCom = new company_profile();
-        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(hdnClientId.Value));
         if (oCom != null)
         {
             if (oCom.ChangeQtyView == 1)
@@ -413,7 +413,7 @@ public partial class changeorderlist : System.Web.UI.Page
         }
 
         company_profile oCom = new company_profile();
-        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(hdnClientId.Value));
         string strCompanyName = oCom.company_name;
         string strComPhone = oCom.phone;
         string strComFax = oCom.fax;

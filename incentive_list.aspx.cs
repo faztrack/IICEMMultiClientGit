@@ -64,35 +64,58 @@ public partial class incentive_list : System.Web.UI.Page
             List<incentive> iList = _db.incentives.ToList();
             Session.Add("iSearch", iList);
 
+            BindDivision();
             GetIncentives(0);
         }
+    }
+
+    private void BindDivision()
+    {
+
+        string sql = "select id, division_name from division order by division_name";
+        DataTable dt = csCommonUtility.GetDataTable(sql);
+        ddlDivision.DataSource = dt;
+        ddlDivision.DataTextField = "division_name";
+        ddlDivision.DataValueField = "id";
+        ddlDivision.DataBind();
+        ddlDivision.Items.Insert(0, "All");
+
     }
 
     protected void GetIncentives(int nPageNo)
     {
         DataClassesDataContext _db = new DataClassesDataContext();
         lblResult.Text = "";
-        company_profile objComp = new company_profile();
-        objComp = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
-        // Is Incentive Active/Inactive
-        chkIsActive.Checked = Convert.ToBoolean(objComp.IsIncentiveActive);
+
+        
 
         grdIncentive.PageIndex = nPageNo;
+               
 
-        var item = from inc in _db.incentives
-                   where inc.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
-                   orderby inc.incentive_name
-                   select inc;
+        string condition = "";
+
 
         if (txtSearch.Text.Trim() != "")
         {
-            string str = txtSearch.Text.Trim();
-
-            item = from inc in _db.incentives
-                   where inc.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && inc.incentive_name.Contains(str)
-                   orderby inc.incentive_name
-                   select inc;
+            condition += " where incentive_name in ('" + txtSearch.Text.Trim() + "') ";
         }
+
+
+        if (ddlDivision.SelectedItem.Text != "All")
+        {
+            if (condition.Length > 2)
+                condition += " AND division_name like '%" + ddlDivision.SelectedItem.Text.Trim() + "%' ";
+            else
+                condition = " WHERE  division_name like '%" + ddlDivision.SelectedItem.Text.Trim() + "%' ";
+        }
+
+
+
+
+        string sql = "select * from incentives " + condition;
+        DataTable items = csCommonUtility.GetDataTable(sql);
+
+        
 
         if (ddlItemPerPage.SelectedValue != "4")
         {
@@ -102,8 +125,8 @@ public partial class incentive_list : System.Web.UI.Page
         {
             grdIncentive.PageSize = 200;
         }
-        grdIncentive.DataSource = item;
-        grdIncentive.DataKeyNames = new string[] { "incentive_type", "discount", "amount" };
+        grdIncentive.DataSource = items;
+        grdIncentive.DataKeyNames = new string[] { "incentive_type", "discount", "amount", "client_id" };
         grdIncentive.DataBind();
 
         lblCurrentPageNo.Text = Convert.ToString(nPageNo + 1);
@@ -141,6 +164,12 @@ public partial class incentive_list : System.Web.UI.Page
             int incentiveType = Convert.ToInt32(grdIncentive.DataKeys[e.Row.RowIndex].Values[0]);
             string discount = grdIncentive.DataKeys[e.Row.RowIndex].Values[1].ToString();
             string amount = grdIncentive.DataKeys[e.Row.RowIndex].Values[2].ToString();
+
+            string clientId = grdIncentive.DataKeys[e.Row.RowIndex].Values[3].ToString();
+            Label lblDivision = e.Row.FindControl("lblDivision") as Label;
+
+            lblDivision.Text = csCommonUtility.GetDivisionName(clientId);
+
             Label lblDiscount = (Label)e.Row.FindControl("lblDiscount");
             if (incentiveType == 1)
             {
@@ -151,10 +180,10 @@ public partial class incentive_list : System.Web.UI.Page
                 lblDiscount.Text = "$" + amount;
             }
 
-            if (Convert.ToBoolean(e.Row.Cells[3].Text) == true)
-                e.Row.Cells[3].Text = "Yes";
+            if (Convert.ToBoolean(e.Row.Cells[4].Text) == true)
+                e.Row.Cells[4].Text = "Yes";
             else
-                e.Row.Cells[3].Text = "No";
+                e.Row.Cells[4].Text = "No";
         }
     }
     protected void btnAddNew_Click(object sender, EventArgs e)
@@ -172,14 +201,19 @@ public partial class incentive_list : System.Web.UI.Page
         KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, chkIsActive.ID, chkIsActive.GetType().Name, "Click"); 
         try
         {
-            DataClassesDataContext _db = new DataClassesDataContext();
-            company_profile objComp = new company_profile();
+            if (ddlDivision.SelectedItem.Text != "All")
+            {
+                DataClassesDataContext _db = new DataClassesDataContext();
+                company_profile objComp = new company_profile();
 
-            objComp = _db.company_profiles.SingleOrDefault(c => c.client_id == 1);
+                objComp = _db.company_profiles.SingleOrDefault(c => c.client_id == Convert.ToInt32(ddlDivision.SelectedValue));
 
-            objComp.IsIncentiveActive = chkIsActive.Checked;
-            _db.SubmitChanges();
-            lblResult.Text = csCommonUtility.GetSystemMessage("Data updated successfully.");
+                objComp.IsIncentiveActive = chkIsActive.Checked;
+                _db.SubmitChanges();
+                lblResult.Text = csCommonUtility.GetSystemMessage("Data updated successfully.");
+            }
+           
+            
         }
         catch (Exception ex)
         {
@@ -211,6 +245,25 @@ public partial class incentive_list : System.Web.UI.Page
     protected void lnkViewAll_Click(object sender, EventArgs e)
     {
         txtSearch.Text = "";
+        ddlDivision.SelectedIndex = 0;
+        GetIncentives(0);
+    }
+
+    protected void ddlDivision_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        DataClassesDataContext _db = new DataClassesDataContext();
+        if(ddlDivision.SelectedItem.Text != "All")
+        {
+            company_profile objComp = new company_profile();
+            objComp = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(ddlDivision.SelectedValue));
+            // Is Incentive Active/Inactive
+            chkIsActive.Checked = Convert.ToBoolean(objComp.IsIncentiveActive);
+        }
+        else
+        {
+            chkIsActive.Checked = false;
+        }
+
         GetIncentives(0);
     }
 }

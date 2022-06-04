@@ -46,38 +46,7 @@ public partial class payment_info : System.Web.UI.Page
                 Response.Redirect("nopermission.aspx");
             }
             DataClassesDataContext _db = new DataClassesDataContext();
-            company_profile oCom = new company_profile();
-            oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
-
-            if (oCom.CompletionTypeId == 1)
-            {
-                rdoCompletionType.SelectedValue = "1";
-
-                lblLeadTime.Visible = true;
-                txtLeadTime.Visible = true;
-                lblStartDate.Visible = false;
-                txtStartDate.Visible = false;
-                imgStartDate.Visible = false;
-                lblCompletionDate.Visible = false;
-                txtCompletionDate.Visible = false;
-                imgCompletionDate.Visible = false;
-            }
-            else
-            {
-                rdoCompletionType.SelectedValue = "2";
-                lblLeadTime.Visible = false;
-                txtLeadTime.Visible = false;
-                lblStartDate.Visible = true;
-                txtStartDate.Visible = true;
-                imgStartDate.Visible = true;
-                lblCompletionDate.Visible = true;
-                txtCompletionDate.Visible = true;
-                imgCompletionDate.Visible = true;
-
-            }
-
-            // Is Incentive Active/Inactive
-            pnlIncentive.Visible = Convert.ToBoolean(oCom.IsIncentiveActive);
+            
 
             int nEstimateId = Convert.ToInt32(Request.QueryString.Get("eid"));
             hdnEstimateId.Value = nEstimateId.ToString();
@@ -115,6 +84,42 @@ public partial class payment_info : System.Web.UI.Page
                     string address = cust.address + ",+" + cust.city + ",+" + cust.state + ",+" + cust.zip_code;
                     hypGoogleMap.NavigateUrl = "http://maps.google.com/maps?f=q&source=s_q&hl=en&geocode=&q=" + address;
                 }
+
+
+
+
+                company_profile oCom = new company_profile();
+                oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(hdnClientId.Value));
+
+                if (oCom.CompletionTypeId == 1)
+                {
+                    rdoCompletionType.SelectedValue = "1";
+
+                    lblLeadTime.Visible = true;
+                    txtLeadTime.Visible = true;
+                    lblStartDate.Visible = false;
+                    txtStartDate.Visible = false;
+                    imgStartDate.Visible = false;
+                    lblCompletionDate.Visible = false;
+                    txtCompletionDate.Visible = false;
+                    imgCompletionDate.Visible = false;
+                }
+                else
+                {
+                    rdoCompletionType.SelectedValue = "2";
+                    lblLeadTime.Visible = false;
+                    txtLeadTime.Visible = false;
+                    lblStartDate.Visible = true;
+                    txtStartDate.Visible = true;
+                    imgStartDate.Visible = true;
+                    lblCompletionDate.Visible = true;
+                    txtCompletionDate.Visible = true;
+                    imgCompletionDate.Visible = true;
+
+                }
+
+                // Is Incentive Active/Inactive
+                pnlIncentive.Visible = Convert.ToBoolean(oCom.IsIncentiveActive);
 
 
 
@@ -493,15 +498,21 @@ public partial class payment_info : System.Web.UI.Page
     private void GetIncentiveData()
     {
         DataClassesDataContext _db = new DataClassesDataContext();
-        var item = from inc in _db.incentives
-                   where inc.client_id == Convert.ToInt32(hdnClientId.Value) && inc.is_active == Convert.ToBoolean(1) && inc.start_date <= DateTime.Now && inc.end_date >= DateTime.Now
-                   orderby inc.incentive_name
-                   select inc;
-        if (item.Count() > 0)
+        //var item = from inc in _db.incentives
+        //           where inc.client_id == Convert.ToInt32(hdnClientId.Value) && inc.is_active == Convert.ToBoolean(1) && inc.start_date <= DateTime.Now && inc.end_date >= DateTime.Now
+        //           orderby inc.incentive_name
+        //           select inc;
+
+
+        string sql = "select * from incentives where is_active = 1 AND start_date < '" + DateTime.Now + "' AND end_date >= '" + DateTime.Now.AddDays(1) + "' AND division_name like '%" + csCommonUtility.GetDivisionName(hdnClientId.Value).Trim() + "%' " + " order by incentive_name";
+
+        DataTable dt = csCommonUtility.GetDataTable(sql);
+
+        if (dt.Rows.Count > 0)
         {
             tblIncentives.Visible = true;
 
-            grdIncentives.DataSource = item;
+            grdIncentives.DataSource = dt;
             grdIncentives.DataKeyNames = new string[] { "incentive_id", "discount", "amount", "incentive_type" };
             grdIncentives.DataBind();
 
@@ -1275,7 +1286,7 @@ public partial class payment_info : System.Web.UI.Page
         DataClassesDataContext _db = new DataClassesDataContext();
 
         company_profile oCom = new company_profile();
-        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(hdnClientId.Value));
         decimal totalwithtax = 0;
         decimal project_subtotal = 0;
         decimal total_incentives = 0;
@@ -2721,7 +2732,7 @@ public partial class payment_info : System.Web.UI.Page
         DataClassesDataContext _db = new DataClassesDataContext();
 
         company_profile oCom = new company_profile();
-        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(hdnClientId.Value));
         decimal totalwithtax = 0;
         decimal project_subtotal = 0;
         decimal total_incentives = 0;
@@ -3749,7 +3760,7 @@ public partial class payment_info : System.Web.UI.Page
         DataClassesDataContext _db = new DataClassesDataContext();
 
         company_profile oCom = new company_profile();
-        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(hdnClientId.Value));
         decimal totalwithtax = 0;
         decimal project_subtotal = 0;
         decimal tax_amount = 0;
@@ -5162,7 +5173,7 @@ public partial class payment_info : System.Web.UI.Page
         DataClassesDataContext _db = new DataClassesDataContext();
 
         company_profile oCom = new company_profile();
-        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(hdnClientId.Value));
         decimal totalwithtax = 0;
         decimal project_subtotal = 0;
         decimal total_incentives = 0;
@@ -6163,7 +6174,7 @@ public partial class payment_info : System.Web.UI.Page
         DataClassesDataContext _db = new DataClassesDataContext();
 
         company_profile oCom = new company_profile();
-        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(hdnClientId.Value));
         decimal totalwithtax = 0;
         decimal project_subtotal = 0;
         decimal total_incentives = 0;
@@ -7083,7 +7094,7 @@ public partial class payment_info : System.Web.UI.Page
         DataClassesDataContext _db = new DataClassesDataContext();
 
         company_profile oCom = new company_profile();
-        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(hdnClientId.Value));
 
 
         string strPsumm = string.Empty;
@@ -7354,7 +7365,7 @@ public partial class payment_info : System.Web.UI.Page
         DataClassesDataContext _db = new DataClassesDataContext();
 
         company_profile oCom = new company_profile();
-        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(hdnClientId.Value));
 
 
         string strPsumm = string.Empty;

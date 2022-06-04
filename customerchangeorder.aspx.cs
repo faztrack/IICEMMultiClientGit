@@ -55,9 +55,9 @@ public partial class customerchangeorder : System.Web.UI.Page
                 _db.ExecuteCommand(strQ, string.Empty);
                 _db.SubmitChanges();
                 company_profile com = new company_profile();
-                if (_db.company_profiles.Where(cp => cp.client_id == 1).SingleOrDefault() != null)
+                if (_db.company_profiles.Where(cp => cp.client_id == Convert.ToInt32(hdnClientId.Value)).SingleOrDefault() != null)
                 {
-                    com = _db.company_profiles.Single(cp => cp.client_id == 1);
+                    com = _db.company_profiles.Single(cp => cp.client_id == Convert.ToInt32(hdnClientId.Value));
                     lblComProfilelEmail.Text = com.email;
                     hdnCCEmail.Value = com.ChangeOrdersEmail ?? "";
                 }
@@ -2036,7 +2036,7 @@ public partial class customerchangeorder : System.Web.UI.Page
         objcu = _db.customeruserinfos.Single(cu => cu.customerid == nCustomerId);
 
         company_profile oCom = new company_profile();
-        oCom = _db.company_profiles.Single(c => c.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+        oCom = _db.company_profiles.Single(c => c.client_id == Convert.ToInt32(hdnClientId.Value));
 
         string strTable = "<table align='center' width='704px' border='0'>" + Environment.NewLine +
                 "<tr><td align='left'>Dear " + objCust.first_name1 + " " + objCust.last_name1 + ",</td></tr>" + Environment.NewLine +
@@ -2498,7 +2498,7 @@ public partial class customerchangeorder : System.Web.UI.Page
         objcu = _db.customeruserinfos.Single(cu => cu.customerid == nCustomerId);
 
         company_profile oCom = new company_profile();
-        oCom = _db.company_profiles.Single(c => c.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+        oCom = _db.company_profiles.Single(c => c.client_id == Convert.ToInt32(hdnClientId.Value));
 
         string strTable = "<table align='center' width='704px' border='0'>" + Environment.NewLine +
                 "<tr><td align='left'>Dear " + objCust.first_name1 + " " + objCust.last_name1 + ",</td></tr>" + Environment.NewLine +

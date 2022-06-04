@@ -115,6 +115,7 @@ public partial class advanced_report : System.Web.UI.Page
             else
             {
                 hdnClientId.Value = ((userinfo)Session["oUser"]).client_id.ToString();
+                hdnDivisionName.Value = ((userinfo)Session["oUser"]).divisionName.ToString();
             }
             if (Page.User.IsInRole("rpt004") == false)
             {
@@ -160,10 +161,9 @@ public partial class advanced_report : System.Web.UI.Page
     }
     private void BindSalesPerson()
     {
-        DataClassesDataContext _db = new DataClassesDataContext();
-        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1  and is_sales=1 and sales_person.client_id in ( " + hdnClientId.Value + " ) order by sales_person_id asc";
-        List<userinfo> mList = _db.ExecuteQuery<userinfo>(strQ, string.Empty).ToList();
-        lsbSalesRep.DataSource = mList;
+        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1 and is_sales=1 " + csCommonUtility.GetSalesPersonSql(hdnDivisionName.Value) + " order by sales_person_id asc";
+        DataTable dt = csCommonUtility.GetDataTable(strQ);
+        lsbSalesRep.DataSource = dt;
         lsbSalesRep.DataTextField = "sales_person_name";
         lsbSalesRep.DataValueField = "sales_person_id";
         lsbSalesRep.DataBind();
@@ -173,7 +173,7 @@ public partial class advanced_report : System.Web.UI.Page
     {
         DataClassesDataContext _db = new DataClassesDataContext();
         var LeadStatus = from st in _db.lead_status
-                         where st.lead_status_id != 7 && st.lead_status_id != 4 && st.lead_status_id != 5
+                         where st.lead_status_id != 7 && st.lead_status_id != 4 && st.lead_status_id != 5 
                          orderby st.lead_status_id
                          select st;
         lsbStatus.DataSource = LeadStatus;

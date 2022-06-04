@@ -22,6 +22,7 @@
         <tr>
             <td>
                         <asp:HiddenField ID="hdnCustomerId" runat="server" Value="0" />
+                <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
                     &nbsp;</td>
             <td>
                 &nbsp;</td>

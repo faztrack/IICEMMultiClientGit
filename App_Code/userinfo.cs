@@ -51,6 +51,7 @@ public class userinfo
     public string EmailIntegration { get; set; }
     public bool IsTimeClock { get; set; }
     public bool IsPriceChange { get; set; }
+    public string divisionName { get; set; }
 }
 // FaztrackPagePermission
 public class csUserPagePermission

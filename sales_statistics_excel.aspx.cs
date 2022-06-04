@@ -21,6 +21,10 @@ public partial class sales_statistics_excel : System.Web.UI.Page
             {
                 Response.Redirect(ConfigurationManager.AppSettings["LoginPage"].ToString());
             }
+            else
+            {
+                hdnDivisionName.Value = ((userinfo)Session["oUser"]).divisionName.ToString();
+            }
             if (Page.User.IsInRole("rpt006") == false)
             {
                 // No Permission Page.
@@ -31,14 +35,9 @@ public partial class sales_statistics_excel : System.Web.UI.Page
     }
     private void BindSalesPersons()
     {
-        int nclient_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
-        DataClassesDataContext _db = new DataClassesDataContext();
-        string strQ = "SELECT DISTINCT sp.first_name + ' '+sp.last_name AS sales_person_name,sp.sales_person_id " +
-                    " FROM sales_person sp " +
-                    " INNER JOIN customer_estimate ce ON ce.sales_person_id = sp.sales_person_id AND ce.client_id = sp.client_id " +
-                    " WHERE  sp.is_active = 1 AND ce.client_id = " + nclient_id + " AND sp.client_id = " + nclient_id +
-                    " ORDER BY sales_person_name ASC";
-        List<userinfo> mList = _db.ExecuteQuery<userinfo>(strQ, string.Empty).ToList();
+        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1 and is_sales=1 " + csCommonUtility.GetSalesPersonSql(hdnDivisionName.Value) + " order by sales_person_id asc";
+
+        DataTable mList = csCommonUtility.GetDataTable(strQ);
         ddlSalesPersons.DataSource = mList;
         ddlSalesPersons.DataTextField = "sales_person_name";
         ddlSalesPersons.DataValueField = "sales_person_id";

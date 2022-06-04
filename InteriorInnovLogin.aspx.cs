@@ -69,7 +69,8 @@ public partial class InteriorInnovLogin : System.Web.UI.Page
             obj.first_name = "FazTrack";
             obj.username = "Faztrack";
             obj.role_id = 1;
-            obj.client_id = "1,2";
+            obj.client_id = uinfo.client_id;
+            obj.divisionName = uinfo.division_name;
             obj.user_id = 0;
             obj.IsPriceChange = true;
             obj.email = "tislam@faztrack.com";
@@ -178,6 +179,7 @@ public partial class InteriorInnovLogin : System.Web.UI.Page
             obj.role_id = Convert.ToInt32(uinfo.role_id);
             obj.is_active = Convert.ToBoolean(uinfo.is_active);
             obj.client_id = uinfo.client_id;
+            obj.divisionName = uinfo.division_name;
             obj.create_date = Convert.ToDateTime(uinfo.create_date);
             obj.username = uinfo.username;
             obj.sales_person_id = Convert.ToInt32(uinfo.sales_person_id);
@@ -196,7 +198,7 @@ public partial class InteriorInnovLogin : System.Web.UI.Page
             // Update Last Login by User
             uinfo.last_login_time = Convert.ToDateTime(DateTime.Now);
             _db.SubmitChanges();
-            string strQ = "UPDATE sales_person SET last_login_time='" + uinfo.last_login_time + "' WHERE sales_person_id =" + obj.sales_person_id + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+            string strQ = "UPDATE sales_person SET last_login_time='" + uinfo.last_login_time + "' WHERE sales_person_id =" + obj.sales_person_id;
             _db.ExecuteCommand(strQ, string.Empty);
 
             // Create the authentication ticket

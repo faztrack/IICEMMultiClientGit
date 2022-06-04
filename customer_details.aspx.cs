@@ -145,6 +145,7 @@ public partial class customer_details : System.Web.UI.Page
                 HyperLink2.Attributes.Add("onClick", "DisplayWindow();");
             }
 
+
             if (Convert.ToInt32(hdnCustomerId.Value) > 0)
             {
                 customer custForClientId = _db.customers.Single(c => c.customer_id == Convert.ToInt32(hdnCustomerId.Value));
@@ -464,14 +465,32 @@ public partial class customer_details : System.Web.UI.Page
         ddlState.DataValueField = "abbreviation";
         ddlState.DataBind();
     }
+    //private void BindSalesPerson()
+    //{
+    //    string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1 and is_sales=1 " + csCommonUtility.GetSalesPersonSql(hdnDivisionName.Value) + " order by sales_person_id asc";
+    //    DataTable mList = csCommonUtility.GetDataTable(strQ);
+    //    ddlSalesPerson.DataSource = mList;
+    //    ddlSalesPerson.DataTextField = "sales_person_name";
+    //    ddlSalesPerson.DataValueField = "sales_person_id";
+    //    ddlSalesPerson.DataBind();
+    //}
+
+
     private void BindSalesPerson()
     {
-        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1  and is_sales=1 and sales_person.client_id in ('" + Convert.ToInt32(hdnClientId.Value) + "') order by sales_person_id asc";
+        DataClassesDataContext _db = new DataClassesDataContext();
+
+        division dv = _db.divisions.FirstOrDefault(x => x.Id == Convert.ToInt32(hdnClientId.Value));
+        string divisionName = dv.division_name;
+
+        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1 and is_sales=1 " + csCommonUtility.GetSalesPersonSql(divisionName) + " order by sales_person_id asc";
+
         DataTable mList = csCommonUtility.GetDataTable(strQ);
         ddlSalesPerson.DataSource = mList;
         ddlSalesPerson.DataTextField = "sales_person_name";
         ddlSalesPerson.DataValueField = "sales_person_id";
         ddlSalesPerson.DataBind();
+
     }
 
     private void BindLeadSource()
@@ -1155,7 +1174,7 @@ public partial class customer_details : System.Web.UI.Page
         DataClassesDataContext _db = new DataClassesDataContext();
 
         company_profile oCom = new company_profile();
-        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(hdnClientId.Value));
         decimal totalwithtax = 0;
         decimal project_subtotal = 0;
         decimal total_incentives = 0;
@@ -2553,7 +2572,7 @@ public partial class customer_details : System.Web.UI.Page
         DataClassesDataContext _db = new DataClassesDataContext();
 
         company_profile oCom = new company_profile();
-        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(hdnClientId.Value));
         decimal totalwithtax = 0;
         decimal project_subtotal = 0;
         decimal total_incentives = 0;

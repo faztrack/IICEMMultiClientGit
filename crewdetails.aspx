@@ -39,7 +39,7 @@
                                     <span class="required">* </span><b>First Name: </b>
                                 </td>
                                 <td align="left">
-                                    <asp:TextBox ID="txtFirstName" runat="server" Width="200px" TabIndex="1"></asp:TextBox>
+                                    <asp:TextBox ID="txtFirstName" runat="server" Width="200px" ></asp:TextBox>
                                 </td>
                             </tr>
                             <tr>
@@ -47,7 +47,7 @@
                                     <span class="required">* </span><b>Last Name: </b>
                                 </td>
                                 <td align="left">
-                                    <asp:TextBox ID="txtLastName" runat="server" Width="200px" TabIndex="1"></asp:TextBox>
+                                    <asp:TextBox ID="txtLastName" runat="server" Width="200px" ></asp:TextBox>
                                 </td>
                             </tr>
                
@@ -57,7 +57,7 @@
                                 </td>
                                 <td align="left">
                                     <asp:TextBox ID="txtPhone" runat="server" Width="200px"
-                                        TabIndex="7"></asp:TextBox></td>
+                                       ></asp:TextBox></td>
                             </tr>
                 
 
@@ -66,7 +66,7 @@
                                     <b>User Name: </b>
                                 </td>
                                 <td align="left" colspan="2">
-                                    <asp:TextBox ID="txtUsername" runat="server" TabIndex="10" Width="200px"></asp:TextBox>
+                                    <asp:TextBox ID="txtUsername" runat="server"  Width="200px"></asp:TextBox>
                                 </td>
                             </tr>
                             <tr>
@@ -77,7 +77,7 @@
                                 <td align="left" width="265px">
                                     <table cellpadding="0" cellspacing="0">
                                         <tr>
-                                            <td><asp:TextBox ID="txtPassword" runat="server" TextMode="Password" TabIndex="11" Width="200px"></asp:TextBox> </td>
+                                            <td><asp:TextBox ID="txtPassword" runat="server" TextMode="Password" Width="200px"></asp:TextBox> </td>
                                             <div style="position: absolute;margin-top: 5px;text-align: right;margin-left:190px;"><asp:ImageButton ID="imgPasswordShow" runat="server" CssClass="noEffectNew" ImageUrl="~/assets/customerstatemind/icon_hide.png" Width="20px" OnClick="imgPasswordShow_Click" />
                                     <asp:ImageButton ID="imgPasswordHide" runat="server" CssClass="noEffectNew" ImageUrl="~/assets/customerstatemind/icon_view.png" Width="20px" OnClick="imgPasswordHide_Click" Visible="false" /></div>
                                         </tr>
@@ -94,8 +94,8 @@
                                 <td align="right">
                                     <b>Status: </b></td>
                                 <td align="left" style="width:400px">
-                                    <asp:CheckBox ID="chkIsActive" Width="100px" runat="server" Checked="True" TabIndex="16" Text="Active" />
-                                       <asp:CheckBox ID="chkIsSMS" runat="server" Checked="True" TabIndex="20"
+                                    <asp:CheckBox ID="chkIsActive" Width="100px" runat="server" Checked="True"  Text="Active" />
+                                       <asp:CheckBox ID="chkIsSMS" runat="server" Checked="True" 
                                         Text="Enable SMS" />
                                 </td>
                             </tr>
@@ -118,7 +118,7 @@
                                                 <table cellpadding="0" cellspacing="0" width="100%">
                                                     <tr>
                                                         <td align="left"><span class="titleNu"><span id="spnPnlSection" class="cssTitleHeader">
-                                                            <asp:ImageButton ID="ImageSectionMain" runat="server" ImageUrl="~/Images/expand.png" CssClass="blindInput" Style="margin: 0px; background: none; border: none; box-shadow: none; padding: 0 0 4px; vertical-align: middle;" TabIndex="40" />
+                                                            <asp:ImageButton ID="ImageSectionMain" runat="server" ImageUrl="~/Images/expand.png" CssClass="blindInput" Style="margin: 0px; background: none; border: none; box-shadow: none; padding: 0 0 4px; vertical-align: middle;" />
                                                             <font style="font-size: 16px; cursor: pointer;">Sections</font></span></span>
                                                             <cc1:collapsiblepanelextender id="CollapsiblePanelExtender7" runat="server" collapsecontrolid="spnPnlSection" collapsed="True" collapsedimage="Images/expand.png" expandcontrolid="spnPnlSection" expandedimage="Images/collapse.png" imagecontrolid="ImageSectionMain" suppresspostback="true" targetcontrolid="pnlSection">
                                                 </cc1:collapsiblepanelextender>
@@ -135,7 +135,7 @@
                                                         <tr>
                                                             <td align="center">
                                                                 <asp:CheckBoxList ID="chkSections" runat="server" RepeatColumns="4"
-                                                                    Width="100%" TabIndex="2">
+                                                                    Width="100%">
                                                                 </asp:CheckBoxList>
                                                             </td>
                                                         </tr>
@@ -151,9 +151,9 @@
                                 <td>&nbsp;</td>
                                 <td align="left">
                                     <asp:Button ID="btnSubmit" runat="server"
-                                        TabIndex="17" Text="Submit" CssClass="button" OnClick="btnSubmit_Click"
+                                        TabIndex="0" Text="Submit" CssClass="button" OnClick="btnSubmit_Click"
                                         Width="80px" />
-                                    &nbsp;<asp:Button ID="btnCancel" runat="server" TabIndex="18" Text="Cancel"
+                                    &nbsp;<asp:Button ID="btnCancel" runat="server" TabIndex="1" Text="Cancel"
                                         CausesValidation="False" CssClass="button" OnClick="btnCancel_Click"
                                         Width="80px" />
                                     <asp:Label ID="lblLoadTime" runat="server" Text="" ForeColor="White"></asp:Label>

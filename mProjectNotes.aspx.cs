@@ -42,15 +42,7 @@ public partial class mProjectNotes : System.Web.UI.Page
             {
                 DataClassesDataContext _db = new DataClassesDataContext();
 
-                company_profile com = new company_profile();
-                if (_db.company_profiles.Where(cp => cp.client_id == 1).SingleOrDefault() != null)
-                {
-                    com = _db.company_profiles.Single(cp => cp.client_id == 1);
-
-                    hdnProjectNotesEmail.Value = com.ProjectNotesEmail ?? "";
-                    ProjectNotesEmail = hdnProjectNotesEmail.Value;
-                }
-
+                
                 customer cust = new customer();
                 cust = _db.customers.Single(c => c.customer_id == Convert.ToInt32(hdnCustomerId.Value));
                 hdnLastName.Value = cust.last_name1;
@@ -65,8 +57,20 @@ public partial class mProjectNotes : System.Web.UI.Page
                 lblAddress.Text = strAddress;
                 lblPhone.Text = cust.phone;
                 lblEmail.Text = cust.email;
-
                 hdnSalesPersonId.Value = cust.sales_person_id.ToString();
+
+
+                company_profile com = new company_profile();
+                if (_db.company_profiles.Where(cp => cp.client_id == cust.client_id).SingleOrDefault() != null)
+                {
+                    com = _db.company_profiles.Single(cp => cp.client_id == cust.client_id);
+
+                    hdnProjectNotesEmail.Value = com.ProjectNotesEmail ?? "";
+                    ProjectNotesEmail = hdnProjectNotesEmail.Value;
+                }
+
+
+
                 sales_person sap = new sales_person();
                 sap = _db.sales_persons.SingleOrDefault(c => c.sales_person_id == Convert.ToInt32(cust.sales_person_id) && c.is_active == true);
                 if (sap != null)

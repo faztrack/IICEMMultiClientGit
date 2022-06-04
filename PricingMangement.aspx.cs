@@ -43,7 +43,8 @@ public partial class PricingMangement : System.Web.UI.Page
             }
 
             DataClassesDataContext _db = new DataClassesDataContext();
-            company_profile objCp = _db.company_profiles.SingleOrDefault(cp => cp.client_id == 1);
+
+            company_profile objCp = _db.company_profiles.SingleOrDefault(cp => cp.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
             hdnMultiplier.Value = objCp.markup.ToString();
             LoadTree();
             // test.SaveText(strTest);

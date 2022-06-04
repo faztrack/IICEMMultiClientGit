@@ -224,9 +224,6 @@ public partial class DataClassesDataContext : System.Data.Linq.DataContext
   partial void Insertlocation(location instance);
   partial void Updatelocation(location instance);
   partial void Deletelocation(location instance);
-  partial void Insertincentive(incentive instance);
-  partial void Updateincentive(incentive instance);
-  partial void Deleteincentive(incentive instance);
   partial void Insertco_pricing_master(co_pricing_master instance);
   partial void Updateco_pricing_master(co_pricing_master instance);
   partial void Deleteco_pricing_master(co_pricing_master instance);
@@ -389,6 +386,9 @@ public partial class DataClassesDataContext : System.Data.Linq.DataContext
   partial void Insertsales_person(sales_person instance);
   partial void Updatesales_person(sales_person instance);
   partial void Deletesales_person(sales_person instance);
+  partial void Insertincentive(incentive instance);
+  partial void Updateincentive(incentive instance);
+  partial void Deleteincentive(incentive instance);
   #endregion
 	
 	public DataClassesDataContext() : 
@@ -941,14 +941,6 @@ public partial class DataClassesDataContext : System.Data.Linq.DataContext
 		}
 	}
 	
-	public System.Data.Linq.Table<incentive> incentives
-	{
-		get
-		{
-			return this.GetTable<incentive>();
-		}
-	}
-	
 	public System.Data.Linq.Table<co_pricing_master> co_pricing_masters
 	{
 		get
@@ -1378,6 +1370,14 @@ public partial class DataClassesDataContext : System.Data.Linq.DataContext
 		get
 		{
 			return this.GetTable<sales_person>();
+		}
+	}
+	
+	public System.Data.Linq.Table<incentive> incentives
+	{
+		get
+		{
+			return this.GetTable<incentive>();
 		}
 	}
 }
@@ -28404,284 +28404,6 @@ public partial class location : INotifyPropertyChanging, INotifyPropertyChanged
 	}
 }
 
-[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.incentives")]
-public partial class incentive : INotifyPropertyChanging, INotifyPropertyChanged
-{
-	
-	private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-	
-	private int _incentive_id;
-	
-	private string _incentive_name;
-	
-	private string _incentive_desc;
-	
-	private System.Nullable<bool> _is_active;
-	
-	private System.Nullable<System.DateTime> _start_date;
-	
-	private System.Nullable<System.DateTime> _end_date;
-	
-	private System.Nullable<decimal> _discount;
-	
-	private System.Nullable<int> _client_id;
-	
-	private System.Nullable<int> _incentive_type;
-	
-	private System.Nullable<decimal> _amount;
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void Onincentive_idChanging(int value);
-    partial void Onincentive_idChanged();
-    partial void Onincentive_nameChanging(string value);
-    partial void Onincentive_nameChanged();
-    partial void Onincentive_descChanging(string value);
-    partial void Onincentive_descChanged();
-    partial void Onis_activeChanging(System.Nullable<bool> value);
-    partial void Onis_activeChanged();
-    partial void Onstart_dateChanging(System.Nullable<System.DateTime> value);
-    partial void Onstart_dateChanged();
-    partial void Onend_dateChanging(System.Nullable<System.DateTime> value);
-    partial void Onend_dateChanged();
-    partial void OndiscountChanging(System.Nullable<decimal> value);
-    partial void OndiscountChanged();
-    partial void Onclient_idChanging(System.Nullable<int> value);
-    partial void Onclient_idChanged();
-    partial void Onincentive_typeChanging(System.Nullable<int> value);
-    partial void Onincentive_typeChanged();
-    partial void OnamountChanging(System.Nullable<decimal> value);
-    partial void OnamountChanged();
-    #endregion
-	
-	public incentive()
-	{
-		OnCreated();
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_incentive_id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-	public int incentive_id
-	{
-		get
-		{
-			return this._incentive_id;
-		}
-		set
-		{
-			if ((this._incentive_id != value))
-			{
-				this.Onincentive_idChanging(value);
-				this.SendPropertyChanging();
-				this._incentive_id = value;
-				this.SendPropertyChanged("incentive_id");
-				this.Onincentive_idChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_incentive_name", DbType="VarChar(50)")]
-	public string incentive_name
-	{
-		get
-		{
-			return this._incentive_name;
-		}
-		set
-		{
-			if ((this._incentive_name != value))
-			{
-				this.Onincentive_nameChanging(value);
-				this.SendPropertyChanging();
-				this._incentive_name = value;
-				this.SendPropertyChanged("incentive_name");
-				this.Onincentive_nameChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_incentive_desc", DbType="VarChar(50)")]
-	public string incentive_desc
-	{
-		get
-		{
-			return this._incentive_desc;
-		}
-		set
-		{
-			if ((this._incentive_desc != value))
-			{
-				this.Onincentive_descChanging(value);
-				this.SendPropertyChanging();
-				this._incentive_desc = value;
-				this.SendPropertyChanged("incentive_desc");
-				this.Onincentive_descChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_is_active", DbType="Bit")]
-	public System.Nullable<bool> is_active
-	{
-		get
-		{
-			return this._is_active;
-		}
-		set
-		{
-			if ((this._is_active != value))
-			{
-				this.Onis_activeChanging(value);
-				this.SendPropertyChanging();
-				this._is_active = value;
-				this.SendPropertyChanged("is_active");
-				this.Onis_activeChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_start_date", DbType="DateTime")]
-	public System.Nullable<System.DateTime> start_date
-	{
-		get
-		{
-			return this._start_date;
-		}
-		set
-		{
-			if ((this._start_date != value))
-			{
-				this.Onstart_dateChanging(value);
-				this.SendPropertyChanging();
-				this._start_date = value;
-				this.SendPropertyChanged("start_date");
-				this.Onstart_dateChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_end_date", DbType="DateTime")]
-	public System.Nullable<System.DateTime> end_date
-	{
-		get
-		{
-			return this._end_date;
-		}
-		set
-		{
-			if ((this._end_date != value))
-			{
-				this.Onend_dateChanging(value);
-				this.SendPropertyChanging();
-				this._end_date = value;
-				this.SendPropertyChanged("end_date");
-				this.Onend_dateChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_discount", DbType="Decimal(18,2)")]
-	public System.Nullable<decimal> discount
-	{
-		get
-		{
-			return this._discount;
-		}
-		set
-		{
-			if ((this._discount != value))
-			{
-				this.OndiscountChanging(value);
-				this.SendPropertyChanging();
-				this._discount = value;
-				this.SendPropertyChanged("discount");
-				this.OndiscountChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_client_id", DbType="Int")]
-	public System.Nullable<int> client_id
-	{
-		get
-		{
-			return this._client_id;
-		}
-		set
-		{
-			if ((this._client_id != value))
-			{
-				this.Onclient_idChanging(value);
-				this.SendPropertyChanging();
-				this._client_id = value;
-				this.SendPropertyChanged("client_id");
-				this.Onclient_idChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_incentive_type", DbType="Int")]
-	public System.Nullable<int> incentive_type
-	{
-		get
-		{
-			return this._incentive_type;
-		}
-		set
-		{
-			if ((this._incentive_type != value))
-			{
-				this.Onincentive_typeChanging(value);
-				this.SendPropertyChanging();
-				this._incentive_type = value;
-				this.SendPropertyChanged("incentive_type");
-				this.Onincentive_typeChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_amount", DbType="Decimal(18,2)")]
-	public System.Nullable<decimal> amount
-	{
-		get
-		{
-			return this._amount;
-		}
-		set
-		{
-			if ((this._amount != value))
-			{
-				this.OnamountChanging(value);
-				this.SendPropertyChanging();
-				this._amount = value;
-				this.SendPropertyChanged("amount");
-				this.OnamountChanged();
-			}
-		}
-	}
-	
-	public event PropertyChangingEventHandler PropertyChanging;
-	
-	public event PropertyChangedEventHandler PropertyChanged;
-	
-	protected virtual void SendPropertyChanging()
-	{
-		if ((this.PropertyChanging != null))
-		{
-			this.PropertyChanging(this, emptyChangingEventArgs);
-		}
-	}
-	
-	protected virtual void SendPropertyChanged(String propertyName)
-	{
-		if ((this.PropertyChanged != null))
-		{
-			this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
-	}
-}
-
 [global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.co_pricing_master")]
 public partial class co_pricing_master : INotifyPropertyChanging, INotifyPropertyChanged
 {
@@ -52865,6 +52587,308 @@ public partial class sales_person : INotifyPropertyChanging, INotifyPropertyChan
 				this._co_com_per = value;
 				this.SendPropertyChanged("co_com_per");
 				this.Onco_com_perChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_division_name", DbType="VarChar(100)")]
+	public string division_name
+	{
+		get
+		{
+			return this._division_name;
+		}
+		set
+		{
+			if ((this._division_name != value))
+			{
+				this.Ondivision_nameChanging(value);
+				this.SendPropertyChanging();
+				this._division_name = value;
+				this.SendPropertyChanged("division_name");
+				this.Ondivision_nameChanged();
+			}
+		}
+	}
+	
+	public event PropertyChangingEventHandler PropertyChanging;
+	
+	public event PropertyChangedEventHandler PropertyChanged;
+	
+	protected virtual void SendPropertyChanging()
+	{
+		if ((this.PropertyChanging != null))
+		{
+			this.PropertyChanging(this, emptyChangingEventArgs);
+		}
+	}
+	
+	protected virtual void SendPropertyChanged(String propertyName)
+	{
+		if ((this.PropertyChanged != null))
+		{
+			this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+		}
+	}
+}
+
+[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.incentives")]
+public partial class incentive : INotifyPropertyChanging, INotifyPropertyChanged
+{
+	
+	private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+	
+	private int _incentive_id;
+	
+	private string _incentive_name;
+	
+	private string _incentive_desc;
+	
+	private System.Nullable<bool> _is_active;
+	
+	private System.Nullable<System.DateTime> _start_date;
+	
+	private System.Nullable<System.DateTime> _end_date;
+	
+	private System.Nullable<decimal> _discount;
+	
+	private string _client_id;
+	
+	private System.Nullable<int> _incentive_type;
+	
+	private System.Nullable<decimal> _amount;
+	
+	private string _division_name;
+	
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void Onincentive_idChanging(int value);
+    partial void Onincentive_idChanged();
+    partial void Onincentive_nameChanging(string value);
+    partial void Onincentive_nameChanged();
+    partial void Onincentive_descChanging(string value);
+    partial void Onincentive_descChanged();
+    partial void Onis_activeChanging(System.Nullable<bool> value);
+    partial void Onis_activeChanged();
+    partial void Onstart_dateChanging(System.Nullable<System.DateTime> value);
+    partial void Onstart_dateChanged();
+    partial void Onend_dateChanging(System.Nullable<System.DateTime> value);
+    partial void Onend_dateChanged();
+    partial void OndiscountChanging(System.Nullable<decimal> value);
+    partial void OndiscountChanged();
+    partial void Onclient_idChanging(string value);
+    partial void Onclient_idChanged();
+    partial void Onincentive_typeChanging(System.Nullable<int> value);
+    partial void Onincentive_typeChanged();
+    partial void OnamountChanging(System.Nullable<decimal> value);
+    partial void OnamountChanged();
+    partial void Ondivision_nameChanging(string value);
+    partial void Ondivision_nameChanged();
+    #endregion
+	
+	public incentive()
+	{
+		OnCreated();
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_incentive_id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+	public int incentive_id
+	{
+		get
+		{
+			return this._incentive_id;
+		}
+		set
+		{
+			if ((this._incentive_id != value))
+			{
+				this.Onincentive_idChanging(value);
+				this.SendPropertyChanging();
+				this._incentive_id = value;
+				this.SendPropertyChanged("incentive_id");
+				this.Onincentive_idChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_incentive_name", DbType="VarChar(50)")]
+	public string incentive_name
+	{
+		get
+		{
+			return this._incentive_name;
+		}
+		set
+		{
+			if ((this._incentive_name != value))
+			{
+				this.Onincentive_nameChanging(value);
+				this.SendPropertyChanging();
+				this._incentive_name = value;
+				this.SendPropertyChanged("incentive_name");
+				this.Onincentive_nameChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_incentive_desc", DbType="VarChar(50)")]
+	public string incentive_desc
+	{
+		get
+		{
+			return this._incentive_desc;
+		}
+		set
+		{
+			if ((this._incentive_desc != value))
+			{
+				this.Onincentive_descChanging(value);
+				this.SendPropertyChanging();
+				this._incentive_desc = value;
+				this.SendPropertyChanged("incentive_desc");
+				this.Onincentive_descChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_is_active", DbType="Bit")]
+	public System.Nullable<bool> is_active
+	{
+		get
+		{
+			return this._is_active;
+		}
+		set
+		{
+			if ((this._is_active != value))
+			{
+				this.Onis_activeChanging(value);
+				this.SendPropertyChanging();
+				this._is_active = value;
+				this.SendPropertyChanged("is_active");
+				this.Onis_activeChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_start_date", DbType="DateTime")]
+	public System.Nullable<System.DateTime> start_date
+	{
+		get
+		{
+			return this._start_date;
+		}
+		set
+		{
+			if ((this._start_date != value))
+			{
+				this.Onstart_dateChanging(value);
+				this.SendPropertyChanging();
+				this._start_date = value;
+				this.SendPropertyChanged("start_date");
+				this.Onstart_dateChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_end_date", DbType="DateTime")]
+	public System.Nullable<System.DateTime> end_date
+	{
+		get
+		{
+			return this._end_date;
+		}
+		set
+		{
+			if ((this._end_date != value))
+			{
+				this.Onend_dateChanging(value);
+				this.SendPropertyChanging();
+				this._end_date = value;
+				this.SendPropertyChanged("end_date");
+				this.Onend_dateChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_discount", DbType="Decimal(18,2)")]
+	public System.Nullable<decimal> discount
+	{
+		get
+		{
+			return this._discount;
+		}
+		set
+		{
+			if ((this._discount != value))
+			{
+				this.OndiscountChanging(value);
+				this.SendPropertyChanging();
+				this._discount = value;
+				this.SendPropertyChanged("discount");
+				this.OndiscountChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_client_id", DbType="VarChar(25)")]
+	public string client_id
+	{
+		get
+		{
+			return this._client_id;
+		}
+		set
+		{
+			if ((this._client_id != value))
+			{
+				this.Onclient_idChanging(value);
+				this.SendPropertyChanging();
+				this._client_id = value;
+				this.SendPropertyChanged("client_id");
+				this.Onclient_idChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_incentive_type", DbType="Int")]
+	public System.Nullable<int> incentive_type
+	{
+		get
+		{
+			return this._incentive_type;
+		}
+		set
+		{
+			if ((this._incentive_type != value))
+			{
+				this.Onincentive_typeChanging(value);
+				this.SendPropertyChanging();
+				this._incentive_type = value;
+				this.SendPropertyChanged("incentive_type");
+				this.Onincentive_typeChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_amount", DbType="Decimal(18,2)")]
+	public System.Nullable<decimal> amount
+	{
+		get
+		{
+			return this._amount;
+		}
+		set
+		{
+			if ((this._amount != value))
+			{
+				this.OnamountChanging(value);
+				this.SendPropertyChanging();
+				this._amount = value;
+				this.SendPropertyChanged("amount");
+				this.OnamountChanged();
 			}
 		}
 	}

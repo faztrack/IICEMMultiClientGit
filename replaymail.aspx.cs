@@ -68,13 +68,13 @@ public partial class replaymail : System.Web.UI.Page
                 }
                 else
                 {
-                    Email2.Visible = false;
-                    txtCc2.Text = "";
+                    Email2.Visible = false; 
+                    txtCc2.Text = ""; 
                 }
                 company_profile com = new company_profile();
-                if (_db.company_profiles.Where(cp => cp.client_id == 1).SingleOrDefault() != null)
+                if (_db.company_profiles.Where(cp => cp.client_id == cust.client_id).SingleOrDefault() != null)
                 {
-                    com = _db.company_profiles.Single(cp => cp.client_id == 1);
+                    com = _db.company_profiles.Single(cp => cp.client_id == cust.client_id);
                     userinfo obj = (userinfo)Session["oUser"];
                     txtFrom.Text = obj.company_email;
                     txtCc.Text = com.email;

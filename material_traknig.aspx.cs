@@ -61,7 +61,7 @@ public partial class material_traknig : System.Web.UI.Page
             }
             BindEstimate();
             LoadSectionSec();
-            // LoadVendor();
+            LoadVendor();
             txtSelectionDate.Text = DateTime.Now.ToString("MM/dd/yyyy");
             txtShippedTrackingInfoDate.Text = DateTime.Now.ToString("MM/dd/yyyy");
             txtRecReceivedByDate.Text = DateTime.Now.ToString("MM/dd/yyyy");
@@ -84,7 +84,7 @@ public partial class material_traknig : System.Web.UI.Page
 
             int nCustId = Convert.ToInt32(hdnCustomerID.Value);
             string strQ = "select  estimate_id, customer_id,estimate_name,estimate_name " +
-                          " from customer_estimate where customer_id=" + nCustId + " and client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) +
+                          " from customer_estimate where customer_id=" + nCustId + " and client_id=" + Convert.ToInt32(hdnClientId.Value) +
                           " Order by convert(datetime,sale_date) desc";
             DataTable dt = csCommonUtility.GetDataTable(strQ);
             
@@ -171,7 +171,7 @@ public partial class material_traknig : System.Web.UI.Page
     {
         try
         {
-            string sSQL = "Select a.Vendor_Id,b.vendor_name from vendor_section as a inner join Vendor AS b ON a.Vendor_Id=b.vendor_id  where section_id=" + ddlSection.SelectedValue + " and b.is_active=1";
+            string sSQL = "Select distinct a.Vendor_Id,b.vendor_name from vendor_section as a inner join Vendor AS b ON a.Vendor_Id=b.vendor_id  where b.is_active=1";
             ddlVendor.DataSource = DataReader.Complex_Read_DataTable(sSQL);
             ddlVendor.DataTextField = "vendor_name";
             ddlVendor.DataValueField = "Vendor_Id";
@@ -186,7 +186,7 @@ public partial class material_traknig : System.Web.UI.Page
     {
         try
         {
-            string sSQL = "Select a.Vendor_Id,b.vendor_name from vendor_section as a inner join Vendor AS b ON a.Vendor_Id=b.vendor_id  where section_id=" + selectionId + " and b.is_active=1";
+            string sSQL = "Select distinct a.Vendor_Id,b.vendor_name from vendor_section as a inner join Vendor AS b ON a.Vendor_Id=b.vendor_id  where b.is_active=1";
             ddlVendor.DataSource = DataReader.Complex_Read_DataTable(sSQL);
             ddlVendor.DataTextField = "vendor_name";
             ddlVendor.DataValueField = "Vendor_Id";

@@ -70,10 +70,12 @@ public partial class Quickcontract_email : System.Web.UI.Page
                 txtTo.Text = cust.email;
                 strCustName = cust.first_name1 + "" + cust.last_name1;
 
+                hdnClientId.Value = cust.client_id.ToString();
+
                 company_profile com = new company_profile();
-                if (_db.company_profiles.Where(cp => cp.client_id == 1).SingleOrDefault() != null)
+                if (_db.company_profiles.Where(cp => cp.client_id == cust.client_id).SingleOrDefault() != null)
                 {
-                    com = _db.company_profiles.Single(cp => cp.client_id == 1);
+                    com = _db.company_profiles.Single(cp => cp.client_id == cust.client_id);
 
                     txtCc.Text = com.email;
 
@@ -92,7 +94,7 @@ public partial class Quickcontract_email : System.Web.UI.Page
         DataClassesDataContext _db = new DataClassesDataContext();
 
         company_profile oCom = new company_profile();
-        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+        oCom = _db.company_profiles.Single(com => com.client_id == Convert.ToInt32(hdnClientId.Value));
         decimal totalwithtax = 0;
         decimal project_subtotal = 0;
         decimal tax_amount = 0;

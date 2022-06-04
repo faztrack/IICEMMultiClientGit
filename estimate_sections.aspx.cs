@@ -67,7 +67,7 @@ public partial class estimate_sections : System.Web.UI.Page
                 }
             }
 
-            chkSections.DataSource = _db.sectioninfos.Where(si => si.client_id == Convert.ToInt32(hdnClientId.Value) && si.parent_id == 0 && si.is_active == true).OrderBy(s => s.section_name).ToList();
+            chkSections.DataSource = _db.sectioninfos.Where(si => si.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && si.parent_id == 0 && si.is_active == true).OrderBy(s => s.section_name).ToList();
             chkSections.DataTextField = "section_name";
             chkSections.DataValueField = "section_id";
             chkSections.DataBind();
