@@ -1511,7 +1511,7 @@
             <asp:PostBackTrigger ControlID="btnUpload" />
         </Triggers>
     </asp:UpdatePanel>
-    <%-- <asp:UpdateProgress ID="UpdateProgress1" runat="server" DisplayAfter="1" AssociatedUpdatePanelID="UpdatePanel1" DynamicLayout="False">
+     <asp:UpdateProgress ID="UpdateProgress1" runat="server" DisplayAfter="1" AssociatedUpdatePanelID="UpdatePanel1" DynamicLayout="False">
         <ProgressTemplate>
             <div class="overlay" />
             <div class="overlayContent">
@@ -1521,7 +1521,7 @@
                 <img src="images/ajax_loader.gif" alt="Loading" border="1" />
             </div>
         </ProgressTemplate>
-    </asp:UpdateProgress>--%>
+    </asp:UpdateProgress>
 </asp:Content>
 
 

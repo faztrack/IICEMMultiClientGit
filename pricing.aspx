@@ -462,7 +462,7 @@
                                                                     Text="Add" />
                                                             </td>
                                                             <td class="tabGridtd">
-                                                                <asp:TextBox ID="txtCustomizeItemName" runat="server" Width="400"></asp:TextBox>
+                                                                <asp:TextBox ID="txtCustomizeItemName" runat="server" Width="290px"></asp:TextBox>
                                                             </td>
                                                             <td class="tabGridtd" >
                                                                 <asp:TextBox ID="txtCustomizeUOM" runat="server"></asp:TextBox>
