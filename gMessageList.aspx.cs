@@ -86,9 +86,9 @@ public partial class gMessageList : System.Web.UI.Page
             }
             // Get Customers
             # region Get Customers
-            DataClassesDataContext _db = new DataClassesDataContext();
-            List<customer_message> CustomerMessList = _db.customer_messages.ToList();
-            Session.Add("cSearch", CustomerMessList);
+          //  DataClassesDataContext _db = new DataClassesDataContext();
+            //List<customer_message> CustomerMessList = _db.customer_messages.ToList();
+            //Session.Add("cSearch", CustomerMessList);
 
             # endregion
             lblHeaderMess.Text = "Message List";
@@ -124,21 +124,40 @@ public partial class gMessageList : System.Web.UI.Page
                 DSMessage dsMessageSent = new DSMessage();
 
                 DataClassesDataContext _db = new DataClassesDataContext();
-                 var messList = (from mess_info in _db.customer_messages
-                                  join c in _db.customers on mess_info.customer_id equals c.customer_id
-                                 where typelist.Contains((int)c.status_id) && c.is_active == true && (mess_info.mess_to.Contains(UserEmail) || mess_info.mess_from.Contains(UserEmail)) && mess_info.client_id.ToString().Contains(hdnClientId.Value)
-                                orderby mess_info.cust_message_id descending
-                                select mess_info).ToList();
-                if (chkGlobal.Checked)
-                {
-                     messList = (from mess_info in _db.customer_messages
-                                 join c in _db.customers on mess_info.customer_id equals c.customer_id
-                                 where typelist.Contains((int)c.status_id) && c.is_active == true && mess_info.client_id.ToString().Contains(hdnClientId.Value)
-                                 orderby mess_info.cust_message_id descending
-                                    select mess_info).ToList();
+                // var messList = (from mess_info in _db.customer_messages
+                //                  join c in _db.customers on mess_info.customer_id equals c.customer_id
+                //                 where typelist.Contains((int)c.status_id) && c.is_active == true && (mess_info.mess_to.Contains(UserEmail) || mess_info.mess_from.Contains(UserEmail)) && mess_info.client_id.ToString().Contains(hdnClientId.Value)
+                //                orderby mess_info.cust_message_id descending
+                //                select mess_info).ToList();
+                //if (chkGlobal.Checked)
+                //{
+                //     messList = (from mess_info in _db.customer_messages
+                //                 join c in _db.customers on mess_info.customer_id equals c.customer_id
+                //                 where typelist.Contains((int)c.status_id) && c.is_active == true && mess_info.client_id.ToString().Contains(hdnClientId.Value)
+                //                 orderby mess_info.cust_message_id descending
+                //                    select mess_info).ToList();
  
-                }
-               
+                //}
+
+            string strQry = "";
+            List<customer_message> messList = new List<customer_message>();
+            if (chkGlobal.Checked)
+            {
+
+                strQry = @"SELECT * FROM  customer_message
+                      WHERE   customer_message.client_id in (" + hdnClientId.Value + ")" + " ORDER BY cust_message_id DESC";
+                messList = _db.ExecuteQuery<customer_message>(strQry, string.Empty).ToList();
+            }
+            else
+            {
+                strQry = @"SELECT * FROM customer_message
+                      WHERE  (mess_to LIKE '" + UserEmail + "' or mess_from LIKE '" + UserEmail + "')  and customer_message.client_id in (" + hdnClientId.Value + ")" + " ORDER BY cust_message_id DESC";
+
+
+                messList = _db.ExecuteQuery<customer_message>(strQry, string.Empty).ToList();
+            }
+
+
 
                 foreach (customer_message msg in messList)
                 {
