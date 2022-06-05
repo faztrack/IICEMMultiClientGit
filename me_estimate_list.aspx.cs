@@ -59,111 +59,158 @@ public partial class me_estimate_list : System.Web.UI.Page
     }
     protected void MeEstimate()
     {
+
         DataClassesDataContext _db = new DataClassesDataContext();
         List<EstimateTemplateModel> EstTemp = new List<EstimateTemplateModel>();
 
-        if (nSalesPersonId == 0)
-        {
-            var item = from me in _db.model_estimates
-                       join sp in _db.sales_persons on me.sales_person_id equals sp.sales_person_id
-                       where me.client_id.ToString().Contains(hdnClientId.Value)
-                       orderby me.sales_person_id, me.model_estimate_id, me.model_estimate_name
-                       select new EstimateTemplateModel()
-                                       {
-                                           template_id = (int)me.template_id,
-                                           model_estimate_id = (int)me.model_estimate_id,
-                                           sales_person_id = (int)me.sales_person_id,
-                                           client_id = (int)me.client_id,
-                                           status_id = (int)me.status_id,
-                                           model_estimate_name = me.model_estimate_name,
-                                           create_date = (DateTime)me.create_date,
-                                           last_update_date = (DateTime)me.last_udated_date,
-                                           estimate_comments = me.estimate_comments,
-                                           sales_person_name = sp.first_name + " " + sp.last_name,
-                                       };
+        userinfo obj = (userinfo)Session["oUser"];
 
-            if (txtSearch.Text.Trim() != "")
-            {
-                string str = txtSearch.Text.Trim();
-                item = from me in _db.model_estimates
-                       join sp in _db.sales_persons on me.sales_person_id equals sp.sales_person_id
-                       where me.client_id.ToString().Contains(hdnClientId.Value) && me.model_estimate_name.Contains(str)
-                       orderby me.sales_person_id, me.model_estimate_id, me.model_estimate_name
-                       select new EstimateTemplateModel()
-                       {
-                           template_id = (int)me.template_id,
-                           model_estimate_id = (int)me.model_estimate_id,
-                           sales_person_id = (int)me.sales_person_id,
-                           client_id = (int)me.client_id,
-                           status_id = (int)me.status_id,
-                           model_estimate_name = me.model_estimate_name,
-                           create_date = (DateTime)me.create_date,
-                           last_update_date = (DateTime)me.last_udated_date,
-                           estimate_comments = me.estimate_comments,
-                           sales_person_name = sp.first_name + " " + sp.last_name,
-                       };
-            }
-            EstTemp = item.ToList();
+        string condition = "";
+
+        condition = " Where m.client_id in (" + obj.client_id + ") ";
+
+        
+
+
+
+        if (nSalesPersonId > 0)
+        {
+            condition += " AND m.sales_person_id = " + nSalesPersonId +" ";
         }
-        else
+
+        if (txtSearch.Text.Trim() != "")
         {
-            var item = from me in _db.model_estimates
-                       join sp in _db.sales_persons on me.sales_person_id equals sp.sales_person_id
-                       where me.client_id.ToString().Contains(hdnClientId.Value) && me.sales_person_id == nSalesPersonId
-                       orderby me.sales_person_id, me.model_estimate_id, me.model_estimate_name
-                       select new EstimateTemplateModel()
-                       {
-                           template_id = (int)me.template_id,
-                           model_estimate_id = (int)me.model_estimate_id,
-                           sales_person_id = (int)me.sales_person_id,
-                           client_id = (int)me.client_id,
-                           status_id = (int)me.status_id,
-                           model_estimate_name = me.model_estimate_name,
-                           create_date = (DateTime)me.create_date,
-                           last_update_date = (DateTime)me.last_udated_date,
-                           estimate_comments = me.estimate_comments,
-                           sales_person_name = sp.first_name + " " + sp.last_name,
-                       };
-
-            if (txtSearch.Text.Trim() != "")
-            {
-                string str = txtSearch.Text.Trim();
-                item = from me in _db.model_estimates
-                       join sp in _db.sales_persons on me.sales_person_id equals sp.sales_person_id
-                       where me.client_id.ToString().Contains(hdnClientId.Value) && me.model_estimate_name.Contains(str) && me.sales_person_id == nSalesPersonId
-                       orderby me.sales_person_id, me.model_estimate_id, me.model_estimate_name
-                       select new EstimateTemplateModel()
-                       {
-                           template_id = (int)me.template_id,
-                           model_estimate_id = (int)me.model_estimate_id,
-                           sales_person_id = (int)me.sales_person_id,
-                           client_id = (int)me.client_id,
-                           status_id = (int)me.status_id,
-                           model_estimate_name = me.model_estimate_name,
-                           create_date = (DateTime)me.create_date,
-                           last_update_date = (DateTime)me.last_udated_date,
-                           estimate_comments = me.estimate_comments,
-                           sales_person_name = sp.first_name + " " + sp.last_name,
-                       };
-            }
-            EstTemp = item.ToList();
-
+            condition += " AND m.model_estimate_name like '%" + txtSearch.Text + "%' ";
         }
 
 
-        grdEstimationList.DataSource = EstTemp;
-        grdEstimationList.DataKeyNames = new string[] { "template_id", "model_estimate_id", "sales_person_id", "model_estimate_name" };
+        string str = @"SELECT  m.template_id, s.first_name+' '+s.last_name as sales_person_name, model_estimate_id, m.sales_person_id, m.client_id as client_Id, status_id, model_estimate_name, m.create_date, 
+                        last_udated_date, estimate_comments, IsPublic FROM   model_estimate as m
+                        inner join sales_person as s on m.sales_person_id = s.sales_person_id " + condition +
+                        "order by m.sales_person_id, m.model_estimate_id, m.model_estimate_name";
+
+
+
+
+        DataTable dt = csCommonUtility.GetDataTable(str);
+
+
+        #region linq
+        //    if (nSalesPersonId == 0)
+        //{
+        //    var item = from me in _db.model_estimates
+        //               join sp in _db.sales_persons on me.sales_person_id equals sp.sales_person_id
+        //               where me.client_id.ToString().Contains(hdnClientId.Value)
+        //               orderby me.sales_person_id, me.model_estimate_id, me.model_estimate_name
+        //               select new EstimateTemplateModel()
+        //               {
+        //                   template_id = (int)me.template_id,
+        //                   model_estimate_id = (int)me.model_estimate_id,
+        //                   sales_person_id = (int)me.sales_person_id,
+        //                   client_id = (int)me.client_id,
+        //                   status_id = (int)me.status_id,
+        //                   model_estimate_name = me.model_estimate_name,
+        //                   create_date = (DateTime)me.create_date,
+        //                   last_update_date = (DateTime)me.last_udated_date,
+        //                   estimate_comments = me.estimate_comments,
+        //                   sales_person_name = sp.first_name + " " + sp.last_name,
+        //               };
+
+        //    if (txtSearch.Text.Trim() != "")
+        //    {
+        //        string str = txtSearch.Text.Trim();
+        //        item = from me in _db.model_estimates
+        //               join sp in _db.sales_persons on me.sales_person_id equals sp.sales_person_id
+        //               where me.client_id.ToString().Contains(hdnClientId.Value) && me.model_estimate_name.Contains(str)
+        //               orderby me.sales_person_id, me.model_estimate_id, me.model_estimate_name
+        //               select new EstimateTemplateModel()
+        //               {
+        //                   template_id = (int)me.template_id,
+        //                   model_estimate_id = (int)me.model_estimate_id,
+        //                   sales_person_id = (int)me.sales_person_id,
+        //                   client_id = (int)me.client_id,
+        //                   status_id = (int)me.status_id,
+        //                   model_estimate_name = me.model_estimate_name,
+        //                   create_date = (DateTime)me.create_date,
+        //                   last_update_date = (DateTime)me.last_udated_date,
+        //                   estimate_comments = me.estimate_comments,
+        //                   sales_person_name = sp.first_name + " " + sp.last_name,
+        //               };
+        //    }
+        //    EstTemp = item.ToList();
+        //}
+        //else
+        //{
+        //    var item = from me in _db.model_estimates
+        //               join sp in _db.sales_persons on me.sales_person_id equals sp.sales_person_id
+        //               where me.client_id.ToString().Contains(hdnClientId.Value) && me.sales_person_id == nSalesPersonId
+        //               orderby me.sales_person_id, me.model_estimate_id, me.model_estimate_name
+        //               select new EstimateTemplateModel()
+        //               {
+        //                   template_id = (int)me.template_id,
+        //                   model_estimate_id = (int)me.model_estimate_id,
+        //                   sales_person_id = (int)me.sales_person_id,
+        //                   client_id = (int)me.client_id,
+        //                   status_id = (int)me.status_id,
+        //                   model_estimate_name = me.model_estimate_name,
+        //                   create_date = (DateTime)me.create_date,
+        //                   last_update_date = (DateTime)me.last_udated_date,
+        //                   estimate_comments = me.estimate_comments,
+        //                   sales_person_name = sp.first_name + " " + sp.last_name,
+        //               };
+
+        //    if (txtSearch.Text.Trim() != "")
+        //    {
+        //        string str = txtSearch.Text.Trim();
+        //        item = from me in _db.model_estimates
+        //               join sp in _db.sales_persons on me.sales_person_id equals sp.sales_person_id
+        //               where me.client_id.ToString().Contains(hdnClientId.Value) && me.model_estimate_name.Contains(str) && me.sales_person_id == nSalesPersonId
+        //               orderby me.sales_person_id, me.model_estimate_id, me.model_estimate_name
+        //               select new EstimateTemplateModel()
+        //               {
+        //                   template_id = (int)me.template_id,
+        //                   model_estimate_id = (int)me.model_estimate_id,
+        //                   sales_person_id = (int)me.sales_person_id,
+        //                   client_id = (int)me.client_id,
+        //                   status_id = (int)me.status_id,
+        //                   model_estimate_name = me.model_estimate_name,
+        //                   create_date = (DateTime)me.create_date,
+        //                   last_update_date = (DateTime)me.last_udated_date,
+        //                   estimate_comments = me.estimate_comments,
+        //                   sales_person_name = sp.first_name + " " + sp.last_name,
+        //               };
+        //    }
+        //    EstTemp = item.ToList();
+
+        //}
+
+        #endregion
+
+        grdEstimationList.DataSource = dt;
+        grdEstimationList.DataKeyNames = new string[] { "template_id", "model_estimate_id", "sales_person_id", "model_estimate_name", "client_Id" };
         grdEstimationList.DataBind();
 
-        if (EstTemp.Count > 0)
+        if (dt.Rows.Count > 0)
         {
             tdlabelTitleBlu.Visible = true;
             trSearch.Visible = true;
+            pnlBottom.Visible = true;
         }
         else
         {
-            tdlabelTitleBlu.Visible = false;
-            trSearch.Visible = false;
+            if (txtSearch.Text.Trim() == "")
+            {
+                tdlabelTitleBlu.Visible = false;
+                trSearch.Visible = false;
+                pnlBottom.Visible = false; ;
+            }
+            else
+            {
+                lblResult2.Text = csCommonUtility.GetSystemErrorMessage("No records found.");
+            }
+
+
+            
         }
 
     }
@@ -173,56 +220,85 @@ public partial class me_estimate_list : System.Web.UI.Page
         DataClassesDataContext _db = new DataClassesDataContext();
         List<EstimateTemplateModel> PublicEstTemp = new List<EstimateTemplateModel>();
 
-        var item = from me in _db.model_estimates
-                   join sp in _db.sales_persons on me.sales_person_id equals sp.sales_person_id
-                   where me.client_id.ToString().Contains(hdnClientId.Value) && me.sales_person_id != nSalesPersonId && me.IsPublic == true
-                   orderby me.sales_person_id, me.model_estimate_id, me.model_estimate_name
-                   select new EstimateTemplateModel()
-                   {
-                       template_id = (int)me.template_id,
-                       model_estimate_id = (int)me.model_estimate_id,
-                       sales_person_id = (int)me.sales_person_id,
-                       client_id = (int)me.client_id,
-                       status_id = (int)me.status_id,
-                       model_estimate_name = me.model_estimate_name,
-                       create_date = (DateTime)me.create_date,
-                       last_update_date = (DateTime)me.last_udated_date,
-                       estimate_comments = me.estimate_comments,
-                       sales_person_name = sp.first_name + " " + sp.last_name,
-                   };
+        userinfo obj = (userinfo)Session["oUser"];
+
+        string condition = "";
+
+        condition = " AND m.client_id in (" + obj.client_id + ") AND m.sales_person_id != " + nSalesPersonId;
+
+
 
         if (txtPublicSearch.Text.Trim() != "")
         {
-            string str = txtPublicSearch.Text.Trim();
-            item = from me in _db.model_estimates
-                   join sp in _db.sales_persons on me.sales_person_id equals sp.sales_person_id
-                   where me.client_id.ToString().Contains(hdnClientId.Value) && me.model_estimate_name.Contains(str) && me.sales_person_id != nSalesPersonId && me.IsPublic == true
-                   orderby me.sales_person_id, me.model_estimate_id, me.model_estimate_name
-                   select new EstimateTemplateModel()
-                   {
-                       template_id = (int)me.template_id,
-                       model_estimate_id = (int)me.model_estimate_id,
-                       sales_person_id = (int)me.sales_person_id,
-                       client_id = (int)me.client_id,
-                       status_id = (int)me.status_id,
-                       model_estimate_name = me.model_estimate_name,
-                       create_date = (DateTime)me.create_date,
-                       last_update_date = (DateTime)me.last_udated_date,
-                       estimate_comments = me.estimate_comments,
-                       sales_person_name = sp.first_name + " " + sp.last_name,
-                   };
+            condition += " AND m.model_estimate_name like '%" + txtPublicSearch.Text + "%' ";
         }
-        PublicEstTemp = item.ToList();
 
 
-        grdPublicEstimationList.DataSource = PublicEstTemp;
-        grdPublicEstimationList.DataKeyNames = new string[] { "template_id", "model_estimate_id", "sales_person_id", "model_estimate_name" };
+        string str = @"SELECT  m.template_id, s.first_name+' '+s.last_name as sales_person_name, model_estimate_id, m.sales_person_id, m.client_id as client_Id, status_id, model_estimate_name, m.create_date, 
+                        last_udated_date, estimate_comments, IsPublic FROM model_estimate as m
+                        inner join sales_person as s on m.sales_person_id = s.sales_person_id "+
+                        " where m.IsPublic = 1 " + condition +
+                        "order by m.sales_person_id, m.model_estimate_id, m.model_estimate_name";
+
+
+
+
+        DataTable dt = csCommonUtility.GetDataTable(str);
+
+
+        #region linq
+        //var item = from me in _db.model_estimates
+        //           join sp in _db.sales_persons on me.sales_person_id equals sp.sales_person_id
+        //           where me.client_id.ToString().Contains(hdnClientId.Value) && me.sales_person_id != nSalesPersonId && me.IsPublic == true
+        //           orderby me.sales_person_id, me.model_estimate_id, me.model_estimate_name
+        //           select new EstimateTemplateModel()
+        //           {
+        //               template_id = (int)me.template_id,
+        //               model_estimate_id = (int)me.model_estimate_id,
+        //               sales_person_id = (int)me.sales_person_id,
+        //               client_id = (int)me.client_id,
+        //               status_id = (int)me.status_id,
+        //               model_estimate_name = me.model_estimate_name,
+        //               create_date = (DateTime)me.create_date,
+        //               last_update_date = (DateTime)me.last_udated_date,
+        //               estimate_comments = me.estimate_comments,
+        //               sales_person_name = sp.first_name + " " + sp.last_name,
+        //           };
+
+        //if (txtPublicSearch.Text.Trim() != "")
+        //{
+        //    string str = txtPublicSearch.Text.Trim();
+        //    item = from me in _db.model_estimates
+        //           join sp in _db.sales_persons on me.sales_person_id equals sp.sales_person_id
+        //           where me.client_id.ToString().Contains(hdnClientId.Value) && me.model_estimate_name.Contains(str) && me.sales_person_id != nSalesPersonId && me.IsPublic == true
+        //           orderby me.sales_person_id, me.model_estimate_id, me.model_estimate_name
+        //           select new EstimateTemplateModel()
+        //           {
+        //               template_id = (int)me.template_id,
+        //               model_estimate_id = (int)me.model_estimate_id,
+        //               sales_person_id = (int)me.sales_person_id,
+        //               client_id = (int)me.client_id,
+        //               status_id = (int)me.status_id,
+        //               model_estimate_name = me.model_estimate_name,
+        //               create_date = (DateTime)me.create_date,
+        //               last_update_date = (DateTime)me.last_udated_date,
+        //               estimate_comments = me.estimate_comments,
+        //               sales_person_name = sp.first_name + " " + sp.last_name,
+        //           };
+        //}
+        //PublicEstTemp = item.ToList();
+        #endregion
+
+        grdPublicEstimationList.DataSource = dt;
+        grdPublicEstimationList.DataKeyNames = new string[] { "template_id", "model_estimate_id", "sales_person_id", "model_estimate_name", "client_Id" };
         grdPublicEstimationList.DataBind();
 
-        if (PublicEstTemp.Count > 0)
+        if (dt.Rows.Count > 0)
         {
             tdlabelTitleGrn.Visible = true;
-            userinfo obj = (userinfo)Session["oUser"];
+            pnlTopPart.Visible = true;
+            
+            //userinfo obj = (userinfo)Session["oUser"];
             if (obj.role_id != 1)
             {
                 btnPublicDelete.Visible = false;
@@ -238,7 +314,16 @@ public partial class me_estimate_list : System.Web.UI.Page
         }
         else
         {
-            tdlabelTitleGrn.Visible = false;
+            if(txtPublicSearch.Text.Trim() == "")
+            {
+                tdlabelTitleGrn.Visible = false;
+                pnlTopPart.Visible = false;                
+            }
+            else
+            {
+                lblResult.Text = csCommonUtility.GetSystemErrorMessage("No records found.");
+            }
+
         }
 
     }
@@ -269,9 +354,12 @@ public partial class me_estimate_list : System.Web.UI.Page
             int nModel_estimate_id = Convert.ToInt32(grdEstimationList.DataKeys[e.Row.RowIndex].Values[1].ToString());
             int nsales_person_id = Convert.ToInt32(grdEstimationList.DataKeys[e.Row.RowIndex].Values[2].ToString());
             string strEstName = grdEstimationList.DataKeys[e.Row.RowIndex].Values[3].ToString();
+
+            int clientId = Convert.ToInt32(grdEstimationList.DataKeys[e.Row.RowIndex].Values[4]);
+
             HyperLink hypEstName = (HyperLink)e.Row.Cells[0].FindControl("hypEstName");
             hypEstName.Text = strEstName;
-            hypEstName.NavigateUrl = "me_locations.aspx?meid=" + nModel_estimate_id + "&spid=" + nsales_person_id;
+            hypEstName.NavigateUrl = "me_locations.aspx?meid=" + nModel_estimate_id + "&spid=" + nsales_person_id + "&clid=" + clientId;
 
         }
 
@@ -283,9 +371,10 @@ public partial class me_estimate_list : System.Web.UI.Page
             int nModel_estimate_id = Convert.ToInt32(grdPublicEstimationList.DataKeys[e.Row.RowIndex].Values[1].ToString());
             int nsales_person_id = Convert.ToInt32(grdPublicEstimationList.DataKeys[e.Row.RowIndex].Values[2].ToString());
             string strEstName = grdPublicEstimationList.DataKeys[e.Row.RowIndex].Values[3].ToString();
+            int clientId = Convert.ToInt32(grdEstimationList.DataKeys[e.Row.RowIndex].Values[4]);
             HyperLink hypEstName1 = (HyperLink)e.Row.Cells[0].FindControl("hypEstName1");
             hypEstName1.Text = strEstName;
-            hypEstName1.NavigateUrl = "PublicMe_Pricing.aspx?meid=" + nModel_estimate_id + "&spid=" + nsales_person_id;
+            hypEstName1.NavigateUrl = "PublicMe_Pricing.aspx?meid=" + nModel_estimate_id + "&spid=" + nsales_person_id + "&clid=" + clientId;
 
         }
 
@@ -390,17 +479,32 @@ public partial class me_estimate_list : System.Web.UI.Page
             }
             if (isChecked)
             {
-                lblResult.Text = csCommonUtility.GetSystemMessage("Estimation Template(s) has been Deleted Successfully");
+                lblResult2.Text = csCommonUtility.GetSystemMessage("Estimation Template(s) has been Deleted Successfully");
                 MeEstimate();
             }
             else
             {
-                lblResult.Text = csCommonUtility.GetSystemErrorMessage("Please Select Estimation Template(s)");
+                lblResult2.Text = csCommonUtility.GetSystemErrorMessage("Please Select Estimation Template(s)");
             }
         }
         catch (Exception ex)
         {
-            lblResult.Text = csCommonUtility.GetSystemErrorMessage(ex.Message);
+            lblResult2.Text = csCommonUtility.GetSystemErrorMessage(ex.Message);
         }
+    }
+
+    protected void lnkTopReset_Click(object sender, EventArgs e)
+    {
+        txtPublicSearch.Text = ""; 
+        lblResult.Text = "";
+        MeEstimatePublic();
+    }
+
+    protected void lnkBottomReset_Click(object sender, EventArgs e)
+    {
+
+        lblResult2.Text = "";
+        txtSearch.Text = "";
+        MeEstimate();
     }
 }

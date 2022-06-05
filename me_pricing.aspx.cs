@@ -83,6 +83,9 @@ public partial class me_pricing : System.Web.UI.Page
             Session.Remove("AddMoreMESection");
             Session.Remove("gspSearch");
 
+            if (Request.QueryString.Get("clid") != null)
+                hdnClientId.Value = Request.QueryString.Get("clid");
+
             if (Request.QueryString.Get("meid") != null)
                 hdnEstimateId.Value = Request.QueryString.Get("meid");
 
@@ -101,12 +104,15 @@ public partial class me_pricing : System.Web.UI.Page
             DataClassesDataContext _db = new DataClassesDataContext();
             tdlOther.Visible = false;
             model_estimate me = new model_estimate();
-            me = _db.model_estimates.Single(mest => mest.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && mest.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mest.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+            me = _db.model_estimates.SingleOrDefault(mest => mest.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && mest.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mest.client_id == Convert.ToInt32(hdnClientId.Value));
 
-            lblModelEstimateName.Text = me.model_estimate_name;
-            lblExistingModelEstimateName.Text = me.model_estimate_name;
-            txtComments.Text = me.estimate_comments;
-            chkIsPublic.Checked = Convert.ToBoolean(me.IsPublic);
+            if(me != null)
+            {
+                lblModelEstimateName.Text = me.model_estimate_name;
+                lblExistingModelEstimateName.Text = me.model_estimate_name;
+                txtComments.Text = me.estimate_comments;
+                chkIsPublic.Checked = Convert.ToBoolean(me.IsPublic);
+            }
 
             //lblspModelEstName.Text = me.model_estimate_name;
             //lblCreateDate.Text = Convert.ToDateTime(me.create_date).ToShortDateString();
@@ -114,7 +120,7 @@ public partial class me_pricing : System.Web.UI.Page
 
             var item = from loc in _db.locations
                        join mel in _db.model_estimate_locations on loc.location_id equals mel.location_id
-                       where mel.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && mel.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mel.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                       where mel.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && mel.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mel.client_id == Convert.ToInt32(hdnClientId.Value)
                        select new LocationModel()
                        {
                            location_id = (int)mel.location_id,
@@ -223,7 +229,7 @@ public partial class me_pricing : System.Web.UI.Page
 
             //Get Payment Info
 
-            if (_db.model_estimate_payments.Where(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && est_p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).SingleOrDefault() == null)
+            if (_db.model_estimate_payments.Where(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && est_p.client_id == Convert.ToInt32(hdnClientId.Value)).SingleOrDefault() == null)
             {
                 // hdnEstPaymentId.Value = "0";
                 // GetIncentiveData();
@@ -233,7 +239,7 @@ public partial class me_pricing : System.Web.UI.Page
             else
             {
 
-                model_estimate_payment objEstPay = _db.model_estimate_payments.Single(pay => pay.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pay.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && pay.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+                model_estimate_payment objEstPay = _db.model_estimate_payments.Single(pay => pay.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pay.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && pay.client_id == Convert.ToInt32(hdnClientId.Value));
                 hdnModEstimatePaymentId.Value = objEstPay.mod_est_payment_id.ToString();
 
                 GetPaymentInfo(Convert.ToInt32(hdnModEstimatePaymentId.Value), Convert.ToInt32(Convert.ToInt32(hdnSalesPersonId.Value)));
@@ -261,7 +267,7 @@ public partial class me_pricing : System.Web.UI.Page
         model_estimate m_est = new model_estimate();
         int meid = Convert.ToInt32(hdnEstimateId.Value);
         if (Convert.ToInt32(hdnEstimateId.Value) > 0)
-            m_est = _db.model_estimates.Single(me => me.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && me.model_estimate_id == meid && me.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+            m_est = _db.model_estimates.Single(me => me.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && me.model_estimate_id == meid && me.client_id == Convert.ToInt32(hdnClientId.Value));
 
         m_est.model_estimate_name = strNewName;
 
@@ -271,7 +277,7 @@ public partial class me_pricing : System.Web.UI.Page
         txtNewEstimateName.Text = "";
         modUpdateEstimate.Hide();
 
-        Response.Redirect("me_pricing.aspx?meid=" + hdnEstimateId.Value + "&spid=" + hdnSalesPersonId.Value);
+        Response.Redirect("me_pricing.aspx?meid=" + hdnEstimateId.Value + "&spid=" + hdnSalesPersonId.Value + "&clid=" + hdnClientId.Value);
     }
     protected void btnClose_Click(object sender, EventArgs e)
     {
@@ -284,18 +290,18 @@ public partial class me_pricing : System.Web.UI.Page
     {
         KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, lnkAddMoreLocation.ID, lnkAddMoreLocation.GetType().Name, "Click"); 
         Session.Add("AddMoreMELocation", "AddMoreMElocation");
-        Response.Redirect("me_locations.aspx?meid=" + hdnEstimateId.Value + "&spid=" + hdnSalesPersonId.Value);
+        Response.Redirect("me_locations.aspx?meid=" + hdnEstimateId.Value + "&spid=" + hdnSalesPersonId.Value + "&clid=" + hdnClientId.Value);
     }
     protected void lnkAddMoreSections_Click(object sender, EventArgs e)
     {
         KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, lnkAddMoreSections.ID, lnkAddMoreSections.GetType().Name, "Click"); 
         Session.Add("AddMoreMESection", "AddMoreMESection");
-        Response.Redirect("me_sections.aspx?meid=" + hdnEstimateId.Value + "&spid=" + hdnSalesPersonId.Value);
+        Response.Redirect("me_sections.aspx?meid=" + hdnEstimateId.Value + "&spid=" + hdnSalesPersonId.Value + "&clid=" + hdnClientId.Value);
     }
     private void LoadTree(int nSectionLevel)
     {
         DataClassesDataContext _db = new DataClassesDataContext();
-        string strQ = " SELECT * FROM sectioninfo WHERE is_disable = 0 AND section_level=" + nSectionLevel + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        string strQ = " SELECT * FROM sectioninfo WHERE is_disable = 0 AND section_level=" + nSectionLevel + " AND client_id=" + Convert.ToInt32(hdnClientId.Value);
         IEnumerable<sectioninfo> list = _db.ExecuteQuery<sectioninfo>(strQ, string.Empty);
         trvSection.Nodes.Clear();
         foreach (sectioninfo sec in list)
@@ -312,7 +318,7 @@ public partial class me_pricing : System.Web.UI.Page
     private void AddChildMenu(TreeNode parentNode, sectioninfo sec)
     {
         DataClassesDataContext _db = new DataClassesDataContext();
-        string strQ = " SELECT * FROM sectioninfo WHERE is_disable = 0 AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " AND section_id NOT IN (SELECT item_id FROM item_price WHERE client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + ")";
+        string strQ = " SELECT * FROM sectioninfo WHERE is_disable = 0 AND client_id=" + Convert.ToInt32(hdnClientId.Value) + " AND section_id NOT IN (SELECT item_id FROM item_price WHERE client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + ")";
         IEnumerable<sectioninfo> list = _db.ExecuteQuery<sectioninfo>(strQ, string.Empty);
         //List<sectioninfo> list = _db.sectioninfos.Where(c => c.client_id == 1).ToList();
         foreach (sectioninfo subsec in list)
@@ -384,7 +390,7 @@ public partial class me_pricing : System.Web.UI.Page
     public string GetItemDetials_forBreadCome(int SectionId)
     {
         DataClassesDataContext _db = new DataClassesDataContext();
-        List<sectioninfo> list = _db.sectioninfos.Where(c => c.section_id == SectionId && c.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).ToList();
+        List<sectioninfo> list = _db.sectioninfos.Where(c => c.section_id == SectionId && c.client_id == Convert.ToInt32(hdnClientId.Value)).ToList();
         foreach (sectioninfo sec1 in list)
         {
             strDetails = sec1.section_name + " >> " + strDetails;
@@ -397,7 +403,7 @@ public partial class me_pricing : System.Web.UI.Page
         string str = "";
         DataClassesDataContext _db = new DataClassesDataContext();
         sectioninfo si = new sectioninfo();
-        si = _db.sectioninfos.Single(c => c.section_level == section_level && c.parent_id == 0 && c.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+        si = _db.sectioninfos.Single(c => c.section_level == section_level && c.parent_id == 0 && c.client_id == Convert.ToInt32(hdnClientId.Value));
         str = si.section_name;
         return str;
     }
@@ -406,7 +412,7 @@ public partial class me_pricing : System.Web.UI.Page
         int nSerial = 0;
         DataClassesDataContext _db = new DataClassesDataContext();
         var result = (from pd in _db.model_estimate_pricings
-                      where pd.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && pd.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && pd.pricing_type == "A" && pd.section_level == Convert.ToInt32(hdnSectionLevel.Value)
+                      where pd.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && pd.client_id == Convert.ToInt32(hdnClientId.Value) && pd.pricing_type == "A" && pd.section_level == Convert.ToInt32(hdnSectionLevel.Value)
                       select pd.item_cnt);
         int n = result.Count();
         if (result != null && n > 0)
@@ -419,7 +425,7 @@ public partial class me_pricing : System.Web.UI.Page
         int nSerial = 0;
         DataClassesDataContext _db = new DataClassesDataContext();
         var result = (from pd in _db.model_estimate_pricings
-                      where pd.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && pd.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && pd.pricing_type == "A" && pd.section_level == sectionLvel
+                      where pd.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && pd.client_id == Convert.ToInt32(hdnClientId.Value) && pd.pricing_type == "A" && pd.section_level == sectionLvel
                       select pd.item_cnt);
         int n = result.Count();
         if (result != null && n > 0)
@@ -433,7 +439,7 @@ public partial class me_pricing : System.Web.UI.Page
         int nSerial = 0;
         DataClassesDataContext _db = new DataClassesDataContext();
         var result = (from pd in _db.model_estimate_pricings
-                      where pd.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.item_id == nOtherId && pd.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && pd.section_level == Convert.ToInt32(hdnSectionLevel.Value)
+                      where pd.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.item_id == nOtherId && pd.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.client_id == Convert.ToInt32(hdnClientId.Value) && pd.section_level == Convert.ToInt32(hdnSectionLevel.Value)
                       select pd.other_item_cnt);
         int n = result.Count();
         if (result != null && n > 0)
@@ -450,11 +456,11 @@ public partial class me_pricing : System.Web.UI.Page
         DataClassesDataContext _db = new DataClassesDataContext();
         var result = (from pd in _db.model_estimate_pricings
                       where (from clc in _db.model_estimate_locations
-                             where clc.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && clc.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && clc.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                             where clc.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && clc.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && clc.client_id == Convert.ToInt32(hdnClientId.Value)
                              select clc.location_id).Contains(pd.location_id) &&
                              (from cs in _db.model_estimate_sections
-                              where cs.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && cs.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
-                              select cs.section_id).Contains(pd.section_level) && pd.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && pd.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && pd.pricing_type == "A"
+                              where cs.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && cs.client_id == Convert.ToInt32(hdnClientId.Value)
+                              select cs.section_id).Contains(pd.section_level) && pd.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && pd.client_id == Convert.ToInt32(hdnClientId.Value) && pd.pricing_type == "A"
                       select pd.total_retail_price);
         int n = result.Count();
         if (result != null && n > 0)
@@ -468,11 +474,11 @@ public partial class me_pricing : System.Web.UI.Page
         DataClassesDataContext _db = new DataClassesDataContext();
         var result = (from pd in _db.model_estimate_pricings
                       where (from clc in _db.model_estimate_locations
-                             where clc.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && clc.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && clc.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                             where clc.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && clc.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && clc.client_id == Convert.ToInt32(hdnClientId.Value)
                              select clc.location_id).Contains(pd.location_id) &&
                              (from cs in _db.model_estimate_sections
-                              where cs.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && cs.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
-                              select cs.section_id).Contains(pd.section_level) && pd.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && pd.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && pd.pricing_type == "A"
+                              where cs.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && cs.client_id == Convert.ToInt32(hdnClientId.Value)
+                              select cs.section_id).Contains(pd.section_level) && pd.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pd.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && pd.client_id == Convert.ToInt32(hdnClientId.Value) && pd.pricing_type == "A"
                       select pd.total_direct_price);
         int n = result.Count();
         if (result != null && n > 0)
@@ -486,15 +492,15 @@ public partial class me_pricing : System.Web.UI.Page
         string strQ = "";
         if (rdoSort.SelectedValue == "2")
         {
-            strQ = " select DISTINCT section_level AS colId,'SECTION: '+ section_name as colName from model_estimate_pricing where model_estimate_pricing.location_id IN (Select location_id from model_estimate_locations WHERE model_estimate_locations.model_estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND model_estimate_locations.sales_person_id =" + Convert.ToInt32(hdnSalesPersonId.Value) + " AND model_estimate_locations.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                   " AND model_estimate_pricing.section_level IN (Select section_id from model_estimate_sections WHERE model_estimate_sections.model_estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND model_estimate_sections.sales_person_id =" + Convert.ToInt32(hdnSalesPersonId.Value) + " AND model_estimate_sections.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                   " AND model_estimate_pricing.model_estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND model_estimate_pricing.sales_person_id =" + Convert.ToInt32(hdnSalesPersonId.Value) + " AND is_direct=1 AND model_estimate_pricing.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + "  order by section_level asc";
+            strQ = " select DISTINCT section_level AS colId,'SECTION: '+ section_name as colName from model_estimate_pricing where model_estimate_pricing.location_id IN (Select location_id from model_estimate_locations WHERE model_estimate_locations.model_estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND model_estimate_locations.sales_person_id =" + Convert.ToInt32(hdnSalesPersonId.Value) + " AND model_estimate_locations.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+                   " AND model_estimate_pricing.section_level IN (Select section_id from model_estimate_sections WHERE model_estimate_sections.model_estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND model_estimate_sections.sales_person_id =" + Convert.ToInt32(hdnSalesPersonId.Value) + " AND model_estimate_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+                   " AND model_estimate_pricing.model_estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND model_estimate_pricing.sales_person_id =" + Convert.ToInt32(hdnSalesPersonId.Value) + " AND is_direct=1 AND model_estimate_pricing.client_id =" + Convert.ToInt32(hdnClientId.Value) + "  order by section_level asc";
         }
         else
         {
-            strQ = "select DISTINCT model_estimate_pricing.location_id AS colId,'LOCATION: '+ location.location_name as colName,sort_id from model_estimate_pricing  INNER JOIN location on location.location_id = model_estimate_pricing.location_id where model_estimate_pricing.location_id IN (Select location_id from model_estimate_locations WHERE model_estimate_locations.model_estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND model_estimate_locations.sales_person_id =" + Convert.ToInt32(hdnSalesPersonId.Value) + " AND model_estimate_locations.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                " AND model_estimate_pricing.section_level IN (Select section_id from model_estimate_sections WHERE model_estimate_sections.model_estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND model_estimate_sections.sales_person_id =" + Convert.ToInt32(hdnSalesPersonId.Value) + " AND model_estimate_sections.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                " AND model_estimate_pricing.model_estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND model_estimate_pricing.sales_person_id =" + Convert.ToInt32(hdnSalesPersonId.Value) + " AND is_direct=1 AND model_estimate_pricing.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " order by sort_id asc";
+            strQ = "select DISTINCT model_estimate_pricing.location_id AS colId,'LOCATION: '+ location.location_name as colName,sort_id from model_estimate_pricing  INNER JOIN location on location.location_id = model_estimate_pricing.location_id where model_estimate_pricing.location_id IN (Select location_id from model_estimate_locations WHERE model_estimate_locations.model_estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND model_estimate_locations.sales_person_id =" + Convert.ToInt32(hdnSalesPersonId.Value) + " AND model_estimate_locations.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+                " AND model_estimate_pricing.section_level IN (Select section_id from model_estimate_sections WHERE model_estimate_sections.model_estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND model_estimate_sections.sales_person_id =" + Convert.ToInt32(hdnSalesPersonId.Value) + " AND model_estimate_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+                " AND model_estimate_pricing.model_estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND model_estimate_pricing.sales_person_id =" + Convert.ToInt32(hdnSalesPersonId.Value) + " AND is_direct=1 AND model_estimate_pricing.client_id =" + Convert.ToInt32(hdnClientId.Value) + " order by sort_id asc";
         }
         List<PricingMaster> mList = _db.ExecuteQuery<PricingMaster>(strQ, string.Empty).ToList();
         grdGrouping.DataSource = mList;
@@ -508,15 +514,15 @@ public partial class me_pricing : System.Web.UI.Page
         string strQ = "";
         if (rdoSort.SelectedValue == "2")
         {
-            strQ = "select DISTINCT section_level AS colId,'SECTION: '+ section_name as colName from model_estimate_pricing where model_estimate_pricing.location_id IN (Select location_id from model_estimate_locations WHERE model_estimate_locations.model_estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND model_estimate_locations.sales_person_id =" + Convert.ToInt32(hdnSalesPersonId.Value) + " AND model_estimate_locations.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                   " AND model_estimate_pricing.section_level IN (Select section_id from model_estimate_sections WHERE model_estimate_sections.model_estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND model_estimate_sections.sales_person_id =" + Convert.ToInt32(hdnSalesPersonId.Value) + " AND model_estimate_sections.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                   " AND model_estimate_pricing.model_estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND model_estimate_pricing.sales_person_id =" + Convert.ToInt32(hdnSalesPersonId.Value) + " AND is_direct=2 AND model_estimate_pricing.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + "  order by section_level asc";
+            strQ = "select DISTINCT section_level AS colId,'SECTION: '+ section_name as colName from model_estimate_pricing where model_estimate_pricing.location_id IN (Select location_id from model_estimate_locations WHERE model_estimate_locations.model_estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND model_estimate_locations.sales_person_id =" + Convert.ToInt32(hdnSalesPersonId.Value) + " AND model_estimate_locations.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+                   " AND model_estimate_pricing.section_level IN (Select section_id from model_estimate_sections WHERE model_estimate_sections.model_estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND model_estimate_sections.sales_person_id =" + Convert.ToInt32(hdnSalesPersonId.Value) + " AND model_estimate_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+                   " AND model_estimate_pricing.model_estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND model_estimate_pricing.sales_person_id =" + Convert.ToInt32(hdnSalesPersonId.Value) + " AND is_direct=2 AND model_estimate_pricing.client_id =" + Convert.ToInt32(hdnClientId.Value) + "  order by section_level asc";
         }
         else
         {
-            strQ = "select DISTINCT model_estimate_pricing.location_id AS colId,'LOCATION: '+ location.location_name as colName,sort_id from model_estimate_pricing  INNER JOIN location on location.location_id = model_estimate_pricing.location_id where model_estimate_pricing.location_id IN (Select location_id from model_estimate_locations WHERE model_estimate_locations.model_estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND model_estimate_locations.sales_person_id =" + Convert.ToInt32(hdnSalesPersonId.Value) + " AND model_estimate_locations.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                   " AND model_estimate_pricing.section_level IN (Select section_id from model_estimate_sections WHERE model_estimate_sections.model_estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND model_estimate_sections.sales_person_id =" + Convert.ToInt32(hdnSalesPersonId.Value) + " AND model_estimate_sections.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-                   " AND model_estimate_pricing.model_estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND model_estimate_pricing.sales_person_id =" + Convert.ToInt32(hdnSalesPersonId.Value) + " AND is_direct=2 AND model_estimate_pricing.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " order by sort_id asc";
+            strQ = "select DISTINCT model_estimate_pricing.location_id AS colId,'LOCATION: '+ location.location_name as colName,sort_id from model_estimate_pricing  INNER JOIN location on location.location_id = model_estimate_pricing.location_id where model_estimate_pricing.location_id IN (Select location_id from model_estimate_locations WHERE model_estimate_locations.model_estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND model_estimate_locations.sales_person_id =" + Convert.ToInt32(hdnSalesPersonId.Value) + " AND model_estimate_locations.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+                   " AND model_estimate_pricing.section_level IN (Select section_id from model_estimate_sections WHERE model_estimate_sections.model_estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND model_estimate_sections.sales_person_id =" + Convert.ToInt32(hdnSalesPersonId.Value) + " AND model_estimate_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
+                   " AND model_estimate_pricing.model_estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND model_estimate_pricing.sales_person_id =" + Convert.ToInt32(hdnSalesPersonId.Value) + " AND is_direct=2 AND model_estimate_pricing.client_id =" + Convert.ToInt32(hdnClientId.Value) + " order by sort_id asc";
         }
         List<PricingMaster> mList = _db.ExecuteQuery<PricingMaster>(strQ, string.Empty).ToList();
         grdGroupingDirect.DataSource = mList;
@@ -671,7 +677,7 @@ public partial class me_pricing : System.Web.UI.Page
             price_detail.labor_rate = dlabor_rate;
             price_detail.item_cost = ditem_cost;
 
-            price_detail.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+            price_detail.client_id = Convert.ToInt32(hdnClientId.Value);
             if (Convert.ToInt32(hdnSalesPersonId.Value) > 0)
                 price_detail.sales_person_id = Convert.ToInt32(hdnSalesPersonId.Value);
             else
@@ -793,7 +799,7 @@ public partial class me_pricing : System.Web.UI.Page
         GridView grdSelectedItem = (GridView)sender;
         DataClassesDataContext _db = new DataClassesDataContext();
         hdnPricingId.Value = grdSelectedItem.DataKeys[e.RowIndex].Values[0].ToString();
-        string strQ = "Delete model_estimate_pricing WHERE me_pricing_id =" + Convert.ToInt32(hdnPricingId.Value) + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        string strQ = "Delete model_estimate_pricing WHERE me_pricing_id =" + Convert.ToInt32(hdnPricingId.Value) + " AND client_id=" + Convert.ToInt32(hdnClientId.Value);
         _db.ExecuteCommand(strQ, string.Empty);
         hdnSortDesc.Value = "0";
         BindSelectedItemGrid();
@@ -892,11 +898,11 @@ public partial class me_pricing : System.Web.UI.Page
             var price_detail = from p in _db.model_estimate_pricings
                                join lc in _db.locations on p.location_id equals lc.location_id
                                where (from clc in _db.model_estimate_locations
-                                      where clc.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && clc.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && clc.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                      where clc.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && clc.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && clc.client_id == Convert.ToInt32(hdnClientId.Value)
                                       select clc.location_id).Contains(p.location_id) &&
                                       (from cs in _db.model_estimate_sections
-                                       where cs.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && cs.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
-                                       select cs.section_id).Contains(p.section_level) && p.location_id == colId && p.is_direct == nDirectId && p.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && p.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && p.pricing_type == "A"
+                                       where cs.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && cs.client_id == Convert.ToInt32(hdnClientId.Value)
+                                       select cs.section_id).Contains(p.section_level) && p.location_id == colId && p.is_direct == nDirectId && p.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && p.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && p.client_id == Convert.ToInt32(hdnClientId.Value) && p.pricing_type == "A"
                                orderby p.section_level ascending
 
                                select new PricingDetailModel()
@@ -933,12 +939,12 @@ public partial class me_pricing : System.Web.UI.Page
             var price_detail = from p in _db.model_estimate_pricings
                                join lc in _db.locations on p.location_id equals lc.location_id
                                where (from clc in _db.model_estimate_locations
-                                      where clc.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && clc.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && clc.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                      where clc.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && clc.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && clc.client_id == Convert.ToInt32(hdnClientId.Value)
                                       select clc.location_id).Contains(p.location_id) &&
                                       (from cs in _db.model_estimate_sections
-                                       where cs.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && cs.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                       where cs.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && cs.client_id == Convert.ToInt32(hdnClientId.Value)
                                        select cs.section_id).Contains(p.section_level)
-                                      && p.section_level == colId && p.is_direct == nDirectId && p.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && p.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && p.pricing_type == "A"
+                                      && p.section_level == colId && p.is_direct == nDirectId && p.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && p.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && p.client_id == Convert.ToInt32(hdnClientId.Value) && p.pricing_type == "A"
                                orderby lc.location_name ascending
 
                                select new PricingDetailModel()
@@ -1011,7 +1017,7 @@ public partial class me_pricing : System.Web.UI.Page
         GridView grdSelectedItem2 = (GridView)sender;
         DataClassesDataContext _db = new DataClassesDataContext();
         hdnPricingId.Value = grdSelectedItem2.DataKeys[e.RowIndex].Values[0].ToString();
-        string strQ = "Delete model_estimate_pricing WHERE me_pricing_id =" + Convert.ToInt32(hdnPricingId.Value) + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        string strQ = "Delete model_estimate_pricing WHERE me_pricing_id =" + Convert.ToInt32(hdnPricingId.Value) + " AND client_id=" + Convert.ToInt32(hdnClientId.Value);
         _db.ExecuteCommand(strQ, string.Empty);
         hdnSortDesc.Value = "0";
         BindSelectedItemGrid_Direct();
@@ -1180,7 +1186,7 @@ public partial class me_pricing : System.Web.UI.Page
             nQty = 1;
 
         }
-        string strQ = "UPDATE model_estimate_pricing SET quantity=" + nQty + " ,total_retail_price=" + dTotalPrice + " ,short_notes='" + txtshort_notes.Text.Replace("'", "''") + "' WHERE me_pricing_id =" + nPricingId + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        string strQ = "UPDATE model_estimate_pricing SET quantity=" + nQty + " ,total_retail_price=" + dTotalPrice + " ,short_notes='" + txtshort_notes.Text.Replace("'", "''") + "' WHERE me_pricing_id =" + nPricingId + " AND client_id=" + Convert.ToInt32(hdnClientId.Value);
         _db.ExecuteCommand(strQ, string.Empty);
 
 
@@ -1260,7 +1266,7 @@ public partial class me_pricing : System.Web.UI.Page
             nQty = 1;
 
         }
-        string strQ = "UPDATE model_estimate_pricing SET quantity=" + nQty + " ,total_direct_price=" + dTotalDirectPrice + " ,short_notes='" + txtshort_notes1.Text.Replace("'", "''") + "' WHERE me_pricing_id =" + nPricingId + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        string strQ = "UPDATE model_estimate_pricing SET quantity=" + nQty + " ,total_direct_price=" + dTotalDirectPrice + " ,short_notes='" + txtshort_notes1.Text.Replace("'", "''") + "' WHERE me_pricing_id =" + nPricingId + " AND client_id=" + Convert.ToInt32(hdnClientId.Value);
         _db.ExecuteCommand(strQ, string.Empty);
 
 
@@ -1303,18 +1309,21 @@ public partial class me_pricing : System.Web.UI.Page
 
         model_estimate obj = new model_estimate();
         DataClassesDataContext _db = new DataClassesDataContext();
-        obj = _db.model_estimates.Single(me => me.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && me.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && me.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
-        obj.estimate_comments = txtComments.Text;
-        obj.IsPublic = Convert.ToBoolean(chkIsPublic.Checked);
-        obj.last_udated_date = DateTime.Now;
-        _db.SubmitChanges();
+        obj = _db.model_estimates.SingleOrDefault(me => me.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && me.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && me.client_id == Convert.ToInt32(hdnClientId.Value));
+        if(obj != null)
+        {
+            obj.estimate_comments = txtComments.Text;
+            obj.IsPublic = Convert.ToBoolean(chkIsPublic.Checked);
+            obj.last_udated_date = DateTime.Now;
+            _db.SubmitChanges();
 
-        lblResult1.Text = csCommonUtility.GetSystemMessage(lblModelEstimateName.Text + " updated successfully.");
+            lblResult1.Text = csCommonUtility.GetSystemMessage(lblModelEstimateName.Text + " updated successfully.");
+        }
 
     }
     protected void btnAssignToCustomer_Click(object sender, EventArgs e)
     {
-        Response.Redirect("assigntoacustomer.aspx?meid=" + hdnEstimateId.Value + "&spid=" + hdnSalesPersonId.Value);
+        Response.Redirect("assigntoacustomer.aspx?meid=" + hdnEstimateId.Value + "&spid=" + hdnSalesPersonId.Value + "&clid="+ hdnClientId.Value);
     }
 
 
@@ -1386,7 +1395,7 @@ public partial class me_pricing : System.Web.UI.Page
         price_detail.retail_multiplier = 0;
         price_detail.labor_rate = 0;
         price_detail.item_cost = Convert.ToDecimal(txtO_Price.Text.Replace("$", "").Replace("(", "-").Replace(")", ""));
-        price_detail.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        price_detail.client_id = Convert.ToInt32(hdnClientId.Value);
         //price_detail.customer_id = Convert.ToInt32(hdnCustomerId.Value);
         price_detail.model_estimate_id = Convert.ToInt32(hdnEstimateId.Value);
         price_detail.location_id = Convert.ToInt32(ddlCustomerLocations.SelectedValue);
@@ -1554,7 +1563,7 @@ public partial class me_pricing : System.Web.UI.Page
         price_detail.labor_rate = labor_rate;
         price_detail.item_cost = ditem_cost;
 
-        price_detail.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        price_detail.client_id = Convert.ToInt32(hdnClientId.Value);
         if (Convert.ToInt32(hdnSalesPersonId.Value) > 0)
             price_detail.sales_person_id = Convert.ToInt32(hdnSalesPersonId.Value);
         else
@@ -1664,9 +1673,9 @@ public partial class me_pricing : System.Web.UI.Page
                     hdnPricingId.Value = grdSelectedItem1.DataKeys[diitem.RowIndex].Values[0].ToString();
                     int LaborId = 1;
                     decimal nCost1 = 0;
-                    if (_db.model_estimate_pricings.Where(ep => ep.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ep.me_pricing_id == Convert.ToInt32(hdnPricingId.Value) && ep.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).SingleOrDefault() != null)
+                    if (_db.model_estimate_pricings.Where(ep => ep.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ep.me_pricing_id == Convert.ToInt32(hdnPricingId.Value) && ep.client_id == Convert.ToInt32(hdnClientId.Value)).SingleOrDefault() != null)
                     {
-                        model_estimate_pricing pd = _db.model_estimate_pricings.Single(p => p.item_id == Convert.ToInt32(diitem.Cells[0].Text) && p.me_pricing_id == Convert.ToInt32(hdnPricingId.Value) && p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+                        model_estimate_pricing pd = _db.model_estimate_pricings.Single(p => p.item_id == Convert.ToInt32(diitem.Cells[0].Text) && p.me_pricing_id == Convert.ToInt32(hdnPricingId.Value) && p.client_id == Convert.ToInt32(hdnClientId.Value));
                         LaborId = Convert.ToInt32(pd.labor_id);
                         nCost1 = Convert.ToDecimal(pd.item_cost);
                     }
@@ -1745,9 +1754,9 @@ public partial class me_pricing : System.Web.UI.Page
                     decimal nCost2 = 0;
                     decimal nQty2 = Convert.ToDecimal(txtquantity1.Text);
                     decimal nTotalPrice2 = 0;
-                    if (_db.model_estimate_pricings.Where(ep => ep.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ep.me_pricing_id == Convert.ToInt32(hdnPricingId.Value) && ep.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).SingleOrDefault() != null)
+                    if (_db.model_estimate_pricings.Where(ep => ep.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ep.me_pricing_id == Convert.ToInt32(hdnPricingId.Value) && ep.client_id == Convert.ToInt32(hdnClientId.Value)).SingleOrDefault() != null)
                     {
-                        model_estimate_pricing pd = _db.model_estimate_pricings.Single(p => p.item_id == Convert.ToInt32(diitem2.Cells[0].Text) && p.me_pricing_id == Convert.ToInt32(hdnPricingId.Value) && p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+                        model_estimate_pricing pd = _db.model_estimate_pricings.Single(p => p.item_id == Convert.ToInt32(diitem2.Cells[0].Text) && p.me_pricing_id == Convert.ToInt32(hdnPricingId.Value) && p.client_id == Convert.ToInt32(hdnClientId.Value));
                         LaborId2 = Convert.ToInt32(pd.labor_id);
                         nCost2 = Convert.ToDecimal(pd.item_cost);
                     }
@@ -1798,7 +1807,7 @@ public partial class me_pricing : System.Web.UI.Page
 
             int index = Convert.ToInt32(e.CommandArgument);
             int nLocId = Convert.ToInt32(grdGrouping.DataKeys[index].Values[0]);
-            Response.Redirect("assigntomodelstimate.aspx?type=1&locid=" + nLocId + "&meid=" + Convert.ToInt32(hdnEstimateId.Value) + "&spid=" + Convert.ToInt32(hdnSalesPersonId.Value));
+            Response.Redirect("assigntomodelstimate.aspx?type=1&locid=" + nLocId + "&meid=" + Convert.ToInt32(hdnEstimateId.Value) + "&spid=" + Convert.ToInt32(hdnSalesPersonId.Value) + "&clid=" + hdnClientId.Value);
 
         }
 
@@ -2086,7 +2095,7 @@ public partial class me_pricing : System.Web.UI.Page
                 price_detail.labor_rate = dlabor_rate;
                 price_detail.item_cost = ditem_cost;
 
-                price_detail.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                price_detail.client_id = Convert.ToInt32(hdnClientId.Value);
                 if (Convert.ToInt32(hdnSalesPersonId.Value) > 0)
                     price_detail.sales_person_id = Convert.ToInt32(hdnSalesPersonId.Value);
                 else
@@ -2169,7 +2178,7 @@ public partial class me_pricing : System.Web.UI.Page
             lblPr.ForeColor = Color.Black;
 
             double nTotal = 0;
-            model_estimate_payment objEstPay = _db.model_estimate_payments.SingleOrDefault(pay => pay.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pay.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && pay.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+            model_estimate_payment objEstPay = _db.model_estimate_payments.SingleOrDefault(pay => pay.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pay.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && pay.client_id == Convert.ToInt32(hdnClientId.Value));
             if (objEstPay != null)
             {
                 if (objEstPay.project_subtotal > 0)
@@ -2406,7 +2415,7 @@ public partial class me_pricing : System.Web.UI.Page
 
 
 
-        model_estimate_payment objEstPay = _db.model_estimate_payments.Single(pay => pay.mod_est_payment_id == nEstimateId && pay.sales_person_id == nSalesPersonId && pay.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+        model_estimate_payment objEstPay = _db.model_estimate_payments.Single(pay => pay.mod_est_payment_id == nEstimateId && pay.sales_person_id == nSalesPersonId && pay.client_id == Convert.ToInt32(hdnClientId.Value));
 
         hdnModEstimatePaymentId.Value = objEstPay.mod_est_payment_id.ToString();
         txtpDeposit.Text = Convert.ToDecimal(objEstPay.deposit_percent).ToString();
@@ -2676,12 +2685,12 @@ public partial class me_pricing : System.Web.UI.Page
             }
             else
             {
-                // Convert.ToInt32(hdnEstimateId.Value) && pay.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && pay.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+                
                 obj.create_date = DateTime.Now;
                 obj.updated_date = DateTime.Now;
                 obj.sales_person_id = Convert.ToInt32(hdnSalesPersonId.Value);
                 obj.estimate_id = Convert.ToInt32(hdnEstimateId.Value);
-                obj.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                obj.client_id = Convert.ToInt32(hdnClientId.Value);
                 obj.is_BathSheet = false;
                 obj.is_KithenSheet = false;
                 obj.is_ShowerSheet = false;
@@ -2721,7 +2730,7 @@ public partial class me_pricing : System.Web.UI.Page
                 item_price objItem = _db.item_prices.SingleOrDefault(p => p.item_id == nItemId && p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
                 if (objItem != null)
                 {
-                    model_estimate_pricing pd = _db.model_estimate_pricings.SingleOrDefault(p => p.item_id == nItemId && p.me_pricing_id == nPricingId && p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+                    model_estimate_pricing pd = _db.model_estimate_pricings.SingleOrDefault(p => p.item_id == nItemId && p.me_pricing_id == nPricingId && p.client_id == Convert.ToInt32(hdnClientId.Value));
 
                     if (pd != null)
                     {

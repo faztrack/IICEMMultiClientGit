@@ -24,6 +24,9 @@ public partial class me_locations : System.Web.UI.Page
             {
                 Response.Redirect(ConfigurationManager.AppSettings["LoginPage"].ToString());
             }
+
+            if (Request.QueryString.Get("clid") != null)
+                hdnClientId.Value = Request.QueryString.Get("clid");
             hdnEstimateId.Value = "0";
             DataClassesDataContext _db = new DataClassesDataContext();
             model_estimate me = new model_estimate();
@@ -52,9 +55,9 @@ public partial class me_locations : System.Web.UI.Page
             if (Request.QueryString.Get("meid") != null)
             {
                 hdnEstimateId.Value = Convert.ToInt32(Request.QueryString.Get("meid")).ToString();
-            if (_db.model_estimates.Where(mest => mest.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && mest.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mest.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).ToList().Count > 0)
+            if (_db.model_estimates.Where(mest => mest.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && mest.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mest.client_id == Convert.ToInt32(hdnClientId.Value)).ToList().Count > 0)
             {
-                me = _db.model_estimates.Single(mest => mest.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && mest.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mest.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+                me = _db.model_estimates.Single(mest => mest.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && mest.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mest.client_id == Convert.ToInt32(hdnClientId.Value));
 
                 strModelEstimateName = me.model_estimate_name;
                 hdnEstimateId.Value = me.model_estimate_id.ToString();
@@ -65,9 +68,9 @@ public partial class me_locations : System.Web.UI.Page
                 }
                 else
                 {
-                    if (_db.model_estimate_locations.Where(mel => mel.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && mel.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mel.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).ToList().Count > 0)
+                    if (_db.model_estimate_locations.Where(mel => mel.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && mel.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mel.client_id == Convert.ToInt32(hdnClientId.Value)).ToList().Count > 0)
                     {
-                        Response.Redirect("me_sections.aspx?meid=" + hdnEstimateId.Value + "&spid=" + hdnSalesPersonId.Value);
+                        Response.Redirect("me_sections.aspx?meid=" + hdnEstimateId.Value + "&spid=" + hdnSalesPersonId.Value+ "&clid=" + hdnClientId.Value);
                     }                    
                 }   
             }
@@ -78,7 +81,7 @@ public partial class me_locations : System.Web.UI.Page
                 {
                     int nEstId = 0;
                     var result = (from mest in _db.model_estimates
-                                  where mest.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mest.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                  where mest.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mest.client_id == Convert.ToInt32(hdnClientId.Value)
                                   select mest.model_estimate_id);
 
                     int n = result.Count();
@@ -87,7 +90,7 @@ public partial class me_locations : System.Web.UI.Page
                     nEstId = nEstId + 1;
                     hdnEstimateId.Value = nEstId.ToString();
 
-                    me.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                    me.client_id = Convert.ToInt32(hdnClientId.Value);
                     me.model_estimate_id = Convert.ToInt32(hdnEstimateId.Value);
                     me.status_id = 1;
                     me.estimate_comments = "";
@@ -113,7 +116,7 @@ public partial class me_locations : System.Web.UI.Page
     {
         DataClassesDataContext _db = new DataClassesDataContext();
 
-        var item = _db.model_estimate_locations.Where(mel => mel.model_estimate_id == nEstimateId && mel.sales_person_id == nSalesPersonId && mel.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+        var item = _db.model_estimate_locations.Where(mel => mel.model_estimate_id == nEstimateId && mel.sales_person_id == nSalesPersonId && mel.client_id == Convert.ToInt32(hdnClientId.Value));
 
         foreach (ListItem li in chkLocations.Items)
         {
@@ -164,7 +167,7 @@ public partial class me_locations : System.Web.UI.Page
         txtDescription.Text = "";
         modAddNewLocation.Hide();
 
-        Response.Redirect("me_locations.aspx?meid=" + hdnEstimateId.Value + "&spid=" + hdnSalesPersonId.Value);
+        Response.Redirect("me_locations.aspx?meid=" + hdnEstimateId.Value + "&spid=" + hdnSalesPersonId.Value + "&clid=" + hdnClientId.Value);
     }
     protected void btnClose_Click(object sender, EventArgs e)
     {
@@ -187,7 +190,7 @@ public partial class me_locations : System.Web.UI.Page
             return;
         }
         DataClassesDataContext _db = new DataClassesDataContext();
-        string strQ = "DELETE model_estimate_locations WHERE sales_person_id =" + Convert.ToInt32(hdnSalesPersonId.Value) + "  AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " AND model_estimate_id =" + Convert.ToInt32(hdnEstimateId.Value);
+        string strQ = "DELETE model_estimate_locations WHERE sales_person_id =" + Convert.ToInt32(hdnSalesPersonId.Value) + "  AND client_id=" + Convert.ToInt32(hdnClientId.Value) + " AND model_estimate_id =" + Convert.ToInt32(hdnEstimateId.Value);
         _db.ExecuteCommand(strQ, string.Empty);
         for (int i = 0; i < chkLocations.Items.Count; i++)
         {
@@ -196,7 +199,7 @@ public partial class me_locations : System.Web.UI.Page
                 int nLocationid = Convert.ToInt32(chkLocations.Items[i].Value);
                 // Add Customer locations
                 model_estimate_location me_loc = new model_estimate_location();
-                me_loc.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                me_loc.client_id = Convert.ToInt32(hdnClientId.Value);
                 me_loc.sales_person_id = Convert.ToInt32(hdnSalesPersonId.Value);
                 me_loc.model_estimate_id = Convert.ToInt32(hdnEstimateId.Value);
                 me_loc.location_id = nLocationid;
@@ -205,6 +208,6 @@ public partial class me_locations : System.Web.UI.Page
             }
         }
         _db.SubmitChanges();
-        Response.Redirect("me_sections.aspx?meid=" + hdnEstimateId.Value + "&spid=" + hdnSalesPersonId.Value);
+        Response.Redirect("me_sections.aspx?meid=" + hdnEstimateId.Value + "&spid=" + hdnSalesPersonId.Value + "&clid=" + hdnClientId.Value);
     }
 }

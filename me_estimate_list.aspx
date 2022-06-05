@@ -72,33 +72,33 @@
         function CheckAllSubmit(Checkbox) {
             // alert("msg");
             var GridVwHeaderChckbox = document.getElementById("<%=grdEstimationList.ClientID %>");
-                for (i = 1; i < GridVwHeaderChckbox.rows.length; i++) {
-                    var elements = GridVwHeaderChckbox.rows[i].cells[3].getElementsByTagName("INPUT")[0]
-                    for (var e in elements) {
-                        if (e.type != "text") {
-                            elements.checked = Checkbox.checked;
-                        }
-                    }
-
-                }
-            }
-
-            function CheckUnselect(Checkbox) {
-                var bFlag = false;
-                var GridVwHeaderChckbox = document.getElementById("<%=grdEstimationList.ClientID %>");
-                for (i = 1; i < GridVwHeaderChckbox.rows.length; i++) {
-                    if (GridVwHeaderChckbox.rows[i].cells[3].getElementsByTagName("INPUT")[0].checked == false) {
-                        bFlag = true;
-                        break;
+            for (i = 1; i < GridVwHeaderChckbox.rows.length; i++) {
+                var elements = GridVwHeaderChckbox.rows[i].cells[3].getElementsByTagName("INPUT")[0]
+                for (var e in elements) {
+                    if (e.type != "text") {
+                        elements.checked = Checkbox.checked;
                     }
                 }
-                if (bFlag) {
-                    GridVwHeaderChckbox.rows[0].cells[3].getElementsByTagName("INPUT")[0].checked = false;
-                }
-                else {
-                    GridVwHeaderChckbox.rows[0].cells[3].getElementsByTagName("INPUT")[0].checked = true;
+
+            }
+        }
+
+        function CheckUnselect(Checkbox) {
+            var bFlag = false;
+            var GridVwHeaderChckbox = document.getElementById("<%=grdEstimationList.ClientID %>");
+            for (i = 1; i < GridVwHeaderChckbox.rows.length; i++) {
+                if (GridVwHeaderChckbox.rows[i].cells[3].getElementsByTagName("INPUT")[0].checked == false) {
+                    bFlag = true;
+                    break;
                 }
             }
+            if (bFlag) {
+                GridVwHeaderChckbox.rows[0].cells[3].getElementsByTagName("INPUT")[0].checked = false;
+            }
+            else {
+                GridVwHeaderChckbox.rows[0].cells[3].getElementsByTagName("INPUT")[0].checked = true;
+            }
+        }
 
     </script>
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
@@ -123,32 +123,40 @@
                             <tr>
                                 <td>
                                     <table width="100%">
-                                        <tr id="trPublicSearchAdd" runat="server">
-                                            <td style="width: 180px;">
-                                                <b>Estimation Template Name: </b>
-                                            </td>
-                                            <td align="left">
-                                                <asp:TextBox ID="txtPublicSearch" Style="margin-left: 0px;" onkeypress="return searchPublicKeyPress(event);" runat="server"></asp:TextBox>
-                                                <asp:Button ID="btnPublicSearch" Style="margin-left: 0px;" runat="server" Text="Search" OnClick="btnPublicSearch_Click"
-                                                    CssClass="button" />
-                                            </td>
-                                            <td align="right">&nbsp;
-                                            </td>
-                                            <td align="left">&nbsp;
-                                            </td>
-                                            <td align="right"></td>
-                                        </tr>
-                                        <tr>
-                                            <td align="center" colspan="4">
-                                                <asp:Label ID="lblResult" runat="server" Text=""></asp:Label>
-                                            </td>
-                                        </tr>
+
+                                        <%-- Top Part --%>
+                                        <asp:Panel ID="pnlTopPart" runat="server" Visible="true">
+                                            <tr id="trPublicSearchAdd" runat="server">
+                                                <td style="width: 180px;">
+                                                    <b>Estimation Template Name: </b>
+                                                </td>
+                                                <td align="left">
+                                                    <asp:TextBox ID="txtPublicSearch" Style="margin-left: 0px;" onkeypress="return searchPublicKeyPress(event);" runat="server"></asp:TextBox>
+                                                    <asp:Button ID="btnPublicSearch" Style="margin-left: 0px;" runat="server" Text="Search" OnClick="btnPublicSearch_Click"
+                                                        CssClass="button" />
+                                                    &nbsp;&nbsp; <asp:LinkButton ID="lnkTopReset" runat="server" OnClick="lnkTopReset_Click">Reset</asp:LinkButton>
+                                                </td>
+                                                <td align="left">
+                                                    &nbsp;
+                                                </td>
+                                                <td align="left">&nbsp;
+                                                </td>
+                                                <td align="right"></td>
+                                            </tr>
+                                            </asp:Panel>
+                                            <tr>
+                                                <td align="center" colspan="4">
+                                                    <asp:Label ID="lblResult" runat="server" Text=""></asp:Label>
+                                                </td>
+                                            </tr>
+                                        
+
                                         <tr>
                                             <td id="tdlabelTitleGrn" class="labelTitleGrn" runat="server" align="center" colspan="5">
                                                 <table style="padding: 0px; margin: 0px; width: 100%;">
                                                     <tr>
                                                         <td style="padding: 0px; margin: 0px; width: 52%; text-align: right;">
-                                                            <asp:Label ID="lblEstimate2" style="color:#fff;" runat="server" Text="Public Templates"></asp:Label>
+                                                            <asp:Label ID="lblEstimate2" Style="color: #fff;" runat="server" Text="Public Templates"></asp:Label>
                                                         </td>
                                                         <td style="padding: 0px; margin: 0px; text-align: right;">
                                                             <asp:LinkButton Style="color: #fff; font-weight: bold;" ID="btnPublicDelete" runat="server" Text="Delete Selected Template(s)" OnClick="btnPublicDelete_Click" OnClientClick="return confirmDelete();" />
@@ -166,7 +174,7 @@
                                                     <Columns>
                                                         <asp:TemplateField HeaderText="Estimate Name">
                                                             <ItemTemplate>
-                                                                <asp:HyperLink ID="hypEstName1" runat="server">[hypEstName]</asp:HyperLink>
+                                                                <asp:HyperLink ID="hypEstName1" runat="server" Font-Underline="true">[hypEstName]</asp:HyperLink>
                                                             </ItemTemplate>
                                                             <HeaderStyle HorizontalAlign="Left" />
                                                             <ItemStyle HorizontalAlign="Left" />
@@ -194,27 +202,41 @@
                                                 </asp:GridView>
                                             </td>
                                         </tr>
-                                        <tr id="trSearch" runat="server">
-                                            <td style="width: 180px;">
-                                                <b>Estimation Template Name: </b>
-                                            </td>
-                                            <td align="left">
-                                                <asp:TextBox ID="txtSearch" Style="margin-left: 0px;" onkeypress="return searchKeyPress(event);" runat="server"></asp:TextBox>
-                                                <asp:Button ID="btnSearch" Style="margin-left: 0px;" runat="server" Text="Search" OnClick="btnSearch_Click"
-                                                    CssClass="button" />
-                                            </td>
-                                            <td align="right">&nbsp;
-                                            </td>
-                                            <td align="left">&nbsp;
-                                            </td>
-                                            <td align="right"></td>
-                                        </tr>
+
+
+
+                                        <%-- Bottom Part --%>
+                                        <asp:Panel ID="pnlBottom" runat="server" Visible="true">
+                                            <tr id="trSearch" runat="server">
+                                                <td style="width: 180px;">
+                                                    <b>Estimation Template Name: </b>
+                                                </td>
+                                                <td align="left">
+                                                    <asp:TextBox ID="txtSearch" Style="margin-left: 0px;" onkeypress="return searchKeyPress(event);" runat="server"></asp:TextBox>
+                                                    <asp:Button ID="btnSearch" Style="margin-left: 0px;" runat="server" Text="Search" OnClick="btnSearch_Click"
+                                                        CssClass="button" />
+                                                   &nbsp;&nbsp; <asp:LinkButton ID="lnkBottomReset" runat="server" OnClick="lnkBottomReset_Click">Reset</asp:LinkButton>
+                                                </td>
+                                                <td align="right">
+                                                    &nbsp;
+                                                </td>
+                                                <td align="left">&nbsp;
+                                                </td>
+                                                <td align="right"></td>
+                                            </tr>
+                                        </asp:Panel>
+                                        <tr>
+                                                <td align="center" colspan="4">
+                                                    <asp:Label ID="lblResult2" runat="server" Text=""></asp:Label>
+                                                </td>
+                                            </tr>
+
                                         <tr>
                                             <td id="tdlabelTitleBlu" runat="server" class="labelTitleBlu" align="center" colspan="5">
                                                 <table style="padding: 0px; margin: 0px; width: 100%;">
                                                     <tr>
                                                         <td style="padding: 0px; margin: 0px; width: 52%; text-align: right;">
-                                                            <asp:Label ID="lblTemplate1" style="color:#fff;" runat="server" Text="Your Templates"></asp:Label>
+                                                            <asp:Label ID="lblTemplate1" Style="color: #fff;" runat="server" Text="Your Templates"></asp:Label>
                                                         </td>
                                                         <td style="padding: 0px; margin: 0px; text-align: right;">
                                                             <asp:LinkButton Style="color: #fff; font-weight: bold;" ID="btnDelete" runat="server" Text="Delete Selected Template(s)" OnClick="btnDelete_Click" OnClientClick="return confirmDelete();" />
@@ -233,7 +255,7 @@
                                                     <Columns>
                                                         <asp:TemplateField HeaderText="Estimate Name">
                                                             <ItemTemplate>
-                                                                <asp:HyperLink ID="hypEstName" runat="server">[hypEstName]</asp:HyperLink>
+                                                                <asp:HyperLink ID="hypEstName" runat="server" Font-Underline="true">[hypEstName]</asp:HyperLink>
                                                             </ItemTemplate>
                                                             <HeaderStyle HorizontalAlign="Left" />
                                                             <ItemStyle HorizontalAlign="Left" />
@@ -276,7 +298,7 @@
             </table>
         </ContentTemplate>
     </asp:UpdatePanel>
-     <asp:UpdateProgress ID="UpdateProgress1" runat="server" DisplayAfter="1" AssociatedUpdatePanelID="UpdatePanel1"
+    <asp:UpdateProgress ID="UpdateProgress1" runat="server" DisplayAfter="1" AssociatedUpdatePanelID="UpdatePanel1"
         DynamicLayout="False">
         <ProgressTemplate>
             <div class="overlay" />

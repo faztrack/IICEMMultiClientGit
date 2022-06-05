@@ -16,13 +16,13 @@
                     </td>
                 </tr>
                 <tr>
-                    <td align="left" style="padding-left:150px">
+                    <td align="center" >
                         <label><b>Division: </b></label>
                         <asp:DropDownList ID="ddlDivision" runat="server" Width="200px" OnSelectedIndexChanged="ddlDivision_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
                     </td>
                 </tr>
                 <tr>
-                    <td>
+                    <td align="center">
                         <table style="padding-left: 20px;" cellpadding="0" cellspacing="0" width="680px">
                             <tr align="right">
                                 <td align="left">Write your special notes below:(500 Chars Max)
@@ -67,5 +67,16 @@
             </table>
         </ContentTemplate>
     </asp:UpdatePanel>
+     <asp:UpdateProgress ID="UpdateProgress1" runat="server" DisplayAfter="1" AssociatedUpdatePanelID="UpdatePanel1" DynamicLayout="False">
+        <ProgressTemplate>
+            <div class="overlay" />
+            <div class="overlayContent">
+                <p>
+                    Please wait while your data is being processed
+                </p>
+                <img src="images/ajax_loader.gif" alt="Loading" border="1" />
+            </div>
+        </ProgressTemplate>
+    </asp:UpdateProgress>
 </asp:Content>
 

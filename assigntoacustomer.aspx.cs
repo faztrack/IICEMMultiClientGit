@@ -121,6 +121,8 @@ public partial class assigntoacustomer : System.Web.UI.Page
             }
             if (Request.QueryString.Get("meid") != null)
                 hdnModelEstimateId.Value = Request.QueryString.Get("meid");
+            if (Request.QueryString.Get("clid") != null)
+                hdnClientId.Value = Request.QueryString.Get("clid");
             if (Request.QueryString.Get("spid") != null)
             {
                 hdnSalesPersonId.Value = Convert.ToInt32(Request.QueryString.Get("spid")).ToString();
@@ -191,7 +193,7 @@ public partial class assigntoacustomer : System.Web.UI.Page
             //}
 
             model_estimate me = new model_estimate();
-            me = _db.model_estimates.Single(mest => mest.model_estimate_id == Convert.ToInt32(hdnModelEstimateId.Value) && mest.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mest.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+            me = _db.model_estimates.Single(mest => mest.model_estimate_id == Convert.ToInt32(hdnModelEstimateId.Value) && mest.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mest.client_id == Convert.ToInt32(hdnClientId.Value));
 
             lblModelEstimateName.Text = me.model_estimate_name;
             lblCreateDate.Text = Convert.ToDateTime(me.create_date).ToShortDateString();
@@ -290,7 +292,7 @@ public partial class assigntoacustomer : System.Web.UI.Page
                 // Model Estimate Sections
                 var section = from sec in _db.sectioninfos
                               join mes in _db.model_estimate_sections on sec.section_id equals mes.section_id
-                              where mes.model_estimate_id == Convert.ToInt32(hdnModelEstimateId.Value) && mes.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mes.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                              where mes.model_estimate_id == Convert.ToInt32(hdnModelEstimateId.Value) && mes.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mes.client_id == Convert.ToInt32(hdnClientId.Value)
                               select new SectionInfo()
                               {
                                   section_id = (int)mes.section_id,
@@ -307,7 +309,7 @@ public partial class assigntoacustomer : System.Web.UI.Page
                 // Model Estimate Locations
                 var Locations = from loc in _db.locations
                                 join mel in _db.model_estimate_locations on loc.location_id equals mel.location_id
-                                where mel.model_estimate_id == Convert.ToInt32(hdnModelEstimateId.Value) && mel.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mel.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                where mel.model_estimate_id == Convert.ToInt32(hdnModelEstimateId.Value) && mel.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mel.client_id == Convert.ToInt32(hdnClientId.Value)
                                 select new LocationModel()
                                 {
                                     location_id = (int)mel.location_id,
@@ -324,7 +326,7 @@ public partial class assigntoacustomer : System.Web.UI.Page
 
                 // Customer Estimates without (Sold)
                 var CustomerEstimate = from cest in _db.customer_estimates
-                                       where cest.status_id != 3 && cest.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cest.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                       where cest.status_id != 3 && cest.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cest.client_id == Convert.ToInt32(hdnClientId.Value)
                                        orderby cest.estimate_name ascending
                                        select cest;
                 int n = CustomerEstimate.Count();
@@ -397,12 +399,12 @@ public partial class assigntoacustomer : System.Web.UI.Page
 
 
             // Update Customer Estimate New Payment
-            model_estimate_payment objes = _db.model_estimate_payments.SingleOrDefault(mest => mest.estimate_id == Convert.ToInt32(hdnModelEstimateId.Value) && mest.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mest.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+            model_estimate_payment objes = _db.model_estimate_payments.SingleOrDefault(mest => mest.estimate_id == Convert.ToInt32(hdnModelEstimateId.Value) && mest.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mest.client_id == Convert.ToInt32(hdnClientId.Value));
 
             if (objes != null)
             {
                // estimate_payment mod_es = new estimate_payment();
-                estimate_payment mod_es = _db.estimate_payments.SingleOrDefault(mest => mest.estimate_id == Convert.ToInt32(hdnCustomerEstimateId.Value) && mest.customer_id == Convert.ToInt32(hdnCustomerId.Value) && mest.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+                estimate_payment mod_es = _db.estimate_payments.SingleOrDefault(mest => mest.estimate_id == Convert.ToInt32(hdnCustomerEstimateId.Value) && mest.customer_id == Convert.ToInt32(hdnCustomerId.Value) && mest.client_id == Convert.ToInt32(hdnClientId.Value));
                 if (mod_es!= null)
                 {
                     mod_es.customer_id = Convert.ToInt32(hdnCustomerId.Value);
@@ -484,10 +486,10 @@ public partial class assigntoacustomer : System.Web.UI.Page
                 if (chkModelEstimateSections.Items[i].Selected == true)
                 {
                     int nSectionId = Convert.ToInt32(chkModelEstimateSections.Items[i].Value);
-                    if (_db.customer_sections.Where(cs => cs.section_id == nSectionId && cs.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cs.estimate_id == Convert.ToInt32(hdnCustomerEstimateId.Value) && cs.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && cs.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).SingleOrDefault() == null)
+                    if (_db.customer_sections.Where(cs => cs.section_id == nSectionId && cs.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cs.estimate_id == Convert.ToInt32(hdnCustomerEstimateId.Value) && cs.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && cs.client_id == Convert.ToInt32(hdnClientId.Value)).SingleOrDefault() == null)
                     {
                         customer_section cusSec = new customer_section();
-                        cusSec.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                        cusSec.client_id = Convert.ToInt32(hdnClientId.Value);
                         cusSec.customer_id = Convert.ToInt32(hdnCustomerId.Value);
                         cusSec.sales_person_id = Convert.ToInt32(hdnSalesPersonId.Value);
                         cusSec.section_id = nSectionId;
@@ -507,10 +509,10 @@ public partial class assigntoacustomer : System.Web.UI.Page
                 {
                     int nLocationId = Convert.ToInt32(chkModelEstimatelocations.Items[i].Value);
 
-                    if (_db.customer_locations.Where(cloc => cloc.location_id == nLocationId && cloc.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cloc.estimate_id == Convert.ToInt32(hdnCustomerEstimateId.Value) && cloc.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).SingleOrDefault() == null)
+                    if (_db.customer_locations.Where(cloc => cloc.location_id == nLocationId && cloc.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cloc.estimate_id == Convert.ToInt32(hdnCustomerEstimateId.Value) && cloc.client_id == Convert.ToInt32(hdnClientId.Value)).SingleOrDefault() == null)
                     {
                         customer_location cusLoc = new customer_location();
-                        cusLoc.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                        cusLoc.client_id = Convert.ToInt32(hdnClientId.Value);
                         cusLoc.customer_id = Convert.ToInt32(hdnCustomerId.Value);
                         cusLoc.location_id = nLocationId;
                         cusLoc.estimate_id = Convert.ToInt32(hdnCustomerEstimateId.Value);
@@ -533,14 +535,14 @@ public partial class assigntoacustomer : System.Web.UI.Page
                         {
                             int nLocationId = Convert.ToInt32(chkModelEstimatelocations.Items[j].Value);
 
-                            List<model_estimate_pricing> Pricinglist = _db.model_estimate_pricings.Where(mePr => mePr.section_level == nSectionId && mePr.location_id == nLocationId && mePr.model_estimate_id == Convert.ToInt32(hdnModelEstimateId.Value) && mePr.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mePr.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).ToList();
+                            List<model_estimate_pricing> Pricinglist = _db.model_estimate_pricings.Where(mePr => mePr.section_level == nSectionId && mePr.location_id == nLocationId && mePr.model_estimate_id == Convert.ToInt32(hdnModelEstimateId.Value) && mePr.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mePr.client_id == Convert.ToInt32(hdnClientId.Value)).ToList();
                             foreach (model_estimate_pricing objPd in Pricinglist)
                             {
 
                                 int nItemId = Convert.ToInt32(objPd.item_id);
                                 int nDirect = Convert.ToInt32(objPd.is_direct);
                                 string ShortNote = objPd.short_notes;
-                                if (!_db.pricing_details.Any(cpd => cpd.item_id == objPd.item_id && cpd.is_direct == nDirect && cpd.section_level == nSectionId && cpd.location_id == nLocationId && cpd.short_notes == ShortNote && cpd.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cpd.estimate_id == Convert.ToInt32(hdnCustomerEstimateId.Value) && cpd.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && cpd.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])))
+                                if (!_db.pricing_details.Any(cpd => cpd.item_id == objPd.item_id && cpd.is_direct == nDirect && cpd.section_level == nSectionId && cpd.location_id == nLocationId && cpd.short_notes == ShortNote && cpd.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cpd.estimate_id == Convert.ToInt32(hdnCustomerEstimateId.Value) && cpd.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && cpd.client_id == Convert.ToInt32(hdnClientId.Value)))
                                 {
                                     //arefin 07-20-2019 
                                     //------------------------------------------------------------------------------------------------------
@@ -663,12 +665,12 @@ public partial class assigntoacustomer : System.Web.UI.Page
             }
 
             model_estimate me = new model_estimate();
-            me = _db.model_estimates.Single(mest => mest.model_estimate_id == Convert.ToInt32(hdnModelEstimateId.Value) && mest.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mest.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+            me = _db.model_estimates.Single(mest => mest.model_estimate_id == Convert.ToInt32(hdnModelEstimateId.Value) && mest.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mest.client_id == Convert.ToInt32(hdnClientId.Value));
 
             // Insert Customer Estimate
             int nEstId = 0;
             var result = (from ce in _db.customer_estimates
-                          where ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                          where ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(hdnClientId.Value)
                           select ce.estimate_id);
 
             int n = result.Count();
@@ -678,7 +680,7 @@ public partial class assigntoacustomer : System.Web.UI.Page
             hdnCustomerEstimateId.Value = nEstId.ToString();
 
             customer_estimate cus_est = new customer_estimate();
-            cus_est.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+            cus_est.client_id = Convert.ToInt32(hdnClientId.Value);
             cus_est.customer_id = Convert.ToInt32(hdnCustomerId.Value);
             cus_est.estimate_id = Convert.ToInt32(hdnCustomerEstimateId.Value);
             cus_est.status_id = 1;
@@ -704,7 +706,7 @@ public partial class assigntoacustomer : System.Web.UI.Page
                 {
                     int nSectionId = Convert.ToInt32(chkModelEstimateSections.Items[i].Value);
                     customer_section cusSec = new customer_section();
-                    cusSec.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                    cusSec.client_id = Convert.ToInt32(hdnClientId.Value);
                     cusSec.customer_id = Convert.ToInt32(hdnCustomerId.Value);
                     cusSec.sales_person_id = Convert.ToInt32(hdnSalesPersonId.Value);
                     cusSec.section_id = nSectionId;
@@ -721,7 +723,7 @@ public partial class assigntoacustomer : System.Web.UI.Page
                 {
                     int nLocationId = Convert.ToInt32(chkModelEstimatelocations.Items[i].Value);
                     customer_location cusLoc = new customer_location();
-                    cusLoc.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                    cusLoc.client_id = Convert.ToInt32(hdnClientId.Value);
                     cusLoc.customer_id = Convert.ToInt32(hdnCustomerId.Value);
                     cusLoc.location_id = nLocationId;
                     cusLoc.estimate_id = Convert.ToInt32(hdnCustomerEstimateId.Value);
@@ -740,7 +742,7 @@ public partial class assigntoacustomer : System.Web.UI.Page
                         {
                             int nLocationId = Convert.ToInt32(chkModelEstimatelocations.Items[j].Value);
 
-                            List<model_estimate_pricing> Pricinglist = _db.model_estimate_pricings.Where(mePr => mePr.section_level == nSectionId && mePr.location_id == nLocationId && mePr.model_estimate_id == Convert.ToInt32(hdnModelEstimateId.Value) && mePr.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mePr.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).ToList();
+                            List<model_estimate_pricing> Pricinglist = _db.model_estimate_pricings.Where(mePr => mePr.section_level == nSectionId && mePr.location_id == nLocationId && mePr.model_estimate_id == Convert.ToInt32(hdnModelEstimateId.Value) && mePr.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mePr.client_id == Convert.ToInt32(hdnClientId.Value)).ToList();
                             foreach (model_estimate_pricing objPd in Pricinglist)
                             {
                                 //arefin 07-20-2019 
@@ -842,7 +844,7 @@ public partial class assigntoacustomer : System.Web.UI.Page
             _db.SubmitChanges();
 
             // Insert Customer Estimate New Payment
-            model_estimate_payment objes = _db.model_estimate_payments.SingleOrDefault(mest => mest.estimate_id == Convert.ToInt32(hdnModelEstimateId.Value) && mest.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mest.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+            model_estimate_payment objes = _db.model_estimate_payments.SingleOrDefault(mest => mest.estimate_id == Convert.ToInt32(hdnModelEstimateId.Value) && mest.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mest.client_id == Convert.ToInt32(hdnClientId.Value));
 
             if (objes != null)
             {
@@ -1270,7 +1272,7 @@ public partial class assigntoacustomer : System.Web.UI.Page
                 // Model Estimate Sections
                 var section = from sec in _db.sectioninfos
                               join mes in _db.model_estimate_sections on sec.section_id equals mes.section_id
-                              where mes.model_estimate_id == Convert.ToInt32(hdnModelEstimateId.Value) && mes.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mes.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                              where mes.model_estimate_id == Convert.ToInt32(hdnModelEstimateId.Value) && mes.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mes.client_id == Convert.ToInt32(hdnClientId.Value)
                               select new SectionInfo()
                               {
                                   section_id = (int)mes.section_id,
@@ -1287,7 +1289,7 @@ public partial class assigntoacustomer : System.Web.UI.Page
                 // Model Estimate Locations
                 var Locations = from loc in _db.locations
                                 join mel in _db.model_estimate_locations on loc.location_id equals mel.location_id
-                                where mel.model_estimate_id == Convert.ToInt32(hdnModelEstimateId.Value) && mel.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mel.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                where mel.model_estimate_id == Convert.ToInt32(hdnModelEstimateId.Value) && mel.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mel.client_id == Convert.ToInt32(hdnClientId.Value)
                                 select new LocationModel()
                                 {
                                     location_id = (int)mel.location_id,
@@ -1304,7 +1306,7 @@ public partial class assigntoacustomer : System.Web.UI.Page
 
                 // Customer Estimates without (Sold)
                 var CustomerEstimate = from cest in _db.customer_estimates
-                                       where cest.status_id != 3 && cest.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cest.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                       where cest.status_id != 3 && cest.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cest.client_id == Convert.ToInt32(hdnClientId.Value)
                                        orderby cest.estimate_name ascending
                                        select cest;
                 int n = CustomerEstimate.Count();

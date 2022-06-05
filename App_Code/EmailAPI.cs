@@ -185,6 +185,12 @@ public class EmailAPI
             msg.Dispose();
         }
 
+
+        int clientId = 0;
+        customer cust = _db.customers.FirstOrDefault(x => x.customer_id == CustomerId);
+        if (cust != null)
+            clientId = Convert.ToInt32(cust.client_id);
+
         if (IsSaveEmailInDB)
         {
 
@@ -193,7 +199,7 @@ public class EmailAPI
             {
 
                 var result = (from cm in _db.customer_messages
-                              where cm.customer_id == CustomerId && cm.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                              where cm.customer_id == CustomerId && cm.client_id == clientId
                               select cm.message_id);
 
                 int n = result.Count();
@@ -206,7 +212,7 @@ public class EmailAPI
 
                 string strCC = string.Empty;
                 customer_message cus_ms = new customer_message();
-                cus_ms.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                cus_ms.client_id = clientId;
                 cus_ms.customer_id = CustomerId;
                 cus_ms.message_id = nMsId;
                 cus_ms.sent_by = UserName;
@@ -276,9 +282,9 @@ public class EmailAPI
                     if (CustomerId > 0 && nMsId > 0)
                     {
                         message_upolad_info mui = new message_upolad_info();
-                        if (_db.message_upolad_infos.Where(l => l.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && l.customer_id == CustomerId && l.message_id == nMsId && l.mess_file_name == FileName.ToString()).SingleOrDefault() == null)
+                        if (_db.message_upolad_infos.Where(l => l.client_id == clientId && l.customer_id == CustomerId && l.message_id == nMsId && l.mess_file_name == FileName.ToString()).SingleOrDefault() == null)
                         {
-                            mui.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                            mui.client_id = clientId;
                             mui.customer_id = CustomerId;
                             mui.message_id = nMsId;
                             mui.mess_file_name = FileName.ToString();

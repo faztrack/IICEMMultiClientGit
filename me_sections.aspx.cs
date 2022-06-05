@@ -23,6 +23,8 @@ public partial class me_sections : System.Web.UI.Page
             {
                 Response.Redirect(ConfigurationManager.AppSettings["LoginPage"].ToString());
             }
+            if (Request.QueryString.Get("clid") != null)
+                hdnClientId.Value = Request.QueryString.Get("clid");
             int nMeId = Convert.ToInt32(Request.QueryString.Get("meid"));
             hdnEstimateId.Value = nMeId.ToString();
             if (Request.QueryString.Get("spid") != null)
@@ -43,12 +45,15 @@ public partial class me_sections : System.Web.UI.Page
             lblEmail.Text = sp.email;
 
             model_estimate me = new model_estimate();
-            me = _db.model_estimates.Single(mest => mest.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && mest.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mest.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+            me = _db.model_estimates.SingleOrDefault(mest => mest.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && mest.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mest.client_id == Convert.ToInt32(hdnClientId.Value)); 
+            if(me != null)
+            {
+                lblModelEstimateName.Text = me.model_estimate_name;
+            }
+            
 
-            lblModelEstimateName.Text = me.model_estimate_name;
 
-
-            chkSections.DataSource = _db.sectioninfos.Where(si => si.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && si.parent_id == 0).ToList();
+            chkSections.DataSource = _db.sectioninfos.Where(si => si.client_id == Convert.ToInt32(hdnClientId.Value) && si.parent_id == 0).ToList();
             chkSections.DataTextField = "section_name";
             chkSections.DataValueField = "section_id";
             chkSections.DataBind();
@@ -61,7 +66,7 @@ public partial class me_sections : System.Web.UI.Page
             {
                 if (_db.model_estimate_sections.Where(mes => mes.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mes.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value)).ToList().Count > 0)
                 {
-                    Response.Redirect("me_pricing.aspx?meid=" + hdnEstimateId.Value + "&spid=" + hdnSalesPersonId.Value);
+                    Response.Redirect("me_pricing.aspx?meid=" + hdnEstimateId.Value + "&spid=" + hdnSalesPersonId.Value + "&clid=" + hdnClientId.Value);
                 }
             }
         }
@@ -92,7 +97,7 @@ public partial class me_sections : System.Web.UI.Page
             return;
         }
         DataClassesDataContext _db = new DataClassesDataContext();
-        string strQ = "DELETE model_estimate_sections WHERE sales_person_id =" + Convert.ToInt32(hdnSalesPersonId.Value) + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " AND model_estimate_id =" + Convert.ToInt32(hdnEstimateId.Value);
+        string strQ = "DELETE model_estimate_sections WHERE sales_person_id =" + Convert.ToInt32(hdnSalesPersonId.Value) + " AND client_id=" + Convert.ToInt32(hdnClientId.Value) + " AND model_estimate_id =" + Convert.ToInt32(hdnEstimateId.Value);
         _db.ExecuteCommand(strQ, string.Empty);
       
         for (int i = 0; i < chkSections.Items.Count; i++)
@@ -102,7 +107,7 @@ public partial class me_sections : System.Web.UI.Page
                 int nSectionId = Convert.ToInt32(chkSections.Items[i].Value);
                 // Add Model Estimate locations
                 model_estimate_section me_sec = new model_estimate_section();
-                me_sec.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                me_sec.client_id = Convert.ToInt32(hdnClientId.Value);
                 me_sec.sales_person_id = Convert.ToInt32(hdnSalesPersonId.Value);
                 me_sec.section_id = nSectionId;
                 me_sec.model_estimate_id = Convert.ToInt32(hdnEstimateId.Value);
@@ -111,12 +116,12 @@ public partial class me_sections : System.Web.UI.Page
         }
         _db.SubmitChanges();
         // Redirect to pricing page
-        Response.Redirect("me_pricing.aspx?meid=" + hdnEstimateId.Value + "&spid=" + hdnSalesPersonId.Value);
+        Response.Redirect("me_pricing.aspx?meid=" + hdnEstimateId.Value + "&spid=" + hdnSalesPersonId.Value + "&clid=" + hdnClientId.Value);
     }
     protected void btnBacktoLocations_Click(object sender, EventArgs e)
     {
         KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnBacktoLocations.ID, btnBacktoLocations.GetType().Name, "Click"); 
         Session.Add("AddMoreMELocation", "AddMoreMElocation");
-        Response.Redirect("me_locations.aspx?meid=" + hdnEstimateId.Value + "&spid=" + hdnSalesPersonId.Value);
+        Response.Redirect("me_locations.aspx?meid=" + hdnEstimateId.Value + "&spid=" + hdnSalesPersonId.Value + "&clid=" + hdnClientId.Value);
     }
 }

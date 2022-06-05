@@ -176,8 +176,10 @@
                                                                     OnClick="btnSubmit_Click" Width="80px" CssClass="button" />
                                                                 <asp:Button ID="btnClose" runat="server" Text="Close" TabIndex="4"
                                                                     OnClick="btnClose_Click" Width="80px" CssClass="button" />
+                                                                <asp:HiddenField ID="hdnClientId" runat="server" Value ="0" />
                                                             </td>
                                                         </tr>
+
                                                     </table>
                                                 </td>
                                             </tr>
