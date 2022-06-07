@@ -46,6 +46,7 @@ public partial class incentive_list : System.Web.UI.Page
         Session.Add("loadstarttime", DateTime.Now);
         if (!IsPostBack)
         {
+            string divisionName = "";
             KPIUtility.PageLoad(this.Page.AppRelativeVirtualPath);
             if (Session["oUser"] == null)
             {
@@ -53,7 +54,10 @@ public partial class incentive_list : System.Web.UI.Page
             }
             else
             {
-                hdnClientId.Value = ((userinfo)Session["oUser"]).client_id.ToString();
+                userinfo oUser = (userinfo)Session["oUser"];
+                hdnClientId.Value = oUser.client_id.ToString();
+                hdnPrimaryDivision.Value = oUser.primaryDivision.ToString();
+                divisionName = oUser.divisionName;
             }
             if (Page.User.IsInRole("admin005") == false)
             {
@@ -65,6 +69,14 @@ public partial class incentive_list : System.Web.UI.Page
             Session.Add("iSearch", iList);
 
             BindDivision();
+            if (divisionName != "" && divisionName.Contains(","))
+            {
+                ddlDivision.Enabled = true;
+            }
+            else
+            {
+                ddlDivision.Enabled = false;
+            }
             GetIncentives(0);
         }
     }
@@ -78,7 +90,8 @@ public partial class incentive_list : System.Web.UI.Page
         ddlDivision.DataTextField = "division_name";
         ddlDivision.DataValueField = "id";
         ddlDivision.DataBind();
-        ddlDivision.Items.Insert(0, "All");
+        ddlDivision.Items.Insert(0, "All"); 
+        ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
 
     }
 
@@ -246,6 +259,7 @@ public partial class incentive_list : System.Web.UI.Page
     {
         txtSearch.Text = "";
         ddlDivision.SelectedIndex = 0;
+        ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
         GetIncentives(0);
     }
 

@@ -11,24 +11,9 @@
     </style>
     <script type="text/javascript">
 
-          $(document).ready(function () {
-             
+        $(document).ready(function () {
+
             $("#<%=lstDivision.ClientID%>").SumoSelect({
-                selectAll: true,
-                search: true,
-                searchText: 'Search...',
-                placeholder: 'Select Here',
-                noMatch: 'No matches for "{0}"',
-            });
-
-        });
-
-        Sys.WebForms.PageRequestManager.getInstance().add_endRequest(EndRequestHandler);
-        function EndRequestHandler(sender, args) {
-
-           
-            //Binding Code Again
-            $(<%=lstDivision.ClientID%>).SumoSelect({
                   selectAll: true,
                   search: true,
                   searchText: 'Search...',
@@ -36,8 +21,23 @@
                   noMatch: 'No matches for "{0}"',
               });
 
+          });
 
-          }
+        Sys.WebForms.PageRequestManager.getInstance().add_endRequest(EndRequestHandler);
+        function EndRequestHandler(sender, args) {
+
+
+            //Binding Code Again
+            $(<%=lstDivision.ClientID%>).SumoSelect({
+                selectAll: true,
+                search: true,
+                searchText: 'Search...',
+                placeholder: 'Select Here',
+                noMatch: 'No matches for "{0}"',
+            });
+
+
+        }
 
     </script>
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
@@ -57,7 +57,7 @@
                 </tr>
                 <tr>
                     <td width="50%" valign="top">
-                        <table id="Table2" width="98%" align="center" border="0" cellpadding="0" cellspacing="3" >
+                        <table id="Table2" width="98%" align="center" border="0" cellpadding="0" cellspacing="3">
                             <tr>
                                 <td align="right">
                                     <asp:Label ID="Label5" runat="server" Font-Bold="True" ForeColor="Red" Text="* required"></asp:Label>
@@ -69,9 +69,20 @@
                                     <span class="required">*</span><b>Division: </b>
                                 </td>
                                 <td align="left" colspan="2">
-                                     <asp:ListBox ID="lstDivision" runat="server" SelectionMode="Multiple" Width="240px"></asp:ListBox>               
+                                    <asp:ListBox ID="lstDivision" runat="server" SelectionMode="Multiple" Width="240px" AutoPostBack="true" OnSelectedIndexChanged="lstDivision_SelectedIndexChanged"></asp:ListBox>
                                 </td>
                             </tr>
+                            <asp:Panel ID="pnlDivision" runat="server" Visible="false">
+                                <tr>
+                                    <td align="right">
+                                        <span class="required">*</span><b>Primary Division: </b>
+                                    </td>
+                                    <td align="left" colspan="2">
+                                        <asp:RadioButtonList ID="rdoPrimaryButton" runat="server" RepeatDirection="Horizontal"></asp:RadioButtonList>
+
+                                    </td>
+                                </tr>
+                            </asp:Panel>
                             <tr>
                                 <td width="35%" align="right"><span class="required">*</span>
                                     <b>First Name: </b>
@@ -301,7 +312,7 @@
                                     <asp:TextBox ID="txtCom" runat="server" Width="57px" TabIndex="21">0.0</asp:TextBox>
                                 </td>
                             </tr>
-                            
+
                             <tr>
                                 <td align="right"><b>
                                     <asp:Label ID="lblCOComission" runat="server" Text="C/O Commission %"></asp:Label>
@@ -420,9 +431,9 @@
                             <PagerStyle HorizontalAlign="Left" CssClass="pgr" />
                             <AlternatingRowStyle CssClass="alt" />
                         </asp:GridView>
-                    </td>                    
+                    </td>
                 </tr>
-                
+
             </table>
         </ContentTemplate>
     </asp:UpdatePanel>

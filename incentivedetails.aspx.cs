@@ -25,11 +25,13 @@ public partial class incentivedetails : System.Web.UI.Page
         Session.Add("loadstarttime", DateTime.Now);
         if (!IsPostBack)
         {
+            string divisionName = "";
             KPIUtility.PageLoad(this.Page.AppRelativeVirtualPath);
             if (Session["oUser"] == null)
             {
                 Response.Redirect(ConfigurationManager.AppSettings["LoginPage"].ToString());
             }
+            
             if (Page.User.IsInRole("admin006") == false)
             {
                 // No Permission Page.
@@ -43,6 +45,8 @@ public partial class incentivedetails : System.Web.UI.Page
 
             BindDivision();
 
+            
+
             if (Convert.ToInt32(hdnIncentiveId.Value) > 0)
             {
                 lblHeaderTitle.Text = "Incentive Details";
@@ -55,8 +59,9 @@ public partial class incentivedetails : System.Web.UI.Page
                 txtDiscount.Text = inc.discount.ToString();
                 chkActive.Checked = Convert.ToBoolean(inc.is_active);
                 txtStartDate.Text = Convert.ToDateTime(inc.start_date).ToShortDateString();
-                txtEndDate.Text = Convert.ToDateTime(inc.end_date).ToShortDateString();
-               
+                txtEndDate.Text = Convert.ToDateTime(inc.end_date).ToShortDateString();               
+
+
                 if (inc.incentive_type == 1)
                 {
                     pnlDiscount.Visible = true;

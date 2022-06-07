@@ -25,6 +25,16 @@ public partial class disclaimerui : System.Web.UI.Page
                 // No Permission Page.
                 Response.Redirect("nopermission.aspx");
             }
+
+            
+            
+            if (Session["oUser"] != null)
+            {
+                userinfo oUser = (userinfo)Session["oUser"];
+                hdnPrimaryDivision.Value = oUser.primaryDivision.ToString();
+            }
+
+
             BindDivision();
             LoadSectionSec();
             BindDisclaimer();
@@ -78,8 +88,7 @@ public partial class disclaimerui : System.Web.UI.Page
             ddlDivision.DataTextField = "division_name";
             ddlDivision.DataValueField = "id";
             ddlDivision.DataBind();
-            ddlDivision.Items.Insert(0, "All");
-            ddlDivision.SelectedValue = "1";
+            ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
         }
         catch (Exception ex)
         {

@@ -344,6 +344,7 @@
                             </tr>
                             <tr>
                                 <td>
+                                    <asp:HiddenField ID="hdnPrimaryDivision" runat="server" Value="0" />
                                     <asp:HiddenField ID="hdnVendorId" runat="server" Value="0" />
                                     &nbsp;</td>
                         </table>

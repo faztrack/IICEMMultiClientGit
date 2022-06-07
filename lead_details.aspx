@@ -80,7 +80,7 @@
                                     <b>Division: </b>
                                 </td>
                                 <td align="left">
-                                    <asp:DropDownList ID="ddlDivision" runat="server" Width="212px" OnSelectedIndexChanged="ddlDivision_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+                                    <asp:DropDownList ID="ddlDivision" runat="server" Width="212px" Enabled="true" OnSelectedIndexChanged="ddlDivision_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
                                 </td>
 
                                 <td>&nbsp;</td>

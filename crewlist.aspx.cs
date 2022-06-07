@@ -75,6 +75,7 @@ public partial class crewlist : System.Web.UI.Page
         Session.Add("loadstarttime", DateTime.Now);
         if (!IsPostBack)
         {
+            string divisionName = "";
             KPIUtility.PageLoad(this.Page.AppRelativeVirtualPath);
             if (Session["oUser"] == null)
             {
@@ -82,7 +83,10 @@ public partial class crewlist : System.Web.UI.Page
             }
             else
             {
-                hdnClientId.Value = ((userinfo)Session["oUser"]).client_id.ToString();
+                userinfo oUser = (userinfo)Session["oUser"];
+                hdnClientId.Value = oUser.client_id.ToString();
+                hdnPrimaryDivision.Value = oUser.primaryDivision.ToString();
+                divisionName = oUser.divisionName.ToString();
             }
 
             if (Page.User.IsInRole("t01") == false)
@@ -97,7 +101,17 @@ public partial class crewlist : System.Web.UI.Page
 
 
             
-            BindDivision();           
+            BindDivision();
+
+            if (divisionName != "" && divisionName.Contains(","))
+            {
+                ddlDivision.Enabled = true;
+            }
+            else
+            {
+                ddlDivision.Enabled = false;
+            }
+
             GetCrew();
            
         }
@@ -113,6 +127,7 @@ public partial class crewlist : System.Web.UI.Page
         ddlDivision.DataValueField = "id";
         ddlDivision.DataBind();
         ddlDivision.Items.Insert(0, "All");
+        ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
 
     }
 
@@ -315,7 +330,7 @@ public partial class crewlist : System.Web.UI.Page
     protected void lnkViewAll_Click(object sender, EventArgs e)
     {
         ddlStatus.SelectedValue = "1";
-        ddlDivision.SelectedIndex = 0;
+        ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
         txtSearch.Text = "";
         GetCrew();
     }

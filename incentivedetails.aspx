@@ -64,7 +64,7 @@
                             <tr>
                                 <td align="right"><span class="required">* </span>Division: </td>
                                 <td align="left">
-                                    <asp:ListBox ID="lstDivision" runat="server" SelectionMode="Multiple" Width="202px"></asp:ListBox>
+                                    <asp:ListBox ID="lstDivision" runat="server" Enabled="true" SelectionMode="Multiple" Width="202px"></asp:ListBox>
                                 </td>
                             </tr>
                 <tr>
@@ -176,7 +176,6 @@
                         <cc1:CalendarExtender ID="EndDate" runat="server" PopupButtonID="imgEnd"
                             TargetControlID="txtEndDate">
                         </cc1:CalendarExtender>
-
                     </td>
                 </tr>
                 </table>

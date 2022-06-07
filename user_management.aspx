@@ -234,7 +234,9 @@
                                                     Text="Previous" CssClass="prevButton"
                                                     OnClick="btnPrevious_Click" />
                                             </td>
-                                            <td align="right">&nbsp;</td>
+                                            <td align="right">
+                                                <asp:HiddenField ID="hdnPrimaryDivision" runat="server" Value="0" />
+                                            </td>
                                             <td align="left">&nbsp;</td>
                                             <td align="left">&nbsp;</td>
                                             <td align="left">&nbsp;</td>

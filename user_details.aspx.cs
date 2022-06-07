@@ -16,6 +16,7 @@ using Prabhu;
 
 public partial class user_details : System.Web.UI.Page
 {
+    string selectedDivisionValue = "";
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
@@ -38,6 +39,7 @@ public partial class user_details : System.Web.UI.Page
             BindRoles();
             BindQuestions();
             BindDivision();
+            
 
             lblEmailIntegration.Text = "Outlook/Exchange Email: ";
             lblEmailPassword.Text = "Outlook/Exchange Password: ";
@@ -74,6 +76,8 @@ public partial class user_details : System.Web.UI.Page
                     hdnEmailPassword.Value = uinfo.email_password;
                     // txtEmailPassword.Text = uinfo.email_password;
 
+                    selectedDivisionValue = uinfo.client_id;
+
                     if (uinfo.client_id.Contains(','))
                     {
                         string[] ary = uinfo.client_id.Split(',');
@@ -83,22 +87,27 @@ public partial class user_details : System.Web.UI.Page
                             {
                                 if (a == item.Value)
                                 {
-                                    item.Selected = true;
-
+                                    item.Selected = true;                                    
                                 }
                             }
 
                         }
+
+                        BindDivisionRadioButton();
+                        BindPirmaryDivision();
                     }
                     else
                     {
                         lstDivision.SelectedValue = uinfo.client_id;
                     }
 
-                        
 
-                  
 
+
+                    
+
+
+                    rdoPrimaryButton.SelectedValue = uinfo.primary_division.ToString();
 
 
                     if (uinfo.ViewPassword!=null && uinfo.ViewPassword!="")
@@ -188,8 +197,28 @@ public partial class user_details : System.Web.UI.Page
             }
             this.Validate();
 
+            //BindDivisionRadioButton();
+
             csCommonUtility.SetPagePermission(this.Page, new string[] { "btnSubmit", "ddlRole", "chkIsActive", "chkIsSales", "chkIsTimeClock", "IsPriceChange", "chkIsSMS", "rdbEmailIntegrationType", "ddLandingPage" });
             csCommonUtility.SetPagePermissionForGrid(this.Page, new string[] { "grdPagePermission_chkIsWrite" });
+        }
+    }
+
+    private void BindRadioDivision()
+    {
+        try
+        {
+            string sql = "select id, division_name from division order by division_name";
+            DataTable dt = csCommonUtility.GetDataTable(sql);
+            rdoPrimaryButton.DataSource = dt;
+            rdoPrimaryButton.DataTextField = "division_name";
+            rdoPrimaryButton.DataValueField = "id";
+            rdoPrimaryButton.DataBind();
+
+        }
+        catch (Exception ex)
+        {
+            lblResult.Text = csCommonUtility.GetSystemErrorMessage(ex.ToString());
         }
     }
 
@@ -204,7 +233,6 @@ public partial class user_details : System.Web.UI.Page
             lstDivision.DataTextField = "division_name";
             lstDivision.DataValueField = "id";
             lstDivision.DataBind();
-
 
         }
         catch(Exception ex)
@@ -303,6 +331,7 @@ public partial class user_details : System.Web.UI.Page
         user_info uinfo = new user_info();
         sales_person obj = new sales_person();
 
+        int divisionCount = 0;
         string selectedvalue = "";
         string selectDivisionName = "";
         foreach (ListItem item in lstDivision.Items)
@@ -311,6 +340,7 @@ public partial class user_details : System.Web.UI.Page
             {
                 selectedvalue += item.Value + ",";
                 selectDivisionName += item.Text + ", ";
+                divisionCount++;
             }
         }
         if(selectedvalue == "")
@@ -320,6 +350,22 @@ public partial class user_details : System.Web.UI.Page
             return;
         }
 
+        if (selectedDivisionValue.Contains(","))
+        {
+            if(rdoPrimaryButton.SelectedValue == "")
+            {
+                lblResult.Text = csCommonUtility.GetSystemErrorMessage("Missing required field: Primary Division.");
+                return;
+            }             
+        }
+        if(divisionCount > 1)
+        {
+            if (rdoPrimaryButton.SelectedValue == "")
+            {
+                lblResult.Text = csCommonUtility.GetSystemErrorMessage("Missing required field: Primary Division.");
+                return;
+            }
+        }
 
         if (txtFirstName.Text.Trim() == "")
         {
@@ -529,6 +575,20 @@ public partial class user_details : System.Web.UI.Page
 
         uinfo.division_name = selectDivisionName.Trim().TrimEnd(',');
         uinfo.client_id = selectedvalue.Trim().TrimEnd(',');
+        
+        
+
+        if(divisionCount > 1)
+        {
+            uinfo.primary_division = Convert.ToInt32(rdoPrimaryButton.SelectedValue);
+        }
+        else
+        {
+            uinfo.primary_division = Convert.ToInt32(lstDivision.SelectedValue);
+        }
+
+
+
         uinfo.user_id = Convert.ToInt32(hdnUserId.Value);
 
         uinfo.first_name = txtFirstName.Text;
@@ -579,6 +639,17 @@ public partial class user_details : System.Web.UI.Page
         // Sales person Info
         //obj.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
         obj.client_id = selectedvalue.TrimEnd(',');
+        
+
+        if (selectedDivisionValue.Contains(","))
+        {
+            obj.primary_division = Convert.ToInt32(rdoPrimaryButton.SelectedValue);
+        }
+        else
+        {
+            obj.primary_division = Convert.ToInt32(lstDivision.SelectedValue);
+        }
+
         obj.sales_person_id = Convert.ToInt32(hdnSalesPersonId.Value);
 
         obj.first_name = txtFirstName.Text;
@@ -948,6 +1019,71 @@ public partial class user_details : System.Web.UI.Page
 
     }
 
+    protected void BindDivisionRadioButton()
+    {
+
+        try
+        {
+            string strQ = @"SELECT Id, division_name, status FROM division WHERE status = 1 AND Id in (" + selectedDivisionValue.TrimEnd(',') + ")" +                         
+                         " ORDER BY id ";
+
+            DataTable dt = csCommonUtility.GetDataTable(strQ);
+            rdoPrimaryButton.DataSource = dt;
+            rdoPrimaryButton.DataTextField = "division_name";
+            rdoPrimaryButton.DataValueField = "Id";
+            rdoPrimaryButton.DataBind();
+
+        }
+        catch (Exception ex)
+        {
+            lblResult.Text = csCommonUtility.GetSystemErrorMessage(ex.Message);
+
+        }
+
+
+    }
+
+
+    protected void lstDivision_SelectedIndexChanged(object sender, EventArgs e)
+    {
+
+        BindPirmaryDivision();
+
+    }
+
+    private void BindPirmaryDivision()
+    {
+        int selectedDivisionToCount = 0;
+
+        string selectedvalue = "";
+        foreach (ListItem item in lstDivision.Items)
+        {
+            if (item.Selected)
+            {
+                selectedDivisionToCount++;
+                selectedvalue += item.Value + ",";
+            }
+        }
+
+        if (selectedDivisionToCount > 1)
+        {
+            if (selectedvalue != "")
+            {
+                selectedDivisionValue = selectedvalue;
+                BindDivisionRadioButton();
+                pnlDivision.Visible = true;
+            }
+            else
+            {
+                pnlDivision.Visible = false;
+                selectedDivisionValue = "";
+            }
+        }
+        else
+        {
+            pnlDivision.Visible = false;
+        }
+    }
 
 
 }

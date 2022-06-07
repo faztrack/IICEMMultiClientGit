@@ -38,6 +38,7 @@ public partial class laborhourdetails : System.Web.UI.Page
         Session.Add("loadstarttime", DateTime.Now);
         if (!IsPostBack)
         {
+            string divisionName = "";
             KPIUtility.PageLoad(this.Page.AppRelativeVirtualPath);
           
             if (Session["oUser"] == null)
@@ -46,9 +47,23 @@ public partial class laborhourdetails : System.Web.UI.Page
             }
             else
             {
-                hdnClientId.Value = ((userinfo)Session["oUser"]).client_id.ToString();
+                userinfo oUser = (userinfo)Session["oUser"];
+                hdnClientId.Value = oUser.client_id.ToString();
+                hdnPrimaryDivision.Value = oUser.primaryDivision.ToString();
+                divisionName = oUser.divisionName;
             }
             BindDivision();
+
+            if (divisionName != "" && divisionName.Contains(","))
+            {
+                ddlDivision.Enabled = true;
+            }
+            else
+            {
+                ddlDivision.Enabled = false;
+            }
+
+
             BindJob();
             BindCrewMember();
             if (Request.QueryString.Get("gpid") != null)
@@ -562,6 +577,7 @@ public partial class laborhourdetails : System.Web.UI.Page
             ddlDivision.DataTextField = "division_name";
             ddlDivision.DataValueField = "id";
             ddlDivision.DataBind();
+            ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
         }
         catch (Exception ex)
         {

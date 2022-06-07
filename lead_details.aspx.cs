@@ -33,54 +33,55 @@ public partial class lead_details : System.Web.UI.Page
     }
     protected void Page_Load(object sender, EventArgs e)
     {
+        string divisionName = "";
         Session.Add("loadstarttime", DateTime.Now);
-        string custEmail = "";
-        if (Session["oUser"] == null)
-        {
-            Response.Redirect(ConfigurationManager.AppSettings["LoginPage"].ToString());
-        }
-        else
-        {
-            userinfo oUser = (userinfo)Session["oUser"];
-            hdnEmailType.Value = oUser.EmailIntegrationType.ToString();           
-
-        }
-        string test = hdnCustomerId.Value;
-        if (Page.User.IsInRole("le02") == false)
-        {
-            // No Permission Page.
-            Response.Redirect("nopermission.aspx");
-        }
-        if (Request.QueryString.Get("cid") != null)
-        {
-            hdnCustomerId.Value = Request.QueryString.Get("cid").ToString();
-        }
-        if (Request.QueryString.Get("eid") != null)
-        {
-            hdnEstimateId.Value = Convert.ToInt32(Request.QueryString.Get("eid")).ToString();
-
-        }
+       
 
         if (!IsPostBack)
         {
             KPIUtility.PageLoad(this.Page.AppRelativeVirtualPath);
             DataClassesDataContext _db = new DataClassesDataContext();
 
+
+            userinfo oUser = new userinfo();
+           string custEmail = "";
+            if (Session["oUser"] == null)
+            {
+                Response.Redirect(ConfigurationManager.AppSettings["LoginPage"].ToString());
+            }
+            else
+            {
+                 oUser = (userinfo)Session["oUser"];
+                hdnEmailType.Value = oUser.EmailIntegrationType.ToString();
+                divisionName = oUser.divisionName;
+
+            }
+            string test = hdnCustomerId.Value;
+            if (Page.User.IsInRole("le02") == false)
+            {
+                // No Permission Page.
+                Response.Redirect("nopermission.aspx");
+            }
+            if (Request.QueryString.Get("cid") != null)
+            {
+                hdnCustomerId.Value = Request.QueryString.Get("cid").ToString();
+            }
+            if (Request.QueryString.Get("eid") != null)
+            {
+                hdnEstimateId.Value = Convert.ToInt32(Request.QueryString.Get("eid")).ToString();
+
+            }
             BindDivision();
 
-
-            hdnClientId.Value = ddlDivision.SelectedValue;
-
-
-
+           
 
             if (Convert.ToInt32(hdnCustomerId.Value) > 0)
             {
 
 
-                userinfo objUser = (userinfo)HttpContext.Current.Session["oUser"];
+                oUser = (userinfo)Session["oUser"];
 
-                if (objUser.role_id == 1 || objUser.role_id == 2)
+                if (oUser.role_id == 1 || oUser.role_id == 2)
                 {
 
                     var user = (from u in _db.user_infos
@@ -259,6 +260,7 @@ public partial class lead_details : System.Web.UI.Page
                 ddlCallMinutes.SelectedItem.Text = DateTime.Now.ToString("mm", CultureInfo.InvariantCulture);
                 ddlCallAMPM.SelectedValue = DateTime.Now.ToString("tt", CultureInfo.InvariantCulture);
 
+                ddlDivision.SelectedValue = cust.client_id.ToString();
 
                 GetCustomerMessageInfo(Convert.ToInt32(hdnCustomerId.Value));
 
@@ -273,6 +275,10 @@ public partial class lead_details : System.Web.UI.Page
             }
             else
             {
+
+                ddlDivision.SelectedValue = oUser.primaryDivision.ToString();
+
+
                 hypMap.Visible = false;
                 lblHeaderTitle.Text = "Add New Lead";
                 hdnCustomerId.Value = "0";
@@ -280,6 +286,18 @@ public partial class lead_details : System.Web.UI.Page
                 lblRegDateData.Visible = false;
                 Session.Remove("LeadId");
             }
+
+            if (divisionName != "" && divisionName.Contains(","))
+            {
+                ddlDivision.Enabled = true;                
+            }
+            else
+            {
+                ddlDivision.Enabled = false;
+            }
+
+           
+          
 
             BindSalesPerson();
 
@@ -471,7 +489,7 @@ public partial class lead_details : System.Web.UI.Page
     {
         DataClassesDataContext _db = new DataClassesDataContext();
 
-        division dv = _db.divisions.FirstOrDefault(x => x.Id == Convert.ToInt32(hdnClientId.Value));
+        division dv = _db.divisions.FirstOrDefault(x => x.Id == Convert.ToInt32(ddlDivision.SelectedValue));
         string divisionName = dv.division_name;
 
         string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1 and is_sales=1 " + csCommonUtility.GetSalesPersonSql(divisionName) + " order by sales_person_id asc";
@@ -488,7 +506,7 @@ public partial class lead_details : System.Web.UI.Page
     {
         DataClassesDataContext _db = new DataClassesDataContext();
         var item = from l in _db.lead_sources
-                   where l.client_id == Convert.ToInt32(hdnClientId.Value) && l.is_active == Convert.ToBoolean(1)
+                   where  l.is_active == Convert.ToBoolean(1)
                    orderby l.lead_name
                    select l;
         ddlLeadSource.DataSource = item;

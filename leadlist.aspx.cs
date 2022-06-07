@@ -150,6 +150,7 @@ public partial class leadlist : System.Web.UI.Page
         Session.Add("loadstarttime", DateTime.Now);
         if (!IsPostBack)
         {
+            string divisionName = "";
             KPIUtility.PageLoad(this.Page.AppRelativeVirtualPath);
             if (Session["oUser"] == null)
             {
@@ -161,6 +162,8 @@ public partial class leadlist : System.Web.UI.Page
                 hdnEmailType.Value = oUser.EmailIntegrationType.ToString();
                 hdnClientId.Value = oUser.client_id.ToString();
                 hdnDivisionName.Value = oUser.divisionName.ToString();
+                hdnPrimaryDivision.Value = oUser.primaryDivision.ToString();
+                divisionName = oUser.divisionName;
             }
 
             if (Page.User.IsInRole("le01") == false)
@@ -221,7 +224,18 @@ public partial class leadlist : System.Web.UI.Page
             BindSuperintendent();
             BindLeadSource();
             BindLeadStatus();
+            
             ddlStatus.SelectedValue = "2";
+            if(divisionName != "" && divisionName.Contains(","))
+            {
+                ddlDivision.Enabled = true;
+            }
+            else
+            {
+                ddlDivision.Enabled = false;
+            }
+
+
             GetCustomersNew(0);
         }
     }
@@ -330,44 +344,37 @@ public partial class leadlist : System.Web.UI.Page
 
 
         string strCondition = "";
-        strCondition = " Where customers.client_id in (" + obj.client_id + ") ";
+        //strCondition = " Where customers.client_id in (" + obj.client_id + ") ";
 
         if (txtSearch.Text.Trim() != "")
         {
             string str = txtSearch.Text.Trim();
             if (ddlSearchBy.SelectedValue == "1")
             {
-                strCondition += " AND customers.first_name1 LIKE '%" + str.Replace("'", "''") + "%'";
+                strCondition += "  customers.first_name1 LIKE '%" + str.Replace("'", "''") + "%'";
             }
             else if (ddlSearchBy.SelectedValue == "2")
             {
-                strCondition += " AND customers.last_name1 LIKE '%" + str.Replace("'", "''") + "%'";
+                strCondition += "  customers.last_name1 LIKE '%" + str.Replace("'", "''") + "%'";
             }
             else if (ddlSearchBy.SelectedValue == "3")
             {
 
-                strCondition += " AND customers.email LIKE '%" + str + "%'";
+                strCondition += "  customers.email LIKE '%" + str + "%'";
             }
             else if (ddlSearchBy.SelectedValue == "4")
             {
-                strCondition += " AND customers.address LIKE '%" + str.Replace("'", "''") + "%'";
+                strCondition += "  customers.address LIKE '%" + str.Replace("'", "''") + "%'";
             }
             else if (ddlSearchBy.SelectedValue == "6")
             {
-                strCondition += "  AND customers.company LIKE '%" + str.Replace("'", "''") + "%'";
+                strCondition += "   customers.company LIKE '%" + str.Replace("'", "''") + "%'";
             }
             else if (ddlSearchBy.SelectedValue == "7")
             {
-                strCondition += " AND customers.phone LIKE '%" + str.Replace("'", "''") + "%'";
+                strCondition += "  customers.phone LIKE '%" + str.Replace("'", "''") + "%'";
             }
-
-            if (ddlDivision.SelectedItem.Text != "All")
-            {
-                if (strCondition.Length > 2)
-                    strCondition += " AND customers.client_id in (" + ddlDivision.SelectedValue + ") ";
-                else
-                    strCondition = " WHERE  customers.client_id in (" + ddlDivision.SelectedValue + ") ";
-            }
+                        
         }
         else
         {
@@ -461,10 +468,27 @@ public partial class leadlist : System.Web.UI.Page
             }
 
         }
-       // if (strCondition.Length > 0)
-       // {
+
+
+        if (strCondition.Length > 0)
+        {
+            strCondition = "Where " + strCondition;
+        }
+
+        if (ddlDivision.SelectedItem.Text != "All")
+        {
+            if (strCondition.Length > 2)
+                strCondition += " AND customers.client_id in (" + ddlDivision.SelectedValue + ") ";
+            else
+                strCondition = " WHERE  customers.client_id in (" + ddlDivision.SelectedValue + ") ";
+        }
+
+
+
+        // if (strCondition.Length > 0)
+        // {
         //    strCondition = "Where customers.client_id in("+obj.client_id+")  and "+ strCondition;
-       // }
+        // }
         //if (strCondition.Length > 0)
         //{
         //    strCondition = "Where customers.islead = 1 and " + strCondition;
@@ -673,6 +697,7 @@ public partial class leadlist : System.Web.UI.Page
             ddlDivision.DataValueField = "id";
             ddlDivision.DataBind();
             ddlDivision.Items.Insert(0, "All");
+            ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
 
 
         }
@@ -1057,7 +1082,7 @@ public partial class leadlist : System.Web.UI.Page
         ddlStatus.SelectedValue = "2";
         // ddlStatus.SelectedIndex = -1;
         ddlSalesRep.SelectedIndex = -1;
-        ddlDivision.SelectedIndex = 0;
+        ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
         ddlLeadSource.SelectedIndex = -1;
         ddlSuperintendent.SelectedIndex = -1;
         Session.Remove("LeadId");

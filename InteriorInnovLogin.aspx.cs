@@ -71,6 +71,7 @@ public partial class InteriorInnovLogin : System.Web.UI.Page
             obj.role_id = 1;
             obj.client_id = uinfo.client_id;
             obj.divisionName = uinfo.division_name;
+            obj.primaryDivision = Convert.ToInt32(uinfo.primary_division);
             obj.user_id = 0;
             obj.IsPriceChange = true;
             obj.email = "tislam@faztrack.com";
@@ -179,6 +180,7 @@ public partial class InteriorInnovLogin : System.Web.UI.Page
             obj.role_id = Convert.ToInt32(uinfo.role_id);
             obj.is_active = Convert.ToBoolean(uinfo.is_active);
             obj.client_id = uinfo.client_id;
+            obj.primaryDivision = Convert.ToInt32(uinfo.primary_division);
             obj.divisionName = uinfo.division_name;
             obj.create_date = Convert.ToDateTime(uinfo.create_date);
             obj.username = uinfo.username;

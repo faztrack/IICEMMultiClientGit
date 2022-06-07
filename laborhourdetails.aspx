@@ -218,6 +218,7 @@
                             </tr>
                             <tr>
                                 <td>
+                                    <asp:HiddenField ID="hdnPrimaryDivision" runat="server" Value="0" />
                                     <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
                                     <asp:HiddenField ID="hdnGpsId" runat="server" Value="0" />
                                     <asp:HiddenField ID="hdnCustomerId" runat="server" Value="0" />

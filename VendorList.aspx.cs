@@ -64,11 +64,18 @@ public partial class VendorList : System.Web.UI.Page
         Session.Add("loadstarttime", DateTime.Now);
         if (!IsPostBack)
         {
+            string divisionName = "";
             KPIUtility.PageLoad(this.Page.AppRelativeVirtualPath);
             DataClassesDataContext _db = new DataClassesDataContext();
             if (Session["oUser"] == null)
             {
                 Response.Redirect(ConfigurationManager.AppSettings["LoginPage"].ToString());
+            }
+            else
+            {
+                userinfo oUser = (userinfo)Session["oUser"];
+                hdnPrimaryDivision.Value = oUser.primaryDivision.ToString();
+                divisionName = oUser.divisionName;
             }
             if (Page.User.IsInRole("admin013") == false)
             {
@@ -79,6 +86,17 @@ public partial class VendorList : System.Web.UI.Page
             Session.Add("vSearch", VendorList);
 
             BindSection();
+
+            if (divisionName != "" && divisionName.Contains(","))
+            {
+                ddlDivision.Enabled = true;
+            }
+            else
+            {
+                ddlDivision.Enabled = false;
+            }
+
+
             BindDivision();
 
             GetVendor(0);
@@ -96,6 +114,7 @@ public partial class VendorList : System.Web.UI.Page
             ddlDivision.DataValueField = "id";
             ddlDivision.DataBind();
             ddlDivision.Items.Insert(0, "All");
+            ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
         }
         catch (Exception ex)
         {
@@ -359,7 +378,7 @@ public partial class VendorList : System.Web.UI.Page
         txtSearch.Text = "";
         ddlStatus.SelectedValue = "0";
         ddlSection.SelectedValue = "All";
-        ddlDivision.SelectedIndex = 0;
+        ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
         GetVendor(0);
     }
 

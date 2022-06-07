@@ -25,17 +25,33 @@ public partial class VendorDetails : System.Web.UI.Page
         Session.Add("loadstarttime", DateTime.Now);
         if (!IsPostBack)
         {
+            string divisionName = "";
             KPIUtility.PageLoad(this.Page.AppRelativeVirtualPath);
             if (Session["oUser"] == null)
             {
                 Response.Redirect(ConfigurationManager.AppSettings["LoginPage"].ToString());
             }
-          
+            else
+            {
+                userinfo oUser = (userinfo)Session["oUser"];
+                hdnPrimaryDivision.Value = oUser.primaryDivision.ToString();
+                divisionName = oUser.divisionName;
+            }
 
             int nvid = Convert.ToInt32(Request.QueryString.Get("vid"));
             hdnVendorId.Value = nvid.ToString();
 
             BindDivision();
+
+            if (divisionName != "" && divisionName.Contains(","))
+            {
+                ddlDivision.Enabled = true;
+            }
+            else
+            {
+                ddlDivision.Enabled = false;
+            }
+
             BindSections();
             BindVendorSection();
             GetVendorDetails(Convert.ToInt32(hdnVendorId.Value));

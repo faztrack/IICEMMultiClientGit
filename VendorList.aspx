@@ -228,7 +228,7 @@
                                         Text="Next" CssClass="nextButton"
                                         OnClick="btnNext_Click" />
 
-
+                                    <asp:HiddenField ID="hdnPrimaryDivision" runat="server" Value="0" />
                                 </td>
                             </tr>
                         </table>

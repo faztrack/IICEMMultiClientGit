@@ -105,6 +105,7 @@
                         <asp:Button ID="btnCancel" runat="server" Text="Cancel" CssClass="button"
                             OnClick="btnCancel_Click" Width="80px" />
                         <asp:HiddenField ID="hdnterms_condition_id" runat="server" Value="0" />
+                        <asp:HiddenField ID="hdnPrimaryDivision" runat="server" Value="0" />
                     </td>
                 </tr>
             </table>

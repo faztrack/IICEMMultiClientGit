@@ -31,11 +31,18 @@ public partial class labor_hour_list : System.Web.UI.Page
     {
         if (!IsPostBack)
         {
+            string divisionName = "";
             KPIUtility.PageLoad(this.Page.AppRelativeVirtualPath);
             if (Session["oUser"] == null)
             {
                 Response.Redirect(ConfigurationManager.AppSettings["LoginPage"].ToString());
-            }           
+            }
+            else
+            {
+                userinfo oUser = (userinfo)Session["oUser"];
+                hdnPrimaryDivision.Value = oUser.primaryDivision.ToString();
+                divisionName = oUser.divisionName;
+            }
             if (Page.User.IsInRole("t04") == false)
             {
                 // No Permission Page.
@@ -44,6 +51,15 @@ public partial class labor_hour_list : System.Web.UI.Page
 
 
             BindDivision();
+
+            if (divisionName != "" && divisionName.Contains(","))
+            {
+                ddlDivision.Enabled = true;
+            }
+            else
+            {
+                ddlDivision.Enabled = false;
+            }
 
             BindCrew();
           
@@ -104,6 +120,7 @@ public partial class labor_hour_list : System.Web.UI.Page
             ddlDivision.DataValueField = "id";
             ddlDivision.DataBind();
             ddlDivision.Items.Insert(0, "All");
+            ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
         }
         catch (Exception ex)
         {
@@ -1018,7 +1035,7 @@ public partial class labor_hour_list : System.Web.UI.Page
         txtStartDate.Text = "";
         txtEndDate.Text = "";
         chkTotalhours.Checked = false;
-        ddlDivision.SelectedIndex = 0;
+        ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
         Session.Remove("Installer");
         Session.Remove("");
         radEmployeeType.SelectedValue = "3";

@@ -203,7 +203,7 @@
                             <tr>
                                 <td><asp:Label ID="lblSortedBy" runat="server" Visible="False"></asp:Label></td> 
                                  <td>
-
+                                     <asp:HiddenField ID="hdnPrimaryDivision" runat="server" Value="0" />
                                     <asp:HiddenField ID="hdnOrder" runat="server" Value="ASC" />
                                      <asp:HiddenField ID="hdnClientId" runat="server" Value="DESC" />
 

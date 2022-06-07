@@ -61,6 +61,11 @@ public partial class user_management : System.Web.UI.Page
             {
                 Response.Redirect(ConfigurationManager.AppSettings["LoginPage"].ToString());
             }
+            else
+            {
+                userinfo oUser = (userinfo)Session["oUser"];
+                hdnPrimaryDivision.Value = oUser.primaryDivision.ToString();
+            }
             if (Page.User.IsInRole("admin002") == false)
             {
                 // No Permission Page.
@@ -100,6 +105,7 @@ public partial class user_management : System.Web.UI.Page
             ddlDivision.DataValueField = "id";            
             ddlDivision.DataBind();
             ddlDivision.Items.Insert(0, "All");
+            ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
 
 
         }

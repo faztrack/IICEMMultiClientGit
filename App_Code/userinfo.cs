@@ -52,6 +52,7 @@ public class userinfo
     public bool IsTimeClock { get; set; }
     public bool IsPriceChange { get; set; }
     public string divisionName { get; set; }
+    public int primaryDivision { get; set; }
 }
 // FaztrackPagePermission
 public class csUserPagePermission

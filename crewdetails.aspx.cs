@@ -22,9 +22,15 @@ public partial class crewdetails : System.Web.UI.Page
         Session.Add("loadstarttime", DateTime.Now);
         if (!IsPostBack)
         {
+            string divisionName = "";
             if (Session["oUser"] == null)
             {
                 Response.Redirect(ConfigurationManager.AppSettings["LoginPage"].ToString());
+            }
+            else
+            {
+                userinfo oUser = (userinfo)Session["oUser"];
+                divisionName = oUser.divisionName;
             }
             if (Page.User.IsInRole("t02") == false)
             {
@@ -37,7 +43,14 @@ public partial class crewdetails : System.Web.UI.Page
 
             BindSections();
             BindDivision();
-
+            if (divisionName != "" && divisionName.Contains(","))
+            {
+                ddlDivision.Enabled = true;
+            }
+            else
+            {
+                ddlDivision.Enabled = false;
+            }
 
             if (Convert.ToInt32(hdnCrewId.Value) > 0)
             {
