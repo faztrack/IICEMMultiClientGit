@@ -238,7 +238,7 @@ public partial class me_estimate_list : System.Web.UI.Page
                         last_udated_date, estimate_comments, IsPublic FROM model_estimate as m
                         inner join sales_person as s on m.sales_person_id = s.sales_person_id "+
                         " where m.IsPublic = 1 " + condition +
-                        "order by m.sales_person_id, m.model_estimate_id, m.model_estimate_name";
+                        " order by m.sales_person_id, m.model_estimate_id, m.model_estimate_name";
 
 
 
@@ -371,7 +371,7 @@ public partial class me_estimate_list : System.Web.UI.Page
             int nModel_estimate_id = Convert.ToInt32(grdPublicEstimationList.DataKeys[e.Row.RowIndex].Values[1].ToString());
             int nsales_person_id = Convert.ToInt32(grdPublicEstimationList.DataKeys[e.Row.RowIndex].Values[2].ToString());
             string strEstName = grdPublicEstimationList.DataKeys[e.Row.RowIndex].Values[3].ToString();
-            int clientId = Convert.ToInt32(grdEstimationList.DataKeys[e.Row.RowIndex].Values[4]);
+            string clientId = grdPublicEstimationList.DataKeys[e.Row.RowIndex].Values[4].ToString();
             HyperLink hypEstName1 = (HyperLink)e.Row.Cells[0].FindControl("hypEstName1");
             hypEstName1.Text = strEstName;
             hypEstName1.NavigateUrl = "PublicMe_Pricing.aspx?meid=" + nModel_estimate_id + "&spid=" + nsales_person_id + "&clid=" + clientId;

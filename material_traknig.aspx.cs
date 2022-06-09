@@ -318,6 +318,7 @@ public partial class material_traknig : System.Web.UI.Page
             materialTrakingOrder.Vendor_name = ddlVendor.SelectedItem.Text;
             materialTrakingOrder.Item_text = txtTitle.Text;
             materialTrakingOrder.Item_note = txtNotes.Text;
+            materialTrakingOrder.client_id = Convert.ToInt32(hdnClientId.Value);
 
             materialTrakingOrder.Shipped_by = txtShippedTrackingInfo.Text;
             materialTrakingOrder.Shipped_note = txtShippedNotes.Text;

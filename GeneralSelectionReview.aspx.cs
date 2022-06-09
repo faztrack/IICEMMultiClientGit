@@ -15,10 +15,18 @@ public partial class GeneralSelectionReview : System.Web.UI.Page
     {
         if (!IsPostBack)
         {
+
+            string divisionName = "";
             KPIUtility.PageLoad(this.Page.AppRelativeVirtualPath);
             if (Session["oUser"] == null)
             {
                 Response.Redirect(ConfigurationManager.AppSettings["LoginPage"].ToString());
+            }
+            else
+            {
+                userinfo oUser = (userinfo)Session["oUser"];
+                hdnPrimaryDivision.Value = oUser.primaryDivision.ToString();
+                divisionName = oUser.divisionName;
             }
             if (Page.User.IsInRole("Gls01") == false)
             {
@@ -26,6 +34,8 @@ public partial class GeneralSelectionReview : System.Web.UI.Page
                 Response.Redirect("nopermission.aspx");
             }
             lblHeaderTitle.Text = "General Selection Review";
+
+            BindDivision();
 
             if (Session["SelectionFilter"] != null)
             {
@@ -35,8 +45,6 @@ public partial class GeneralSelectionReview : System.Web.UI.Page
                 txtStartDate.Text = ht["sStartDate"].ToString();
                 txtEndDate.Text = ht["sEndDate"].ToString();
                 BindSectionSelectionListDetails(nPageNo);
-
-
             }
             else
             {
@@ -46,11 +54,36 @@ public partial class GeneralSelectionReview : System.Web.UI.Page
                 GetSectionSelections();
                 //BindSectionSelectionListDetails(0);
             }
-          
-           
+
+
+            if (divisionName != "" && divisionName.Contains(","))
+            {
+                ddlDivision.Enabled = true;
+            }
+            else
+            {
+                ddlDivision.Enabled = false;
+            }
+
+
+
 
         }
     }
+
+    private void BindDivision()
+    {
+        string sql = "select id, division_name from division order by division_name ";
+        DataTable dt = csCommonUtility.GetDataTable(sql);
+        ddlDivision.DataSource = dt;
+        ddlDivision.DataTextField = "division_name";
+        ddlDivision.DataValueField = "id";
+        ddlDivision.DataBind();
+        ddlDivision.Items.Insert(0, "All");
+        ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
+
+    }
+
     private void GetSectionSelections()
     {
         try
@@ -64,8 +97,16 @@ public partial class GeneralSelectionReview : System.Web.UI.Page
                 strCondition = "WHERE  Section_Selection.CreateDate>='" + strStartDate + "' AND  Section_Selection.CreateDate<'" + strEndDate.AddDays(1).ToString() + "' ";
             }
 
+            if (ddlDivision.SelectedItem.Text != "All")
+            {
+                if (strCondition.Length > 2)
+                    strCondition += " AND Section_Selection.client_id = " + Convert.ToInt32(ddlDivision.SelectedValue);
+                else
+                    strCondition = " WHERE Section_Selection.client_id = " + Convert.ToInt32(ddlDivision.SelectedValue);
+            }
+
             string strQ = string.Empty;
-            strQ = " select customers.last_name1+', '+first_name1 as customer_name,SectionSelectionID, customers.customer_id, estimate_id, section_id, section_name, location_id, location_name, Title, Price, Section_Selection.Notes, LastUpdateDate, UpdateBy, isSelected, Section_Selection.customer_signature, customer_siignatureDate, customer_signedBy, Section_Selection.CreateDate, ValidTillDate, Section_Selection.CreatedBy, UserEmail" +
+            strQ = " select customers.last_name1+', '+first_name1 as customer_name,SectionSelectionID, Section_Selection.client_id as clientID, customers.customer_id, estimate_id, section_id, section_name, location_id, location_name, Title, Price, Section_Selection.Notes, LastUpdateDate, UpdateBy, isSelected, Section_Selection.customer_signature, customer_siignatureDate, customer_signedBy, Section_Selection.CreateDate, ValidTillDate, Section_Selection.CreatedBy, UserEmail" +
                 " from Section_Selection "+
                     " INNER JOIN customers on customers.customer_id = Section_Selection.customer_id " + strCondition + " order by Section_Selection.CreateDate DESC";
 
@@ -104,7 +145,7 @@ public partial class GeneralSelectionReview : System.Web.UI.Page
                 grdSelection.DataSource = dtSiteReview;
                 grdSelection.PageSize = Convert.ToInt32(ddlItemPerPage.SelectedValue);
                 grdSelection.PageIndex = nPageNo;
-                grdSelection.DataKeyNames = new string[] { "SectionSelectionID", "customer_id", "section_id", "estimate_id", "location_id", "isSelected", "customer_signature", "customer_siignatureDate", "CreateDate", "ValidTillDate" };
+                grdSelection.DataKeyNames = new string[] { "SectionSelectionID", "customer_id", "section_id", "estimate_id", "location_id", "isSelected", "customer_signature", "customer_siignatureDate", "CreateDate", "ValidTillDate", "clientID" };
                 grdSelection.DataBind();
 
                 Hashtable ht = new Hashtable();
@@ -168,6 +209,10 @@ public partial class GeneralSelectionReview : System.Web.UI.Page
             string strSignatureDate = Convert.ToDateTime(grdSelection.DataKeys[e.Row.RowIndex].Values[7]).ToString("MM/dd/yyyy hh:mm tt");
             DateTime dtCreateDate = Convert.ToDateTime(grdSelection.DataKeys[e.Row.RowIndex].Values[8]);
             DateTime dtValidTill = Convert.ToDateTime(grdSelection.DataKeys[e.Row.RowIndex].Values[9]);
+            string nClientId = grdSelection.DataKeys[e.Row.RowIndex].Values[10].ToString();
+            Label lblDivisionName = e.Row.FindControl("lblDivisionName") as Label;
+            lblDivisionName.Text = csCommonUtility.GetDivisionName(nClientId);
+
             TimeSpan ts = dtValidTill - dtCreateDate;
             int nDay = ts.Days;
             LinkButton lnkOpen = (LinkButton)e.Row.FindControl("lnkOpen");
@@ -226,7 +271,7 @@ public partial class GeneralSelectionReview : System.Web.UI.Page
                 lblSelected.Visible = false;
                 customer objCust = _db.customers.SingleOrDefault(s => s.customer_id == customer_id);
 
-                if (objCust.customer_signature == null || objCust.customer_signature == "")
+                if (objCust == null || objCust.customer_signature == null || objCust.customer_signature == "")
                 {
                     chkSelected.Visible = false;
                 }
@@ -460,6 +505,7 @@ public partial class GeneralSelectionReview : System.Web.UI.Page
         ddlItemPerPage.SelectedIndex = 0;
         txtStartDate.Text = DateTime.Now.AddDays(-2).ToShortDateString();
         txtEndDate.Text = DateTime.Now.ToShortDateString();
+        ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
         lblResult.Text = "";
         GetSectionSelections();
     }
@@ -539,5 +585,10 @@ public partial class GeneralSelectionReview : System.Web.UI.Page
     {
         KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, grdSelection.ID, grdSelection.GetType().Name, "PageIndexChanging"); 
         BindSectionSelectionListDetails(e.NewPageIndex);
+    }
+
+    protected void ddlDivision_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        GetSectionSelections();
     }
 }

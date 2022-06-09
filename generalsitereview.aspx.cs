@@ -18,10 +18,17 @@ public partial class generalsitereview : System.Web.UI.Page
 
         if (!IsPostBack)
         {
+            string divisionName = "";
             KPIUtility.PageLoad(this.Page.AppRelativeVirtualPath);
             if (Session["oUser"] == null)
             {
                 Response.Redirect(ConfigurationManager.AppSettings["LoginPage"].ToString());
+            }
+            else
+            {
+                userinfo oUser = (userinfo)Session["oUser"];
+                hdnPrimaryDivision.Value = oUser.primaryDivision.ToString();
+                divisionName = oUser.divisionName;
             }
             if (Page.User.IsInRole("gs01") == false)
             {
@@ -47,16 +54,27 @@ public partial class generalsitereview : System.Web.UI.Page
                 txtEndDate.Text = DateTime.Now.ToShortDateString();
             }
 
+            BindDivision();
             GetSiteReviews();
             //BindSiteReviewDetails(0);
-              
+
+            if (divisionName != "" && divisionName.Contains(","))
+            {
+                ddlDivision.Enabled = true;
+            }
+            else
+            {
+                ddlDivision.Enabled = false;
+            }
+
+
         }
     }
 
-      private void GetSiteReviews()
+    private void GetSiteReviews()
     {
-        try
-        {
+         try
+         {
             DataClassesDataContext _db = new DataClassesDataContext();
             string strCondition = "";
             if (txtStartDate.Text != "" && txtEndDate.Text != "")
@@ -65,15 +83,23 @@ public partial class generalsitereview : System.Web.UI.Page
                 DateTime strEndDate = Convert.ToDateTime(txtEndDate.Text.Trim());
                 strCondition = "WHERE  SiteReviewsDate>='" + strStartDate + "' AND  SiteReviewsDate<'" + strEndDate.AddDays(1).ToString() + "' ";
             }
-          
-            string strQ = string.Empty;
-            strQ = " select [SiteReviewsId] ,[customer_id],[estimate_id],[SiteReviewsNotes],[SiteReviewsDate],[StateOfMindID], " +
-                   " [IsUserView],[IsCustomerView] ,[IsVendorView],[HasAttachments] ,[AttachmentList] ,[CreatedBy] ,[CreateDate] ,[LastUpdatedBy],[LastUpdateDate] " +
-                   " from [SiteReviewNotes] " + strCondition + " order by CreateDate DESC";
 
-            IEnumerable<csSiteReview> mList = _db.ExecuteQuery<csSiteReview>(strQ, string.Empty).ToList();
-            if (mList.Count() > 0)
-                Session.Add("nGSiteReviewList", csCommonUtility.LINQToDataTable(mList));
+            if (ddlDivision.SelectedItem.Text != "All")
+            {
+                if (strCondition.Length > 2)
+                    strCondition += " AND client_id = " + Convert.ToInt32(ddlDivision.SelectedValue);
+                else
+                    strCondition = " WHERE  client_id = " + Convert.ToInt32(ddlDivision.SelectedValue);
+            }
+
+            string strQ = string.Empty;
+            strQ = " select [SiteReviewsId] ,[customer_id],[estimate_id],[SiteReviewsNotes],[SiteReviewsDate],[StateOfMindID], [client_id], " +
+                    " [IsUserView],[IsCustomerView] ,[IsVendorView],[HasAttachments] ,[AttachmentList] ,[CreatedBy] ,[CreateDate] ,[LastUpdatedBy],[LastUpdateDate] " +
+                    " from [SiteReviewNotes] " + strCondition + " order by CreateDate DESC";
+
+            DataTable dt = csCommonUtility.GetDataTable(strQ);
+            if (dt.Rows.Count > 0)
+                Session.Add("nGSiteReviewList", dt);
             else
                 Session.Remove("nGSiteReviewList");
 
@@ -89,13 +115,25 @@ public partial class generalsitereview : System.Web.UI.Page
             }
          
            
-        }
-        catch (Exception ex)
-        {
-        }
+         }
+         catch (Exception ex)
+         {
+         }
     }
 
-  
+    private void BindDivision()
+    {
+        string sql = "select id, division_name from division order by division_name ";
+        DataTable dt = csCommonUtility.GetDataTable(sql);
+        ddlDivision.DataSource = dt;
+        ddlDivision.DataTextField = "division_name";
+        ddlDivision.DataValueField = "id";
+        ddlDivision.DataBind();
+        ddlDivision.Items.Insert(0, "All");
+        ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
+
+    }
+
 
     protected void BindSiteReviewDetails(int nPageNo)
     {
@@ -108,7 +146,7 @@ public partial class generalsitereview : System.Web.UI.Page
                 grdSiteViewList.DataSource = dtSiteReview;
                 grdSiteViewList.PageSize = Convert.ToInt32(ddlItemPerPage.SelectedValue);
                 grdSiteViewList.PageIndex = nPageNo;
-                grdSiteViewList.DataKeyNames = new string[] { "SiteReviewsId", "customer_id", "estimate_id", "SiteReviewsDate", "IsCustomerView", "SiteReviewsNotes", "StateOfMindID" };
+                grdSiteViewList.DataKeyNames = new string[] { "SiteReviewsId", "customer_id", "estimate_id", "SiteReviewsDate", "IsCustomerView", "SiteReviewsNotes", "StateOfMindID", "client_id" };
                 grdSiteViewList.DataBind();
 
                 Hashtable ht = new Hashtable();
@@ -170,6 +208,7 @@ public partial class generalsitereview : System.Web.UI.Page
         ddlItemPerPage.SelectedIndex = 0;
         txtStartDate.Text = DateTime.Now.AddDays(-2).ToShortDateString();
         txtEndDate.Text = DateTime.Now.ToShortDateString();
+        ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
         lblResult.Text = "";
         GetSiteReviews();
     }
@@ -265,6 +304,9 @@ public partial class generalsitereview : System.Web.UI.Page
             Boolean IsCustomer = Convert.ToBoolean(grdSiteViewList.DataKeys[e.Row.RowIndex].Values[4]);
             string SiteReviewNote = grdSiteViewList.DataKeys[e.Row.RowIndex].Values[5].ToString();
             int StatetOfMind = Convert.ToInt32(grdSiteViewList.DataKeys[e.Row.RowIndex].Values[6].ToString());
+            string nClientId = grdSiteViewList.DataKeys[e.Row.RowIndex].Values[7].ToString();
+            Label lblDivisionName = (Label)e.Row.FindControl("lblDivisionName");
+            lblDivisionName.Text = csCommonUtility.GetDivisionName(nClientId);
 
             Image imgStateOfMind = (Image)e.Row.FindControl("imgStateOfMind");
             if (StatetOfMind == 0)
@@ -334,11 +376,11 @@ public partial class generalsitereview : System.Web.UI.Page
 
           if (IsCustomer == true)
           {
-              e.Row.Cells[4].Text = "Yes";
+              e.Row.Cells[5].Text = "Yes";
           }
           else
           {
-              e.Row.Cells[4].Text = "";
+              e.Row.Cells[5].Text = "";
           }
 
         }
@@ -533,5 +575,10 @@ public partial class generalsitereview : System.Web.UI.Page
         {
 
         }
+    }
+
+    protected void ddlDivision_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        GetSiteReviews();
     }
 }
