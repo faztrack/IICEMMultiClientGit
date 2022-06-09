@@ -584,18 +584,6 @@
         <elementListCompartment Id="451991e2-4460-4742-b4e2-2d4e5d0f7c78" absoluteBounds="9.765, 3.46, 1.9700000000000002, 6.7876383463541661" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="ee45ec15-5034-4816-8b36-e69ee5e87048" isExpanded="false" absoluteBounds="0.625, 11.75, 2, 0.45">
-      <DataClassMoniker Name="/DataClassesDataContext/ScheduleCalendar" />
-      <nestedChildShapes>
-        <elementListCompartment Id="7b9a462f-dd58-4fd0-ab51-c8c353095875" absoluteBounds="0.64, 12.21, 1.9700000000000002, 5.826131184895833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
-    <classShape Id="d066e189-af4b-41e6-8dfc-47721d5e915e" isExpanded="false" absoluteBounds="0.625, 12.5, 2, 0.45">
-      <DataClassMoniker Name="/DataClassesDataContext/ScheduleCalendarTemp" />
-      <nestedChildShapes>
-        <elementListCompartment Id="6c67b659-638b-47a7-bf43-df612b5c745e" absoluteBounds="0.64000000000000057, 12.96, 1.9700000000000002, 5.826131184895833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
     <classShape Id="1e6ebf22-203e-41dd-8777-d503995055a3" isExpanded="false" absoluteBounds="3, 4.25, 2, 0.45">
       <DataClassMoniker Name="/DataClassesDataContext/customer_estimate" />
       <nestedChildShapes>
@@ -720,6 +708,18 @@
       <DataClassMoniker Name="/DataClassesDataContext/Material_Traking_Order" />
       <nestedChildShapes>
         <elementListCompartment Id="2dc4ad43-d9fb-42d3-ae35-ac143d69d006" absoluteBounds="7.7650000000000006, 12.335, 1.9700000000000002, 6.2107340494791661" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="1b75c299-7b80-47a3-9813-a3531db72cb1" isExpanded="false" absoluteBounds="0.625, 12, 2, 0.45">
+      <DataClassMoniker Name="/DataClassesDataContext/ScheduleCalendar" />
+      <nestedChildShapes>
+        <elementListCompartment Id="4e7a38cd-0440-46d1-860c-64e9137b092d" absoluteBounds="0.64000000000000057, 12.46, 1.9700000000000002, 6.0184326171875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="9814cbab-285b-4dd1-80c7-2860e1f2185f" isExpanded="false" absoluteBounds="0.625, 12.625, 2, 0.45">
+      <DataClassMoniker Name="/DataClassesDataContext/ScheduleCalendarTemp" />
+      <nestedChildShapes>
+        <elementListCompartment Id="8f7fef49-8ddb-4bd5-a47b-11ec894df51a" absoluteBounds="0.64000000000000057, 13.085, 1.9700000000000002, 6.0184326171875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
   </nestedChildShapes>

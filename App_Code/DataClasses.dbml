@@ -1924,72 +1924,6 @@
       <Column Name="IsItemFlag" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
     </Type>
   </Table>
-  <Table Name="dbo.ScheduleCalendar" Member="ScheduleCalendars">
-    <Type Name="ScheduleCalendar">
-      <Column Name="auto_event_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="title" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
-      <Column Name="description" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
-      <Column Name="event_start" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="event_end" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="customer_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="estimate_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="employee_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="section_name" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
-      <Column Name="location_name" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
-      <Column Name="create_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="last_updated_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="last_updated_by" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="type_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="parent_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="job_start_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="co_pricing_list_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="cssClassName" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="google_event_id" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
-      <Column Name="operation_notes" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
-      <Column Name="is_complete" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="IsEstimateActive" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="employee_name" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
-      <Column Name="event_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="duration" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="IsScheduleDayException" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="IsEWSCalendarSynch" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="selectedweekends" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
-      <Column Name="weekends" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.ScheduleCalendarTemp" Member="ScheduleCalendarTemps">
-    <Type Name="ScheduleCalendarTemp">
-      <Column Name="auto_event_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="title" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
-      <Column Name="description" Type="System.String" DbType="VarChar(5000)" CanBeNull="true" />
-      <Column Name="event_start" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="event_end" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="customer_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="estimate_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="employee_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="section_name" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
-      <Column Name="location_name" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
-      <Column Name="create_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="last_updated_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="last_updated_by" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="type_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="parent_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="job_start_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="co_pricing_list_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="cssClassName" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="google_event_id" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
-      <Column Name="operation_notes" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
-      <Column Name="is_complete" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="IsEstimateActive" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="employee_name" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
-      <Column Name="event_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="duration" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="IsScheduleDayException" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="IsEWSCalendarSynch" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="selectedweekends" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
-      <Column Name="weekends" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
-    </Type>
-  </Table>
   <Table Name="dbo.customer_estimate" Member="customer_estimates">
     <Type Name="customer_estimate">
       <Column Name="customer_estimate_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -2441,6 +2375,74 @@
       <Column Name="Received_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="Picked_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="Confirmed_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="client_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ScheduleCalendar" Member="ScheduleCalendars">
+    <Type Name="ScheduleCalendar">
+      <Column Name="auto_event_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="title" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="description" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="event_start" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="event_end" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="customer_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="estimate_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="employee_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="section_name" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="location_name" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="create_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="last_updated_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="last_updated_by" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="type_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="parent_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="job_start_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="co_pricing_list_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="cssClassName" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="google_event_id" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="operation_notes" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="is_complete" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="IsEstimateActive" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="employee_name" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="event_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="duration" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="IsScheduleDayException" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="IsEWSCalendarSynch" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="selectedweekends" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="weekends" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="client_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ScheduleCalendarTemp" Member="ScheduleCalendarTemps">
+    <Type Name="ScheduleCalendarTemp">
+      <Column Name="auto_event_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="title" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="description" Type="System.String" DbType="VarChar(5000)" CanBeNull="true" />
+      <Column Name="event_start" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="event_end" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="customer_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="estimate_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="employee_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="section_name" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="location_name" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="create_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="last_updated_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="last_updated_by" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="type_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="parent_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="job_start_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="co_pricing_list_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="cssClassName" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="google_event_id" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="operation_notes" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="is_complete" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="IsEstimateActive" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="employee_name" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="event_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="duration" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="IsScheduleDayException" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="IsEWSCalendarSynch" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="selectedweekends" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="weekends" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
       <Column Name="client_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
     </Type>
   </Table>

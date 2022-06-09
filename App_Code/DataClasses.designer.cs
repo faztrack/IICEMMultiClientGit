@@ -320,12 +320,6 @@ public partial class DataClassesDataContext : System.Data.Linq.DataContext
   partial void Insertpricing_detail(pricing_detail instance);
   partial void Updatepricing_detail(pricing_detail instance);
   partial void Deletepricing_detail(pricing_detail instance);
-  partial void InsertScheduleCalendar(ScheduleCalendar instance);
-  partial void UpdateScheduleCalendar(ScheduleCalendar instance);
-  partial void DeleteScheduleCalendar(ScheduleCalendar instance);
-  partial void InsertScheduleCalendarTemp(ScheduleCalendarTemp instance);
-  partial void UpdateScheduleCalendarTemp(ScheduleCalendarTemp instance);
-  partial void DeleteScheduleCalendarTemp(ScheduleCalendarTemp instance);
   partial void Insertcustomer_estimate(customer_estimate instance);
   partial void Updatecustomer_estimate(customer_estimate instance);
   partial void Deletecustomer_estimate(customer_estimate instance);
@@ -389,6 +383,12 @@ public partial class DataClassesDataContext : System.Data.Linq.DataContext
   partial void InsertMaterial_Traking_Order(Material_Traking_Order instance);
   partial void UpdateMaterial_Traking_Order(Material_Traking_Order instance);
   partial void DeleteMaterial_Traking_Order(Material_Traking_Order instance);
+  partial void InsertScheduleCalendar(ScheduleCalendar instance);
+  partial void UpdateScheduleCalendar(ScheduleCalendar instance);
+  partial void DeleteScheduleCalendar(ScheduleCalendar instance);
+  partial void InsertScheduleCalendarTemp(ScheduleCalendarTemp instance);
+  partial void UpdateScheduleCalendarTemp(ScheduleCalendarTemp instance);
+  partial void DeleteScheduleCalendarTemp(ScheduleCalendarTemp instance);
   #endregion
 	
 	public DataClassesDataContext() : 
@@ -1197,22 +1197,6 @@ public partial class DataClassesDataContext : System.Data.Linq.DataContext
 		}
 	}
 	
-	public System.Data.Linq.Table<ScheduleCalendar> ScheduleCalendars
-	{
-		get
-		{
-			return this.GetTable<ScheduleCalendar>();
-		}
-	}
-	
-	public System.Data.Linq.Table<ScheduleCalendarTemp> ScheduleCalendarTemps
-	{
-		get
-		{
-			return this.GetTable<ScheduleCalendarTemp>();
-		}
-	}
-	
 	public System.Data.Linq.Table<customer_estimate> customer_estimates
 	{
 		get
@@ -1378,6 +1362,22 @@ public partial class DataClassesDataContext : System.Data.Linq.DataContext
 		get
 		{
 			return this.GetTable<Material_Traking_Order>();
+		}
+	}
+	
+	public System.Data.Linq.Table<ScheduleCalendar> ScheduleCalendars
+	{
+		get
+		{
+			return this.GetTable<ScheduleCalendar>();
+		}
+	}
+	
+	public System.Data.Linq.Table<ScheduleCalendarTemp> ScheduleCalendarTemps
+	{
+		get
+		{
+			return this.GetTable<ScheduleCalendarTemp>();
 		}
 	}
 }
@@ -41932,1474 +41932,6 @@ public partial class pricing_detail : INotifyPropertyChanging, INotifyPropertyCh
 	}
 }
 
-[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ScheduleCalendar")]
-public partial class ScheduleCalendar : INotifyPropertyChanging, INotifyPropertyChanged
-{
-	
-	private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-	
-	private int _auto_event_id;
-	
-	private string _title;
-	
-	private string _description;
-	
-	private System.Nullable<System.DateTime> _event_start;
-	
-	private System.Nullable<System.DateTime> _event_end;
-	
-	private System.Nullable<int> _customer_id;
-	
-	private System.Nullable<int> _estimate_id;
-	
-	private System.Nullable<int> _employee_id;
-	
-	private string _section_name;
-	
-	private string _location_name;
-	
-	private System.Nullable<System.DateTime> _create_date;
-	
-	private System.Nullable<System.DateTime> _last_updated_date;
-	
-	private string _last_updated_by;
-	
-	private System.Nullable<int> _type_id;
-	
-	private System.Nullable<int> _parent_id;
-	
-	private System.Nullable<System.DateTime> _job_start_date;
-	
-	private System.Nullable<int> _co_pricing_list_id;
-	
-	private string _cssClassName;
-	
-	private string _google_event_id;
-	
-	private string _operation_notes;
-	
-	private System.Nullable<bool> _is_complete;
-	
-	private System.Nullable<bool> _IsEstimateActive;
-	
-	private string _employee_name;
-	
-	private System.Nullable<int> _event_id;
-	
-	private System.Nullable<int> _duration;
-	
-	private System.Nullable<bool> _IsScheduleDayException;
-	
-	private System.Nullable<bool> _IsEWSCalendarSynch;
-	
-	private string _selectedweekends;
-	
-	private string _weekends;
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void Onauto_event_idChanging(int value);
-    partial void Onauto_event_idChanged();
-    partial void OntitleChanging(string value);
-    partial void OntitleChanged();
-    partial void OndescriptionChanging(string value);
-    partial void OndescriptionChanged();
-    partial void Onevent_startChanging(System.Nullable<System.DateTime> value);
-    partial void Onevent_startChanged();
-    partial void Onevent_endChanging(System.Nullable<System.DateTime> value);
-    partial void Onevent_endChanged();
-    partial void Oncustomer_idChanging(System.Nullable<int> value);
-    partial void Oncustomer_idChanged();
-    partial void Onestimate_idChanging(System.Nullable<int> value);
-    partial void Onestimate_idChanged();
-    partial void Onemployee_idChanging(System.Nullable<int> value);
-    partial void Onemployee_idChanged();
-    partial void Onsection_nameChanging(string value);
-    partial void Onsection_nameChanged();
-    partial void Onlocation_nameChanging(string value);
-    partial void Onlocation_nameChanged();
-    partial void Oncreate_dateChanging(System.Nullable<System.DateTime> value);
-    partial void Oncreate_dateChanged();
-    partial void Onlast_updated_dateChanging(System.Nullable<System.DateTime> value);
-    partial void Onlast_updated_dateChanged();
-    partial void Onlast_updated_byChanging(string value);
-    partial void Onlast_updated_byChanged();
-    partial void Ontype_idChanging(System.Nullable<int> value);
-    partial void Ontype_idChanged();
-    partial void Onparent_idChanging(System.Nullable<int> value);
-    partial void Onparent_idChanged();
-    partial void Onjob_start_dateChanging(System.Nullable<System.DateTime> value);
-    partial void Onjob_start_dateChanged();
-    partial void Onco_pricing_list_idChanging(System.Nullable<int> value);
-    partial void Onco_pricing_list_idChanged();
-    partial void OncssClassNameChanging(string value);
-    partial void OncssClassNameChanged();
-    partial void Ongoogle_event_idChanging(string value);
-    partial void Ongoogle_event_idChanged();
-    partial void Onoperation_notesChanging(string value);
-    partial void Onoperation_notesChanged();
-    partial void Onis_completeChanging(System.Nullable<bool> value);
-    partial void Onis_completeChanged();
-    partial void OnIsEstimateActiveChanging(System.Nullable<bool> value);
-    partial void OnIsEstimateActiveChanged();
-    partial void Onemployee_nameChanging(string value);
-    partial void Onemployee_nameChanged();
-    partial void Onevent_idChanging(System.Nullable<int> value);
-    partial void Onevent_idChanged();
-    partial void OndurationChanging(System.Nullable<int> value);
-    partial void OndurationChanged();
-    partial void OnIsScheduleDayExceptionChanging(System.Nullable<bool> value);
-    partial void OnIsScheduleDayExceptionChanged();
-    partial void OnIsEWSCalendarSynchChanging(System.Nullable<bool> value);
-    partial void OnIsEWSCalendarSynchChanged();
-    partial void OnselectedweekendsChanging(string value);
-    partial void OnselectedweekendsChanged();
-    partial void OnweekendsChanging(string value);
-    partial void OnweekendsChanged();
-    #endregion
-	
-	public ScheduleCalendar()
-	{
-		OnCreated();
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_auto_event_id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-	public int auto_event_id
-	{
-		get
-		{
-			return this._auto_event_id;
-		}
-		set
-		{
-			if ((this._auto_event_id != value))
-			{
-				this.Onauto_event_idChanging(value);
-				this.SendPropertyChanging();
-				this._auto_event_id = value;
-				this.SendPropertyChanged("auto_event_id");
-				this.Onauto_event_idChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_title", DbType="VarChar(500)")]
-	public string title
-	{
-		get
-		{
-			return this._title;
-		}
-		set
-		{
-			if ((this._title != value))
-			{
-				this.OntitleChanging(value);
-				this.SendPropertyChanging();
-				this._title = value;
-				this.SendPropertyChanged("title");
-				this.OntitleChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_description", DbType="VarChar(500)")]
-	public string description
-	{
-		get
-		{
-			return this._description;
-		}
-		set
-		{
-			if ((this._description != value))
-			{
-				this.OndescriptionChanging(value);
-				this.SendPropertyChanging();
-				this._description = value;
-				this.SendPropertyChanged("description");
-				this.OndescriptionChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_event_start", DbType="DateTime")]
-	public System.Nullable<System.DateTime> event_start
-	{
-		get
-		{
-			return this._event_start;
-		}
-		set
-		{
-			if ((this._event_start != value))
-			{
-				this.Onevent_startChanging(value);
-				this.SendPropertyChanging();
-				this._event_start = value;
-				this.SendPropertyChanged("event_start");
-				this.Onevent_startChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_event_end", DbType="DateTime")]
-	public System.Nullable<System.DateTime> event_end
-	{
-		get
-		{
-			return this._event_end;
-		}
-		set
-		{
-			if ((this._event_end != value))
-			{
-				this.Onevent_endChanging(value);
-				this.SendPropertyChanging();
-				this._event_end = value;
-				this.SendPropertyChanged("event_end");
-				this.Onevent_endChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_customer_id", DbType="Int")]
-	public System.Nullable<int> customer_id
-	{
-		get
-		{
-			return this._customer_id;
-		}
-		set
-		{
-			if ((this._customer_id != value))
-			{
-				this.Oncustomer_idChanging(value);
-				this.SendPropertyChanging();
-				this._customer_id = value;
-				this.SendPropertyChanged("customer_id");
-				this.Oncustomer_idChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_estimate_id", DbType="Int")]
-	public System.Nullable<int> estimate_id
-	{
-		get
-		{
-			return this._estimate_id;
-		}
-		set
-		{
-			if ((this._estimate_id != value))
-			{
-				this.Onestimate_idChanging(value);
-				this.SendPropertyChanging();
-				this._estimate_id = value;
-				this.SendPropertyChanged("estimate_id");
-				this.Onestimate_idChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_employee_id", DbType="Int")]
-	public System.Nullable<int> employee_id
-	{
-		get
-		{
-			return this._employee_id;
-		}
-		set
-		{
-			if ((this._employee_id != value))
-			{
-				this.Onemployee_idChanging(value);
-				this.SendPropertyChanging();
-				this._employee_id = value;
-				this.SendPropertyChanged("employee_id");
-				this.Onemployee_idChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_section_name", DbType="VarChar(250)")]
-	public string section_name
-	{
-		get
-		{
-			return this._section_name;
-		}
-		set
-		{
-			if ((this._section_name != value))
-			{
-				this.Onsection_nameChanging(value);
-				this.SendPropertyChanging();
-				this._section_name = value;
-				this.SendPropertyChanged("section_name");
-				this.Onsection_nameChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_location_name", DbType="VarChar(250)")]
-	public string location_name
-	{
-		get
-		{
-			return this._location_name;
-		}
-		set
-		{
-			if ((this._location_name != value))
-			{
-				this.Onlocation_nameChanging(value);
-				this.SendPropertyChanging();
-				this._location_name = value;
-				this.SendPropertyChanged("location_name");
-				this.Onlocation_nameChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_create_date", DbType="DateTime")]
-	public System.Nullable<System.DateTime> create_date
-	{
-		get
-		{
-			return this._create_date;
-		}
-		set
-		{
-			if ((this._create_date != value))
-			{
-				this.Oncreate_dateChanging(value);
-				this.SendPropertyChanging();
-				this._create_date = value;
-				this.SendPropertyChanged("create_date");
-				this.Oncreate_dateChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_last_updated_date", DbType="DateTime")]
-	public System.Nullable<System.DateTime> last_updated_date
-	{
-		get
-		{
-			return this._last_updated_date;
-		}
-		set
-		{
-			if ((this._last_updated_date != value))
-			{
-				this.Onlast_updated_dateChanging(value);
-				this.SendPropertyChanging();
-				this._last_updated_date = value;
-				this.SendPropertyChanged("last_updated_date");
-				this.Onlast_updated_dateChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_last_updated_by", DbType="VarChar(50)")]
-	public string last_updated_by
-	{
-		get
-		{
-			return this._last_updated_by;
-		}
-		set
-		{
-			if ((this._last_updated_by != value))
-			{
-				this.Onlast_updated_byChanging(value);
-				this.SendPropertyChanging();
-				this._last_updated_by = value;
-				this.SendPropertyChanged("last_updated_by");
-				this.Onlast_updated_byChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_type_id", DbType="Int")]
-	public System.Nullable<int> type_id
-	{
-		get
-		{
-			return this._type_id;
-		}
-		set
-		{
-			if ((this._type_id != value))
-			{
-				this.Ontype_idChanging(value);
-				this.SendPropertyChanging();
-				this._type_id = value;
-				this.SendPropertyChanged("type_id");
-				this.Ontype_idChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_parent_id", DbType="Int")]
-	public System.Nullable<int> parent_id
-	{
-		get
-		{
-			return this._parent_id;
-		}
-		set
-		{
-			if ((this._parent_id != value))
-			{
-				this.Onparent_idChanging(value);
-				this.SendPropertyChanging();
-				this._parent_id = value;
-				this.SendPropertyChanged("parent_id");
-				this.Onparent_idChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_job_start_date", DbType="DateTime")]
-	public System.Nullable<System.DateTime> job_start_date
-	{
-		get
-		{
-			return this._job_start_date;
-		}
-		set
-		{
-			if ((this._job_start_date != value))
-			{
-				this.Onjob_start_dateChanging(value);
-				this.SendPropertyChanging();
-				this._job_start_date = value;
-				this.SendPropertyChanged("job_start_date");
-				this.Onjob_start_dateChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_co_pricing_list_id", DbType="Int")]
-	public System.Nullable<int> co_pricing_list_id
-	{
-		get
-		{
-			return this._co_pricing_list_id;
-		}
-		set
-		{
-			if ((this._co_pricing_list_id != value))
-			{
-				this.Onco_pricing_list_idChanging(value);
-				this.SendPropertyChanging();
-				this._co_pricing_list_id = value;
-				this.SendPropertyChanged("co_pricing_list_id");
-				this.Onco_pricing_list_idChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_cssClassName", DbType="VarChar(50)")]
-	public string cssClassName
-	{
-		get
-		{
-			return this._cssClassName;
-		}
-		set
-		{
-			if ((this._cssClassName != value))
-			{
-				this.OncssClassNameChanging(value);
-				this.SendPropertyChanging();
-				this._cssClassName = value;
-				this.SendPropertyChanged("cssClassName");
-				this.OncssClassNameChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_google_event_id", DbType="VarChar(250)")]
-	public string google_event_id
-	{
-		get
-		{
-			return this._google_event_id;
-		}
-		set
-		{
-			if ((this._google_event_id != value))
-			{
-				this.Ongoogle_event_idChanging(value);
-				this.SendPropertyChanging();
-				this._google_event_id = value;
-				this.SendPropertyChanged("google_event_id");
-				this.Ongoogle_event_idChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_operation_notes", DbType="VarChar(500)")]
-	public string operation_notes
-	{
-		get
-		{
-			return this._operation_notes;
-		}
-		set
-		{
-			if ((this._operation_notes != value))
-			{
-				this.Onoperation_notesChanging(value);
-				this.SendPropertyChanging();
-				this._operation_notes = value;
-				this.SendPropertyChanged("operation_notes");
-				this.Onoperation_notesChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_is_complete", DbType="Bit")]
-	public System.Nullable<bool> is_complete
-	{
-		get
-		{
-			return this._is_complete;
-		}
-		set
-		{
-			if ((this._is_complete != value))
-			{
-				this.Onis_completeChanging(value);
-				this.SendPropertyChanging();
-				this._is_complete = value;
-				this.SendPropertyChanged("is_complete");
-				this.Onis_completeChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsEstimateActive", DbType="Bit")]
-	public System.Nullable<bool> IsEstimateActive
-	{
-		get
-		{
-			return this._IsEstimateActive;
-		}
-		set
-		{
-			if ((this._IsEstimateActive != value))
-			{
-				this.OnIsEstimateActiveChanging(value);
-				this.SendPropertyChanging();
-				this._IsEstimateActive = value;
-				this.SendPropertyChanged("IsEstimateActive");
-				this.OnIsEstimateActiveChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_employee_name", DbType="VarChar(500)")]
-	public string employee_name
-	{
-		get
-		{
-			return this._employee_name;
-		}
-		set
-		{
-			if ((this._employee_name != value))
-			{
-				this.Onemployee_nameChanging(value);
-				this.SendPropertyChanging();
-				this._employee_name = value;
-				this.SendPropertyChanged("employee_name");
-				this.Onemployee_nameChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_event_id", DbType="Int")]
-	public System.Nullable<int> event_id
-	{
-		get
-		{
-			return this._event_id;
-		}
-		set
-		{
-			if ((this._event_id != value))
-			{
-				this.Onevent_idChanging(value);
-				this.SendPropertyChanging();
-				this._event_id = value;
-				this.SendPropertyChanged("event_id");
-				this.Onevent_idChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_duration", DbType="Int")]
-	public System.Nullable<int> duration
-	{
-		get
-		{
-			return this._duration;
-		}
-		set
-		{
-			if ((this._duration != value))
-			{
-				this.OndurationChanging(value);
-				this.SendPropertyChanging();
-				this._duration = value;
-				this.SendPropertyChanged("duration");
-				this.OndurationChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsScheduleDayException", DbType="Bit")]
-	public System.Nullable<bool> IsScheduleDayException
-	{
-		get
-		{
-			return this._IsScheduleDayException;
-		}
-		set
-		{
-			if ((this._IsScheduleDayException != value))
-			{
-				this.OnIsScheduleDayExceptionChanging(value);
-				this.SendPropertyChanging();
-				this._IsScheduleDayException = value;
-				this.SendPropertyChanged("IsScheduleDayException");
-				this.OnIsScheduleDayExceptionChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsEWSCalendarSynch", DbType="Bit")]
-	public System.Nullable<bool> IsEWSCalendarSynch
-	{
-		get
-		{
-			return this._IsEWSCalendarSynch;
-		}
-		set
-		{
-			if ((this._IsEWSCalendarSynch != value))
-			{
-				this.OnIsEWSCalendarSynchChanging(value);
-				this.SendPropertyChanging();
-				this._IsEWSCalendarSynch = value;
-				this.SendPropertyChanged("IsEWSCalendarSynch");
-				this.OnIsEWSCalendarSynchChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_selectedweekends", DbType="VarChar(100)")]
-	public string selectedweekends
-	{
-		get
-		{
-			return this._selectedweekends;
-		}
-		set
-		{
-			if ((this._selectedweekends != value))
-			{
-				this.OnselectedweekendsChanging(value);
-				this.SendPropertyChanging();
-				this._selectedweekends = value;
-				this.SendPropertyChanged("selectedweekends");
-				this.OnselectedweekendsChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_weekends", DbType="VarChar(100)")]
-	public string weekends
-	{
-		get
-		{
-			return this._weekends;
-		}
-		set
-		{
-			if ((this._weekends != value))
-			{
-				this.OnweekendsChanging(value);
-				this.SendPropertyChanging();
-				this._weekends = value;
-				this.SendPropertyChanged("weekends");
-				this.OnweekendsChanged();
-			}
-		}
-	}
-	
-	public event PropertyChangingEventHandler PropertyChanging;
-	
-	public event PropertyChangedEventHandler PropertyChanged;
-	
-	protected virtual void SendPropertyChanging()
-	{
-		if ((this.PropertyChanging != null))
-		{
-			this.PropertyChanging(this, emptyChangingEventArgs);
-		}
-	}
-	
-	protected virtual void SendPropertyChanged(String propertyName)
-	{
-		if ((this.PropertyChanged != null))
-		{
-			this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
-	}
-}
-
-[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ScheduleCalendarTemp")]
-public partial class ScheduleCalendarTemp : INotifyPropertyChanging, INotifyPropertyChanged
-{
-	
-	private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-	
-	private int _auto_event_id;
-	
-	private string _title;
-	
-	private string _description;
-	
-	private System.Nullable<System.DateTime> _event_start;
-	
-	private System.Nullable<System.DateTime> _event_end;
-	
-	private System.Nullable<int> _customer_id;
-	
-	private System.Nullable<int> _estimate_id;
-	
-	private System.Nullable<int> _employee_id;
-	
-	private string _section_name;
-	
-	private string _location_name;
-	
-	private System.Nullable<System.DateTime> _create_date;
-	
-	private System.Nullable<System.DateTime> _last_updated_date;
-	
-	private string _last_updated_by;
-	
-	private System.Nullable<int> _type_id;
-	
-	private System.Nullable<int> _parent_id;
-	
-	private System.Nullable<System.DateTime> _job_start_date;
-	
-	private System.Nullable<int> _co_pricing_list_id;
-	
-	private string _cssClassName;
-	
-	private string _google_event_id;
-	
-	private string _operation_notes;
-	
-	private System.Nullable<bool> _is_complete;
-	
-	private System.Nullable<bool> _IsEstimateActive;
-	
-	private string _employee_name;
-	
-	private int _event_id;
-	
-	private System.Nullable<int> _duration;
-	
-	private System.Nullable<bool> _IsScheduleDayException;
-	
-	private System.Nullable<bool> _IsEWSCalendarSynch;
-	
-	private string _selectedweekends;
-	
-	private string _weekends;
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void Onauto_event_idChanging(int value);
-    partial void Onauto_event_idChanged();
-    partial void OntitleChanging(string value);
-    partial void OntitleChanged();
-    partial void OndescriptionChanging(string value);
-    partial void OndescriptionChanged();
-    partial void Onevent_startChanging(System.Nullable<System.DateTime> value);
-    partial void Onevent_startChanged();
-    partial void Onevent_endChanging(System.Nullable<System.DateTime> value);
-    partial void Onevent_endChanged();
-    partial void Oncustomer_idChanging(System.Nullable<int> value);
-    partial void Oncustomer_idChanged();
-    partial void Onestimate_idChanging(System.Nullable<int> value);
-    partial void Onestimate_idChanged();
-    partial void Onemployee_idChanging(System.Nullable<int> value);
-    partial void Onemployee_idChanged();
-    partial void Onsection_nameChanging(string value);
-    partial void Onsection_nameChanged();
-    partial void Onlocation_nameChanging(string value);
-    partial void Onlocation_nameChanged();
-    partial void Oncreate_dateChanging(System.Nullable<System.DateTime> value);
-    partial void Oncreate_dateChanged();
-    partial void Onlast_updated_dateChanging(System.Nullable<System.DateTime> value);
-    partial void Onlast_updated_dateChanged();
-    partial void Onlast_updated_byChanging(string value);
-    partial void Onlast_updated_byChanged();
-    partial void Ontype_idChanging(System.Nullable<int> value);
-    partial void Ontype_idChanged();
-    partial void Onparent_idChanging(System.Nullable<int> value);
-    partial void Onparent_idChanged();
-    partial void Onjob_start_dateChanging(System.Nullable<System.DateTime> value);
-    partial void Onjob_start_dateChanged();
-    partial void Onco_pricing_list_idChanging(System.Nullable<int> value);
-    partial void Onco_pricing_list_idChanged();
-    partial void OncssClassNameChanging(string value);
-    partial void OncssClassNameChanged();
-    partial void Ongoogle_event_idChanging(string value);
-    partial void Ongoogle_event_idChanged();
-    partial void Onoperation_notesChanging(string value);
-    partial void Onoperation_notesChanged();
-    partial void Onis_completeChanging(System.Nullable<bool> value);
-    partial void Onis_completeChanged();
-    partial void OnIsEstimateActiveChanging(System.Nullable<bool> value);
-    partial void OnIsEstimateActiveChanged();
-    partial void Onemployee_nameChanging(string value);
-    partial void Onemployee_nameChanged();
-    partial void Onevent_idChanging(int value);
-    partial void Onevent_idChanged();
-    partial void OndurationChanging(System.Nullable<int> value);
-    partial void OndurationChanged();
-    partial void OnIsScheduleDayExceptionChanging(System.Nullable<bool> value);
-    partial void OnIsScheduleDayExceptionChanged();
-    partial void OnIsEWSCalendarSynchChanging(System.Nullable<bool> value);
-    partial void OnIsEWSCalendarSynchChanged();
-    partial void OnselectedweekendsChanging(string value);
-    partial void OnselectedweekendsChanged();
-    partial void OnweekendsChanging(string value);
-    partial void OnweekendsChanged();
-    #endregion
-	
-	public ScheduleCalendarTemp()
-	{
-		OnCreated();
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_auto_event_id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-	public int auto_event_id
-	{
-		get
-		{
-			return this._auto_event_id;
-		}
-		set
-		{
-			if ((this._auto_event_id != value))
-			{
-				this.Onauto_event_idChanging(value);
-				this.SendPropertyChanging();
-				this._auto_event_id = value;
-				this.SendPropertyChanged("auto_event_id");
-				this.Onauto_event_idChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_title", DbType="VarChar(500)")]
-	public string title
-	{
-		get
-		{
-			return this._title;
-		}
-		set
-		{
-			if ((this._title != value))
-			{
-				this.OntitleChanging(value);
-				this.SendPropertyChanging();
-				this._title = value;
-				this.SendPropertyChanged("title");
-				this.OntitleChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_description", DbType="VarChar(5000)")]
-	public string description
-	{
-		get
-		{
-			return this._description;
-		}
-		set
-		{
-			if ((this._description != value))
-			{
-				this.OndescriptionChanging(value);
-				this.SendPropertyChanging();
-				this._description = value;
-				this.SendPropertyChanged("description");
-				this.OndescriptionChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_event_start", DbType="DateTime")]
-	public System.Nullable<System.DateTime> event_start
-	{
-		get
-		{
-			return this._event_start;
-		}
-		set
-		{
-			if ((this._event_start != value))
-			{
-				this.Onevent_startChanging(value);
-				this.SendPropertyChanging();
-				this._event_start = value;
-				this.SendPropertyChanged("event_start");
-				this.Onevent_startChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_event_end", DbType="DateTime")]
-	public System.Nullable<System.DateTime> event_end
-	{
-		get
-		{
-			return this._event_end;
-		}
-		set
-		{
-			if ((this._event_end != value))
-			{
-				this.Onevent_endChanging(value);
-				this.SendPropertyChanging();
-				this._event_end = value;
-				this.SendPropertyChanged("event_end");
-				this.Onevent_endChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_customer_id", DbType="Int")]
-	public System.Nullable<int> customer_id
-	{
-		get
-		{
-			return this._customer_id;
-		}
-		set
-		{
-			if ((this._customer_id != value))
-			{
-				this.Oncustomer_idChanging(value);
-				this.SendPropertyChanging();
-				this._customer_id = value;
-				this.SendPropertyChanged("customer_id");
-				this.Oncustomer_idChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_estimate_id", DbType="Int")]
-	public System.Nullable<int> estimate_id
-	{
-		get
-		{
-			return this._estimate_id;
-		}
-		set
-		{
-			if ((this._estimate_id != value))
-			{
-				this.Onestimate_idChanging(value);
-				this.SendPropertyChanging();
-				this._estimate_id = value;
-				this.SendPropertyChanged("estimate_id");
-				this.Onestimate_idChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_employee_id", DbType="Int")]
-	public System.Nullable<int> employee_id
-	{
-		get
-		{
-			return this._employee_id;
-		}
-		set
-		{
-			if ((this._employee_id != value))
-			{
-				this.Onemployee_idChanging(value);
-				this.SendPropertyChanging();
-				this._employee_id = value;
-				this.SendPropertyChanged("employee_id");
-				this.Onemployee_idChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_section_name", DbType="VarChar(250)")]
-	public string section_name
-	{
-		get
-		{
-			return this._section_name;
-		}
-		set
-		{
-			if ((this._section_name != value))
-			{
-				this.Onsection_nameChanging(value);
-				this.SendPropertyChanging();
-				this._section_name = value;
-				this.SendPropertyChanged("section_name");
-				this.Onsection_nameChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_location_name", DbType="VarChar(250)")]
-	public string location_name
-	{
-		get
-		{
-			return this._location_name;
-		}
-		set
-		{
-			if ((this._location_name != value))
-			{
-				this.Onlocation_nameChanging(value);
-				this.SendPropertyChanging();
-				this._location_name = value;
-				this.SendPropertyChanged("location_name");
-				this.Onlocation_nameChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_create_date", DbType="DateTime")]
-	public System.Nullable<System.DateTime> create_date
-	{
-		get
-		{
-			return this._create_date;
-		}
-		set
-		{
-			if ((this._create_date != value))
-			{
-				this.Oncreate_dateChanging(value);
-				this.SendPropertyChanging();
-				this._create_date = value;
-				this.SendPropertyChanged("create_date");
-				this.Oncreate_dateChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_last_updated_date", DbType="DateTime")]
-	public System.Nullable<System.DateTime> last_updated_date
-	{
-		get
-		{
-			return this._last_updated_date;
-		}
-		set
-		{
-			if ((this._last_updated_date != value))
-			{
-				this.Onlast_updated_dateChanging(value);
-				this.SendPropertyChanging();
-				this._last_updated_date = value;
-				this.SendPropertyChanged("last_updated_date");
-				this.Onlast_updated_dateChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_last_updated_by", DbType="VarChar(50)")]
-	public string last_updated_by
-	{
-		get
-		{
-			return this._last_updated_by;
-		}
-		set
-		{
-			if ((this._last_updated_by != value))
-			{
-				this.Onlast_updated_byChanging(value);
-				this.SendPropertyChanging();
-				this._last_updated_by = value;
-				this.SendPropertyChanged("last_updated_by");
-				this.Onlast_updated_byChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_type_id", DbType="Int")]
-	public System.Nullable<int> type_id
-	{
-		get
-		{
-			return this._type_id;
-		}
-		set
-		{
-			if ((this._type_id != value))
-			{
-				this.Ontype_idChanging(value);
-				this.SendPropertyChanging();
-				this._type_id = value;
-				this.SendPropertyChanged("type_id");
-				this.Ontype_idChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_parent_id", DbType="Int")]
-	public System.Nullable<int> parent_id
-	{
-		get
-		{
-			return this._parent_id;
-		}
-		set
-		{
-			if ((this._parent_id != value))
-			{
-				this.Onparent_idChanging(value);
-				this.SendPropertyChanging();
-				this._parent_id = value;
-				this.SendPropertyChanged("parent_id");
-				this.Onparent_idChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_job_start_date", DbType="DateTime")]
-	public System.Nullable<System.DateTime> job_start_date
-	{
-		get
-		{
-			return this._job_start_date;
-		}
-		set
-		{
-			if ((this._job_start_date != value))
-			{
-				this.Onjob_start_dateChanging(value);
-				this.SendPropertyChanging();
-				this._job_start_date = value;
-				this.SendPropertyChanged("job_start_date");
-				this.Onjob_start_dateChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_co_pricing_list_id", DbType="Int")]
-	public System.Nullable<int> co_pricing_list_id
-	{
-		get
-		{
-			return this._co_pricing_list_id;
-		}
-		set
-		{
-			if ((this._co_pricing_list_id != value))
-			{
-				this.Onco_pricing_list_idChanging(value);
-				this.SendPropertyChanging();
-				this._co_pricing_list_id = value;
-				this.SendPropertyChanged("co_pricing_list_id");
-				this.Onco_pricing_list_idChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_cssClassName", DbType="VarChar(50)")]
-	public string cssClassName
-	{
-		get
-		{
-			return this._cssClassName;
-		}
-		set
-		{
-			if ((this._cssClassName != value))
-			{
-				this.OncssClassNameChanging(value);
-				this.SendPropertyChanging();
-				this._cssClassName = value;
-				this.SendPropertyChanged("cssClassName");
-				this.OncssClassNameChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_google_event_id", DbType="VarChar(250)")]
-	public string google_event_id
-	{
-		get
-		{
-			return this._google_event_id;
-		}
-		set
-		{
-			if ((this._google_event_id != value))
-			{
-				this.Ongoogle_event_idChanging(value);
-				this.SendPropertyChanging();
-				this._google_event_id = value;
-				this.SendPropertyChanged("google_event_id");
-				this.Ongoogle_event_idChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_operation_notes", DbType="VarChar(500)")]
-	public string operation_notes
-	{
-		get
-		{
-			return this._operation_notes;
-		}
-		set
-		{
-			if ((this._operation_notes != value))
-			{
-				this.Onoperation_notesChanging(value);
-				this.SendPropertyChanging();
-				this._operation_notes = value;
-				this.SendPropertyChanged("operation_notes");
-				this.Onoperation_notesChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_is_complete", DbType="Bit")]
-	public System.Nullable<bool> is_complete
-	{
-		get
-		{
-			return this._is_complete;
-		}
-		set
-		{
-			if ((this._is_complete != value))
-			{
-				this.Onis_completeChanging(value);
-				this.SendPropertyChanging();
-				this._is_complete = value;
-				this.SendPropertyChanged("is_complete");
-				this.Onis_completeChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsEstimateActive", DbType="Bit")]
-	public System.Nullable<bool> IsEstimateActive
-	{
-		get
-		{
-			return this._IsEstimateActive;
-		}
-		set
-		{
-			if ((this._IsEstimateActive != value))
-			{
-				this.OnIsEstimateActiveChanging(value);
-				this.SendPropertyChanging();
-				this._IsEstimateActive = value;
-				this.SendPropertyChanged("IsEstimateActive");
-				this.OnIsEstimateActiveChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_employee_name", DbType="VarChar(500)")]
-	public string employee_name
-	{
-		get
-		{
-			return this._employee_name;
-		}
-		set
-		{
-			if ((this._employee_name != value))
-			{
-				this.Onemployee_nameChanging(value);
-				this.SendPropertyChanging();
-				this._employee_name = value;
-				this.SendPropertyChanged("employee_name");
-				this.Onemployee_nameChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_event_id", DbType="Int NOT NULL")]
-	public int event_id
-	{
-		get
-		{
-			return this._event_id;
-		}
-		set
-		{
-			if ((this._event_id != value))
-			{
-				this.Onevent_idChanging(value);
-				this.SendPropertyChanging();
-				this._event_id = value;
-				this.SendPropertyChanged("event_id");
-				this.Onevent_idChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_duration", DbType="Int")]
-	public System.Nullable<int> duration
-	{
-		get
-		{
-			return this._duration;
-		}
-		set
-		{
-			if ((this._duration != value))
-			{
-				this.OndurationChanging(value);
-				this.SendPropertyChanging();
-				this._duration = value;
-				this.SendPropertyChanged("duration");
-				this.OndurationChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsScheduleDayException", DbType="Bit")]
-	public System.Nullable<bool> IsScheduleDayException
-	{
-		get
-		{
-			return this._IsScheduleDayException;
-		}
-		set
-		{
-			if ((this._IsScheduleDayException != value))
-			{
-				this.OnIsScheduleDayExceptionChanging(value);
-				this.SendPropertyChanging();
-				this._IsScheduleDayException = value;
-				this.SendPropertyChanged("IsScheduleDayException");
-				this.OnIsScheduleDayExceptionChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsEWSCalendarSynch", DbType="Bit")]
-	public System.Nullable<bool> IsEWSCalendarSynch
-	{
-		get
-		{
-			return this._IsEWSCalendarSynch;
-		}
-		set
-		{
-			if ((this._IsEWSCalendarSynch != value))
-			{
-				this.OnIsEWSCalendarSynchChanging(value);
-				this.SendPropertyChanging();
-				this._IsEWSCalendarSynch = value;
-				this.SendPropertyChanged("IsEWSCalendarSynch");
-				this.OnIsEWSCalendarSynchChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_selectedweekends", DbType="VarChar(100)")]
-	public string selectedweekends
-	{
-		get
-		{
-			return this._selectedweekends;
-		}
-		set
-		{
-			if ((this._selectedweekends != value))
-			{
-				this.OnselectedweekendsChanging(value);
-				this.SendPropertyChanging();
-				this._selectedweekends = value;
-				this.SendPropertyChanged("selectedweekends");
-				this.OnselectedweekendsChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_weekends", DbType="VarChar(100)")]
-	public string weekends
-	{
-		get
-		{
-			return this._weekends;
-		}
-		set
-		{
-			if ((this._weekends != value))
-			{
-				this.OnweekendsChanging(value);
-				this.SendPropertyChanging();
-				this._weekends = value;
-				this.SendPropertyChanged("weekends");
-				this.OnweekendsChanged();
-			}
-		}
-	}
-	
-	public event PropertyChangingEventHandler PropertyChanging;
-	
-	public event PropertyChangedEventHandler PropertyChanged;
-	
-	protected virtual void SendPropertyChanging()
-	{
-		if ((this.PropertyChanging != null))
-		{
-			this.PropertyChanging(this, emptyChangingEventArgs);
-		}
-	}
-	
-	protected virtual void SendPropertyChanged(String propertyName)
-	{
-		if ((this.PropertyChanged != null))
-		{
-			this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
-	}
-}
-
 [global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.customer_estimate")]
 public partial class customer_estimate : INotifyPropertyChanging, INotifyPropertyChanged
 {
@@ -53033,6 +51565,1522 @@ public partial class Material_Traking_Order : INotifyPropertyChanging, INotifyPr
 				this._Confirmed_date = value;
 				this.SendPropertyChanged("Confirmed_date");
 				this.OnConfirmed_dateChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_client_id", DbType="Int")]
+	public System.Nullable<int> client_id
+	{
+		get
+		{
+			return this._client_id;
+		}
+		set
+		{
+			if ((this._client_id != value))
+			{
+				this.Onclient_idChanging(value);
+				this.SendPropertyChanging();
+				this._client_id = value;
+				this.SendPropertyChanged("client_id");
+				this.Onclient_idChanged();
+			}
+		}
+	}
+	
+	public event PropertyChangingEventHandler PropertyChanging;
+	
+	public event PropertyChangedEventHandler PropertyChanged;
+	
+	protected virtual void SendPropertyChanging()
+	{
+		if ((this.PropertyChanging != null))
+		{
+			this.PropertyChanging(this, emptyChangingEventArgs);
+		}
+	}
+	
+	protected virtual void SendPropertyChanged(String propertyName)
+	{
+		if ((this.PropertyChanged != null))
+		{
+			this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+		}
+	}
+}
+
+[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ScheduleCalendar")]
+public partial class ScheduleCalendar : INotifyPropertyChanging, INotifyPropertyChanged
+{
+	
+	private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+	
+	private int _auto_event_id;
+	
+	private string _title;
+	
+	private string _description;
+	
+	private System.Nullable<System.DateTime> _event_start;
+	
+	private System.Nullable<System.DateTime> _event_end;
+	
+	private System.Nullable<int> _customer_id;
+	
+	private System.Nullable<int> _estimate_id;
+	
+	private System.Nullable<int> _employee_id;
+	
+	private string _section_name;
+	
+	private string _location_name;
+	
+	private System.Nullable<System.DateTime> _create_date;
+	
+	private System.Nullable<System.DateTime> _last_updated_date;
+	
+	private string _last_updated_by;
+	
+	private System.Nullable<int> _type_id;
+	
+	private System.Nullable<int> _parent_id;
+	
+	private System.Nullable<System.DateTime> _job_start_date;
+	
+	private System.Nullable<int> _co_pricing_list_id;
+	
+	private string _cssClassName;
+	
+	private string _google_event_id;
+	
+	private string _operation_notes;
+	
+	private System.Nullable<bool> _is_complete;
+	
+	private System.Nullable<bool> _IsEstimateActive;
+	
+	private string _employee_name;
+	
+	private System.Nullable<int> _event_id;
+	
+	private System.Nullable<int> _duration;
+	
+	private System.Nullable<bool> _IsScheduleDayException;
+	
+	private System.Nullable<bool> _IsEWSCalendarSynch;
+	
+	private string _selectedweekends;
+	
+	private string _weekends;
+	
+	private System.Nullable<int> _client_id;
+	
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void Onauto_event_idChanging(int value);
+    partial void Onauto_event_idChanged();
+    partial void OntitleChanging(string value);
+    partial void OntitleChanged();
+    partial void OndescriptionChanging(string value);
+    partial void OndescriptionChanged();
+    partial void Onevent_startChanging(System.Nullable<System.DateTime> value);
+    partial void Onevent_startChanged();
+    partial void Onevent_endChanging(System.Nullable<System.DateTime> value);
+    partial void Onevent_endChanged();
+    partial void Oncustomer_idChanging(System.Nullable<int> value);
+    partial void Oncustomer_idChanged();
+    partial void Onestimate_idChanging(System.Nullable<int> value);
+    partial void Onestimate_idChanged();
+    partial void Onemployee_idChanging(System.Nullable<int> value);
+    partial void Onemployee_idChanged();
+    partial void Onsection_nameChanging(string value);
+    partial void Onsection_nameChanged();
+    partial void Onlocation_nameChanging(string value);
+    partial void Onlocation_nameChanged();
+    partial void Oncreate_dateChanging(System.Nullable<System.DateTime> value);
+    partial void Oncreate_dateChanged();
+    partial void Onlast_updated_dateChanging(System.Nullable<System.DateTime> value);
+    partial void Onlast_updated_dateChanged();
+    partial void Onlast_updated_byChanging(string value);
+    partial void Onlast_updated_byChanged();
+    partial void Ontype_idChanging(System.Nullable<int> value);
+    partial void Ontype_idChanged();
+    partial void Onparent_idChanging(System.Nullable<int> value);
+    partial void Onparent_idChanged();
+    partial void Onjob_start_dateChanging(System.Nullable<System.DateTime> value);
+    partial void Onjob_start_dateChanged();
+    partial void Onco_pricing_list_idChanging(System.Nullable<int> value);
+    partial void Onco_pricing_list_idChanged();
+    partial void OncssClassNameChanging(string value);
+    partial void OncssClassNameChanged();
+    partial void Ongoogle_event_idChanging(string value);
+    partial void Ongoogle_event_idChanged();
+    partial void Onoperation_notesChanging(string value);
+    partial void Onoperation_notesChanged();
+    partial void Onis_completeChanging(System.Nullable<bool> value);
+    partial void Onis_completeChanged();
+    partial void OnIsEstimateActiveChanging(System.Nullable<bool> value);
+    partial void OnIsEstimateActiveChanged();
+    partial void Onemployee_nameChanging(string value);
+    partial void Onemployee_nameChanged();
+    partial void Onevent_idChanging(System.Nullable<int> value);
+    partial void Onevent_idChanged();
+    partial void OndurationChanging(System.Nullable<int> value);
+    partial void OndurationChanged();
+    partial void OnIsScheduleDayExceptionChanging(System.Nullable<bool> value);
+    partial void OnIsScheduleDayExceptionChanged();
+    partial void OnIsEWSCalendarSynchChanging(System.Nullable<bool> value);
+    partial void OnIsEWSCalendarSynchChanged();
+    partial void OnselectedweekendsChanging(string value);
+    partial void OnselectedweekendsChanged();
+    partial void OnweekendsChanging(string value);
+    partial void OnweekendsChanged();
+    partial void Onclient_idChanging(System.Nullable<int> value);
+    partial void Onclient_idChanged();
+    #endregion
+	
+	public ScheduleCalendar()
+	{
+		OnCreated();
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_auto_event_id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+	public int auto_event_id
+	{
+		get
+		{
+			return this._auto_event_id;
+		}
+		set
+		{
+			if ((this._auto_event_id != value))
+			{
+				this.Onauto_event_idChanging(value);
+				this.SendPropertyChanging();
+				this._auto_event_id = value;
+				this.SendPropertyChanged("auto_event_id");
+				this.Onauto_event_idChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_title", DbType="VarChar(500)")]
+	public string title
+	{
+		get
+		{
+			return this._title;
+		}
+		set
+		{
+			if ((this._title != value))
+			{
+				this.OntitleChanging(value);
+				this.SendPropertyChanging();
+				this._title = value;
+				this.SendPropertyChanged("title");
+				this.OntitleChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_description", DbType="VarChar(500)")]
+	public string description
+	{
+		get
+		{
+			return this._description;
+		}
+		set
+		{
+			if ((this._description != value))
+			{
+				this.OndescriptionChanging(value);
+				this.SendPropertyChanging();
+				this._description = value;
+				this.SendPropertyChanged("description");
+				this.OndescriptionChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_event_start", DbType="DateTime")]
+	public System.Nullable<System.DateTime> event_start
+	{
+		get
+		{
+			return this._event_start;
+		}
+		set
+		{
+			if ((this._event_start != value))
+			{
+				this.Onevent_startChanging(value);
+				this.SendPropertyChanging();
+				this._event_start = value;
+				this.SendPropertyChanged("event_start");
+				this.Onevent_startChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_event_end", DbType="DateTime")]
+	public System.Nullable<System.DateTime> event_end
+	{
+		get
+		{
+			return this._event_end;
+		}
+		set
+		{
+			if ((this._event_end != value))
+			{
+				this.Onevent_endChanging(value);
+				this.SendPropertyChanging();
+				this._event_end = value;
+				this.SendPropertyChanged("event_end");
+				this.Onevent_endChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_customer_id", DbType="Int")]
+	public System.Nullable<int> customer_id
+	{
+		get
+		{
+			return this._customer_id;
+		}
+		set
+		{
+			if ((this._customer_id != value))
+			{
+				this.Oncustomer_idChanging(value);
+				this.SendPropertyChanging();
+				this._customer_id = value;
+				this.SendPropertyChanged("customer_id");
+				this.Oncustomer_idChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_estimate_id", DbType="Int")]
+	public System.Nullable<int> estimate_id
+	{
+		get
+		{
+			return this._estimate_id;
+		}
+		set
+		{
+			if ((this._estimate_id != value))
+			{
+				this.Onestimate_idChanging(value);
+				this.SendPropertyChanging();
+				this._estimate_id = value;
+				this.SendPropertyChanged("estimate_id");
+				this.Onestimate_idChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_employee_id", DbType="Int")]
+	public System.Nullable<int> employee_id
+	{
+		get
+		{
+			return this._employee_id;
+		}
+		set
+		{
+			if ((this._employee_id != value))
+			{
+				this.Onemployee_idChanging(value);
+				this.SendPropertyChanging();
+				this._employee_id = value;
+				this.SendPropertyChanged("employee_id");
+				this.Onemployee_idChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_section_name", DbType="VarChar(250)")]
+	public string section_name
+	{
+		get
+		{
+			return this._section_name;
+		}
+		set
+		{
+			if ((this._section_name != value))
+			{
+				this.Onsection_nameChanging(value);
+				this.SendPropertyChanging();
+				this._section_name = value;
+				this.SendPropertyChanged("section_name");
+				this.Onsection_nameChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_location_name", DbType="VarChar(250)")]
+	public string location_name
+	{
+		get
+		{
+			return this._location_name;
+		}
+		set
+		{
+			if ((this._location_name != value))
+			{
+				this.Onlocation_nameChanging(value);
+				this.SendPropertyChanging();
+				this._location_name = value;
+				this.SendPropertyChanged("location_name");
+				this.Onlocation_nameChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_create_date", DbType="DateTime")]
+	public System.Nullable<System.DateTime> create_date
+	{
+		get
+		{
+			return this._create_date;
+		}
+		set
+		{
+			if ((this._create_date != value))
+			{
+				this.Oncreate_dateChanging(value);
+				this.SendPropertyChanging();
+				this._create_date = value;
+				this.SendPropertyChanged("create_date");
+				this.Oncreate_dateChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_last_updated_date", DbType="DateTime")]
+	public System.Nullable<System.DateTime> last_updated_date
+	{
+		get
+		{
+			return this._last_updated_date;
+		}
+		set
+		{
+			if ((this._last_updated_date != value))
+			{
+				this.Onlast_updated_dateChanging(value);
+				this.SendPropertyChanging();
+				this._last_updated_date = value;
+				this.SendPropertyChanged("last_updated_date");
+				this.Onlast_updated_dateChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_last_updated_by", DbType="VarChar(50)")]
+	public string last_updated_by
+	{
+		get
+		{
+			return this._last_updated_by;
+		}
+		set
+		{
+			if ((this._last_updated_by != value))
+			{
+				this.Onlast_updated_byChanging(value);
+				this.SendPropertyChanging();
+				this._last_updated_by = value;
+				this.SendPropertyChanged("last_updated_by");
+				this.Onlast_updated_byChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_type_id", DbType="Int")]
+	public System.Nullable<int> type_id
+	{
+		get
+		{
+			return this._type_id;
+		}
+		set
+		{
+			if ((this._type_id != value))
+			{
+				this.Ontype_idChanging(value);
+				this.SendPropertyChanging();
+				this._type_id = value;
+				this.SendPropertyChanged("type_id");
+				this.Ontype_idChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_parent_id", DbType="Int")]
+	public System.Nullable<int> parent_id
+	{
+		get
+		{
+			return this._parent_id;
+		}
+		set
+		{
+			if ((this._parent_id != value))
+			{
+				this.Onparent_idChanging(value);
+				this.SendPropertyChanging();
+				this._parent_id = value;
+				this.SendPropertyChanged("parent_id");
+				this.Onparent_idChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_job_start_date", DbType="DateTime")]
+	public System.Nullable<System.DateTime> job_start_date
+	{
+		get
+		{
+			return this._job_start_date;
+		}
+		set
+		{
+			if ((this._job_start_date != value))
+			{
+				this.Onjob_start_dateChanging(value);
+				this.SendPropertyChanging();
+				this._job_start_date = value;
+				this.SendPropertyChanged("job_start_date");
+				this.Onjob_start_dateChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_co_pricing_list_id", DbType="Int")]
+	public System.Nullable<int> co_pricing_list_id
+	{
+		get
+		{
+			return this._co_pricing_list_id;
+		}
+		set
+		{
+			if ((this._co_pricing_list_id != value))
+			{
+				this.Onco_pricing_list_idChanging(value);
+				this.SendPropertyChanging();
+				this._co_pricing_list_id = value;
+				this.SendPropertyChanged("co_pricing_list_id");
+				this.Onco_pricing_list_idChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_cssClassName", DbType="VarChar(50)")]
+	public string cssClassName
+	{
+		get
+		{
+			return this._cssClassName;
+		}
+		set
+		{
+			if ((this._cssClassName != value))
+			{
+				this.OncssClassNameChanging(value);
+				this.SendPropertyChanging();
+				this._cssClassName = value;
+				this.SendPropertyChanged("cssClassName");
+				this.OncssClassNameChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_google_event_id", DbType="VarChar(250)")]
+	public string google_event_id
+	{
+		get
+		{
+			return this._google_event_id;
+		}
+		set
+		{
+			if ((this._google_event_id != value))
+			{
+				this.Ongoogle_event_idChanging(value);
+				this.SendPropertyChanging();
+				this._google_event_id = value;
+				this.SendPropertyChanged("google_event_id");
+				this.Ongoogle_event_idChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_operation_notes", DbType="VarChar(500)")]
+	public string operation_notes
+	{
+		get
+		{
+			return this._operation_notes;
+		}
+		set
+		{
+			if ((this._operation_notes != value))
+			{
+				this.Onoperation_notesChanging(value);
+				this.SendPropertyChanging();
+				this._operation_notes = value;
+				this.SendPropertyChanged("operation_notes");
+				this.Onoperation_notesChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_is_complete", DbType="Bit")]
+	public System.Nullable<bool> is_complete
+	{
+		get
+		{
+			return this._is_complete;
+		}
+		set
+		{
+			if ((this._is_complete != value))
+			{
+				this.Onis_completeChanging(value);
+				this.SendPropertyChanging();
+				this._is_complete = value;
+				this.SendPropertyChanged("is_complete");
+				this.Onis_completeChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsEstimateActive", DbType="Bit")]
+	public System.Nullable<bool> IsEstimateActive
+	{
+		get
+		{
+			return this._IsEstimateActive;
+		}
+		set
+		{
+			if ((this._IsEstimateActive != value))
+			{
+				this.OnIsEstimateActiveChanging(value);
+				this.SendPropertyChanging();
+				this._IsEstimateActive = value;
+				this.SendPropertyChanged("IsEstimateActive");
+				this.OnIsEstimateActiveChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_employee_name", DbType="VarChar(500)")]
+	public string employee_name
+	{
+		get
+		{
+			return this._employee_name;
+		}
+		set
+		{
+			if ((this._employee_name != value))
+			{
+				this.Onemployee_nameChanging(value);
+				this.SendPropertyChanging();
+				this._employee_name = value;
+				this.SendPropertyChanged("employee_name");
+				this.Onemployee_nameChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_event_id", DbType="Int")]
+	public System.Nullable<int> event_id
+	{
+		get
+		{
+			return this._event_id;
+		}
+		set
+		{
+			if ((this._event_id != value))
+			{
+				this.Onevent_idChanging(value);
+				this.SendPropertyChanging();
+				this._event_id = value;
+				this.SendPropertyChanged("event_id");
+				this.Onevent_idChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_duration", DbType="Int")]
+	public System.Nullable<int> duration
+	{
+		get
+		{
+			return this._duration;
+		}
+		set
+		{
+			if ((this._duration != value))
+			{
+				this.OndurationChanging(value);
+				this.SendPropertyChanging();
+				this._duration = value;
+				this.SendPropertyChanged("duration");
+				this.OndurationChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsScheduleDayException", DbType="Bit")]
+	public System.Nullable<bool> IsScheduleDayException
+	{
+		get
+		{
+			return this._IsScheduleDayException;
+		}
+		set
+		{
+			if ((this._IsScheduleDayException != value))
+			{
+				this.OnIsScheduleDayExceptionChanging(value);
+				this.SendPropertyChanging();
+				this._IsScheduleDayException = value;
+				this.SendPropertyChanged("IsScheduleDayException");
+				this.OnIsScheduleDayExceptionChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsEWSCalendarSynch", DbType="Bit")]
+	public System.Nullable<bool> IsEWSCalendarSynch
+	{
+		get
+		{
+			return this._IsEWSCalendarSynch;
+		}
+		set
+		{
+			if ((this._IsEWSCalendarSynch != value))
+			{
+				this.OnIsEWSCalendarSynchChanging(value);
+				this.SendPropertyChanging();
+				this._IsEWSCalendarSynch = value;
+				this.SendPropertyChanged("IsEWSCalendarSynch");
+				this.OnIsEWSCalendarSynchChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_selectedweekends", DbType="VarChar(500)")]
+	public string selectedweekends
+	{
+		get
+		{
+			return this._selectedweekends;
+		}
+		set
+		{
+			if ((this._selectedweekends != value))
+			{
+				this.OnselectedweekendsChanging(value);
+				this.SendPropertyChanging();
+				this._selectedweekends = value;
+				this.SendPropertyChanged("selectedweekends");
+				this.OnselectedweekendsChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_weekends", DbType="VarChar(500)")]
+	public string weekends
+	{
+		get
+		{
+			return this._weekends;
+		}
+		set
+		{
+			if ((this._weekends != value))
+			{
+				this.OnweekendsChanging(value);
+				this.SendPropertyChanging();
+				this._weekends = value;
+				this.SendPropertyChanged("weekends");
+				this.OnweekendsChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_client_id", DbType="Int")]
+	public System.Nullable<int> client_id
+	{
+		get
+		{
+			return this._client_id;
+		}
+		set
+		{
+			if ((this._client_id != value))
+			{
+				this.Onclient_idChanging(value);
+				this.SendPropertyChanging();
+				this._client_id = value;
+				this.SendPropertyChanged("client_id");
+				this.Onclient_idChanged();
+			}
+		}
+	}
+	
+	public event PropertyChangingEventHandler PropertyChanging;
+	
+	public event PropertyChangedEventHandler PropertyChanged;
+	
+	protected virtual void SendPropertyChanging()
+	{
+		if ((this.PropertyChanging != null))
+		{
+			this.PropertyChanging(this, emptyChangingEventArgs);
+		}
+	}
+	
+	protected virtual void SendPropertyChanged(String propertyName)
+	{
+		if ((this.PropertyChanged != null))
+		{
+			this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+		}
+	}
+}
+
+[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ScheduleCalendarTemp")]
+public partial class ScheduleCalendarTemp : INotifyPropertyChanging, INotifyPropertyChanged
+{
+	
+	private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+	
+	private int _auto_event_id;
+	
+	private string _title;
+	
+	private string _description;
+	
+	private System.Nullable<System.DateTime> _event_start;
+	
+	private System.Nullable<System.DateTime> _event_end;
+	
+	private System.Nullable<int> _customer_id;
+	
+	private System.Nullable<int> _estimate_id;
+	
+	private System.Nullable<int> _employee_id;
+	
+	private string _section_name;
+	
+	private string _location_name;
+	
+	private System.Nullable<System.DateTime> _create_date;
+	
+	private System.Nullable<System.DateTime> _last_updated_date;
+	
+	private string _last_updated_by;
+	
+	private System.Nullable<int> _type_id;
+	
+	private System.Nullable<int> _parent_id;
+	
+	private System.Nullable<System.DateTime> _job_start_date;
+	
+	private System.Nullable<int> _co_pricing_list_id;
+	
+	private string _cssClassName;
+	
+	private string _google_event_id;
+	
+	private string _operation_notes;
+	
+	private System.Nullable<bool> _is_complete;
+	
+	private System.Nullable<bool> _IsEstimateActive;
+	
+	private string _employee_name;
+	
+	private int _event_id;
+	
+	private System.Nullable<int> _duration;
+	
+	private System.Nullable<bool> _IsScheduleDayException;
+	
+	private System.Nullable<bool> _IsEWSCalendarSynch;
+	
+	private string _selectedweekends;
+	
+	private string _weekends;
+	
+	private System.Nullable<int> _client_id;
+	
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void Onauto_event_idChanging(int value);
+    partial void Onauto_event_idChanged();
+    partial void OntitleChanging(string value);
+    partial void OntitleChanged();
+    partial void OndescriptionChanging(string value);
+    partial void OndescriptionChanged();
+    partial void Onevent_startChanging(System.Nullable<System.DateTime> value);
+    partial void Onevent_startChanged();
+    partial void Onevent_endChanging(System.Nullable<System.DateTime> value);
+    partial void Onevent_endChanged();
+    partial void Oncustomer_idChanging(System.Nullable<int> value);
+    partial void Oncustomer_idChanged();
+    partial void Onestimate_idChanging(System.Nullable<int> value);
+    partial void Onestimate_idChanged();
+    partial void Onemployee_idChanging(System.Nullable<int> value);
+    partial void Onemployee_idChanged();
+    partial void Onsection_nameChanging(string value);
+    partial void Onsection_nameChanged();
+    partial void Onlocation_nameChanging(string value);
+    partial void Onlocation_nameChanged();
+    partial void Oncreate_dateChanging(System.Nullable<System.DateTime> value);
+    partial void Oncreate_dateChanged();
+    partial void Onlast_updated_dateChanging(System.Nullable<System.DateTime> value);
+    partial void Onlast_updated_dateChanged();
+    partial void Onlast_updated_byChanging(string value);
+    partial void Onlast_updated_byChanged();
+    partial void Ontype_idChanging(System.Nullable<int> value);
+    partial void Ontype_idChanged();
+    partial void Onparent_idChanging(System.Nullable<int> value);
+    partial void Onparent_idChanged();
+    partial void Onjob_start_dateChanging(System.Nullable<System.DateTime> value);
+    partial void Onjob_start_dateChanged();
+    partial void Onco_pricing_list_idChanging(System.Nullable<int> value);
+    partial void Onco_pricing_list_idChanged();
+    partial void OncssClassNameChanging(string value);
+    partial void OncssClassNameChanged();
+    partial void Ongoogle_event_idChanging(string value);
+    partial void Ongoogle_event_idChanged();
+    partial void Onoperation_notesChanging(string value);
+    partial void Onoperation_notesChanged();
+    partial void Onis_completeChanging(System.Nullable<bool> value);
+    partial void Onis_completeChanged();
+    partial void OnIsEstimateActiveChanging(System.Nullable<bool> value);
+    partial void OnIsEstimateActiveChanged();
+    partial void Onemployee_nameChanging(string value);
+    partial void Onemployee_nameChanged();
+    partial void Onevent_idChanging(int value);
+    partial void Onevent_idChanged();
+    partial void OndurationChanging(System.Nullable<int> value);
+    partial void OndurationChanged();
+    partial void OnIsScheduleDayExceptionChanging(System.Nullable<bool> value);
+    partial void OnIsScheduleDayExceptionChanged();
+    partial void OnIsEWSCalendarSynchChanging(System.Nullable<bool> value);
+    partial void OnIsEWSCalendarSynchChanged();
+    partial void OnselectedweekendsChanging(string value);
+    partial void OnselectedweekendsChanged();
+    partial void OnweekendsChanging(string value);
+    partial void OnweekendsChanged();
+    partial void Onclient_idChanging(System.Nullable<int> value);
+    partial void Onclient_idChanged();
+    #endregion
+	
+	public ScheduleCalendarTemp()
+	{
+		OnCreated();
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_auto_event_id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+	public int auto_event_id
+	{
+		get
+		{
+			return this._auto_event_id;
+		}
+		set
+		{
+			if ((this._auto_event_id != value))
+			{
+				this.Onauto_event_idChanging(value);
+				this.SendPropertyChanging();
+				this._auto_event_id = value;
+				this.SendPropertyChanged("auto_event_id");
+				this.Onauto_event_idChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_title", DbType="VarChar(500)")]
+	public string title
+	{
+		get
+		{
+			return this._title;
+		}
+		set
+		{
+			if ((this._title != value))
+			{
+				this.OntitleChanging(value);
+				this.SendPropertyChanging();
+				this._title = value;
+				this.SendPropertyChanged("title");
+				this.OntitleChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_description", DbType="VarChar(5000)")]
+	public string description
+	{
+		get
+		{
+			return this._description;
+		}
+		set
+		{
+			if ((this._description != value))
+			{
+				this.OndescriptionChanging(value);
+				this.SendPropertyChanging();
+				this._description = value;
+				this.SendPropertyChanged("description");
+				this.OndescriptionChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_event_start", DbType="DateTime")]
+	public System.Nullable<System.DateTime> event_start
+	{
+		get
+		{
+			return this._event_start;
+		}
+		set
+		{
+			if ((this._event_start != value))
+			{
+				this.Onevent_startChanging(value);
+				this.SendPropertyChanging();
+				this._event_start = value;
+				this.SendPropertyChanged("event_start");
+				this.Onevent_startChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_event_end", DbType="DateTime")]
+	public System.Nullable<System.DateTime> event_end
+	{
+		get
+		{
+			return this._event_end;
+		}
+		set
+		{
+			if ((this._event_end != value))
+			{
+				this.Onevent_endChanging(value);
+				this.SendPropertyChanging();
+				this._event_end = value;
+				this.SendPropertyChanged("event_end");
+				this.Onevent_endChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_customer_id", DbType="Int")]
+	public System.Nullable<int> customer_id
+	{
+		get
+		{
+			return this._customer_id;
+		}
+		set
+		{
+			if ((this._customer_id != value))
+			{
+				this.Oncustomer_idChanging(value);
+				this.SendPropertyChanging();
+				this._customer_id = value;
+				this.SendPropertyChanged("customer_id");
+				this.Oncustomer_idChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_estimate_id", DbType="Int")]
+	public System.Nullable<int> estimate_id
+	{
+		get
+		{
+			return this._estimate_id;
+		}
+		set
+		{
+			if ((this._estimate_id != value))
+			{
+				this.Onestimate_idChanging(value);
+				this.SendPropertyChanging();
+				this._estimate_id = value;
+				this.SendPropertyChanged("estimate_id");
+				this.Onestimate_idChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_employee_id", DbType="Int")]
+	public System.Nullable<int> employee_id
+	{
+		get
+		{
+			return this._employee_id;
+		}
+		set
+		{
+			if ((this._employee_id != value))
+			{
+				this.Onemployee_idChanging(value);
+				this.SendPropertyChanging();
+				this._employee_id = value;
+				this.SendPropertyChanged("employee_id");
+				this.Onemployee_idChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_section_name", DbType="VarChar(250)")]
+	public string section_name
+	{
+		get
+		{
+			return this._section_name;
+		}
+		set
+		{
+			if ((this._section_name != value))
+			{
+				this.Onsection_nameChanging(value);
+				this.SendPropertyChanging();
+				this._section_name = value;
+				this.SendPropertyChanged("section_name");
+				this.Onsection_nameChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_location_name", DbType="VarChar(250)")]
+	public string location_name
+	{
+		get
+		{
+			return this._location_name;
+		}
+		set
+		{
+			if ((this._location_name != value))
+			{
+				this.Onlocation_nameChanging(value);
+				this.SendPropertyChanging();
+				this._location_name = value;
+				this.SendPropertyChanged("location_name");
+				this.Onlocation_nameChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_create_date", DbType="DateTime")]
+	public System.Nullable<System.DateTime> create_date
+	{
+		get
+		{
+			return this._create_date;
+		}
+		set
+		{
+			if ((this._create_date != value))
+			{
+				this.Oncreate_dateChanging(value);
+				this.SendPropertyChanging();
+				this._create_date = value;
+				this.SendPropertyChanged("create_date");
+				this.Oncreate_dateChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_last_updated_date", DbType="DateTime")]
+	public System.Nullable<System.DateTime> last_updated_date
+	{
+		get
+		{
+			return this._last_updated_date;
+		}
+		set
+		{
+			if ((this._last_updated_date != value))
+			{
+				this.Onlast_updated_dateChanging(value);
+				this.SendPropertyChanging();
+				this._last_updated_date = value;
+				this.SendPropertyChanged("last_updated_date");
+				this.Onlast_updated_dateChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_last_updated_by", DbType="VarChar(50)")]
+	public string last_updated_by
+	{
+		get
+		{
+			return this._last_updated_by;
+		}
+		set
+		{
+			if ((this._last_updated_by != value))
+			{
+				this.Onlast_updated_byChanging(value);
+				this.SendPropertyChanging();
+				this._last_updated_by = value;
+				this.SendPropertyChanged("last_updated_by");
+				this.Onlast_updated_byChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_type_id", DbType="Int")]
+	public System.Nullable<int> type_id
+	{
+		get
+		{
+			return this._type_id;
+		}
+		set
+		{
+			if ((this._type_id != value))
+			{
+				this.Ontype_idChanging(value);
+				this.SendPropertyChanging();
+				this._type_id = value;
+				this.SendPropertyChanged("type_id");
+				this.Ontype_idChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_parent_id", DbType="Int")]
+	public System.Nullable<int> parent_id
+	{
+		get
+		{
+			return this._parent_id;
+		}
+		set
+		{
+			if ((this._parent_id != value))
+			{
+				this.Onparent_idChanging(value);
+				this.SendPropertyChanging();
+				this._parent_id = value;
+				this.SendPropertyChanged("parent_id");
+				this.Onparent_idChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_job_start_date", DbType="DateTime")]
+	public System.Nullable<System.DateTime> job_start_date
+	{
+		get
+		{
+			return this._job_start_date;
+		}
+		set
+		{
+			if ((this._job_start_date != value))
+			{
+				this.Onjob_start_dateChanging(value);
+				this.SendPropertyChanging();
+				this._job_start_date = value;
+				this.SendPropertyChanged("job_start_date");
+				this.Onjob_start_dateChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_co_pricing_list_id", DbType="Int")]
+	public System.Nullable<int> co_pricing_list_id
+	{
+		get
+		{
+			return this._co_pricing_list_id;
+		}
+		set
+		{
+			if ((this._co_pricing_list_id != value))
+			{
+				this.Onco_pricing_list_idChanging(value);
+				this.SendPropertyChanging();
+				this._co_pricing_list_id = value;
+				this.SendPropertyChanged("co_pricing_list_id");
+				this.Onco_pricing_list_idChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_cssClassName", DbType="VarChar(50)")]
+	public string cssClassName
+	{
+		get
+		{
+			return this._cssClassName;
+		}
+		set
+		{
+			if ((this._cssClassName != value))
+			{
+				this.OncssClassNameChanging(value);
+				this.SendPropertyChanging();
+				this._cssClassName = value;
+				this.SendPropertyChanged("cssClassName");
+				this.OncssClassNameChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_google_event_id", DbType="VarChar(250)")]
+	public string google_event_id
+	{
+		get
+		{
+			return this._google_event_id;
+		}
+		set
+		{
+			if ((this._google_event_id != value))
+			{
+				this.Ongoogle_event_idChanging(value);
+				this.SendPropertyChanging();
+				this._google_event_id = value;
+				this.SendPropertyChanged("google_event_id");
+				this.Ongoogle_event_idChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_operation_notes", DbType="VarChar(500)")]
+	public string operation_notes
+	{
+		get
+		{
+			return this._operation_notes;
+		}
+		set
+		{
+			if ((this._operation_notes != value))
+			{
+				this.Onoperation_notesChanging(value);
+				this.SendPropertyChanging();
+				this._operation_notes = value;
+				this.SendPropertyChanged("operation_notes");
+				this.Onoperation_notesChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_is_complete", DbType="Bit")]
+	public System.Nullable<bool> is_complete
+	{
+		get
+		{
+			return this._is_complete;
+		}
+		set
+		{
+			if ((this._is_complete != value))
+			{
+				this.Onis_completeChanging(value);
+				this.SendPropertyChanging();
+				this._is_complete = value;
+				this.SendPropertyChanged("is_complete");
+				this.Onis_completeChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsEstimateActive", DbType="Bit")]
+	public System.Nullable<bool> IsEstimateActive
+	{
+		get
+		{
+			return this._IsEstimateActive;
+		}
+		set
+		{
+			if ((this._IsEstimateActive != value))
+			{
+				this.OnIsEstimateActiveChanging(value);
+				this.SendPropertyChanging();
+				this._IsEstimateActive = value;
+				this.SendPropertyChanged("IsEstimateActive");
+				this.OnIsEstimateActiveChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_employee_name", DbType="VarChar(500)")]
+	public string employee_name
+	{
+		get
+		{
+			return this._employee_name;
+		}
+		set
+		{
+			if ((this._employee_name != value))
+			{
+				this.Onemployee_nameChanging(value);
+				this.SendPropertyChanging();
+				this._employee_name = value;
+				this.SendPropertyChanged("employee_name");
+				this.Onemployee_nameChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_event_id", DbType="Int NOT NULL")]
+	public int event_id
+	{
+		get
+		{
+			return this._event_id;
+		}
+		set
+		{
+			if ((this._event_id != value))
+			{
+				this.Onevent_idChanging(value);
+				this.SendPropertyChanging();
+				this._event_id = value;
+				this.SendPropertyChanged("event_id");
+				this.Onevent_idChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_duration", DbType="Int")]
+	public System.Nullable<int> duration
+	{
+		get
+		{
+			return this._duration;
+		}
+		set
+		{
+			if ((this._duration != value))
+			{
+				this.OndurationChanging(value);
+				this.SendPropertyChanging();
+				this._duration = value;
+				this.SendPropertyChanged("duration");
+				this.OndurationChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsScheduleDayException", DbType="Bit")]
+	public System.Nullable<bool> IsScheduleDayException
+	{
+		get
+		{
+			return this._IsScheduleDayException;
+		}
+		set
+		{
+			if ((this._IsScheduleDayException != value))
+			{
+				this.OnIsScheduleDayExceptionChanging(value);
+				this.SendPropertyChanging();
+				this._IsScheduleDayException = value;
+				this.SendPropertyChanged("IsScheduleDayException");
+				this.OnIsScheduleDayExceptionChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsEWSCalendarSynch", DbType="Bit")]
+	public System.Nullable<bool> IsEWSCalendarSynch
+	{
+		get
+		{
+			return this._IsEWSCalendarSynch;
+		}
+		set
+		{
+			if ((this._IsEWSCalendarSynch != value))
+			{
+				this.OnIsEWSCalendarSynchChanging(value);
+				this.SendPropertyChanging();
+				this._IsEWSCalendarSynch = value;
+				this.SendPropertyChanged("IsEWSCalendarSynch");
+				this.OnIsEWSCalendarSynchChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_selectedweekends", DbType="VarChar(500)")]
+	public string selectedweekends
+	{
+		get
+		{
+			return this._selectedweekends;
+		}
+		set
+		{
+			if ((this._selectedweekends != value))
+			{
+				this.OnselectedweekendsChanging(value);
+				this.SendPropertyChanging();
+				this._selectedweekends = value;
+				this.SendPropertyChanged("selectedweekends");
+				this.OnselectedweekendsChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_weekends", DbType="VarChar(500)")]
+	public string weekends
+	{
+		get
+		{
+			return this._weekends;
+		}
+		set
+		{
+			if ((this._weekends != value))
+			{
+				this.OnweekendsChanging(value);
+				this.SendPropertyChanging();
+				this._weekends = value;
+				this.SendPropertyChanged("weekends");
+				this.OnweekendsChanged();
 			}
 		}
 	}
