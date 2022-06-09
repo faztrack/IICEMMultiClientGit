@@ -36,8 +36,13 @@ public partial class PMNotes : System.Web.UI.Page
                 hdnEstimateId.Value = neid.ToString();
             }
             customer c = _db.customers.Where(cus => cus.customer_id == Convert.ToInt32(hdnCustomerId.Value)).FirstOrDefault();
-            lblCustomereHeader.InnerText = " (" + c.last_name1 + ")";
-            hdnCustomerName.Value = c.first_name1 + " " + c.last_name1;
+            if(c != null)
+            {
+                lblCustomereHeader.InnerText = " (" + c.last_name1 + ")";
+                hdnCustomerName.Value = c.first_name1 + " " + c.last_name1;
+                hdnClientId.Value = c.client_id.ToString();
+            }
+            
             LoadSectionSec();
             BindDatatoGridView(0);
 
@@ -210,6 +215,8 @@ public partial class PMNotes : System.Web.UI.Page
             pmnoteObj.section_id = Convert.ToInt32(ddlSection.SelectedItem.Value);
             pmnoteObj.estimate_id = Convert.ToInt32(Request.QueryString.Get("nestid"));
             pmnoteObj.customer_id = Convert.ToInt32(Request.QueryString.Get("cid"));
+            pmnoteObj.client_id = Convert.ToInt32(hdnClientId.Value);
+
             if (Session["oUser"] != null)
             {
                 userinfo obj = (userinfo)Session["oUser"];

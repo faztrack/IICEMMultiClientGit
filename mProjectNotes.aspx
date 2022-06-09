@@ -575,6 +575,7 @@
                                 <tr>
                                     <td align="center" height="10px">
                                         <asp:HiddenField ID="hdnCustomerId" runat="server" Value="0" />
+                                        <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
                                         <asp:HiddenField ID="hdnEmailType" runat="server" Value="0" />
                                         <asp:HiddenField ID="hdnSalesPersonId" runat="server" Value="0" />
                                         <asp:HiddenField ID="hdnEstimateId" runat="server" Value="0" />
@@ -596,7 +597,7 @@
                                 </tr>
                     </table>
 
-                    <
+                    
                 </div>
             </div>
         </ContentTemplate>

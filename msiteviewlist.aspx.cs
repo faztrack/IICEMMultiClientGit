@@ -52,6 +52,7 @@ public partial class msiteviewlist : System.Web.UI.Page
                         hdnSuperandentEmail.Value = uinfo.email;
                     }
                     hdnLastName.Value = objCust.last_name1;
+                    hdnClientId.Value = objCust.client_id.ToString();
                 }
 
                 txtStartDate.Text = DateTime.Now.AddDays(-7).ToShortDateString();
@@ -736,6 +737,7 @@ public partial class msiteviewlist : System.Web.UI.Page
         objSRN.estimate_id = Convert.ToInt32(hdnEstimateId.Value);
         objSRN.SiteReviewsDate = Convert.ToDateTime(txtSiteReviewDate.Text);
         objSRN.SiteReviewsNotes = txtSiteReviewNote.Text;
+        objSRN.client_id = Convert.ToInt32(hdnClientId.Value);
 
         if (Session["oUser"] != null)
         {

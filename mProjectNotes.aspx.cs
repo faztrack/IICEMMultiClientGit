@@ -44,94 +44,100 @@ public partial class mProjectNotes : System.Web.UI.Page
 
                 
                 customer cust = new customer();
-                cust = _db.customers.Single(c => c.customer_id == Convert.ToInt32(hdnCustomerId.Value));
-                hdnLastName.Value = cust.last_name1;
-                string strSecondName = cust.first_name2 + " " + cust.last_name2;
-                if (strSecondName.Trim() == "")
-                    lblCustomerName.Text = cust.first_name1 + " " + cust.last_name1;
-                else
-                    lblCustomerName.Text = cust.first_name1 + " " + cust.last_name1 + " & " + strSecondName;
-
-                string strAddress = "";
-                strAddress = cust.address + " </br>" + cust.city + ", " + cust.state + " " + cust.zip_code;
-                lblAddress.Text = strAddress;
-                lblPhone.Text = cust.phone;
-                lblEmail.Text = cust.email;
-                hdnSalesPersonId.Value = cust.sales_person_id.ToString();
-
-
-                company_profile com = new company_profile();
-                if (_db.company_profiles.Where(cp => cp.client_id == cust.client_id).SingleOrDefault() != null)
+                cust = _db.customers.SingleOrDefault(c => c.customer_id == Convert.ToInt32(hdnCustomerId.Value));
+                
+                if(cust != null)
                 {
-                    com = _db.company_profiles.Single(cp => cp.client_id == cust.client_id);
+                    hdnLastName.Value = cust.last_name1;
+                    string strSecondName = cust.first_name2 + " " + cust.last_name2;
+                    if (strSecondName.Trim() == "")
+                        lblCustomerName.Text = cust.first_name1 + " " + cust.last_name1;
+                    else
+                        lblCustomerName.Text = cust.first_name1 + " " + cust.last_name1 + " & " + strSecondName;
 
-                    hdnProjectNotesEmail.Value = com.ProjectNotesEmail ?? "";
-                    ProjectNotesEmail = hdnProjectNotesEmail.Value;
-                }
+                    string strAddress = "";
+                    strAddress = cust.address + " </br>" + cust.city + ", " + cust.state + " " + cust.zip_code;
+                    lblAddress.Text = strAddress;
+                    lblPhone.Text = cust.phone;
+                    lblEmail.Text = cust.email;
+                    hdnSalesPersonId.Value = cust.sales_person_id.ToString();
+
+                    hdnClientId.Value = cust.client_id.ToString();
 
 
-
-                sales_person sap = new sales_person();
-                sap = _db.sales_persons.SingleOrDefault(c => c.sales_person_id == Convert.ToInt32(cust.sales_person_id) && c.is_active == true);
-                if (sap != null)
-                {
-                    lblSalesPerson.Text = sap.first_name + " " + sap.last_name;
-                    hdnSalesEmail.Value = sap.email;
-                }
-                string strSuperintendent = string.Empty;
-                user_info uinfo = _db.user_infos.SingleOrDefault(u => u.user_id == cust.SuperintendentId && u.is_active==true);
-                if (uinfo != null)
-                {
-                    strSuperintendent = uinfo.first_name + " " + uinfo.last_name;
-                    hdnSuperandentEmail.Value = uinfo.email;
-                }
-                lblSuperintendent.Text = strSuperintendent;
-                ProjectNotesEmailInfo ObjPei = _db.ProjectNotesEmailInfos.SingleOrDefault(p => p.customer_id == Convert.ToInt32(hdnCustomerId.Value));
-                if (ObjPei != null)
-                {
-                    hdnAddEmailId.Value = ObjPei.ProjectNotesEmailID.ToString();
-                    string strAddtionalEmail = ObjPei.AddtionalEmail;
-                    string sryEmail = "";
-                    if (strAddtionalEmail.Length > 4)
+                    company_profile com = new company_profile();
+                    if (_db.company_profiles.Where(cp => cp.client_id == cust.client_id).SingleOrDefault() != null)
                     {
-                        string[] strAdEmail = strAddtionalEmail.Split(',');
-                        foreach (string strAdEmId in strAdEmail)
+                        com = _db.company_profiles.Single(cp => cp.client_id == cust.client_id);
+
+                        hdnProjectNotesEmail.Value = com.ProjectNotesEmail ?? "";
+                        ProjectNotesEmail = hdnProjectNotesEmail.Value;
+                    }
+
+                    sales_person sap = new sales_person();
+                    sap = _db.sales_persons.SingleOrDefault(c => c.sales_person_id == Convert.ToInt32(cust.sales_person_id) && c.is_active == true);
+                    if (sap != null)
+                    {
+                        lblSalesPerson.Text = sap.first_name + " " + sap.last_name;
+                        hdnSalesEmail.Value = sap.email;
+                    }
+                    string strSuperintendent = string.Empty;
+                    user_info uinfo = _db.user_infos.SingleOrDefault(u => u.user_id == cust.SuperintendentId && u.is_active == true);
+                    if (uinfo != null)
+                    {
+                        strSuperintendent = uinfo.first_name + " " + uinfo.last_name;
+                        hdnSuperandentEmail.Value = uinfo.email;
+                    }
+                    lblSuperintendent.Text = strSuperintendent;
+                    ProjectNotesEmailInfo ObjPei = _db.ProjectNotesEmailInfos.SingleOrDefault(p => p.customer_id == Convert.ToInt32(hdnCustomerId.Value));
+                    if (ObjPei != null)
+                    {
+                        hdnAddEmailId.Value = ObjPei.ProjectNotesEmailID.ToString();
+                        string strAddtionalEmail = ObjPei.AddtionalEmail;
+                        string sryEmail = "";
+                        if (strAddtionalEmail.Length > 4)
                         {
-
-                            if (!ProjectNotesEmail.Contains(strAdEmId))
+                            string[] strAdEmail = strAddtionalEmail.Split(',');
+                            foreach (string strAdEmId in strAdEmail)
                             {
-                                sryEmail += strAdEmId + ",";
 
+                                if (!ProjectNotesEmail.Contains(strAdEmId))
+                                {
+                                    sryEmail += strAdEmId + ",";
+
+                                }
                             }
+                        }
+
+                        if (sryEmail.Length > 3)
+                        {
+                            if (ProjectNotesEmail.Length > 3)
+                                ProjectNotesEmail += ", " + sryEmail.TrimEnd(',');
+                            else
+                                ProjectNotesEmail = sryEmail.TrimEnd(',');
+                        }
+
+                        if (ProjectNotesEmail.Length > 3)
+                        {
+                            txtAdditionalEmail.Text = ProjectNotesEmail;
+                            lblAdditionalEmail.Text = ProjectNotesEmail;
+                            lnkEditAddEmail.Visible = true;
+                            lblAdditionalEmail.Visible = true;
+                            txtAdditionalEmail.Visible = false;
+                            lnkUpdateAddEmail.Visible = false;
+                        }
+                        else
+                        {
+                            lnkEditAddEmail.Visible = false;
+                            lblAdditionalEmail.Visible = false;
+                            txtAdditionalEmail.Visible = true;
+                            lnkUpdateAddEmail.Visible = false;
+
                         }
                     }
 
-                    if (sryEmail.Length > 3)
-                    {
-                        if (ProjectNotesEmail.Length > 3)
-                            ProjectNotesEmail += ", " + sryEmail.TrimEnd(',');
-                        else
-                            ProjectNotesEmail = sryEmail.TrimEnd(',');
-                    }
-
-                    if (ProjectNotesEmail.Length > 3)
-                    {
-                        txtAdditionalEmail.Text = ProjectNotesEmail;
-                        lblAdditionalEmail.Text = ProjectNotesEmail;
-                        lnkEditAddEmail.Visible = true;
-                        lblAdditionalEmail.Visible = true;
-                        txtAdditionalEmail.Visible = false;
-                        lnkUpdateAddEmail.Visible = false;
-                    }
-                    else
-                    {
-                        lnkEditAddEmail.Visible = false;
-                        lblAdditionalEmail.Visible = false;
-                        txtAdditionalEmail.Visible = true;
-                        lnkUpdateAddEmail.Visible = false;
-
-                    }
                 }
+
             }
             txtProjectDate.Text = DateTime.Now.ToString("MM-dd-yyyy");
             LoadSectionSec();
@@ -508,7 +514,7 @@ public partial class mProjectNotes : System.Web.UI.Page
         lblResult.Text = "";
         lblMSG.Text = "";
         DataClassesDataContext _db = new DataClassesDataContext();
-        ProjectNoteInfo objP = new ProjectNoteInfo();
+       ProjectNoteInfo objP = new ProjectNoteInfo();
 
         if (txtProjectDate.Text.Trim() != "")
         {
@@ -552,6 +558,7 @@ public partial class mProjectNotes : System.Web.UI.Page
         objP.section_id = Convert.ToInt32(ddlSection.SelectedValue);
         objP.SectionName = ddlSection.SelectedItem.Text;
         objP.NoteDetails = txtGeneralNotes.Text.Trim();
+        objP.client_id = Convert.ToInt32(hdnClientId.Value);
         //if (ddlSection.SelectedIndex == -1)
         //    objP.isSOW = false;
         //else
