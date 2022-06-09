@@ -83,6 +83,11 @@ public partial class CallLogInfo : System.Web.UI.Page
                 hdnAddress.Value = cust.address + " " + cust.city + ", " + cust.state + " " + cust.zip_code;
                 hdnLastName.Value = cust.last_name1;
 
+                hdnClientId.Value = cust.client_id.ToString();
+
+
+
+
                 txtCallStartDate.Text = DateTime.Today.ToShortDateString();
                 ddlCallHour.SelectedItem.Text = DateTime.Now.ToString("hh", CultureInfo.InvariantCulture);
                 ddlCallMinutes.SelectedItem.Text = DateTime.Now.ToString("mm", CultureInfo.InvariantCulture);
@@ -304,6 +309,10 @@ public partial class CallLogInfo : System.Web.UI.Page
                 custCall.CallHour = ddlCallHour.SelectedValue;
                 custCall.CallMinutes = ddlCallMinutes.SelectedValue;
                 custCall.CallAMPM = ddlCallAMPM.SelectedValue;
+
+                custCall.client_id = Convert.ToInt32(hdnClientId.Value);
+
+
                 if (txtDurationH.Text == "" || txtDurationH.Text == "0")
                 {
                     custCall.CallDuration = ddlDurationMin.SelectedValue + " Minutes";

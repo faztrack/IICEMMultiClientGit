@@ -67,19 +67,28 @@
                                     <asp:Button ID="btnSearch" runat="server" CssClass="button" OnClick="btnSearch_Click" Text="Search" />
 
                                     <asp:LinkButton ID="LinkButton1" runat="server" OnClick="lnkViewAll_Click">View All</asp:LinkButton>
+                                    <asp:Label ID="lblResult" runat="server" Text=""></asp:Label>
                                 </td>
 
                                 <td align="center" valign="middle">
                                     <b>Page: </b>
 
                                     <asp:Label ID="lblCurrentPageNo" runat="server" Font-Bold="true" ForeColor="#0088cc"></asp:Label>
+                                    &nbsp;                                   
+                                </td>
+
+                                <td align="right" valign="middle">
+
+                                     <b>Division: </b>
+                                    <asp:DropDownList ID="ddlDivision" runat="server" OnSelectedIndexChanged="ddlDivision_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+
                                     &nbsp;
                                     <b>Lead Source:</b>
                                     <asp:DropDownList ID="ddlLeadSource" runat="server" TabIndex="14" AutoPostBack="True" OnSelectedIndexChanged="ddlLeadSource_SelectedIndexChanged">
                                     </asp:DropDownList>
-                                </td>
 
-                                <td align="right" valign="middle">
+                                    &nbsp;
+
                                     <%-- <b>Sales Person:</b>
                                     <asp:DropDownList ID="ddlSalesRep" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlSalesRep_SelectedIndexChanged">
                                     </asp:DropDownList>--%>
@@ -150,6 +159,17 @@
                                     <HeaderStyle HorizontalAlign="Center" Width="13%" />
                                     <ItemStyle HorizontalAlign="Center" />
                                 </asp:TemplateField>
+
+                                 <asp:TemplateField HeaderText="Division">
+                                    <ItemTemplate>
+                                        <asp:Label ID="lblDivision" runat="server" Text=""></asp:Label>
+                                    </ItemTemplate>
+                                    <HeaderStyle HorizontalAlign="Center" Width="8%" />
+                                    <ItemStyle HorizontalAlign="Center" />
+                                </asp:TemplateField>
+
+
+
                                 <asp:TemplateField HeaderText="Followup" SortExpression="FollowDateTime" HeaderStyle-Font-Underline="true">
                                     <ItemTemplate>
                                         <asp:Label ID="lblFollowup" runat="server"></asp:Label>
@@ -201,6 +221,7 @@
                 <tr>
                     <td>
                         <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
+                        <asp:HiddenField ID="hdnPrimaryDivision" runat="server" Value="0" />
                         <asp:HiddenField ID="hdnLeadId" runat="server" Value="0" />
                         <asp:HiddenField ID="hdnOrder" runat="server" Value="ASC" />
                     </td>

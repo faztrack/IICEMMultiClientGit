@@ -100,6 +100,8 @@
                                 </td>
 
                                 <td align="center">
+
+                                    
                                     <b>Page: </b>
                                     <asp:Label ID="lblCurrentPageNo" runat="server" Font-Bold="true" ForeColor="#000000"></asp:Label>
                                     &nbsp;
@@ -134,10 +136,9 @@
                                         CssClass="mGrid" OnRowDataBound="grdSiteViewList_RowDataBound" OnPageIndexChanging="grdSiteViewList_PageIndexChanging">
                                         <PagerSettings Position="TopAndBottom" />
                                         <Columns>
-
+                                            <%-- cell 0 --%>
                                             <asp:TemplateField HeaderText="Date" ItemStyle-Font-Underline="true">
                                                 <ItemTemplate>
-
                                                     <asp:HyperLink ID="hypSiteReview" runat="server"></asp:HyperLink><br />
                                                     <br />
                                                     <asp:Image ID="imgStateOfMind" runat="server" Width="40px" Height="40px" CssClass="opacityimage" />
@@ -145,6 +146,8 @@
                                                 <HeaderStyle HorizontalAlign="Center" Width="10%" />
                                                 <ItemStyle HorizontalAlign="Center" />
                                             </asp:TemplateField>
+
+                                            <%-- cell 1 --%>
                                             <asp:TemplateField HeaderText=" Site Log">
                                                 <ItemTemplate>
                                                     <table style="padding: 0px; margin: 0px; border: none; width: 100%">
@@ -215,14 +218,28 @@
                                                 <ItemStyle Width="80%" />
                                             </asp:TemplateField>
 
+                                            <%-- cell 2 --%>
+                                            <asp:TemplateField HeaderText="Division">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblDivisionName" runat="server"></asp:Label>
+                                                </ItemTemplate>
+                                                <HeaderStyle HorizontalAlign="Center" Width="10%" />
+                                                <ItemStyle HorizontalAlign="Center" />
+                                            </asp:TemplateField>
+
+                                            <%-- cell 3 --%>
                                             <asp:BoundField DataField="CreatedBy" HeaderText="Added By">
                                                 <HeaderStyle HorizontalAlign="Center" Width="10%" />
                                                 <ItemStyle HorizontalAlign="Left" />
                                             </asp:BoundField>
+
+                                            <%-- cell 4 --%>
                                             <asp:BoundField HeaderText="Customer View">
                                                 <HeaderStyle HorizontalAlign="Center" Width="5%" />
                                                 <ItemStyle HorizontalAlign="Center" />
                                             </asp:BoundField>
+
+                                            <%-- cell 5 --%>
                                             <asp:TemplateField>
                                                 <ItemTemplate>
                                                     <asp:ImageButton ID="imgDelete" runat="server" CssClass="iconDeleteCss blindInput" ImageUrl="~/images/icon_delete_16x16.png" ToolTip="Delete" OnClick="DeleteFile" />
@@ -259,6 +276,7 @@
                                     <asp:HiddenField ID="hdnEstimateId" runat="server" Value="0" />
                                     <asp:HiddenField ID="hdnBackId" runat="server" Value="0" />
                                     <asp:HiddenField ID="hdnEmailType" runat="server" Value="2" />
+                                    <asp:HiddenField ID="hdnPrimaryDivision" runat="server" Value="0" />
                                 </td>
                             </tr>
                         </table>

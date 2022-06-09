@@ -330,6 +330,7 @@ public partial class selectionofsection : System.Web.UI.Page
             Section_Selection objSS = new Section_Selection();
 
             objSS.customer_id = nCustId;
+            objSS.client_id = Convert.ToInt32(hdnClientId.Value);
             objSS.estimate_id = nEstId;
             objSS.section_id = Convert.ToInt32(ddlSection.SelectedValue);
             objSS.section_name = ddlSection.SelectedItem.Text; ;
@@ -448,7 +449,7 @@ public partial class selectionofsection : System.Web.UI.Page
             dtSection = (DataTable)Session["gSection"];
            // dtProject = (DataTable)Session["sProject"];
 
-            string sSQL = " select SectionSelectionID,s.customer_id,s.section_id,s.estimate_id,location_id,isSelected,customer_signature,customer_siignatureDate, customer_signedBy,estimate_name,s.CreateDate, " +
+            string sSQL = " select SectionSelectionID,s.customer_id, s.section_id,s.estimate_id,location_id,isSelected,customer_signature,customer_siignatureDate, customer_signedBy,estimate_name,s.CreateDate, " +
                           " s.section_name,s.location_name,s.Title,s.Notes,s.Price,s.ValidTillDate " +
                          " from Section_Selection as s " +
                          " inner join customer_estimate as  ce on ce.customer_id=s.customer_id and ce.estimate_id=s.estimate_id " +
@@ -483,6 +484,7 @@ public partial class selectionofsection : System.Web.UI.Page
             string strCustomerSignature = grdSelection.DataKeys[e.Row.RowIndex].Values[6].ToString();
             string strSignatureDate = Convert.ToDateTime(grdSelection.DataKeys[e.Row.RowIndex].Values[7]).ToString("MM/dd/yyyy hh:mm tt");
             string SignatureBy = grdSelection.DataKeys[e.Row.RowIndex].Values[8].ToString();
+           
 
             dtLocation = (DataTable)Session["ssLocation"];
             dtSection = (DataTable)Session["gSection"];
@@ -556,20 +558,7 @@ public partial class selectionofsection : System.Web.UI.Page
             ddlLocation.Visible = false;
             lblLocation.Visible = true;
 
-            //ListItem project = ddlProject.Items.FindByValue(estimate_id.ToString());
-            //if (item != null)
-            //    ddlProject.Items.FindByValue(Convert.ToString(estimate_id)).Selected = true;
-            //else
-            //{
-            //    string strestimate_id = estimate_id.ToString();
-            //    DataClassesDataContext _db = new DataClassesDataContext();
-            //    string strddlProject = _db.customer_estimates.FirstOrDefault(l => l.customer_id == customer_id && l.estimate_id == estimate_id).estimate_name;
-            //    ddlProject.Items.Insert(0, new ListItem(strddlProject, strestimate_id));
-            //}
-
-            //ddlProject.Visible = false;
-            //lblProject.Visible = true;
-
+            
             LinkButton btn = (LinkButton)e.Row.Cells[9].Controls[0];
            
 
@@ -656,7 +645,6 @@ public partial class selectionofsection : System.Web.UI.Page
             {
                 imgCustomerSign.Visible = false;
                
-                //lblSignatureBy.Text = "<font style='font-weight:bold'>Signature By: </font>" + SignatureBy;
                 lblSignatureBy.Text ="By "+SignatureBy;
             }
         }

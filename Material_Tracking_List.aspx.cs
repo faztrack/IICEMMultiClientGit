@@ -18,10 +18,17 @@ public partial class Material_Tracking_List : System.Web.UI.Page
     {
         if (!IsPostBack)
         {
+            string divisionName = "";
             KPIUtility.PageLoad(this.Page.AppRelativeVirtualPath);
             if (Session["oUser"] == null)
             {
                 Response.Redirect(ConfigurationManager.AppSettings["LoginPage"].ToString());
+            }
+            else
+            {
+                userinfo oUser = Session["oUser"] as userinfo;
+                hdnPrimaryDivision.Value = oUser.primaryDivision.ToString();
+                divisionName = oUser.divisionName;
             }
             if (Page.User.IsInRole("gem01") == false)
             {
@@ -30,6 +37,8 @@ public partial class Material_Tracking_List : System.Web.UI.Page
             }
             lblHeaderTitle.Text = "Material Tracking List";
             countRow = 0;
+
+            BindDivision();
             LoadVendor();
 
             if (Session["htMaterialTrackingList"] != null)
@@ -39,7 +48,7 @@ public partial class Material_Tracking_List : System.Web.UI.Page
                 nPageNo = Convert.ToInt32(ht["sPageNo"].ToString());
                 txtStartDate.Text = ht["sStartDate"].ToString();
                 txtEndDate.Text = ht["sEndDate"].ToString();
-              //  BindOrderList(nPageNo);
+              // BindOrderList(nPageNo);
                 GetOrderList();
 
             }
@@ -51,13 +60,32 @@ public partial class Material_Tracking_List : System.Web.UI.Page
 
                 GetOrderList();
             }
-
+            if (divisionName != "" && divisionName.Contains(","))
+            {
+                ddlDivision.Enabled = true;
+            }
+            else
+            {
+                ddlDivision.Enabled = false;
+            }
 
 
         }
 
     }
 
+    private void BindDivision()
+    {
+        string sql = "select id, division_name from division order by division_name ";
+        DataTable dt = csCommonUtility.GetDataTable(sql);
+        ddlDivision.DataSource = dt;
+        ddlDivision.DataTextField = "division_name";
+        ddlDivision.DataValueField = "id";
+        ddlDivision.DataBind();
+        ddlDivision.Items.Insert(0, "All");
+        ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
+
+    }
     protected void btnPrevious_Click(object sender, EventArgs e)
     {
         KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnPrevious.ID, btnPrevious.GetType().Name, "Click"); 
@@ -70,6 +98,8 @@ public partial class Material_Tracking_List : System.Web.UI.Page
     {
         KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnSearch.ID, btnSearch.GetType().Name, "Click"); 
         GetOrderList();
+
+        #region comment
         //lblResult.Text = "";
         //DateTime strStartDate = DateTime.Now;
         //DateTime strEndDate = DateTime.Now;
@@ -189,6 +219,8 @@ public partial class Material_Tracking_List : System.Web.UI.Page
         //grdSelection.DataKeyNames = new string[] { "Order_id", "Customer_id", "Section_id", "Estimate_id", "Vendor_id", "Is_Shipped", "Is_Received", "Is_Picked", "Is_Confirmed" };
         //grdSelection.DataBind();
 
+        #endregion 
+
     }
 
     protected void lnkViewAll_Click(object sender, EventArgs e)
@@ -201,6 +233,7 @@ public partial class Material_Tracking_List : System.Web.UI.Page
             Session.Remove("nMaterilaList");
 
         }
+        ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
         ddlItemPerPage.SelectedIndex = 0;
         txtStartDate.Text = DateTime.Now.AddDays(-360).ToShortDateString();
         txtEndDate.Text = DateTime.Now.AddDays(1).ToShortDateString();
@@ -237,6 +270,10 @@ public partial class Material_Tracking_List : System.Web.UI.Page
             int customer_id = Convert.ToInt32(grdSelection.DataKeys[e.Row.RowIndex].Values[1].ToString());
 
             int estimate_id = Convert.ToInt32(grdSelection.DataKeys[e.Row.RowIndex].Values[3].ToString());
+
+            string nClientId = grdSelection.DataKeys[e.Row.RowIndex].Values[9].ToString();
+            Label lblDivisionName = e.Row.FindControl("lblDivisionName") as Label;
+            lblDivisionName.Text = csCommonUtility.GetDivisionName(nClientId);
 
             LinkButton lnkOpen = (LinkButton)e.Row.FindControl("lnkOpen");
             Label lblNotes = (Label)e.Row.FindControl("lblNotes");
@@ -456,7 +493,7 @@ public partial class Material_Tracking_List : System.Web.UI.Page
                 grdSelection.DataSource = dtSiteReview;
                 grdSelection.PageSize = Convert.ToInt32(ddlItemPerPage.SelectedValue);
                 grdSelection.PageIndex = nPageNo;
-                grdSelection.DataKeyNames = new string[] { "Order_id", "Customer_id", "Section_id", "Estimate_id", "Vendor_id", "Is_Shipped", "Is_Received", "Is_Picked", "Is_Confirmed" };
+                grdSelection.DataKeyNames = new string[] { "Order_id", "Customer_id", "Section_id", "Estimate_id", "Vendor_id", "Is_Shipped", "Is_Received", "Is_Picked", "Is_Confirmed", "clientID" };
                 grdSelection.DataBind();
 
                 Hashtable ht = new Hashtable();
@@ -617,20 +654,27 @@ public partial class Material_Tracking_List : System.Web.UI.Page
             }
             strCondition += " AND  a.Order_date>='" + strStartDate + "' AND  a.Order_date<'" + strEndDate + "' ";
 
-
+            if (ddlDivision.SelectedItem.Text != "All")
+            {
+                if (strCondition.Length > 2)
+                    strCondition += " AND a.client_id = " + Convert.ToInt32(ddlDivision.SelectedValue);
+                else
+                    strCondition = " WHERE a.client_id = " + Convert.ToInt32(ddlDivision.SelectedValue);
+            }
 
             strQ =
-                " Select a.Order_id,a.Order_date,a.Customer_id,a.Estimate_id,a.Section_id,a.Section_name,a.Vendor_id,a.Vendor_name,a.Item_text,a.Item_note,Shipped_date,Shipped_by,Shipped_note," +
+                " Select a.Order_id,a.Order_date,a.Customer_id,a.Estimate_id,a.Section_id, a.client_id as clientID,  a.Section_name,a.Vendor_id,a.Vendor_name,a.Item_text,a.Item_note,Shipped_date,Shipped_by,Shipped_note," +
                 " a.Received_date,a.Received_by,a.Received_note,a.Picked_date,a.Picked_by,a.Picked_note,a.Confirmed_date,a.Confirmed_by,a.Confirmed_note,a.Is_Shipped," +
                 " a.Is_Received,a.Is_Picked,a.Is_Confirmed,b.first_name1,b.last_name1" +
                 " from Material_Traking_Order AS a Inner join customers AS b ON a.Customer_id = b.customer_id where a.Is_Active=1 " + strCondition + " order by a.Order_date DESC";
 
-            List<MetarialTrackingListViewModel> mList = _db.ExecuteQuery<MetarialTrackingListViewModel>(strQ, string.Empty).ToList();
+            //List<MetarialTrackingListViewModel> mList = _db.ExecuteQuery<MetarialTrackingListViewModel>(strQ, string.Empty).ToList();
+            //DataTable dt = DataReader.Complex_Read_DataTable(strQ);
 
-            DataTable dt = DataReader.Complex_Read_DataTable(strQ);
+            DataTable dt = csCommonUtility.GetDataTable(strQ);
 
-            if (mList.Count > 0)
-                Session.Add("mCustomerSerch", mList);
+            if (dt.Rows.Count > 0)
+                Session.Add("mCustomerSerch", dt);
 
             if (dt.Rows.Count > 0)
             {
@@ -781,5 +825,11 @@ public partial class Material_Tracking_List : System.Web.UI.Page
     {
         KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, ddlVendor.ID, ddlVendor.GetType().Name, "CheckedChanged");
         GetOrderList();
+    }
+
+    protected void ddlDivision_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        GetOrderList();
+        BindOrderList(0);
     }
 }

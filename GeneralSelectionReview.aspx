@@ -2,155 +2,12 @@
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
-    <style type="text/css">
-        .popup {
-            position: absolute;
-            width: 800px;
-            max-height: 600px;
-            overflow-y: scroll;
-            background: #fff;
-            /*  left: 50% !important;*/
-            top: 10% !important;
-            border-radius: 5px;
-            /*padding: 60px 0;*/
-            text-align: justify;
-            box-shadow: 0 0 10px 0 #fff !important;
-        }
-
-        .popup2 {
-            position: absolute;
-            width: 800px;
-            max-height: 600px;
-            overflow-y: scroll;
-            background: #fff;
-            top: 10% !important;
-            border-radius: 5px;
-            padding: 20px;
-            text-align: justify;
-            box-shadow: 0 0 10px 0 #555 !important;
-        }
-
-            .popup2 div tr td {
-                padding: 5px;
-            }
-
-        .btnRight {
-            float: right !important;
-        }
-
-        .btnRight {
-            float: right !important;
-            padding: 10px 15px;
-        }
-
-        .m-signature-pad--body {
-            background-color: #fff;
-            width: 800px;
-            height: 250px;
-            border: 1px solid #000;
-            margin-top: 5px;
-            margin-bottom: 5px;
-        }
-
-        .canvascontainer {
-            background-color: #fff;
-            width: 800px;
-            height: 250px;
-        }
-    </style>
+   
 
 
-    <script type="text/javascript">
-        //function CreateSignaturePade2() {
-        //    console.log("CreateSignaturePade2");
-        //};
-
-        function ConfirmSelection(obj, objHdnBtn) {
-
-            if (confirm('Are you sure you want to choose this selection?')) {
-                document.getElementById(objHdnBtn.id).click();
-            }
-            else {
-                document.getElementById(obj.id).checked = false;
-            }
-        }
-
-        function confirmOperation() {
-            var r = confirm("Are you sure you want to choose this selection?");
-            if (r == true) {
-                return true;
-            }
-            else {
-                return false;
-            }
-        }
-
-        function SetCollapsiblePanel(obj) {
-            //  console.log(obj.id);
-            $.ajax({
-                type: 'POST',
-                url: "SectionSelection.aspx/SetCollapsiblePanel",
-                data: "{'CollapsiblePanel':'" + JSON.stringify(obj.id) + "'}",
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function (data) {
-                    //  console.log(data.d);
-                    var result = data.d;
-                    if (result == "Ok") {
-                    }
-                },
-                error: function (e) {
-                    console.log(e);
-                }
-            });
-        }
-        function Check_Click(objRef) {
-            //Get the Row based on checkbox
-            var row = objRef.parentNode.parentNode;
-
-            //Get the reference of GridView
-            var GridView = row.parentNode;
-
-            //Get all input elements in Gridview
-            var inputList = GridView.getElementsByTagName("input");
-
-            for (var i = 0; i < inputList.length; i++) {
-                //The First element is the Header Checkbox
-                var headerCheckBox = inputList[0];
-
-                //Based on all or none checkboxes
-                //are checked check/uncheck Header Checkbox
-                var checked = true;
-                if (inputList[i].type == "checkbox" && inputList[i] != headerCheckBox) {
-                    if (!inputList[i].checked) {
-                        checked = false;
-                        break;
-                    }
-                }
-            }
-            headerCheckBox.checked = checked;
-
-        }
-        function checkAll(objRef) {
-            var GridView = objRef.parentNode.parentNode.parentNode;
-            var inputList = GridView.getElementsByTagName("input");
-            for (var i = 0; i < inputList.length; i++) {
-                var row = inputList[i].parentNode.parentNode;
-                if (inputList[i].type == "checkbox" && objRef != inputList[i]) {
-                    if (objRef.checked) {
-                        inputList[i].checked = true;
-                    }
-                    else {
-                        inputList[i].checked = false;
-                    }
-                }
-            }
-        }
-    </script>
-
-    <%-- <asp:UpdatePanel ID="UpdatePanel1" runat="server">
-        <ContentTemplate>--%>
-    <table cellpadding="0" cellspacing="0" width="100%" align="center">
+    <asp:UpdatePanel ID="UpdatePanel1" runat="server">
+        <ContentTemplate>
+            <table cellpadding="0" cellspacing="0" width="100%" align="center">
         <tr>
             <td align="center" class="cssHeader">
                 <table cellpadding="0" cellspacing="0" width="100%">
@@ -233,6 +90,10 @@
                         </td>
 
                         <td align="center">
+
+                            <b>Division: </b>
+                            <asp:DropDownList ID="ddlDivision" runat="server" OnSelectedIndexChanged="ddlDivision_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+
                             <b>Page: </b>
                             <asp:Label ID="lblCurrentPageNo" runat="server" Font-Bold="true" ForeColor="#000000"></asp:Label>
                             &nbsp;
@@ -267,6 +128,7 @@
                                 PageSize="200" TabIndex="2" Width="100%" OnRowDataBound="grdSelection_RowDataBound" AllowPaging="True" OnPageIndexChanging="grdSelection_PageIndexChanging">
                                 <PagerSettings Position="TopAndBottom" />
                                 <Columns>
+                                    <%-- Cell 0 --%>
                                     <asp:TemplateField HeaderText="Date">
                                         <ItemTemplate>
                                             <asp:Label ID="lblDate" runat="server" Text='<%# Eval("CreateDate","{0:d}")%>' />
@@ -274,6 +136,8 @@
                                         <HeaderStyle HorizontalAlign="Center" Width="120px" />
                                         <ItemStyle HorizontalAlign="Center" Width="120px" />
                                     </asp:TemplateField>
+
+                                    <%-- Cell 1 --%>
                                     <asp:TemplateField HeaderText="Customer Name">
                                         <ItemTemplate>
                                             <asp:HyperLink ID="hyp_Custd" runat="server" Text='<%# Eval("customer_name") %>' CssClass="mGrida2"></asp:HyperLink>
@@ -281,12 +145,16 @@
                                         <HeaderStyle HorizontalAlign="Center" />
                                         <ItemStyle CssClass="custNameCL" HorizontalAlign="Left" />
                                     </asp:TemplateField>
+
+                                    <%-- Cell 2 --%>
                                     <asp:TemplateField HeaderText="Section">
                                         <ItemTemplate>
                                             <asp:Label ID="lblSection" runat="server" Text='<%# Eval("section_name") %>'></asp:Label>
                                         </ItemTemplate>
                                         <ItemStyle Width="15%" HorizontalAlign="Left" />
                                     </asp:TemplateField>
+
+                                    <%-- Cell 3 --%>
                                     <asp:TemplateField HeaderText="Location">
                                         <ItemTemplate>
                                             <asp:Label ID="lblLocation" runat="server" Text='<%# Eval("location_name") %>' />
@@ -294,14 +162,16 @@
                                         <ItemStyle Width="15%" HorizontalAlign="Left" />
                                     </asp:TemplateField>
 
+                                    <%-- Cell 4 --%>
                                     <asp:TemplateField HeaderText="Title">
                                         <ItemTemplate>
                                             <asp:Label ID="lblTitle" runat="server" Text='<%# Eval("Title") %>' />
-
                                         </ItemTemplate>
                                         <HeaderStyle HorizontalAlign="Center" />
                                         <ItemStyle Width="15%" HorizontalAlign="Left" />
                                     </asp:TemplateField>
+
+                                    <%-- Cell 5 --%>
                                     <asp:TemplateField HeaderText="Notes">
                                         <ItemTemplate>
                                             <asp:Label ID="lblNotes" runat="server" Text='<%# Eval("Notes") %>' Style="display: inline;" />
@@ -311,21 +181,25 @@
                                         <HeaderStyle HorizontalAlign="Center" />
                                         <ItemStyle Width="15%" HorizontalAlign="Left" />
                                     </asp:TemplateField>
+
+                                    <%-- Cell 6 --%>
                                     <asp:TemplateField HeaderText="Price">
                                         <ItemTemplate>
                                             <asp:Label ID="lblPrice" runat="server" Text='<%# Eval("Price","{0:c}") %>' />
-
                                         </ItemTemplate>
                                         <HeaderStyle HorizontalAlign="Center" />
                                         <ItemStyle Width="5%" HorizontalAlign="Right" />
                                     </asp:TemplateField>
-                                    <%--  <asp:TemplateField HeaderText="Days Left">
-                                                    <ItemTemplate>
-                                                        <asp:Label ID="lblDayLeft" runat="server" Text='<%# Eval("ValidTillDate","{0:d}")%>' />
-                                                    </ItemTemplate>
-                                                    <HeaderStyle HorizontalAlign="Center" Width="5%" />
-                                                    <ItemStyle HorizontalAlign="Center" Width="5%" />
-                                                </asp:TemplateField>--%>
+
+                                    <%-- Cell 7 --%>
+                                     <asp:TemplateField HeaderText="Division">
+                                        <ItemTemplate>
+                                            <asp:Label ID="lblDivisionName" runat="server" />
+                                        </ItemTemplate>
+                                        <ItemStyle Width="5%" HorizontalAlign="center" />
+                                    </asp:TemplateField>
+
+                                    <%-- Cell 8 --%>
                                     <asp:TemplateField HeaderText="">
                                         <ItemTemplate>
                                             <table style="padding: 0px; margin: 0px; border: none;">
@@ -376,6 +250,8 @@
                                         <ItemStyle Width="40%" />
                                         <HeaderStyle HorizontalAlign="Right" />
                                     </asp:TemplateField>
+
+                                    <%-- Cell 9 --%>
                                     <asp:TemplateField>
                                         <ItemTemplate>
                                             <asp:CheckBox ID="chkSelected" runat="server" />
@@ -413,6 +289,7 @@
                             <asp:HiddenField ID="hdnCustomerId" runat="server" Value="0" />
                             <asp:HiddenField ID="hdnEstimateId" runat="server" Value="0" />
                             <asp:HiddenField ID="hdnBackId" runat="server" Value="0" />
+                            <asp:HiddenField ID="hdnPrimaryDivision" runat="server" Value="0" />
                         </td>
                     </tr>
                 </table>
@@ -420,41 +297,21 @@
         </tr>
 
     </table>
+        </ContentTemplate>        
+    </asp:UpdatePanel>
 
-    <script type="text/javascript">
-        var objExtender;
-        // this will run automatically when the page has finished loading
-        function pageLoad(sender, args) {
-            if (document.getElementById("head_hdnSetCollapsiblePanel").value != '') {
-                var panelId = document.getElementById("head_hdnSetCollapsiblePanel").value;
-                objExtender = $find(panelId);
 
-                //objExtender.add_expandComplete(getCollapsibleState);
-                //objExtender.add_collapseComplete(getCollapsibleState);
-
-                objExtender._doOpen();
-            }
-            else { }
-        }
-
-        function getCollapsibleState() {
-            if (objExtender.get_Collapsed()) {
-                // console.log("Now it is getting collapsed!");
-            }
-            else {
-                //console.log("Now it is getting expanded!");
-            }
-        }
-    </script>
-    <script src="js/signature_pad.js"></script>
-    <script src="js/signatureShipperApp.js"></script>
-    <div id="LoadingProgress" style="display: none">
-        <div class="overlay" />
-        <div class="overlayContent">
-            <p>
-                Please wait while your data is being processed
-            </p>
-            <img src="images/ajax_loader.gif" alt="Loading" border="1" />
-        </div>
-    </div>
+    
+    <asp:UpdateProgress ID="UpdateProgress1" runat="server" DisplayAfter="1" AssociatedUpdatePanelID="UpdatePanel1" DynamicLayout="False">
+        <ProgressTemplate>
+            <div class="overlay" />
+            <div class="overlayContent">
+                <p>
+                    Please wait while your data is being processed
+                </p>
+                <img src="images/ajax_loader.gif" alt="Loading" border="1" />
+            </div>
+        </ProgressTemplate>
+    </asp:UpdateProgress>
+    
 </asp:Content>

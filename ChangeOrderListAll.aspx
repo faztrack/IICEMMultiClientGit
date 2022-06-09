@@ -124,6 +124,9 @@
                                 </td>
 
                                 <td align="right" valign="middle">
+                                     <b>Division: </b>
+                            <asp:DropDownList ID="ddlDivision" runat="server" OnSelectedIndexChanged="ddlDivision_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+                                    &nbsp;
                                     <b>Sales Person:</b>
                                     <asp:DropDownList ID="ddlSalesRep" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlSalesRep_SelectedIndexChanged">
                                     </asp:DropDownList>
@@ -147,6 +150,7 @@
                         <asp:GridView ID="grdCustCOList" runat="server" AllowPaging="True" AutoGenerateColumns="False" CssClass="mGrid" OnPageIndexChanging="grdCustCOList_PageIndexChanging" OnRowDataBound="grdCustCOList_RowDataBound" Width="100%" PageSize="40" AllowSorting="True" OnSorting="grdCustCOList_Sorting">
                             <PagerSettings Position="TopAndBottom" />
                             <Columns>
+                                <%-- cell 0 --%>
                                 <asp:TemplateField HeaderText="CO Date" SortExpression="changeorder_date" HeaderStyle-Font-Underline="true">
                                     <ItemTemplate>
                                         <asp:Label ID="lblCODate" runat="server"
@@ -155,22 +159,32 @@
                                     <HeaderStyle Width="8%" />
                                     <ItemStyle HorizontalAlign="Center" />
                                 </asp:TemplateField>
+
+                                <%-- cell 1 --%>
                                 <asp:BoundField DataField="CustomerName" HeaderText="Customer Name" SortExpression="CustomerName" HeaderStyle-Font-Underline="true">
                                     <HeaderStyle Width="15%" />
                                     <ItemStyle HorizontalAlign="Left" />
                                 </asp:BoundField>
+
+                                <%-- cell 2 --%>
                                 <asp:BoundField DataField="EstimateName" HeaderText="Estimate Name" SortExpression="EstimateName" HeaderStyle-Font-Underline="true">
                                     <HeaderStyle Width="15%" />
                                     <ItemStyle HorizontalAlign="Left" />
                                 </asp:BoundField>
+
+                                <%-- cell 3 --%>
                                 <asp:BoundField DataField="changeorder_name" HeaderText="CO Name" SortExpression="changeorder_name" HeaderStyle-Font-Underline="true">
                                     <HeaderStyle Width="15%" />
                                     <ItemStyle HorizontalAlign="Left" />
                                 </asp:BoundField>
+
+                                <%-- cell 4 --%>
                                 <asp:BoundField DataField="SalesPerson" HeaderText="Sales Person" SortExpression="SalesPerson" HeaderStyle-Font-Underline="true">
                                     <HeaderStyle Width="10%" />
                                     <ItemStyle HorizontalAlign="Left" />
                                 </asp:BoundField>
+
+                                <%-- cell 5 --%>
                                 <asp:TemplateField HeaderText="Cutomer Viewable?" SortExpression="is_cutomer_viewable" HeaderStyle-Font-Underline="true">
                                     <ItemTemplate>
                                         <asp:Label ID="lblcutomer_viewable" runat="server"></asp:Label>
@@ -179,6 +193,7 @@
                                     <ItemStyle HorizontalAlign="Center" />
                                 </asp:TemplateField>
 
+                                <%-- cell 6 --%>
                                  <asp:TemplateField HeaderText="C/O Status" SortExpression="change_order_status_id" HeaderStyle-Font-Underline="true">
                                     <ItemTemplate>
                                         <asp:Label ID="lblCOstatus" runat="server"></asp:Label>
@@ -187,6 +202,15 @@
                                     <ItemStyle HorizontalAlign="Center" />
                                 </asp:TemplateField>
 
+                                <%-- cell 7 --%>
+                                 <asp:TemplateField HeaderText="Division">
+                                        <ItemTemplate>
+                                            <asp:Label ID="lblDivisionName" runat="server" />
+                                        </ItemTemplate>
+                                        <ItemStyle Width="5%" HorizontalAlign="center" />
+                                    </asp:TemplateField>
+
+                                <%-- cell 8 --%>
                                 <asp:TemplateField HeaderText="CO Amount">
                                     <ItemTemplate>
                                         <asp:Label ID="lblCOAmount" runat="server" Text='<%# Eval("COAmount","{0:c}").ToString() %>'></asp:Label>
@@ -195,6 +219,8 @@
                                     <ItemStyle HorizontalAlign="Right" />
                                 </asp:TemplateField>
 
+
+                                <%-- cell 9 --%>
                                 <asp:TemplateField>
                                     <ItemTemplate>
                                         <asp:HyperLink ID="hypEstCODetail" runat="server" Text="View Details" CssClass="mGrida2" Font-Underline="true"></asp:HyperLink>
@@ -236,7 +262,8 @@
                     <td>
                         <asp:HiddenField ID="hdnOrder" runat="server" Value="ASC" />
                         <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
-                        <asp:HiddenField ID="hdnDivisionName" runat="server" Value="0" />
+                        <asp:HiddenField ID="hdnDivisionName" runat="server" Value="" />
+                        <asp:HiddenField ID="hdnPrimaryDivision" runat="server" Value="0" />
                     </td>
                 </tr>
             </table>

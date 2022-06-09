@@ -93,6 +93,10 @@
                                 </td>
 
                                 <td align="center">
+                                     <b>Division:</b>
+                                    <asp:DropDownList ID="ddlDivision" runat="server" OnSelectedIndexChanged="ddlDivision_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+                                    &nbsp;
+                                    &nbsp;
                                     <b>Page: </b>
                                     <asp:Label ID="lblCurrentPageNo" runat="server" Font-Bold="true" ForeColor="#000000"></asp:Label>
                                     &nbsp;
@@ -128,6 +132,7 @@
                                         <PagerSettings Position="TopAndBottom" />
                                         <Columns>
 
+                                             <%-- cell 0 --%>
                                             <asp:TemplateField HeaderText="Date" ItemStyle-Font-Underline="true">
                                                 <ItemTemplate>
                                                     <asp:HyperLink ID="hypSiteReview" runat="server"></asp:HyperLink>
@@ -136,9 +141,9 @@
                                                 <ItemStyle HorizontalAlign="Center" />
                                             </asp:TemplateField>
 
+                                             <%-- cell 1 --%>
                                             <asp:TemplateField HeaderText="Customer Name">
                                                 <ItemTemplate>
-
                                                     <asp:Label ID="lblCustomerName" runat="server" Text=""></asp:Label><br />
                                                     <br />
                                                     <asp:Image ID="imgStateOfMind" runat="server" Width="40px" Height="40px" CssClass="opacityimage" style="text-align:center"/>
@@ -146,6 +151,8 @@
                                                 <HeaderStyle HorizontalAlign="Center" Width="12%" />
                                                 <ItemStyle HorizontalAlign="Center" />
                                             </asp:TemplateField>
+
+                                             <%-- cell 2 --%>
                                             <asp:TemplateField HeaderText=" Site Log">
                                                 <ItemTemplate>
                                                     <table style="padding: 0px; margin: 0px; border: none; width: 100%">
@@ -215,10 +222,23 @@
                                                 </ItemTemplate>
                                                 <ItemStyle Width="60%" />
                                             </asp:TemplateField>
+
+                                             <%-- cell 3 --%>
+                                            <asp:TemplateField HeaderText="Division">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblDivisionName" runat="server"></asp:Label>
+                                                </ItemTemplate>
+                                                <HeaderStyle HorizontalAlign="Center" Width="10%" />
+                                                <ItemStyle HorizontalAlign="Center" />
+                                            </asp:TemplateField>
+
+                                             <%-- cell 4 --%>
                                             <asp:BoundField DataField="CreatedBy" HeaderText="Added By">
                                                 <HeaderStyle HorizontalAlign="Center" Width="10%" />
                                                 <ItemStyle HorizontalAlign="Left" />
                                             </asp:BoundField>
+
+                                             <%-- cell 5 --%>
                                             <asp:BoundField HeaderText="Customer View">
                                                 <HeaderStyle HorizontalAlign="Center" Width="5%" />
                                                 <ItemStyle HorizontalAlign="Center" />
@@ -251,6 +271,7 @@
                                     <asp:HiddenField ID="hdnSiteReviewId" runat="server" Value="0" />
                                     <asp:HiddenField ID="hdnEstimateId" runat="server" Value="0" />
                                     <asp:HiddenField ID="hdnBackId" runat="server" Value="0" />
+                                    <asp:HiddenField ID="hdnPrimaryDivision" runat="server" Value="0" />
                                 </td>
                             </tr>
                         </table>

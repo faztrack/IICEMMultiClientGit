@@ -56,7 +56,7 @@ public partial class lead_details : System.Web.UI.Page
                 divisionName = oUser.divisionName;
 
             }
-            string test = hdnCustomerId.Value;
+            
             if (Page.User.IsInRole("le02") == false)
             {
                 // No Permission Page.
@@ -98,7 +98,10 @@ public partial class lead_details : System.Web.UI.Page
 
                 }
             }
-
+            else
+            {
+                btnSaveCall.Visible = false;
+            }
 
 
             if (Request.QueryString.Get("callid") != null)
@@ -202,6 +205,7 @@ public partial class lead_details : System.Web.UI.Page
                 txtZipCode.Text = cust.zip_code;
                 txtPhone.Text = cust.phone;
                 txtMobile.Text = cust.mobile;
+
 
 
                 //for (int i = 1; i <= ddlDivision.Items.Count; i++)
@@ -2686,6 +2690,8 @@ public partial class lead_details : System.Web.UI.Page
             custCall.CallHour = ddlCallHour.SelectedValue;
             custCall.CallMinutes = ddlCallMinutes.SelectedValue;
             custCall.CallAMPM = ddlCallAMPM.SelectedValue;
+
+            custCall.client_id = Convert.ToInt32(hdnClientId.Value);
         
             if (txtDurationH.Text == "" && txtDurationH.Text == "0")
             {

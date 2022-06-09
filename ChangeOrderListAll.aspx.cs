@@ -62,6 +62,7 @@ public partial class ChangeOrderListAll : System.Web.UI.Page
         Session.Add("loadstarttime", DateTime.Now);
         if (!IsPostBack)
         {
+            string divisionName = "";
             KPIUtility.PageLoad(this.Page.AppRelativeVirtualPath);
             if (Session["oUser"] == null)
             {
@@ -69,8 +70,11 @@ public partial class ChangeOrderListAll : System.Web.UI.Page
             }
             else
             {
-                hdnClientId.Value = ((userinfo)Session["oUser"]).client_id.ToString(); 
-                hdnDivisionName.Value = ((userinfo)Session["oUser"]).divisionName;
+                userinfo oUser = (userinfo)Session["oUser"];
+                hdnClientId.Value = oUser.client_id.ToString(); 
+                hdnDivisionName.Value = oUser.divisionName;
+                hdnPrimaryDivision.Value = oUser.primaryDivision.ToString();
+                divisionName = oUser.divisionName;
             }
             if (Page.User.IsInRole("GC01") == false)
             {
@@ -84,6 +88,17 @@ public partial class ChangeOrderListAll : System.Web.UI.Page
             DataClassesDataContext _db = new DataClassesDataContext();
             List<customer> CustomerList = _db.customers.Where(c => c.isCustomer == 1 && c.is_active == true).ToList();
             Session.Add("clSearch", CustomerList);
+
+            BindDivision();
+
+            if (divisionName != "" && divisionName.Contains(","))
+            {
+                ddlDivision.Enabled = true;
+            }
+            else
+            {
+                ddlDivision.Enabled = false;
+            }
 
             # endregion
             BindSalesPerson();
@@ -183,7 +198,17 @@ public partial class ChangeOrderListAll : System.Web.UI.Page
             strCondition = "Where  " + strCondition;
         }
 
-        string strQ = " SELECT   CONVERT(DATETIME,T1.changeorder_date) as changeorder_date,customers.last_name1+', '+customers.first_name1 as [CustomerName],customer_estimate.estimate_name AS [EstimateName], " +
+        if (ddlDivision.SelectedItem.Text != "All")
+        {
+            if (strCondition.Length > 2)
+                strCondition += " AND customers.client_id = " + Convert.ToInt32(ddlDivision.SelectedValue);
+            else
+                strCondition = " WHERE customers.client_id = " + Convert.ToInt32(ddlDivision.SelectedValue);
+        }
+
+
+
+        string strQ = " SELECT   CONVERT(DATETIME,T1.changeorder_date) as changeorder_date,customers.last_name1+', '+customers.first_name1 as [CustomerName],customer_estimate.estimate_name AS [EstimateName], customers.client_id as ClientID, " +
                         " T1.changeorder_name ,sales_person.first_name+' '+sales_person.last_name AS [SalesPerson], customers.sales_person_id , " +
                         " T1.chage_order_id,T1.COAmount,ISNULL(T1.is_cutomer_viewable,2) AS is_cutomer_viewable,COType,customers.customer_id,customer_estimate.estimate_id,T1.change_order_status_id FROM customers  " +
                         " INNER JOIN customer_estimate ON customer_estimate.customer_id = customers.customer_id  " +
@@ -202,7 +227,7 @@ public partial class ChangeOrderListAll : System.Web.UI.Page
         Session.Add("sCustCOList", dt);
 
         grdCustCOList.DataSource = dt;
-        grdCustCOList.DataKeyNames = new string[] { "customer_id", "estimate_id", "chage_order_id", "sales_person_id", "is_cutomer_viewable", "change_order_status_id", "COAmount" };
+        grdCustCOList.DataKeyNames = new string[] { "customer_id", "estimate_id", "chage_order_id", "sales_person_id", "is_cutomer_viewable", "change_order_status_id", "COAmount", "ClientID" };
         grdCustCOList.DataBind();
         lblCurrentPageNo.Text = Convert.ToString(nPageNo + 1);
         if (nPageNo == 0)
@@ -241,6 +266,11 @@ public partial class ChangeOrderListAll : System.Web.UI.Page
             int nis_cutomer_viewable = Convert.ToInt32(grdCustCOList.DataKeys[e.Row.RowIndex].Values[4]);
             int nchange_order_status_id = Convert.ToInt32(grdCustCOList.DataKeys[e.Row.RowIndex].Values[5]);
             decimal dAmount = Convert.ToInt32(grdCustCOList.DataKeys[e.Row.RowIndex].Values[6]);
+
+
+            string nClientId = grdCustCOList.DataKeys[e.Row.RowIndex].Values[7].ToString();
+            Label lblDivisionName = e.Row.FindControl("lblDivisionName") as Label;
+            lblDivisionName.Text = csCommonUtility.GetDivisionName(nClientId);
 
             HyperLink hypEstCODetail = (HyperLink)e.Row.FindControl("hypEstCODetail");
            // hypEstCODetail.NavigateUrl = "change_order_locations.aspx?coestid=" + nChangeOrderId + "&eid=" + nEstimate_id + "&cid=" + nCustomer_id;
@@ -293,6 +323,7 @@ public partial class ChangeOrderListAll : System.Web.UI.Page
         txtStartDate.Text = DateTime.Now.AddDays(-730).ToShortDateString();
         txtEndDate.Text = DateTime.Now.ToShortDateString();
         txtSearch.Text = "";
+        ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
         ddlSalesRep.SelectedIndex = -1;
         GetCustomerCOList(0);
 
@@ -353,6 +384,19 @@ public partial class ChangeOrderListAll : System.Web.UI.Page
         }
 
         GetCustomerCOList(0);
+    }
+
+    private void BindDivision()
+    {
+        string sql = "select id, division_name from division order by division_name ";
+        DataTable dt = csCommonUtility.GetDataTable(sql);
+        ddlDivision.DataSource = dt;
+        ddlDivision.DataTextField = "division_name";
+        ddlDivision.DataValueField = "id";
+        ddlDivision.DataBind();
+        ddlDivision.Items.Insert(0, "All");
+        ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
+
     }
 
     protected void ddlSearchBy_SelectedIndexChanged(object sender, EventArgs e)
@@ -429,7 +473,7 @@ public partial class ChangeOrderListAll : System.Web.UI.Page
         dtCallList = (DataTable)Session["sCustCOList"];
         grdCustCOList.DataSource = dtCallList;
 
-        grdCustCOList.DataKeyNames = new string[] { "customer_id", "estimate_id", "chage_order_id", "sales_person_id", "is_cutomer_viewable", "change_order_status_id", "COAmount" };
+        grdCustCOList.DataKeyNames = new string[] { "customer_id", "estimate_id", "chage_order_id", "sales_person_id", "is_cutomer_viewable", "change_order_status_id", "COAmount", "ClientID" };
         grdCustCOList.DataBind();
         lblCurrentPageNo.Text = Convert.ToString(nPageNo + 1);
         if (nPageNo == 0)
@@ -456,4 +500,9 @@ public partial class ChangeOrderListAll : System.Web.UI.Page
 
     }
 
+
+    protected void ddlDivision_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        GetCustomerCOList(0);
+    }
 }
