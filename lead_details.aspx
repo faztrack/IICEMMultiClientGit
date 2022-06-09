@@ -1028,7 +1028,7 @@
                                                             <tr>
                                                                 <td align="right" valign="top">&nbsp;</td>
                                                                 <td align="left">
-                                                                    <asp:Button ID="btnSaveCall" runat="server" CssClass="button" TabIndex="110" Text=" Save Activity " OnClick="btnSaveCall_Click" />
+                                                                    <asp:Button ID="btnSaveCall" runat="server" CssClass="button" TabIndex="110" Visible="true" Text=" Save Activity " OnClick="btnSaveCall_Click" />
                                                                 </td>
                                                             </tr>
                                                         </table>
@@ -1103,7 +1103,7 @@
                                 <tr>
                                     <td align="center">
                                         <asp:HiddenField ID="hdnCustomerId" runat="server" Value="0" />
-                                        <asp:HiddenField ID="hdnDivisionName" runat="server" Value="0" />
+                                        <asp:HiddenField ID="hdnDivisionName" runat="server" Value="" />
                                         <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
                                         <asp:HiddenField ID="hdnCallLogId" runat="server" Value="0" />
                                         <asp:HiddenField ID="hdnEmailType" runat="server" Value="2" />

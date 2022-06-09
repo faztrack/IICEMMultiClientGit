@@ -304,6 +304,7 @@
                                                 OnRowUpdating="grdSelection_RowUpdating"
                                                 OnRowCommand="grdSelection_RowCommand">
                                                 <Columns>
+                                                    <%-- Cell 0 --%>
                                                     <asp:TemplateField HeaderText="Project">
                                                         <ItemTemplate>
                                                             <%--   <asp:DropDownList ID="ddlEst" CssClass="secDD" runat="server" Enabled="false" DataValueField="estimate_id" DataTextField="estimate_name" DataSource="<%#dtProject%>" SelectedValue='<%#Eval("estimate_id") %>'>
@@ -312,6 +313,8 @@
                                                         </ItemTemplate>
                                                         <ItemStyle Width="10%" HorizontalAlign="Left" />
                                                     </asp:TemplateField>
+
+                                                    <%-- Cell 1 --%>
                                                     <asp:TemplateField HeaderText="Date">
                                                         <ItemTemplate>
                                                             <asp:Label ID="lblDate" runat="server" Text='<%# Eval("CreateDate","{0:d}")%>' />
@@ -335,6 +338,8 @@
                                                         <HeaderStyle HorizontalAlign="Center" Width="120px" />
                                                         <ItemStyle HorizontalAlign="Center" Width="120px" />
                                                     </asp:TemplateField>
+
+                                                    <%-- Cell 2 --%>
                                                     <asp:TemplateField HeaderText="Section">
                                                         <ItemTemplate>
                                                             <asp:DropDownList ID="ddlSectiong" CssClass="secDD" runat="server" Enabled="false" DataValueField="section_id" DataTextField="section_name" DataSource="<%#dtSection%>" SelectedValue='<%#Eval("section_id") %>'>
@@ -343,6 +348,8 @@
                                                         </ItemTemplate>
                                                         <ItemStyle Width="10%" HorizontalAlign="Left" />
                                                     </asp:TemplateField>
+
+                                                    <%-- Cell 3 --%>
                                                     <asp:TemplateField HeaderText="Location">
                                                         <ItemTemplate>
                                                             <asp:DropDownList ID="ddlLocation" CssClass="secDD" runat="server" Enabled="false" DataValueField="location_id" DataTextField="location_name" DataSource="<%#dtLocation%>" SelectedValue='<%#Eval("location_id") %>'>
@@ -352,6 +359,7 @@
                                                         <ItemStyle Width="10%" HorizontalAlign="Left" />
                                                     </asp:TemplateField>
 
+                                                    <%-- Cell 4 --%>
                                                     <asp:TemplateField HeaderText="Title">
                                                         <ItemTemplate>
                                                             <asp:Label ID="lblTitle" runat="server" Text='<%# Eval("Title") %>' />
@@ -361,6 +369,8 @@
                                                         <HeaderStyle HorizontalAlign="Center" />
                                                         <ItemStyle Width="15%" HorizontalAlign="Left" />
                                                     </asp:TemplateField>
+
+                                                    <%-- Cell 5 --%>
                                                     <asp:TemplateField HeaderText="Notes">
                                                         <ItemTemplate>
                                                             <asp:Label ID="lblNotes" runat="server" Text='<%# Eval("Notes") %>' Style="display: inline;" />
@@ -373,6 +383,8 @@
                                                         <HeaderStyle HorizontalAlign="Center" />
                                                         <ItemStyle Width="15%" HorizontalAlign="Left" />
                                                     </asp:TemplateField>
+
+                                                    <%-- Cell 6 --%>
                                                     <asp:TemplateField HeaderText="Price">
                                                         <ItemTemplate>
                                                             <asp:Label ID="lblPrice" runat="server" Text='<%# Eval("Price","{0:c}") %>' />
@@ -382,6 +394,8 @@
                                                         <HeaderStyle HorizontalAlign="Center" />
                                                         <ItemStyle Width="5%" HorizontalAlign="Right" />
                                                     </asp:TemplateField>
+
+                                                    <%-- Cell 7 --%>
                                                     <asp:TemplateField HeaderText="Valid Till">
                                                         <ItemTemplate>
                                                             <asp:Label ID="lblVDate" runat="server" Text='<%# Eval("ValidTillDate","{0:d}")%>' />
@@ -403,6 +417,8 @@
                                                         <HeaderStyle HorizontalAlign="Center" Width="120px" />
                                                         <ItemStyle HorizontalAlign="Center" Width="120px" />
                                                     </asp:TemplateField>
+                                             
+                                                    <%-- Cell 8 --%>
                                                     <asp:TemplateField HeaderText="">
                                                         <ItemTemplate>
                                                             <table style="padding: 0px; margin: 0px; border: none;">
@@ -472,7 +488,11 @@
                                                         </ItemTemplate>
                                                         <ItemStyle Width="40%" />
                                                     </asp:TemplateField>
+
+                                                    <%-- Cell 9 --%>
                                                     <asp:ButtonField CommandName="Edit" Text="Edit" ItemStyle-Width="5%" ItemStyle-HorizontalAlign="Center"></asp:ButtonField>
+
+                                                    <%-- Cell 10 --%>
                                                     <asp:TemplateField>
                                                         <ItemTemplate>
                                                             <asp:ImageButton ID="imgDelete" runat="server" CssClass="iconDeleteCss blindInput" ImageUrl="~/images/icon_delete_16x16.png" ToolTip="Delete" OnClick="DeleteSelection" OnClientClick="ShowProgress();" />
@@ -481,6 +501,7 @@
                                                         <ItemStyle HorizontalAlign="Center" />
                                                     </asp:TemplateField>
 
+                                                    <%-- Cell 11 --%>
                                                     <asp:TemplateField HeaderText="Selected">
                                                         <ItemTemplate>
                                                             <asp:Label ID="lblSelected" runat="server"></asp:Label><br />
@@ -493,6 +514,7 @@
                                                         <ItemStyle HorizontalAlign="Center" />
                                                     </asp:TemplateField>
 
+                                                    <%-- Cell 12 --%>
                                                     <asp:TemplateField>
                                                         <HeaderTemplate>
                                                             <asp:CheckBox ID="chkAll" runat="server" TextAlign="Left" onClick="CheckAllSubmit(this)" />
@@ -504,6 +526,7 @@
                                                         <HeaderStyle Width="10%" HorizontalAlign="Center" />
                                                         <ItemStyle HorizontalAlign="Center" />
                                                     </asp:TemplateField>
+
                                                 </Columns>
                                                 <AlternatingRowStyle CssClass="alt" />
                                             </asp:GridView>

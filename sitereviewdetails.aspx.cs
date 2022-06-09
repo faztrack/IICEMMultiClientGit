@@ -29,6 +29,8 @@ public partial class sitereviewdetails : System.Web.UI.Page
                 Response.Redirect(ConfigurationManager.AppSettings["LoginPage"].ToString());
             }
           
+           
+          
             txtSiteReviewDate.Text = DateTime.Now.ToString("MM-dd-yyyy");
             txtSiteReviewNote.Focus();
 
@@ -49,6 +51,9 @@ public partial class sitereviewdetails : System.Web.UI.Page
                     {
                         hdnSalesEmail.Value = sap.email;
                     }
+
+                    hdnClientId.Value = objCust.client_id.ToString();
+
                     string strSuperintendent = string.Empty;
                     user_info uinfo = _db.user_infos.SingleOrDefault(u => u.user_id == objCust.SuperintendentId && u.is_active==true);
                     if (uinfo != null)
@@ -245,6 +250,8 @@ public partial class sitereviewdetails : System.Web.UI.Page
         objSRN.IsUserView = false;
         objSRN.IsVendorView = false;
 
+
+        #region comment
         //if (chkUser.Checked)
         //    objSRN.IsUserView = true;
         //else
@@ -294,10 +301,13 @@ public partial class sitereviewdetails : System.Web.UI.Page
         //else
         //    objSRN.IsVendorNotify = false;
 
+        #endregion
+
         // Customer Notify
         objSRN.IsUserNotify = false;
         objSRN.IsCustomerNotify = false;
         objSRN.IsVendorNotify = false;
+        objSRN.client_id = Convert.ToInt32(hdnClientId.Value);
 
         if (Convert.ToInt32(hdnSiteReviewId.Value) == 0)
         {
@@ -325,7 +335,7 @@ public partial class sitereviewdetails : System.Web.UI.Page
         }
         else
         {
-
+            
             objSRN.LastUpdateDate = DateTime.Now;
             if (Session["oUser"] != null)
             {

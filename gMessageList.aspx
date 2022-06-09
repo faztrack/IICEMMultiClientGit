@@ -60,7 +60,12 @@
                                                                     <td>
                                                                         <asp:Button ID="btnSearch" runat="server" CssClass="button" OnClick="btnSearch_Click" Text="Search" /></td>
                                                                     <td>
-                                                                        <asp:LinkButton ID="LinkButton1" runat="server" OnClick="lnkViewAll_Click">View All</asp:LinkButton></td>
+                                                                        <asp:LinkButton ID="LinkButton1" runat="server" OnClick="lnkViewAll_Click">View All</asp:LinkButton>
+
+                                                                        &nbsp;&nbsp;&nbsp;
+                                                                        <b>Division: </b>
+                                                                        <asp:DropDownList ID="ddlDivision" runat="server" OnSelectedIndexChanged="ddlDivision_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+                                                                    </td>
                                                                 </tr>
                                                             </table>
                                                         </td>
@@ -111,6 +116,15 @@
                                                             <ItemStyle HorizontalAlign="center" CssClass="iPXDate" />
                                                         </asp:BoundField>
                                                         <asp:BoundField DataField="Type" HeaderText="Type" ItemStyle-CssClass="iPXTime" />
+
+                                                        <asp:TemplateField HeaderText="Division">
+                                                            <ItemTemplate>
+                                                                <asp:Label ID="lblDivision" runat="server" Text=""></asp:Label>
+                                                            </ItemTemplate>
+                                                            <HeaderStyle HorizontalAlign="Center" />
+                                                            <ItemStyle HorizontalAlign="Center" />
+                                                        </asp:TemplateField>
+
                                                         <asp:BoundField DataField="From" HeaderText="From" ItemStyle-CssClass="iPXFrom" />
                                                         <asp:BoundField DataField="To" HeaderText="To" ItemStyle-CssClass="iPXTo" />
                                                         <asp:BoundField DataField="mess_subject" HeaderText="Subject" ItemStyle-CssClass="iPXSubject" />
@@ -174,6 +188,7 @@
                                         <tr>
                                             <td align="center">
                                                 <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
+                                                <asp:HiddenField ID="hdnPrimaryDivision" runat="server" Value="0" />
                                             </td>
                                         </tr>
                                     </table>

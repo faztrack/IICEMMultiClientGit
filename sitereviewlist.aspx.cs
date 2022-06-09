@@ -23,6 +23,7 @@ public partial class sitereviewlist : System.Web.UI.Page
 
         if (!IsPostBack)
         {
+            
             KPIUtility.PageLoad(this.Page.AppRelativeVirtualPath);
             if (Session["oUser"] == null)
             {
@@ -32,6 +33,7 @@ public partial class sitereviewlist : System.Web.UI.Page
             {
                 userinfo oUser = (userinfo)Session["oUser"];
                 hdnEmailType.Value = oUser.EmailIntegrationType.ToString();
+                
 
             }
 
@@ -49,8 +51,9 @@ public partial class sitereviewlist : System.Web.UI.Page
 
             GetCustomerName();
             GetSiteReviews();
-            BindSiteReviewDetails(0);
-       
+            BindSiteReviewDetails(0);           
+
+
             string strJobNumber = csCommonUtility.GetCustomerEstimateInfo(nCustId, nEstId).job_number ?? "";
 
             if (strJobNumber.Length > 0)
@@ -62,6 +65,9 @@ public partial class sitereviewlist : System.Web.UI.Page
             }
         }
     }
+
+
+
 
     private void GetSiteReviews()
     {
@@ -80,16 +86,19 @@ public partial class sitereviewlist : System.Web.UI.Page
                 strCondition = "WHERE customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND estimate_id=" + Convert.ToInt32(hdnEstimateId.Value);
             }
 
+            
+
             //  strCondition = "WHERE customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND estimate_id=" + Convert.ToInt32(hdnEstimateId.Value);
 
             string strQ = string.Empty;
-            strQ = " select [SiteReviewsId] ,[customer_id],[estimate_id],[SiteReviewsNotes],[SiteReviewsDate],[StateOfMindID], " +
+            strQ = " select [SiteReviewsId] ,[customer_id],[estimate_id],[SiteReviewsNotes],[SiteReviewsDate],[StateOfMindID], [client_id], " +
                    " [IsUserView],[IsCustomerView] ,[IsVendorView],[HasAttachments] ,[AttachmentList] ,[CreatedBy] ,[CreateDate] ,[LastUpdatedBy],[LastUpdateDate] " +
                    " from [SiteReviewNotes] " + strCondition + " order by CreateDate DESC";
 
-            IEnumerable<csSiteReview> mList = _db.ExecuteQuery<csSiteReview>(strQ, string.Empty).ToList();
-            if (mList.Count() > 0)
-                Session.Add("nSiteReviewList", csCommonUtility.LINQToDataTable(mList));
+
+            DataTable dt = csCommonUtility.GetDataTable(strQ);
+            if (dt.Rows.Count > 0)
+                Session.Add("nSiteReviewList", dt);
             else
                 Session.Remove("nSiteReviewList");
             BindSiteReviewDetails(0);
@@ -121,7 +130,7 @@ public partial class sitereviewlist : System.Web.UI.Page
                 grdSiteViewList.DataSource = dtSiteReview;
                 grdSiteViewList.PageSize = Convert.ToInt32(ddlItemPerPage.SelectedValue);
                 grdSiteViewList.PageIndex = nPageNo;
-                grdSiteViewList.DataKeyNames = new string[] { "SiteReviewsId", "customer_id", "estimate_id", "SiteReviewsDate", "IsCustomerView", "SiteReviewsNotes", "StateOfMindID" };
+                grdSiteViewList.DataKeyNames = new string[] { "SiteReviewsId", "customer_id", "estimate_id", "SiteReviewsDate", "IsCustomerView", "SiteReviewsNotes", "StateOfMindID", "client_id" };
                 grdSiteViewList.DataBind();
             }
             else
@@ -240,96 +249,6 @@ public partial class sitereviewlist : System.Web.UI.Page
         GetSiteReviews();
     }
 
-    private void GetSearchSiteReview(int nPageNo)
-    {
-        //DataClassesDataContext _db = new DataClassesDataContext();
-        //lblResult.Text = "";
-
-
-        //string strCondition = "";
-        //DateTime strStartDate = DateTime.Now;
-        //DateTime strEndDate = DateTime.Now;
-        //if (txtStartDate.Text == "")
-        //{
-        //    lblResult.Text = csCommonUtility.GetSystemRequiredMessage("Start Date is a required field");
-
-        //    return;
-        //}
-        //else
-        //{
-        //    try
-        //    {
-        //        Convert.ToDateTime(txtStartDate.Text);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        lblResult.Text = csCommonUtility.GetSystemErrorMessage("Invalid Start Date");
-
-        //        return;
-        //    }
-        //    strStartDate = Convert.ToDateTime(txtStartDate.Text);
-        //}
-
-        //if (txtEndDate.Text == "")
-        //{
-        //    lblResult.Text = csCommonUtility.GetSystemRequiredMessage("End Date is a required field");
-
-        //    return;
-        //}
-        //else
-        //{
-        //    try
-        //    {
-        //        Convert.ToDateTime(txtEndDate.Text);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        lblResult.Text = csCommonUtility.GetSystemErrorMessage("Invalid End Date");
-
-        //        return;
-        //    }
-        //    strEndDate = Convert.ToDateTime(txtEndDate.Text);
-        //}
-        //if (strStartDate > strEndDate)
-        //{
-        //    lblResult.Text = csCommonUtility.GetSystemErrorMessage("Invalid Date Range");
-
-        //    return;
-        //}
-
-        //if (txtStartDate.Text != "" && txtEndDate.Text != "")
-        //{
-        //    strCondition = "WHERE customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND estimate_id=" + Convert.ToInt32(hdnEstimateId.Value) + " AND SiteReviewsDate>='" + strStartDate + "' AND  SiteReviewsDate<'" + strEndDate.AddDays(1).ToString() + "' ";
-        //}
-        //else
-        //{
-        //    strCondition = "WHERE customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND estimate_id=" + Convert.ToInt32(hdnEstimateId.Value);
-        //}
-
-
-        //string strQ = string.Empty;
-        //strQ = " select [SiteReviewsId] ,[customer_id],[estimate_id],[SiteReviewsNotes],[SiteReviewsDate],[StateOfMindID], " +
-        //       " [IsUserView],[IsCustomerView] ,[IsVendorView],[HasAttachments] ,[AttachmentList] ,[CreatedBy] ,[CreateDate] ,[LastUpdatedBy],[LastUpdateDate] " +
-        //       " from [SiteReviewNotes] " + strCondition + " order by CreateDate DESC";
-
-        //IEnumerable<csSiteReview> mList = _db.ExecuteQuery<csSiteReview>(strQ, string.Empty).ToList();
-
-        //if (mList.Count() == 0)
-        //{
-        //    lblResult.Text = csCommonUtility.GetSystemErrorMessage("No data exist.");
-        //    grdSiteViewList.DataSource = null;
-        //    grdSiteViewList.DataBind();
-        //    return;
-        //}
-        //grdSiteViewList.DataSource = mList;
-        //grdSiteViewList.PageSize = Convert.ToInt32(ddlItemPerPage.SelectedValue);
-        //grdSiteViewList.PageIndex = nPageNo;
-        //grdSiteViewList.DataKeyNames = new string[] { "SiteReviewsId", "customer_id", "estimate_id", "SiteReviewsDate", "IsCustomerView", "StateOfMindID" };
-        //grdSiteViewList.DataBind();
-
-
-
-    }
 
     protected void grdSiteViewList_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {
@@ -348,6 +267,9 @@ public partial class sitereviewlist : System.Web.UI.Page
             Boolean IsCustomer = Convert.ToBoolean(grdSiteViewList.DataKeys[e.Row.RowIndex].Values[4]);
             string SiteReviewNote = grdSiteViewList.DataKeys[e.Row.RowIndex].Values[5].ToString();
             int StatetOfMind = Convert.ToInt32(grdSiteViewList.DataKeys[e.Row.RowIndex].Values[6].ToString());
+            string nClientId = grdSiteViewList.DataKeys[e.Row.RowIndex].Values[7].ToString();
+            Label lblDivisionName = (Label)e.Row.FindControl("lblDivisionName");
+            lblDivisionName.Text = csCommonUtility.GetDivisionName(nClientId);
 
             Image imgStateOfMind = (Image)e.Row.FindControl("imgStateOfMind");
             if (StatetOfMind == 0)
@@ -414,11 +336,11 @@ public partial class sitereviewlist : System.Web.UI.Page
 
             if (IsCustomer == true)
             {
-                e.Row.Cells[3].Text = "Yes";
+                e.Row.Cells[4].Text = "Yes";
             }
             else
             {
-                e.Row.Cells[3].Text = "";
+                e.Row.Cells[4].Text = "";
             }
         }
     }
@@ -699,5 +621,7 @@ public partial class sitereviewlist : System.Web.UI.Page
 
         }
     }
-     
+
+
+    
 }

@@ -303,6 +303,7 @@ public partial class mobile : System.Web.UI.Page
                 obj.sales_person_id = 0;
                 obj.IsTimeClock = true;
                 obj.client_id = "1,2";
+               
                 Session.Add("oUser", obj);
 
                 Session.Add("sRole", "admin"); //for Context menu
@@ -487,6 +488,8 @@ public partial class mobile : System.Web.UI.Page
                 obj.role_id = Convert.ToInt32(uinfo.role_id);
                 obj.is_active = Convert.ToBoolean(uinfo.is_active);
                 obj.client_id = uinfo.client_id;
+                obj.divisionName = uinfo.division_name;
+                obj.primaryDivision = Convert.ToInt32(uinfo.primary_division);
                 obj.create_date = Convert.ToDateTime(uinfo.create_date);
                 obj.username = uinfo.username;
                 obj.sales_person_id = Convert.ToInt32(uinfo.sales_person_id);
@@ -504,7 +507,7 @@ public partial class mobile : System.Web.UI.Page
                 // Update Last Login by User
                 uinfo.last_login_time = Convert.ToDateTime(DateTime.Now);
                 _db.SubmitChanges();
-                string strQ = "UPDATE sales_person SET last_login_time='" + uinfo.last_login_time + "' WHERE sales_person_id =" + obj.sales_person_id + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                string strQ = "UPDATE sales_person SET last_login_time='" + uinfo.last_login_time + "' WHERE sales_person_id =" + obj.sales_person_id ;
                 _db.ExecuteCommand(strQ, string.Empty);
 
                 // Create the authentication ticket

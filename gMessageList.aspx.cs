@@ -70,6 +70,7 @@ public partial class gMessageList : System.Web.UI.Page
 
         if (!IsPostBack)
         {
+            string divisionName = "";
             KPIUtility.PageLoad(this.Page.AppRelativeVirtualPath);
             if (Session["oUser"] == null)
             {
@@ -77,7 +78,10 @@ public partial class gMessageList : System.Web.UI.Page
             }
             else
             {
-	            hdnClientId.Value = ((userinfo)Session["oUser"]).client_id.ToString();
+                userinfo oUser = (userinfo)Session["oUser"];
+                hdnClientId.Value = oUser.client_id.ToString();
+                hdnPrimaryDivision.Value = oUser.primaryDivision.ToString();
+                divisionName = oUser.divisionName;
             }
             if (Page.User.IsInRole("GM01") == false)
             {
@@ -85,13 +89,26 @@ public partial class gMessageList : System.Web.UI.Page
                 Response.Redirect("nopermission.aspx");
             }
             // Get Customers
-            # region Get Customers
-          //  DataClassesDataContext _db = new DataClassesDataContext();
+            #region Get Customers
+            //  DataClassesDataContext _db = new DataClassesDataContext();
             //List<customer_message> CustomerMessList = _db.customer_messages.ToList();
             //Session.Add("cSearch", CustomerMessList);
 
-            # endregion
+            #endregion
             lblHeaderMess.Text = "Message List";
+
+            BindDivision();
+
+
+            if (divisionName != "" && divisionName.Contains(","))
+            {
+                ddlDivision.Enabled = true;
+            }
+            else
+            {
+                ddlDivision.Enabled = false;
+            }
+
             GetCustomerMessageInfo(0);
 
             //HyperLink1.Attributes.Add("onClick", "DisplayWindow();");
@@ -103,197 +120,223 @@ public partial class gMessageList : System.Web.UI.Page
 
     }
 
+    private void BindDivision()
+    {
+        string sql = "select id, division_name from division order by division_name ";
+        DataTable dt = csCommonUtility.GetDataTable(sql);
+        ddlDivision.DataSource = dt;
+        ddlDivision.DataTextField = "division_name";
+        ddlDivision.DataValueField = "id";
+        ddlDivision.DataBind();
+        ddlDivision.Items.Insert(0, "All");
+        ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
+
+    }
+
     private void GetCustomerMessageInfo(int nPageNo)
     {
 
-            try
+        try
+        {
+            string UserEmail = string.Empty;
+            if ((userinfo)Session["oUser"] != null)
             {
-                string UserEmail = string.Empty;
-                if ((userinfo)Session["oUser"] != null)
-                {
-                    userinfo obj = (userinfo)Session["oUser"];
-                    UserEmail = obj.company_email;
-                    if (UserEmail.Length == 0)
-                        UserEmail = obj.email;
-                  //  hdnEmailType.Value = obj.EmailIntegrationType.ToString();
-                }
-               
-                 var typelist = new int[] { 4, 5 }; 
+                userinfo obj = (userinfo)Session["oUser"];
+                UserEmail = obj.company_email;
+                if (UserEmail.Length == 0)
+                    UserEmail = obj.email;
+                //  hdnEmailType.Value = obj.EmailIntegrationType.ToString();
+            }
+
+            var typelist = new int[] { 4, 5 };
 
 
-                DSMessage dsMessageSent = new DSMessage();
+            DSMessage dsMessageSent = new DSMessage();
 
-                DataClassesDataContext _db = new DataClassesDataContext();
-                // var messList = (from mess_info in _db.customer_messages
-                //                  join c in _db.customers on mess_info.customer_id equals c.customer_id
-                //                 where typelist.Contains((int)c.status_id) && c.is_active == true && (mess_info.mess_to.Contains(UserEmail) || mess_info.mess_from.Contains(UserEmail)) && mess_info.client_id.ToString().Contains(hdnClientId.Value)
-                //                orderby mess_info.cust_message_id descending
-                //                select mess_info).ToList();
-                //if (chkGlobal.Checked)
-                //{
-                //     messList = (from mess_info in _db.customer_messages
-                //                 join c in _db.customers on mess_info.customer_id equals c.customer_id
-                //                 where typelist.Contains((int)c.status_id) && c.is_active == true && mess_info.client_id.ToString().Contains(hdnClientId.Value)
-                //                 orderby mess_info.cust_message_id descending
-                //                    select mess_info).ToList();
- 
-                //}
+            DataClassesDataContext _db = new DataClassesDataContext();
+            // var messList = (from mess_info in _db.customer_messages
+            //                  join c in _db.customers on mess_info.customer_id equals c.customer_id
+            //                 where typelist.Contains((int)c.status_id) && c.is_active == true && (mess_info.mess_to.Contains(UserEmail) || mess_info.mess_from.Contains(UserEmail)) && mess_info.client_id.ToString().Contains(hdnClientId.Value)
+            //                orderby mess_info.cust_message_id descending
+            //                select mess_info).ToList();
+            //if (chkGlobal.Checked)
+            //{
+            //     messList = (from mess_info in _db.customer_messages
+            //                 join c in _db.customers on mess_info.customer_id equals c.customer_id
+            //                 where typelist.Contains((int)c.status_id) && c.is_active == true && mess_info.client_id.ToString().Contains(hdnClientId.Value)
+            //                 orderby mess_info.cust_message_id descending
+            //                    select mess_info).ToList();
+
+            //}
 
             string strQry = "";
+            string strCondition = "";
             List<customer_message> messList = new List<customer_message>();
+
+
+            if (ddlDivision.SelectedItem.Text != "All")
+            {
+                if (chkGlobal.Checked)
+                {
+                    strCondition = " WHERE customer_message.client_id =" + Convert.ToInt32(ddlDivision.SelectedValue) + " ";
+                }
+                else
+                {
+                    strCondition = " AND customer_message.client_id =" + Convert.ToInt32(ddlDivision.SelectedValue) + " ";
+                }
+            }
+
             if (chkGlobal.Checked)
             {
 
-                strQry = @"SELECT * FROM  customer_message
-                      WHERE   customer_message.client_id in (" + hdnClientId.Value + ")" + " ORDER BY cust_message_id DESC";
+                strQry = @"SELECT * FROM  customer_message " + strCondition + " ORDER BY cust_message_id DESC";
                 messList = _db.ExecuteQuery<customer_message>(strQry, string.Empty).ToList();
             }
             else
             {
-                strQry = @"SELECT * FROM customer_message
-                      WHERE  (mess_to LIKE '" + UserEmail + "' or mess_from LIKE '" + UserEmail + "')  and customer_message.client_id in (" + hdnClientId.Value + ")" + " ORDER BY cust_message_id DESC";
-
+                strQry = @"SELECT * FROM customer_message WHERE (mess_to LIKE '" + UserEmail + "' or mess_from LIKE '" + UserEmail + "') " + strCondition + " ORDER BY cust_message_id DESC";
 
                 messList = _db.ExecuteQuery<customer_message>(strQry, string.Empty).ToList();
             }
 
 
 
-                foreach (customer_message msg in messList)
-                {
-                    DSMessage.MessageRow mes = dsMessageSent.Message.NewMessageRow();
-
-
-
-                    if (msg.HasAttachments == null)
-                    {
-                        string strQ = "select * from message_upolad_info where customer_id=" + msg.customer_id + " and message_id=" + msg.message_id + " and client_id in ( " + hdnClientId.Value + " )";
-                        IEnumerable<message_upolad_info> list = _db.ExecuteQuery<message_upolad_info>(strQ, string.Empty);
-
-                        string mess_file = "";
-                        foreach (message_upolad_info message_upolad in list)
-                        {
-                            mess_file += message_upolad.mess_file_name.Replace("amp;", "").Trim() + ", "; ;
-                        }
-                        mess_file = mess_file.Trim().TrimEnd(',');
-
-                        if (mess_file.Length > 0)
-                        {
-                            mes.HasAttachments = true;
-                            mes.AttachmentList = mess_file.Trim().TrimEnd(',');
-
-
-                        }
-                        else
-                        {
-                            mes.AttachmentList = "";
-                            mes.HasAttachments = false;// msg.HasAttachments;
-                        }
-
-                        msg.HasAttachments = mes.HasAttachments;
-                        msg.AttachmentList = mes.AttachmentList;
-
-                    }
-                    else if (Convert.ToBoolean(msg.HasAttachments))
-                    {
-
-                        mes.HasAttachments = true;
-                        mes.AttachmentList = msg.AttachmentList;
-
-
-                    }
-                    else
-                    {
-                        mes.HasAttachments = false;
-                        mes.AttachmentList = "";
-                    }
-
-                    mes.From = msg.mess_from;
-                    mes.To = msg.mess_to;
-                    mes.IsRead = (bool)(msg.IsView ?? false);
-                    mes.customer_id = msg.customer_id.ToString();
-                    mes.message_id = msg.message_id.ToString();
-                    mes.create_date = (DateTime)msg.create_date;
-                    if (msg.mess_subject != null)
-                        mes.mess_subject = msg.mess_subject.ToString();
-                    else
-                        mes.mess_subject = "";
-                    mes.last_view = (DateTime)msg.last_view;
-                    mes.Protocol = msg.Protocol;
-                    mes.Type = msg.Type;
-                    mes.sent_by = msg.sent_by;
-                    dsMessageSent.Message.AddMessageRow(mes);
-
-                }
-
-                _db.SubmitChanges();
-
-                dsMessageSent.AcceptChanges();
-               
-                DataView dv = dsMessageSent.Tables[0].DefaultView;
-                dv.Sort = "create_date DESC";
-                if (txtSearch.Text.Trim() != "")
-                {
-                    string str = txtSearch.Text.Trim();
-                    if (ddlSearchBy.SelectedValue == "1")
-                    {
-                        dv.RowFilter = "sent_by LIKE '%" + str + "%'";
-                    }
-                    else if (ddlSearchBy.SelectedValue == "2")
-                    {
-
-                        dv.RowFilter = "From LIKE '%" + str + "%'";
-                    }
-                    else if (ddlSearchBy.SelectedValue == "3")
-                    {
-                        dv.RowFilter = "To LIKE '%" + str + "%'";
-                    }
-                   
-                }
-                if (ddlItemPerPage.SelectedValue != "4")
-                {
-                    grdCustomersMessage.PageSize = Convert.ToInt32(ddlItemPerPage.SelectedValue);
-                }
-                else
-                {
-                    grdCustomersMessage.PageSize = 200;
-                }
-                grdCustomersMessage.PageIndex = nPageNo;
-                grdCustomersMessage.DataSource = dv;
-                grdCustomersMessage.DataKeyNames = new string[] { "customer_id", "message_id", "AttachmentList", "From", "To", "Type" };
-                grdCustomersMessage.DataBind();
-                lblCurrentPageNo.Text = Convert.ToString(nPageNo + 1);
-                if (nPageNo == 0)
-                {
-                    btnPrevious.Enabled = false;
-                    btnPrevious0.Enabled = false;
-                }
-                else
-                {
-                    btnPrevious.Enabled = true;
-                    btnPrevious0.Enabled = true;
-                }
-
-                if (grdCustomersMessage.PageCount == nPageNo + 1)
-                {
-                    btnNext.Enabled = false;
-                    btnNext0.Enabled = false;
-                }
-                else
-                {
-                    btnNext.Enabled = true;
-                    btnNext0.Enabled = true;
-                }
-
-
-
-
-            }
-            catch (Exception ex)
+            foreach (customer_message msg in messList)
             {
-                lblResult.Text = csCommonUtility.GetSystemErrorMessage(ex.Message);
+                DSMessage.MessageRow mes = dsMessageSent.Message.NewMessageRow();
+
+
+                if (msg.HasAttachments == null)
+                {
+                    string strQ = "select * from message_upolad_info where customer_id=" + msg.customer_id + " and message_id=" + msg.message_id + " and client_id = " + Convert.ToInt32(ddlDivision.SelectedValue);
+                    IEnumerable<message_upolad_info> list = _db.ExecuteQuery<message_upolad_info>(strQ, string.Empty);
+
+
+                    string mess_file = "";
+                    foreach (message_upolad_info message_upolad in list)
+                    {
+                        mess_file += message_upolad.mess_file_name.Replace("amp;", "").Trim() + ", "; ;
+                    }
+                    mess_file = mess_file.Trim().TrimEnd(',');
+
+                    if (mess_file.Length > 0)
+                    {
+                        mes.HasAttachments = true;
+                        mes.AttachmentList = mess_file.Trim().TrimEnd(',');
+
+
+                    }
+                    else
+                    {
+                        mes.AttachmentList = "";
+                        mes.HasAttachments = false;// msg.HasAttachments;
+                    }
+
+                    msg.HasAttachments = mes.HasAttachments;
+                    msg.AttachmentList = mes.AttachmentList;
+
+                }
+                else if (Convert.ToBoolean(msg.HasAttachments))
+                {
+
+                    mes.HasAttachments = true;
+                    mes.AttachmentList = msg.AttachmentList;
+
+
+                }
+                else
+                {
+                    mes.HasAttachments = false;
+                    mes.AttachmentList = "";
+                }
+
+                mes.From = msg.mess_from;
+                mes.To = msg.mess_to;
+                mes.IsRead = (bool)(msg.IsView ?? false);
+                mes.customer_id = msg.customer_id.ToString();
+                mes.message_id = msg.message_id.ToString();
+                mes.create_date = (DateTime)msg.create_date;
+                if (msg.mess_subject != null)
+                    mes.mess_subject = msg.mess_subject.ToString();
+                else
+                    mes.mess_subject = "";
+                mes.last_view = (DateTime)msg.last_view;
+                mes.Protocol = msg.Protocol;
+                mes.Type = msg.Type;
+                mes.sent_by = msg.sent_by;
+                mes.client_id = msg.client_id.ToString();
+                dsMessageSent.Message.AddMessageRow(mes);
 
             }
+
+            _db.SubmitChanges();
+
+            dsMessageSent.AcceptChanges();
+
+            DataView dv = dsMessageSent.Tables[0].DefaultView;
+            dv.Sort = "create_date DESC";
+            if (txtSearch.Text.Trim() != "")
+            {
+                string str = txtSearch.Text.Trim();
+                if (ddlSearchBy.SelectedValue == "1")
+                {
+                    dv.RowFilter = "sent_by LIKE '%" + str + "%'";
+                }
+                else if (ddlSearchBy.SelectedValue == "2")
+                {
+
+                    dv.RowFilter = "From LIKE '%" + str + "%'";
+                }
+                else if (ddlSearchBy.SelectedValue == "3")
+                {
+                    dv.RowFilter = "To LIKE '%" + str + "%'";
+                }
+
+            }
+            if (ddlItemPerPage.SelectedValue != "4")
+            {
+                grdCustomersMessage.PageSize = Convert.ToInt32(ddlItemPerPage.SelectedValue);
+            }
+            else
+            {
+                grdCustomersMessage.PageSize = 200;
+            }
+            grdCustomersMessage.PageIndex = nPageNo;
+            grdCustomersMessage.DataSource = dv;
+            grdCustomersMessage.DataKeyNames = new string[] { "customer_id", "message_id", "AttachmentList", "From", "To", "Type", "client_id" };
+            grdCustomersMessage.DataBind();
+            lblCurrentPageNo.Text = Convert.ToString(nPageNo + 1);
+            if (nPageNo == 0)
+            {
+                btnPrevious.Enabled = false;
+                btnPrevious0.Enabled = false;
+            }
+            else
+            {
+                btnPrevious.Enabled = true;
+                btnPrevious0.Enabled = true;
+            }
+
+            if (grdCustomersMessage.PageCount == nPageNo + 1)
+            {
+                btnNext.Enabled = false;
+                btnNext0.Enabled = false;
+            }
+            else
+            {
+                btnNext.Enabled = true;
+                btnNext0.Enabled = true;
+            }
+
+
+
+
+        }
+        catch (Exception ex)
+        {
+            lblResult.Text = csCommonUtility.GetSystemErrorMessage(ex.Message);
+
+        }
     }
 
 
@@ -314,6 +357,10 @@ public partial class gMessageList : System.Web.UI.Page
                 string To = grdCustomersMessage.DataKeys[e.Row.RowIndex].Values[4].ToString();
                 string Type = grdCustomersMessage.DataKeys[e.Row.RowIndex].Values[5].ToString();
 
+                string nClientId = grdCustomersMessage.DataKeys[e.Row.RowIndex].Values[6].ToString();
+
+                Label lblDivision = e.Row.FindControl("lblDivision") as Label;
+                lblDivision.Text = csCommonUtility.GetDivisionName(nClientId);
 
 
 
@@ -350,11 +397,11 @@ public partial class gMessageList : System.Web.UI.Page
     }
     protected void chkGlobal_CheckedChanged(object sender, EventArgs e)
     {
-        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, chkGlobal.ID, chkGlobal.GetType().Name, "CheckedChanged"); 
+        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, chkGlobal.ID, chkGlobal.GetType().Name, "CheckedChanged");
         if (chkGlobal.Checked)
         {
             lblHeaderMess.Text = "Global Message List";
-           
+
         }
         else
         {
@@ -364,39 +411,39 @@ public partial class gMessageList : System.Web.UI.Page
     }
     protected void btnSearch_Click(object sender, EventArgs e)
     {
-        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnSearch.ID, btnSearch.GetType().Name, "Click"); 
+        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnSearch.ID, btnSearch.GetType().Name, "Click");
         GetCustomerMessageInfo(0);
     }
 
     protected void grdCustomersMessage_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {
-        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, grdCustomersMessage.ID, grdCustomersMessage.GetType().Name, "PageIndexChanging"); 
+        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, grdCustomersMessage.ID, grdCustomersMessage.GetType().Name, "PageIndexChanging");
         GetCustomerMessageInfo(e.NewPageIndex);
     }
-   
+
     protected void btnNext_Click(object sender, EventArgs e)
     {
-        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnNext.ID, btnNext.GetType().Name, "Click"); 
+        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnNext.ID, btnNext.GetType().Name, "Click");
         int nCurrentPage = 0;
         nCurrentPage = Convert.ToInt32(lblCurrentPageNo.Text);
         GetCustomerMessageInfo(nCurrentPage);
     }
     protected void btnPrevious_Click(object sender, EventArgs e)
     {
-        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnPrevious.ID, btnPrevious.GetType().Name, "Click"); 
+        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnPrevious.ID, btnPrevious.GetType().Name, "Click");
         int nCurrentPage = 0;
         nCurrentPage = Convert.ToInt32(lblCurrentPageNo.Text);
         GetCustomerMessageInfo(nCurrentPage - 2);
     }
     protected void ddlItemPerPage_SelectedIndexChanged(object sender, EventArgs e)
     {
-        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, ddlItemPerPage.ID, ddlItemPerPage.GetType().Name, "SelectedIndexChanged"); 
+        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, ddlItemPerPage.ID, ddlItemPerPage.GetType().Name, "SelectedIndexChanged");
         Session.Remove("CustomerId");
         GetCustomerMessageInfo(0);
     }
     protected void ddlSearchBy_SelectedIndexChanged(object sender, EventArgs e)
     {
-        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, ddlSearchBy.ID, ddlSearchBy.GetType().Name, "SelectedIndexChanged"); 
+        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, ddlSearchBy.ID, ddlSearchBy.GetType().Name, "SelectedIndexChanged");
         txtSearch.Text = "";
         wtmFileNumber.WatermarkText = "Search by " + ddlSearchBy.SelectedItem.Text;
 
@@ -412,17 +459,23 @@ public partial class gMessageList : System.Web.UI.Page
         {
             txtSearch_AutoCompleteExtender.ServiceMethod = "GetEmailTo";
         }
-       
-       
+
+
         GetCustomerMessageInfo(0);
     }
 
-     protected void lnkViewAll_Click(object sender, EventArgs e)
+    protected void lnkViewAll_Click(object sender, EventArgs e)
     {
         txtSearch.Text = "";
+        ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
         GetCustomerMessageInfo(0);
 
     }
-     
-    
+
+
+
+    protected void ddlDivision_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        GetCustomerMessageInfo(0);
+    }
 }

@@ -98,6 +98,7 @@ public partial class CallActivityList : System.Web.UI.Page
         Session.Add("loadstarttime", DateTime.Now);
         if (!IsPostBack)
         {
+            string divisionName = "";
             KPIUtility.PageLoad(this.Page.AppRelativeVirtualPath);
             
             if (Session["oUser"] == null)
@@ -106,7 +107,10 @@ public partial class CallActivityList : System.Web.UI.Page
             }
             else
             {
-                hdnClientId.Value = ((userinfo)Session["oUser"]).client_id.ToString();
+                userinfo oUser = (userinfo)Session["oUser"];
+                hdnClientId.Value = oUser.client_id.ToString();
+                hdnPrimaryDivision.Value = oUser.primaryDivision.ToString();
+                divisionName = oUser.divisionName;
             }
             if (Page.User.IsInRole("calllog001") == false)
             {
@@ -121,6 +125,16 @@ public partial class CallActivityList : System.Web.UI.Page
             List<customer> LeadList = _db.customers.ToList();
             Session.Add("cSearch", LeadList);
 
+            BindDivision();
+            if (divisionName != "" && divisionName.Contains(","))
+            {
+                ddlDivision.Enabled = true;
+            }
+            else
+            {
+                ddlDivision.Enabled = false;
+            }
+
             # endregion
             BindLeadSource();
             ddlCallType.SelectedValue = "7";
@@ -131,6 +145,30 @@ public partial class CallActivityList : System.Web.UI.Page
 
         }
     }
+
+
+    private void BindDivision()
+    {
+        try
+        {
+            string sql = "select id, division_name from division order by division_name ";
+            DataTable dt = csCommonUtility.GetDataTable(sql);
+            ddlDivision.DataSource = dt;
+            ddlDivision.DataTextField = "division_name";
+            ddlDivision.DataValueField = "id";
+            ddlDivision.DataBind();
+            ddlDivision.Items.Insert(0, "All");
+            ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
+        }
+        catch (Exception ex)
+        {
+            lblResult.Text = csCommonUtility.GetSystemErrorMessage(ex.ToString());
+        }
+
+    }
+
+   
+
 
     private void BindLeadSource()
     {
@@ -208,7 +246,7 @@ public partial class CallActivityList : System.Web.UI.Page
             Session.Remove("sCallType");
 
             grdCustCallList.PageIndex = nPageNo;
-            string strQ = " SELECT customers.customer_id, first_name1, last_name1, phone, mobile, ISNULL(appointment_date,'1900-01-01') AS appointment_date, customers.lead_source_id,lead_source.lead_name,company, lead_status_id ,Isnull (CallLogID,0) as CallLogID, CallDate, CallHour, CallMinutes, CallDuration, CallAMPM, DurationHour, DurationMinutes, t1.Description, CreatedByUser, ISNULL(CreateDate,'1900-01-01') AS  CreateDate,ISNULL(CallDateTime,'1900-01-01') AS CallDateTime, CallSubject, Isnull(CallTypeId,0) as CallTypeId, ISNULL(IsFollowUp,0) AS IsFollowUp, ISNULL(IsDoNotCall,0) AS IsDoNotCall, FollowDate, FollowHour, FollowMinutes, FollowAMPM, ISNULL(AppointmentDateTime,'1900-01-01') AS AppointmentDateTime,CASE WHEN YEAR(ISNULL(FollowDateTime,'2900-01-01')) = 1900  THEN '2900-01-01'  ELSE  ISNULL(FollowDateTime,'2900-01-01')  END  AS FollowDateTime " +
+            string strQ = " SELECT customers.customer_id, customers.client_id as clientID, first_name1, last_name1, phone, mobile, ISNULL(appointment_date,'1900-01-01') AS appointment_date, customers.lead_source_id,lead_source.lead_name,company, lead_status_id ,Isnull (CallLogID,0) as CallLogID, CallDate, CallHour, CallMinutes, CallDuration, CallAMPM, DurationHour, DurationMinutes, t1.Description, CreatedByUser, ISNULL(CreateDate,'1900-01-01') AS  CreateDate,ISNULL(CallDateTime,'1900-01-01') AS CallDateTime, CallSubject, Isnull(CallTypeId,0) as CallTypeId, ISNULL(IsFollowUp,0) AS IsFollowUp, ISNULL(IsDoNotCall,0) AS IsDoNotCall, FollowDate, FollowHour, FollowMinutes, FollowAMPM, ISNULL(AppointmentDateTime,'1900-01-01') AS AppointmentDateTime,CASE WHEN YEAR(ISNULL(FollowDateTime,'2900-01-01')) = 1900  THEN '2900-01-01'  ELSE  ISNULL(FollowDateTime,'2900-01-01')  END  AS FollowDateTime " +
                     " FROM customers " +
                     " LEFT OUTER JOIN " +
                     " (SELECT     CallLogID, CustomerCallLog.customer_id, CallDate, CallHour, CallMinutes, CallDuration, CallAMPM, DurationHour, DurationMinutes, Description, CreatedByUser, CreateDate, CallDateTime, CallSubject, CallTypeId, IsFollowUp, FollowDate, FollowHour, FollowMinutes, FollowAMPM, AppointmentDateTime, FollowDateTime,IsDoNotCall FROM CustomerCallLog " +
@@ -216,12 +254,12 @@ public partial class CallActivityList : System.Web.UI.Page
                     " ( SELECT    customer_id, Max(CallLogID) as ID FROM CustomerCallLog GROUP BY  customer_id ) AS x ON CustomerCallLog.customer_id = x.customer_id AND CustomerCallLog.CallLogID = x.ID) AS t1 ON t1.customer_id = customers.customer_id " +
                     "  INNER JOIN lead_source ON lead_source.lead_source_id = customers.lead_source_id where  IsFollowUp = 1  and IsDoNotCall = 0 Order By FollowDateTime asc ";
 
-            IEnumerable<csCustomerCall> mList = _db.ExecuteQuery<csCustomerCall>(strQ, string.Empty).ToList();
-            DataTable dt = csCommonUtility.LINQToDataTable(mList);
+            DataTable dt = csCommonUtility.GetDataTable(strQ);
+
             Session.Add("sCustCallLog", dt);
 
-            grdCustCallList.DataSource = mList;
-            grdCustCallList.DataKeyNames = new string[] { "CallLogID", "customer_id", "lead_source_id", "CallTypeId", "IsFollowUp", "first_name1", "last_name1", "phone", "AppointmentDateTime", "FollowDateTime", "IsDoNotCall" };
+            grdCustCallList.DataSource = dt;
+            grdCustCallList.DataKeyNames = new string[] { "CallLogID", "customer_id", "lead_source_id", "CallTypeId", "IsFollowUp", "first_name1", "last_name1", "phone", "AppointmentDateTime", "FollowDateTime", "IsDoNotCall", "clientID" };
             grdCustCallList.DataBind();
             lblCurrentPageNo.Text = Convert.ToString(nPageNo + 1);
             if (nPageNo == 0)
@@ -368,8 +406,18 @@ public partial class CallActivityList : System.Web.UI.Page
             strCondition = "Where customers.customer_id NOT IN(Select cc.customer_id from  CustomerCallLog cc INNER JOIN (SELECT customer_id, Max(CallLogID) as ID FROM CustomerCallLog GROUP BY  customer_id) as y on cc.customer_id =  y.customer_id and cc.CallLogID = y.ID WHERE cc.IsDoNotCall = 1 )";
         }
 
+
+        if (ddlDivision.SelectedItem.Text != "All")
+        {
+            if (strCondition.Length > 2)
+                strCondition += " AND customers.client_id = " + Convert.ToInt32(ddlDivision.SelectedValue) + " ";
+            else
+                strCondition = " WHERE  customers.client_id = " + Convert.ToInt32(ddlDivision.SelectedValue) + " ";
+        }
+
+
         string strQ = string.Empty;
-        strQ = " SELECT customers.customer_id, first_name1, last_name1, phone, mobile, ISNULL(appointment_date,'1900-01-01') AS appointment_date, customers.lead_source_id,lead_source.lead_name,company, lead_status_id ,Isnull (CallLogID,0) as CallLogID, ISNULL(CallDate,'') as CallDate,  ISNULL(CallHour,'') as CallHour, ISNULL(CallMinutes, '') as CallMinutes, ISNULL(CallDuration, '') as CallDuration, ISNULL(CallAMPM, '') as CallAMPM, ISNULL(DurationHour, '') as DurationHour, ISNULL(DurationMinutes,'') as DurationMinutes, ISNULL(t1.Description, '') as Description, ISNULL(CreatedByUser,'') as CreatedByUser, ISNULL(CreateDate,'1900-01-01') AS  CreateDate,ISNULL(CallDateTime,'1900-01-01') AS CallDateTime, ISNULL(CallSubject,'') as CallSubject, Isnull(CallTypeId,0) as CallTypeId, ISNULL(IsFollowUp,0) AS IsFollowUp, ISNULL(IsDoNotCall,0) AS IsDoNotCall, ISNULL(FollowDate,'') as FollowDate, ISNULL(FollowHour,'') as FollowHour, ISNULL( FollowMinutes, '') as FollowMinutes, ISNULL(FollowAMPM,'') as FollowAMPM, ISNULL(AppointmentDateTime,'1900-01-01') AS AppointmentDateTime,CASE WHEN YEAR(ISNULL(FollowDateTime,'2900-01-01')) = 1900  THEN '2900-01-01'  ELSE  ISNULL(FollowDateTime,'2900-01-01')  END  AS FollowDateTime " +
+        strQ = " SELECT customers.customer_id, customers.client_id as clientID, first_name1, last_name1, phone, mobile, ISNULL(appointment_date,'1900-01-01') AS appointment_date, customers.lead_source_id,lead_source.lead_name,company, lead_status_id ,Isnull (CallLogID,0) as CallLogID, ISNULL(CallDate,'') as CallDate,  ISNULL(CallHour,'') as CallHour, ISNULL(CallMinutes, '') as CallMinutes, ISNULL(CallDuration, '') as CallDuration, ISNULL(CallAMPM, '') as CallAMPM, ISNULL(DurationHour, '') as DurationHour, ISNULL(DurationMinutes,'') as DurationMinutes, ISNULL(t1.Description, '') as Description, ISNULL(CreatedByUser,'') as CreatedByUser, ISNULL(CreateDate,'1900-01-01') AS  CreateDate,ISNULL(CallDateTime,'1900-01-01') AS CallDateTime, ISNULL(CallSubject,'') as CallSubject, Isnull(CallTypeId,0) as CallTypeId, ISNULL(IsFollowUp,0) AS IsFollowUp, ISNULL(IsDoNotCall,0) AS IsDoNotCall, ISNULL(FollowDate,'') as FollowDate, ISNULL(FollowHour,'') as FollowHour, ISNULL( FollowMinutes, '') as FollowMinutes, ISNULL(FollowAMPM,'') as FollowAMPM, ISNULL(AppointmentDateTime,'1900-01-01') AS AppointmentDateTime,CASE WHEN YEAR(ISNULL(FollowDateTime,'2900-01-01')) = 1900  THEN '2900-01-01'  ELSE  ISNULL(FollowDateTime,'2900-01-01')  END  AS FollowDateTime " +
                  " FROM customers " +
                  " LEFT OUTER JOIN " +
                  " (SELECT     CallLogID, CustomerCallLog.customer_id, Isnull(CallDate,'') as CallDate, Isnull (CallHour,'') as CallHour, Isnull (CallMinutes, '') as CallMinutes, Isnull (CallDuration, '') as CallDuration, Isnull (CallAMPM,'') as CallAMPM, Isnull (DurationHour, '') as DurationHour, Isnull (DurationMinutes, '') as DurationMinutes, Isnull (Description, '') as Description, Isnull (CreatedByUser,'') as CreatedByUser, CreateDate, CallDateTime, CallSubject, CallTypeId, IsFollowUp, FollowDate, FollowHour, FollowMinutes, FollowAMPM, AppointmentDateTime, FollowDateTime,IsDoNotCall FROM CustomerCallLog " +
@@ -377,12 +425,13 @@ public partial class CallActivityList : System.Web.UI.Page
                  " ( SELECT    customer_id, Max(CallLogID) as ID FROM CustomerCallLog GROUP BY  customer_id ) AS x ON CustomerCallLog.customer_id = x.customer_id AND CustomerCallLog.CallLogID = x.ID) AS t1 ON t1.customer_id = customers.customer_id " +
                  "  INNER JOIN lead_source ON lead_source.lead_source_id = customers.lead_source_id " + strCondition + " Order By FollowDateTime asc, first_name1 asc ";
 
-        IEnumerable<csCustomerCall> mList = _db.ExecuteQuery<csCustomerCall>(strQ, string.Empty).ToList();
-        DataTable dt = csCommonUtility.LINQToDataTable(mList);
+       
+        DataTable dt = csCommonUtility.GetDataTable(strQ);
+
         Session.Add("sCustCallLog", dt);
 
-        grdCustCallList.DataSource = mList;
-        grdCustCallList.DataKeyNames = new string[] { "CallLogID", "customer_id", "lead_source_id", "CallTypeId", "IsFollowUp", "first_name1", "last_name1", "phone", "AppointmentDateTime", "FollowDateTime", "IsDoNotCall" };
+        grdCustCallList.DataSource = dt;
+        grdCustCallList.DataKeyNames = new string[] { "CallLogID", "customer_id", "lead_source_id", "CallTypeId", "IsFollowUp", "first_name1", "last_name1", "phone", "AppointmentDateTime", "FollowDateTime", "IsDoNotCall", "clientID" };
         grdCustCallList.DataBind();
         lblCurrentPageNo.Text = Convert.ToString(nPageNo + 1);
         if (nPageNo == 0)
@@ -410,10 +459,12 @@ public partial class CallActivityList : System.Web.UI.Page
 
 
 
-    protected void grdCustCallList_RowDataBound(object sender, GridViewRowEventArgs e)
+    protected void grdCustCallList_RowDataBound(object sender, GridViewRowEventArgs e) 
     {
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
+            DataClassesDataContext _db = new DataClassesDataContext();
+
             int nCallId = Convert.ToInt32(grdCustCallList.DataKeys[e.Row.RowIndex].Values[0]);
             int nCustId = Convert.ToInt32(grdCustCallList.DataKeys[e.Row.RowIndex].Values[1]);
             int nlead_source_Id = Convert.ToInt32(grdCustCallList.DataKeys[e.Row.RowIndex].Values[2]);
@@ -424,8 +475,14 @@ public partial class CallActivityList : System.Web.UI.Page
             string strphone = grdCustCallList.DataKeys[e.Row.RowIndex].Values[7].ToString();
             DateTime strAppointmentDateTime = Convert.ToDateTime(grdCustCallList.DataKeys[e.Row.RowIndex].Values[8]);
             DateTime strFollowDateTime = Convert.ToDateTime(grdCustCallList.DataKeys[e.Row.RowIndex].Values[9]);
+            string nClientId = grdCustCallList.DataKeys[e.Row.RowIndex].Values[11].ToString();
 
             bool bIsDoNotCall = Convert.ToBoolean(grdCustCallList.DataKeys[e.Row.RowIndex].Values[10]);
+
+
+            Label lblDivision = e.Row.FindControl("lblDivision") as Label;
+            
+            lblDivision.Text = csCommonUtility.GetDivisionName(nClientId);
 
             HyperLink hyp_Cust = (HyperLink)e.Row.FindControl("hyp_Cust");
             hyp_Cust.Text = strFirst + " " + strLast;
@@ -452,7 +509,7 @@ public partial class CallActivityList : System.Web.UI.Page
             else if (nCallTypeId == 3)
             {
 
-                DataClassesDataContext _db = new DataClassesDataContext();
+                
                 ScheduleCalendar objsc = new ScheduleCalendar();
                 string apptDate = Convert.ToDateTime(strAppointmentDateTime).ToShortDateString();
                 string startTime = Convert.ToDateTime(strAppointmentDateTime).ToShortTimeString();
@@ -594,6 +651,7 @@ public partial class CallActivityList : System.Web.UI.Page
         txtSearch.Text = "";
         ddlCallType.SelectedValue = "7";
         ddlLeadSource.SelectedIndex = -1;
+        ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
         GetCustomerCallLog(0);
 
     }
@@ -685,7 +743,7 @@ public partial class CallActivityList : System.Web.UI.Page
 
         dtCallList = (DataTable)Session["sCustCallLog"];
         grdCustCallList.DataSource = dtCallList;
-        grdCustCallList.DataKeyNames = new string[] { "CallLogID", "customer_id", "lead_source_id", "CallTypeId", "IsFollowUp", "first_name1", "last_name1", "phone", "AppointmentDateTime", "FollowDateTime", "IsDoNotCall" };
+        grdCustCallList.DataKeyNames = new string[] { "CallLogID", "customer_id", "lead_source_id", "CallTypeId", "IsFollowUp", "first_name1", "last_name1", "phone", "AppointmentDateTime", "FollowDateTime", "IsDoNotCall", "clientID" };
         grdCustCallList.DataBind();
         lblCurrentPageNo.Text = Convert.ToString(nPageNo + 1);
         if (nPageNo == 0)
@@ -866,5 +924,11 @@ public partial class CallActivityList : System.Web.UI.Page
             lnkOpen.Text = "More";
             lnkOpen.ToolTip = "Click here to view more";
         }
+    }
+
+    protected void ddlDivision_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        //GetCustomerCallLog_FollowUp(0);
+        GetCustomerCallLog(0);
     }
 }
