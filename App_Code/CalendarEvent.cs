@@ -9,7 +9,9 @@ public class CalendarEvent
     public string title { get; set; } 
     public string description { get; set; }  
     public DateTime start { get; set; }
-    public DateTime end { get; set; }    
+    public DateTime end { get; set; }
+
+    public int client_id { get; set; }
     public int customer_id { get; set; }
     public int estimate_id { get; set; }
     public int employee_id { get; set; }

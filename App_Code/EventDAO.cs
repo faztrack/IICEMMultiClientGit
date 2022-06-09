@@ -2982,6 +2982,7 @@ public class EventDAO
                 objSCTemp.description = cevent.description + strCustInfo;
                 objSCTemp.event_start = dtStartDate;
                 objSCTemp.event_end = dtEndDate;
+                objSCTemp.client_id = cevent.client_id;
                 objSCTemp.customer_id = nCustomerID;
                 objSCTemp.estimate_id = nEstimateID;
                 objSCTemp.employee_id = nEmployeeID;
@@ -3179,6 +3180,7 @@ public class EventDAO
                 objSC.description = cevent.description + strCustInfo;
                 objSC.event_start = cevent.start;// dtStartDate;
                 objSC.event_end = cevent.end;// dtEndDate;
+                objSC.client_id = cevent.client_id;               
                 objSC.customer_id = nCustomerID;
                 objSC.estimate_id = nEstimateID;
                 objSC.employee_id = nEmployeeID;

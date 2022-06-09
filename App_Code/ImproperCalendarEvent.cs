@@ -10,6 +10,8 @@ public class ImproperCalendarEvent
     public string description { get; set; }
     public string start { get; set; }
     public string end { get; set; }
+
+    public int client_id { get; set; }
     public int customer_id { get; set; }
     public int estimate_id { get; set; }
     public int employee_id { get; set; }

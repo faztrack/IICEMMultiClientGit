@@ -8,7 +8,7 @@
     <style type="text/css">
         .ui-autocomplete-loading {
             background: white url("images/ui-anim_basic_16x16.gif") right center no-repeat;
-        }            
+        }
     </style>
 
     <script type="text/javascript">
@@ -100,6 +100,14 @@
                                 <tr id="trSearchCal" runat="server">
                                     <td align="left">
                                         <table style="padding: 0px; margin: 0px;" id="tblSearch" runat="server">
+                                            <tr>
+                                                <td align="right">
+                                                    <b>Division:</b>
+                                                </td>
+                                                <td align="left">
+                                                    <asp:DropDownList ID="ddlDivision" runat="server" AutoPostBack="false"></asp:DropDownList>
+                                                </td>
+                                            </tr>
                                             <tr>
                                                 <td align="right">
                                                     <asp:Label ID="lblSearchLastName" runat="server">Last Name:&nbsp;</asp:Label></td>
@@ -1164,6 +1172,10 @@
     <asp:HiddenField ID="hdnEventId" runat="server" Value="0" />
     <asp:HiddenField ID="hdnUpdateDialogShow" runat="server" Value="false" />
     <asp:HiddenField ID="hdnEmailType" runat="server" Value="2" />
+
+    <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
+    <asp:HiddenField ID="hdnPrimaryDivision" runat="server" Value="0" />
+    <asp:HiddenField ID="hdnDivisionName" runat="server" Value="" />
     <br />
     <br />
 

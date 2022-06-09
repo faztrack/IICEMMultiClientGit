@@ -33,8 +33,12 @@ public partial class schedulecalendar : System.Web.UI.Page
             {
                 userinfo oUser = (userinfo)Session["oUser"];
                 hdnEmailType.Value = oUser.EmailIntegrationType.ToString();
-
+                hdnPrimaryDivision.Value = oUser.primaryDivision.ToString();
+                hdnClientId.Value = oUser.client_id.ToString();
+                hdnDivisionName.Value = oUser.divisionName;
             }
+
+            BindDivision();
             //if (Page.User.IsInRole("Call003") == false)
             //{
             //    // No Permission Page.
@@ -419,6 +423,18 @@ public partial class schedulecalendar : System.Web.UI.Page
 
     }
 
+    private void BindDivision()
+    {
+        string sql = "select id, division_name from division order by division_name ";
+        DataTable dt = csCommonUtility.GetDataTable(sql);
+        ddlDivision.DataSource = dt;
+        ddlDivision.DataTextField = "division_name";
+        ddlDivision.DataValueField = "id";
+        ddlDivision.DataBind();
+        //ddlDivision.Items.Insert(0, "All");
+        ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
+
+    }
     protected void btnBack_Click(object sender, EventArgs e)
     {
         KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnBack.ID, btnBack.GetType().Name, "Click");
