@@ -24,7 +24,9 @@ public partial class mselectionlist : System.Web.UI.Page
                
                 DataClassesDataContext _db = new DataClassesDataContext();
                 customer objCust = _db.customers.SingleOrDefault(c => c.customer_id == Convert.ToInt32(hdnCustomerID.Value));
-                lblCustomerLastName.Text = "(" + objCust.last_name1 + ", " + GetJobNumber(Convert.ToInt32(hdnCustomerID.Value), Convert.ToInt32(hdnEstimateID.Value)) + ")";
+                if(objCust != null)
+                    lblCustomerLastName.Text = "(" + objCust.last_name1 + ", " + GetJobNumber(Convert.ToInt32(hdnCustomerID.Value), Convert.ToInt32(hdnEstimateID.Value)) + ")";
+
                 GetSectionSelectionListData();
             }
         }

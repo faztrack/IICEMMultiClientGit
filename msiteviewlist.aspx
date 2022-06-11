@@ -812,6 +812,7 @@
 
                 <div>
                     <asp:HiddenField ID="hdnCustomerId" runat="server" Value="0" />
+                    <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
                     <asp:HiddenField ID="hdnSiteReviewId" runat="server" Value="0" />
                     <asp:HiddenField ID="hdnEstimateId" runat="server" Value="0" />
                     <asp:HiddenField ID="hdnCurrentPageNo" runat="server" Value="0" />

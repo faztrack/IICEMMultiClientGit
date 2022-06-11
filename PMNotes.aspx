@@ -454,6 +454,7 @@
                                             <td align="center">&nbsp;</td></tr><tr>
                                             <td align="center" height="10px">
                                                 <asp:HiddenField ID="HiddenFieldGrd" runat="server" Value="0" />
+                                                <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
                                                 <asp:HiddenField ID="hdnPMnoteID" runat="server" Value="0" />
                                                 <asp:HiddenField ID="hdnCID" runat="server" Value="0" />
                                                 <asp:HiddenField ID="hdnCustomerId" runat="server" Value="0" />

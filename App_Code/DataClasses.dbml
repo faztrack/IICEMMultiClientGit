@@ -1666,22 +1666,6 @@
       <Column Name="IsChangeOrderQtyViewByCust" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
     </Type>
   </Table>
-  <Table Name="dbo.ProjectNoteInfo" Member="ProjectNoteInfos">
-    <Type Name="ProjectNoteInfo">
-      <Column Name="ProjectNoteId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="customer_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="NoteDetails" Type="System.String" DbType="VarChar(1500)" CanBeNull="true" />
-      <Column Name="is_complete" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="ProjectDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
-      <Column Name="CreateDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="section_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="SectionName" Type="System.String" DbType="VarChar(1000)" CanBeNull="true" />
-      <Column Name="MaterialTrack" Type="System.String" DbType="VarChar(1500)" CanBeNull="true" />
-      <Column Name="DesignUpdates" Type="System.String" DbType="VarChar(1500)" CanBeNull="true" />
-      <Column Name="SuperintendentNotes" Type="System.String" DbType="VarChar(1500)" CanBeNull="true" />
-      <Column Name="isSOW" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-    </Type>
-  </Table>
   <Table Name="dbo.model_estimate_payments" Member="model_estimate_payments">
     <Type Name="model_estimate_payment">
       <Column Name="mod_est_payment_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -1839,20 +1823,6 @@
       <Column Name="Latitude" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
       <Column Name="Longitude" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
       <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.PMNoteInfo" Member="PMNoteInfos">
-    <Type Name="PMNoteInfo">
-      <Column Name="PMNoteId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="customer_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="NoteDetails" Type="System.String" DbType="VarChar(1500)" CanBeNull="true" />
-      <Column Name="vendor_id" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
-      <Column Name="vendor_name" Type="System.String" DbType="VarChar(550)" CanBeNull="true" />
-      <Column Name="CreateDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="CreatedBy" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
-      <Column Name="estimate_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="section_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="IsComplete" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
     </Type>
   </Table>
   <Table Name="dbo.change_order_pricing_list" Member="change_order_pricing_lists">
@@ -2443,6 +2413,38 @@
       <Column Name="IsEWSCalendarSynch" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
       <Column Name="selectedweekends" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
       <Column Name="weekends" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="client_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ProjectNoteInfo" Member="ProjectNoteInfos">
+    <Type Name="ProjectNoteInfo">
+      <Column Name="ProjectNoteId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="customer_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="NoteDetails" Type="System.String" DbType="VarChar(1500)" CanBeNull="true" />
+      <Column Name="is_complete" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="ProjectDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="section_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="SectionName" Type="System.String" DbType="VarChar(1000)" CanBeNull="true" />
+      <Column Name="MaterialTrack" Type="System.String" DbType="VarChar(1500)" CanBeNull="true" />
+      <Column Name="DesignUpdates" Type="System.String" DbType="VarChar(1500)" CanBeNull="true" />
+      <Column Name="SuperintendentNotes" Type="System.String" DbType="VarChar(1500)" CanBeNull="true" />
+      <Column Name="isSOW" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="client_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PMNoteInfo" Member="PMNoteInfos">
+    <Type Name="PMNoteInfo">
+      <Column Name="PMNoteId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="customer_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="NoteDetails" Type="System.String" DbType="VarChar(1500)" CanBeNull="true" />
+      <Column Name="vendor_id" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="vendor_name" Type="System.String" DbType="VarChar(550)" CanBeNull="true" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="CreatedBy" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="estimate_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="section_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="IsComplete" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
       <Column Name="client_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
     </Type>
   </Table>

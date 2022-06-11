@@ -120,11 +120,17 @@ public partial class mcomposite_sow : System.Web.UI.Page
         DataClassesDataContext _db = new DataClassesDataContext();
         customer objCust = _db.customers.SingleOrDefault(c => c.customer_id ==nCustId);
         if (objCust != null)
+        {
             lblCustomerName.Text = "(" + objCust.last_name1 + ", " + GetJobNumber(Convert.ToInt32(hdnCustomerId.Value), Convert.ToInt32(hdnEstimateId.Value)) + ")";
+            hdnClientId.Value = objCust.client_id.ToString();
+        }
         else
+        {
             lblCustomerName.Text = "";
+        }
+            
 
-        hdnClientId.Value = objCust.client_id.ToString();
+        
     }
 
     private string GetJobNumber(int nCustId,int nEstId)
