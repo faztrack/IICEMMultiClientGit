@@ -24,7 +24,7 @@ public class EventDAO
     //private static string connectionString = "Data Source=192.168.0.10;Initial Catalog=EventCalender;User ID=sa";
 
     //this method retrieves all events within range start-end
-    public static List<CalendarEvent> getEvents(DateTime start, DateTime end, int nCusId, string strSecName, string strSearchUserName, string strSearchSuperintendentName)
+    public static List<CalendarEvent> getEvents(DateTime start, DateTime end, int nCusId, string strSecName, string strSearchUserName, string strSearchSuperintendentName, int nClientId)
     {
 
         TimeSpan diff = end - start;
@@ -95,7 +95,7 @@ public class EventDAO
         if (ncid != 0 && IsCalendarOnline && (nTypeId == 1 || nTypeId == 11))
         {
             item = (from sc in _db.ScheduleCalendars
-                    where typelist.Contains((int)sc.type_id) && sc.IsEstimateActive == true && sc.customer_id == ncid && listCheckedEstId.Contains((int)sc.estimate_id) && sc.type_id != 5
+                    where sc.client_id == nClientId && typelist.Contains((int)sc.type_id) && sc.IsEstimateActive == true && sc.customer_id == ncid && listCheckedEstId.Contains((int)sc.estimate_id) && sc.type_id != 5
                     && ((sc.event_start >= start && sc.event_start <= end) || (sc.event_end >= start && sc.event_end <= end))
                     select new CalendarEvent()
                     {
@@ -121,11 +121,12 @@ public class EventDAO
                         has_child_link = (_db.ScheduleCalendarLinks.Any(scl => scl.customer_id == sc.customer_id && scl.estimate_id == sc.estimate_id && scl.child_event_id == sc.event_id)) == true ? true : false,
                         estimate_name = (_db.customer_estimates.SingleOrDefault(ce => ce.customer_id == sc.customer_id && ce.estimate_id == sc.estimate_id).estimate_name),
                         duration = (int)sc.duration,
-                        selectedweekends = sc.selectedweekends
+                        selectedweekends = sc.selectedweekends,
+                        client_id = (int)sc.client_id
                     })
                       .Union(
                       from sc in _db.ScheduleCalendars
-                      where (int)sc.type_id == 5 && sc.IsEstimateActive == true && ((sc.event_start >= start && sc.event_start <= end) || (sc.event_end >= start && sc.event_end <= end))
+                      where sc.client_id == nClientId && (int)sc.type_id == 5 && sc.IsEstimateActive == true && ((sc.event_start >= start && sc.event_start <= end) || (sc.event_end >= start && sc.event_end <= end))
                       select new CalendarEvent()
                       {
                           id = (int)sc.event_id,
@@ -150,7 +151,8 @@ public class EventDAO
                           has_child_link = false,
                           estimate_name = "",
                           duration = 0,
-                          selectedweekends = sc.selectedweekends
+                          selectedweekends = sc.selectedweekends,
+                          client_id = (int)sc.client_id
                       })
                       ;
         }
@@ -159,7 +161,7 @@ public class EventDAO
         else if (ncid != 0 && !IsCalendarOnline && (nTypeId == 1 || nTypeId == 11))
         {
             item = (from sc in _db.ScheduleCalendarTemps
-                    where typelist.Contains((int)sc.type_id) && sc.IsEstimateActive == true && sc.customer_id == ncid && listCheckedEstId.Contains((int)sc.estimate_id) && sc.type_id != 5
+                    where sc.client_id == nClientId && typelist.Contains((int)sc.type_id) && sc.IsEstimateActive == true && sc.customer_id == ncid && listCheckedEstId.Contains((int)sc.estimate_id) && sc.type_id != 5
                     && ((sc.event_start >= start && sc.event_start <= end) || (sc.event_end >= start && sc.event_end <= end))
                     select new CalendarEvent()
                     {
@@ -185,10 +187,11 @@ public class EventDAO
                         has_child_link = (_db.ScheduleCalendarLinkTemps.Any(scl => scl.customer_id == sc.customer_id && scl.estimate_id == sc.estimate_id && scl.child_event_id == sc.event_id)) == true ? true : false,
                         estimate_name = (_db.customer_estimates.SingleOrDefault(ce => ce.customer_id == sc.customer_id && ce.estimate_id == sc.estimate_id).estimate_name),
                         duration = (int)sc.duration,
-                        selectedweekends = sc.selectedweekends
+                        selectedweekends = sc.selectedweekends,
+                        client_id = (int)sc.client_id
                     }).Union(
                     from sc in _db.ScheduleCalendarTemps
-                    where (int)sc.type_id == 5 && sc.IsEstimateActive == true && ((sc.event_start >= start && sc.event_start <= end) || (sc.event_end >= start && sc.event_end <= end))
+                    where sc.client_id == nClientId && (int)sc.type_id == 5 && sc.IsEstimateActive == true && ((sc.event_start >= start && sc.event_start <= end) || (sc.event_end >= start && sc.event_end <= end))
 
                     select new CalendarEvent()
                     {
@@ -214,7 +217,8 @@ public class EventDAO
                         has_child_link = false,
                         estimate_name = "",
                         duration = 0,
-                        selectedweekends = sc.selectedweekends
+                        selectedweekends = sc.selectedweekends,
+                        client_id = (int)sc.client_id
                     });
         }
 
@@ -225,7 +229,7 @@ public class EventDAO
                     from c in cs.DefaultIfEmpty()
                     join user in _db.user_infos on c.SuperintendentId equals user.user_id into ui
                     from u in ui.DefaultIfEmpty()
-                    where typelist.Contains((int)sc.type_id) && (bool)sc.IsEstimateActive == true && (int)sc.type_id != 5 && (c.is_active != null ? c.is_active : true) == true
+                    where sc.client_id == nClientId && typelist.Contains((int)sc.type_id) && (bool)sc.IsEstimateActive == true && (int)sc.type_id != 5 && (c.is_active != null ? c.is_active : true) == true
                     && ((sc.event_start >= start && sc.event_start <= end) || (sc.event_end >= start && sc.event_end <= end))
                     select new CalendarEvent()
                     {
@@ -252,11 +256,12 @@ public class EventDAO
                         estimate_name = (_db.customer_estimates.SingleOrDefault(ce => ce.customer_id == sc.customer_id && ce.estimate_id == sc.estimate_id).estimate_name),
                         duration = (int)sc.duration,
                         SuperintendentName = u.first_name + ' ' + u.last_name,
-                        selectedweekends = sc.selectedweekends
+                        selectedweekends = sc.selectedweekends,
+                        client_id = (int)sc.client_id
                     })
                     .Union(
                     from sc in _db.ScheduleCalendars
-                    where (int)sc.type_id == 5 && sc.IsEstimateActive == true && ((sc.event_start >= start && sc.event_start <= end) || (sc.event_end >= start && sc.event_end <= end))
+                    where sc.client_id == nClientId && (int)sc.type_id == 5 && sc.IsEstimateActive == true && ((sc.event_start >= start && sc.event_start <= end) || (sc.event_end >= start && sc.event_end <= end))
                     select new CalendarEvent()
                     {
                         id = (int)sc.event_id,
@@ -282,7 +287,8 @@ public class EventDAO
                         estimate_name = "",
                         duration = 0,
                         SuperintendentName = "",
-                        selectedweekends = sc.selectedweekends
+                        selectedweekends = sc.selectedweekends,
+                        client_id = (int)sc.client_id
                     })
                     ;
         }
@@ -290,7 +296,7 @@ public class EventDAO
         else if (ncid != 0 && (nTypeId == 2 || nTypeId == 22)) // for Sales calendar by customer
         {
             item = (from sc in _db.ScheduleCalendars
-                    where typelist.Contains((int)sc.type_id) && sc.customer_id == ncid && sc.type_id != 5
+                    where sc.client_id == nClientId && typelist.Contains((int)sc.type_id) && sc.customer_id == ncid && sc.type_id != 5
                     && ((sc.event_start >= start && sc.event_start <= end) || (sc.event_end >= start && sc.event_end <= end))
                     select new CalendarEvent()
                     {
@@ -316,11 +322,12 @@ public class EventDAO
                         has_child_link = (_db.ScheduleCalendarLinks.Any(scl => scl.customer_id == sc.customer_id && scl.estimate_id == sc.estimate_id && scl.child_event_id == sc.event_id)) == true ? true : false,
                         estimate_name = (_db.customer_estimates.SingleOrDefault(ce => ce.customer_id == sc.customer_id && ce.estimate_id == sc.estimate_id).estimate_name),
                         duration = (int)sc.duration,
-                        selectedweekends = sc.selectedweekends
+                        selectedweekends = sc.selectedweekends,
+                        client_id = (int)sc.client_id
                     })
                      .Union(
                      from sc in _db.ScheduleCalendars
-                     where (int)sc.type_id == 5 && ((sc.event_start >= start && sc.event_start <= end) || (sc.event_end >= start && sc.event_end <= end))
+                     where sc.client_id == nClientId && (int)sc.type_id == 5 && ((sc.event_start >= start && sc.event_start <= end) || (sc.event_end >= start && sc.event_end <= end))
                      select new CalendarEvent()
                      {
                          id = (int)sc.event_id,
@@ -345,7 +352,8 @@ public class EventDAO
                          has_child_link = false,
                          estimate_name = "",
                          duration = 0,
-                         selectedweekends = sc.selectedweekends
+                         selectedweekends = sc.selectedweekends,
+                         client_id = (int)sc.client_id
                      })
                      ;
         }
@@ -353,7 +361,7 @@ public class EventDAO
         else if (ncid == 0 && (nTypeId == 2 || nTypeId == 22)) // for Sales calendar
         {
             item = (from sc in _db.ScheduleCalendars
-                    where typelist.Contains((int)sc.type_id) && sc.type_id != 5
+                    where sc.client_id == nClientId && typelist.Contains((int)sc.type_id) && sc.type_id != 5
                     && ((sc.event_start >= start && sc.event_start <= end) || (sc.event_end >= start && sc.event_end <= end))
                     select new CalendarEvent()
                     {
@@ -379,11 +387,12 @@ public class EventDAO
                         has_child_link = (_db.ScheduleCalendarLinks.Any(scl => scl.customer_id == sc.customer_id && scl.estimate_id == sc.estimate_id && scl.child_event_id == sc.event_id)) == true ? true : false,
                         estimate_name = (_db.customer_estimates.SingleOrDefault(ce => ce.customer_id == sc.customer_id && ce.estimate_id == sc.estimate_id).estimate_name),
                         duration = (int)sc.duration,
-                        selectedweekends = sc.selectedweekends
+                        selectedweekends = sc.selectedweekends,
+                        client_id = (int)sc.client_id
                     })
                      .Union(
                      from sc in _db.ScheduleCalendars
-                     where (int)sc.type_id == 5 && ((sc.event_start >= start && sc.event_start <= end) || (sc.event_end >= start && sc.event_end <= end))
+                     where sc.client_id == nClientId && (int)sc.type_id == 5 && ((sc.event_start >= start && sc.event_start <= end) || (sc.event_end >= start && sc.event_end <= end))
                      select new CalendarEvent()
                      {
                          id = (int)sc.event_id,
@@ -408,7 +417,8 @@ public class EventDAO
                          has_child_link = false,
                          estimate_name = "",
                          duration = 0,
-                         selectedweekends = sc.selectedweekends
+                         selectedweekends = sc.selectedweekends,
+                         client_id = (int)sc.client_id
                      })
                      ;
         }
@@ -2780,6 +2790,11 @@ public class EventDAO
                             nEstimateID = (int)System.Web.HttpContext.Current.Session["sEstSelectedByCustSearch"];
 
                         nTypeId = 11; // Opration Extra event TypeID for Holidays Date event (Operation Calendar) with Customer ID
+
+                        var cust = _db.customers.Where(sp => sp.customer_id == nCustomerID);
+
+                        if (cust.Any())
+                            cevent.client_id = (int)cust.FirstOrDefault().client_id;
                     }
                 }
             }

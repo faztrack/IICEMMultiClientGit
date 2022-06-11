@@ -97,17 +97,26 @@
                                     </asp:UpdatePanel>
                                     <asp:Button ID="btnHdn" runat="server" OnClick="btnHdn_Click" Style="display: none;" />
                                 </tr>
-                                <tr id="trSearchCal" runat="server">
+
+                                <tr id="trDivision" runat="server">
                                     <td align="left">
-                                        <table style="padding: 0px; margin: 0px;" id="tblSearch" runat="server">
+                                        <table style="padding: 0px; margin: 0px;" id="tblDivision" runat="server">
                                             <tr>
                                                 <td align="right">
-                                                    <b>Division:</b>
+                                                    <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Division:</b>
                                                 </td>
                                                 <td align="left">
                                                     <asp:DropDownList ID="ddlDivision" runat="server" AutoPostBack="false"></asp:DropDownList>
                                                 </td>
                                             </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+
+
+                                <tr id="trSearchCal" runat="server">
+                                    <td align="left">
+                                        <table style="padding: 0px; margin: 0px;" id="tblSearch" runat="server">                                           
                                             <tr>
                                                 <td align="right">
                                                     <asp:Label ID="lblSearchLastName" runat="server">Last Name:&nbsp;</asp:Label></td>
@@ -410,9 +419,9 @@
 
                         </td>
                     </tr>
-                </table>
+    </table>
 
-            </td>
+    </td>
         </tr>
         <tr>
             <%-- <td align="center">

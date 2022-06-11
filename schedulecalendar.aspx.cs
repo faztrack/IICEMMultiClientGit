@@ -38,7 +38,8 @@ public partial class schedulecalendar : System.Web.UI.Page
                 hdnDivisionName.Value = oUser.divisionName;
             }
 
-            BindDivision();
+            BindDivision(hdnDivisionName.Value);
+
             //if (Page.User.IsInRole("Call003") == false)
             //{
             //    // No Permission Page.
@@ -49,6 +50,7 @@ public partial class schedulecalendar : System.Web.UI.Page
             //ReSetDateDiff();
 
             //Clear Search
+            HttpContext.Current.Session.Add("sClientId", Convert.ToInt32(hdnPrimaryDivision.Value));
             HttpContext.Current.Session.Add("CusId", 0);
             HttpContext.Current.Session.Add("sSecName", "");
             HttpContext.Current.Session.Add("sKeySearchUserName", "");
@@ -101,7 +103,7 @@ public partial class schedulecalendar : System.Web.UI.Page
                         nEstimateID = (int)System.Web.HttpContext.Current.Session["eid"];
                     }
 
-                
+
 
                 }
             }
@@ -114,6 +116,7 @@ public partial class schedulecalendar : System.Web.UI.Page
             }
             if (Request.QueryString.Get("cid") != null && Request.QueryString.Get("eid") != null) // Customer Schedule
             {
+                trDivision.Visible = false;
                 trSearchCal.Visible = false;
                 trCalStateAction.Visible = true;
                 trProjects.Visible = true;
@@ -133,7 +136,7 @@ public partial class schedulecalendar : System.Web.UI.Page
 
 
                 BindDragTemplateMainSectionList(nCustomerID, nEstimateID);
-               
+
                 HttpContext.Current.Session.Add("uname", strUName);
                 HttpContext.Current.Session.Add("CustSelected", nCustomerID);
                 HttpContext.Current.Session.Add("EstSelected", nEstimateID);
@@ -423,18 +426,30 @@ public partial class schedulecalendar : System.Web.UI.Page
 
     }
 
-    private void BindDivision()
+    private void BindDivision(string divisionName)
     {
-        string sql = "select id, division_name from division order by division_name ";
-        DataTable dt = csCommonUtility.GetDataTable(sql);
-        ddlDivision.DataSource = dt;
+        DataClassesDataContext _db = new DataClassesDataContext();
+        List<division> listDiv = new List<division>();
+
+        string[] aryDiv = divisionName.Trim().Split(',').Select(p => p.Trim().ToLower()).ToArray();
+
+        var itemList = _db.divisions.Where(d => aryDiv.Contains(d.division_name.Trim().ToLower()));
+
+        if (itemList.Any())
+            listDiv = itemList.OrderBy(d => d.division_name).ToList();
+
+        ddlDivision.DataSource = listDiv;
         ddlDivision.DataTextField = "division_name";
         ddlDivision.DataValueField = "id";
         ddlDivision.DataBind();
-        //ddlDivision.Items.Insert(0, "All");
         ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
-
     }
+
+    //protected void ddlDivision_SelectedIndexChanged(object sender, EventArgs e)
+    //{
+
+    //}
+
     protected void btnBack_Click(object sender, EventArgs e)
     {
         KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnBack.ID, btnBack.GetType().Name, "Click");
@@ -486,7 +501,7 @@ public partial class schedulecalendar : System.Web.UI.Page
 
     protected void btnCalStateAction_Click(object sender, EventArgs e)
     {
-        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnCalStateAction.ID, btnCalStateAction.GetType().Name, "Click"); 
+        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnCalStateAction.ID, btnCalStateAction.GetType().Name, "Click");
         DataClassesDataContext _db = new DataClassesDataContext();
 
         int nCustId = Convert.ToInt32(hdnCustIDSelected.Value);
@@ -621,7 +636,7 @@ public partial class schedulecalendar : System.Web.UI.Page
 
     protected void btnHdn_Click(object sender, EventArgs e)
     {
-        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnHdn.ID, btnHdn.GetType().Name, "Click"); 
+        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnHdn.ID, btnHdn.GetType().Name, "Click");
         DataClassesDataContext _db = new DataClassesDataContext();
 
         if (System.Web.HttpContext.Current.Session["cid"] != null)
@@ -709,7 +724,7 @@ public partial class schedulecalendar : System.Web.UI.Page
 
     protected void chkTemplateMainSection_SelectedIndexChanged(object sender, EventArgs e)
     {
-        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, chkTemplateMainSection.ID, chkTemplateMainSection.GetType().Name, "SelectedIndexChanged"); 
+        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, chkTemplateMainSection.ID, chkTemplateMainSection.GetType().Name, "SelectedIndexChanged");
         int nCustId = Convert.ToInt32(hdnCustomerID.Value);
         int nEstId = 0;// Convert.ToInt32(ddlEst.SelectedItem.Value);
 
@@ -1007,7 +1022,7 @@ public partial class schedulecalendar : System.Web.UI.Page
 
     protected void chkEst_SelectedIndexChanged(object sender, EventArgs e)
     {
-        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, chkEst.ID, chkEst.GetType().Name, "SelectedIndexChanged"); 
+        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, chkEst.ID, chkEst.GetType().Name, "SelectedIndexChanged");
         int nCustId = Convert.ToInt32(hdnCustIDSelected.Value);
         BindEstimate(nCustId, SetSessionEstimate());
 
@@ -1306,12 +1321,12 @@ public partial class schedulecalendar : System.Web.UI.Page
 
     protected void btnHdnSendCalEmail_Click(object sender, EventArgs e)
     {
-        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnHdnSendCalEmail.ID, btnHdnSendCalEmail.GetType().Name, "Click"); 
+        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnHdnSendCalEmail.ID, btnHdnSendCalEmail.GetType().Name, "Click");
         btnCalStateAction_Click(sender, e);
 
         string url = "sendemailoutlook.aspx?calnotifyCustID=" + hdnCustomerID.Value + "&calnotifyEstID=" + hdnEstimateID.Value + "', 'MyWindow', 'left=200,top=100,width=900,height=600,status=0,toolbar=0,resizable=0,scrollbars=1";
 
-        
+
 
         ScriptManager.RegisterClientScriptBlock(this.Page, this.Page.GetType(), "Popup", "window.open('" + url + "'); HideProgress();", true);
         // SendCalendarNotificationEmail();
@@ -1527,7 +1542,8 @@ public partial class schedulecalendar : System.Web.UI.Page
             parentOffsetDays = improperEvent.parentOffsetDays,
             linkType = improperEvent.linkType,
             IsScheduleDayException = improperEvent.IsScheduleDayException,
-            is_complete = improperEvent.is_complete
+            is_complete = improperEvent.is_complete,
+            client_id = improperEvent.client_id
         };
 
         if (CheckAlphaNumeric(cevent.section_name) && CheckAlphaNumeric(cevent.description))
@@ -2231,7 +2247,7 @@ public partial class schedulecalendar : System.Web.UI.Page
                 objSCLinkTmp.estimate_id = objParentSCTmp.estimate_id;
                 objSCLinkTmp.dependencyType = scEventLinks.dependencyType;
                 objSCLinkTmp.lag = scEventLinks.offsetdays;
-               
+
                 _db.ScheduleCalendarLinkTemps.InsertOnSubmit(objSCLinkTmp);
                 _db.SubmitChanges();
 
@@ -3169,7 +3185,7 @@ public partial class schedulecalendar : System.Web.UI.Page
         }
         return IsHoliday;
     }
-    
+
     public void ReSetDateDiff()
     {
         DataClassesDataContext _db = new DataClassesDataContext();
@@ -3598,7 +3614,7 @@ public partial class schedulecalendar : System.Web.UI.Page
             company_profile objComp = _db.company_profiles.SingleOrDefault(c => c.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
 
             objComp.IsScheduleUnassignedCheck = IsCheked;
-           
+
             _db.SubmitChanges();
 
             System.Web.HttpContext.Current.Session.Add("sUnassignedCheck", IsCheked);
@@ -3665,10 +3681,10 @@ public partial class schedulecalendar : System.Web.UI.Page
         long epoch = (value.ToUniversalTime().Ticks - 621355968000000000) / 10000000;
         return text;
     }
-    
+
     protected void rdoconfirm_SelectedIndexChanged(object sender, EventArgs e)
     {
-        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, rdoconfirm.ID, rdoconfirm.GetType().Name, "SelectedIndexChanged"); 
+        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, rdoconfirm.ID, rdoconfirm.GetType().Name, "SelectedIndexChanged");
         DataClassesDataContext _db = new DataClassesDataContext();
 
         customer objCust = _db.customers.Single(c => c.customer_id == Convert.ToInt32(hdnCustomerID.Value));
