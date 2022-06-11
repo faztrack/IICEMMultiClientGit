@@ -38,7 +38,7 @@ public partial class schedulecalendar : System.Web.UI.Page
                 hdnDivisionName.Value = oUser.divisionName;
             }
 
-            BindDivision(hdnDivisionName.Value);
+            
 
             //if (Page.User.IsInRole("Call003") == false)
             //{
@@ -50,12 +50,21 @@ public partial class schedulecalendar : System.Web.UI.Page
             //ReSetDateDiff();
 
             //Clear Search
+
+            if (HttpContext.Current.Session["sSetDivisionIdOnCahnge"] != null)
+            {                
+                hdnPrimaryDivision.Value = HttpContext.Current.Session["sSetDivisionIdOnCahnge"].ToString();
+            }
+
+            HttpContext.Current.Session["sSetDivisionIdOnCahnge"] = null;
+
             HttpContext.Current.Session.Add("sClientId", Convert.ToInt32(hdnPrimaryDivision.Value));
             HttpContext.Current.Session.Add("CusId", 0);
             HttpContext.Current.Session.Add("sSecName", "");
             HttpContext.Current.Session.Add("sKeySearchUserName", "");
             HttpContext.Current.Session.Add("sKeySearchSuperintendentName", "");
 
+            BindDivision(hdnDivisionName.Value);
 
             userinfo objUName = (userinfo)Session["oUser"];
             string strUName = objUName.first_name;
@@ -417,7 +426,7 @@ public partial class schedulecalendar : System.Web.UI.Page
                 hdnEstimateID.Value = "";
                 hdnCustomerID.Value = "";
                 hdnEmployeeID.Value = "";
-                hdnTypeID.Value = "0";
+                hdnTypeID.Value = nTypeId.ToString();
             }
 
 
@@ -683,7 +692,7 @@ public partial class schedulecalendar : System.Web.UI.Page
         }
 
     }
-
+   
 
 
     //protected void ddlEst_SelectedIndexChanged(object sender, EventArgs e)
@@ -1767,13 +1776,13 @@ public partial class schedulecalendar : System.Web.UI.Page
     }
 
     [System.Web.Services.WebMethod]
-    public static List<csCustomer> GetCustomer(string keyword)
+    public static List<csCustomer> GetCustomer(string keyword, int divisionId)
     {
         DataClassesDataContext _db = new DataClassesDataContext();
 
         var item = (from c in _db.customers
                     join sc in _db.ScheduleCalendars on c.customer_id equals sc.customer_id
-                    where c.last_name1.ToUpper().StartsWith(keyword.Trim().ToUpper()) && sc.estimate_id != 0
+                    where c.last_name1.ToUpper().StartsWith(keyword.Trim().ToUpper()) && sc.estimate_id != 0 && c.client_id == divisionId
                     select new csCustomer
                     {
                         customer_id = c.customer_id,
@@ -3642,6 +3651,14 @@ public partial class schedulecalendar : System.Web.UI.Page
         }
 
         return objPL;
+    }
+
+    //
+    [System.Web.Services.WebMethod(true)]
+    public static String SetDivisionIdOnCahnge(int divisionId)
+    {
+        HttpContext.Current.Session.Add("sSetDivisionIdOnCahnge", divisionId);
+        return divisionId.ToString();
     }
 
     public class scEventLink

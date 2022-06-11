@@ -457,24 +457,24 @@ function addSuccess(addResult) {
         vlocation = ' (' + $("#addLocation").val() + ')';
     if (addResult != -1) {
         $('#calendar').fullCalendar('renderEvent',
-						{
-						    title: decodeHtml($("#addEventName").val() + vlocation),
-						    section_name: $("#addEventName").val(),
-						    location_name: $("#addLocation").val(),
-						    start: addStartDate,
-						    end: addEndDate,
-						    id: addResult,
-						    description: $("#addEventDesc").val(),
-						    allDay: false,
-						    EstimateID: $("#head_hdnEstimateID").val(),
-						    CustomerID: $("#head_hdnCustomerID").val(),
-						    employee_id: SalesPersonID,
-						    employee_name: $("#addSalesPersonName").val(),
-						    TypeID: $("#head_hdnTypeID").val(),
-						    className: 'fc-default'//$("#head_hdnServiceCssClass").val()
-						},
-						true // make the event "stick"
-					);
+            {
+                title: decodeHtml($("#addEventName").val() + vlocation),
+                section_name: $("#addEventName").val(),
+                location_name: $("#addLocation").val(),
+                start: addStartDate,
+                end: addEndDate,
+                id: addResult,
+                description: $("#addEventDesc").val(),
+                allDay: false,
+                EstimateID: $("#head_hdnEstimateID").val(),
+                CustomerID: $("#head_hdnCustomerID").val(),
+                employee_id: SalesPersonID,
+                employee_name: $("#addSalesPersonName").val(),
+                TypeID: $("#head_hdnTypeID").val(),
+                className: 'fc-default'//$("#head_hdnServiceCssClass").val()
+            },
+            true // make the event "stick"
+        );
 
 
         $('#calendar').fullCalendar('unselect');
@@ -546,7 +546,7 @@ function addeventOnDrop(start, title, sectionname, locationname, cssClassName, c
         estimate_id: estimate_id
     };
     //alert("sdfgrf");
-     //console.log(eventToAdd);
+    //console.log(eventToAdd);
     PageMethods.addEvent(eventToAdd, addSuccess);
 
     //document.getElementById("eventName").value = sectionname;
@@ -734,7 +734,7 @@ function setEventEndTime(obj) {
     updateStartDate = new Date($("#eventStart").val() + " " + $("#eventStartTime option:selected").text());
     updateEndDate = new Date($("#eventEnd").val());
 
-   
+
 
     var updtStartDate = new Date($("#eventStart").val())
     var updtEndDate = new Date($("#eventEnd").val());
@@ -1704,8 +1704,42 @@ function CalStateAction() {
 $(document).ready(function () {
 
     $("#head_ddlDivision").change(function () {
-        console.log("ddlDivision");
+
+        if ($("#head_hdnTypeID").val() === "2") {
+            console.log("ddlDivision");
+            console.log($("#head_hdnTypeID").val());
+
+            $.ajax({
+                type: "POST",
+                url: "schedulecalendar.aspx/SetDivisionIdOnCahnge",
+                data: "{'divisionId':'" + $("#head_ddlDivision").val() + "'}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    //console.log("nStart:" + data.d);
+                    var result = data.d;
+
+                    window.location = "schedulecalendar.aspx?TypeID=" + $("#head_hdnTypeID").val();
+                },
+                error: function (e) {
+                    //console.log("there is some error");
+                    //console.log(e);
+                }
+            });
+
+
+        }
+
+        $("#head_txtSearch").val("");
+        $("#head_txtSection").val("");
+        $("#head_txtUser").val("");
+        $("#head_txtSuperintendent").val("");
+
     });
+
+
+
+
 
     $("#ddlEventColor").change(function () {
         $(this).removeClass();
@@ -1927,7 +1961,7 @@ $(document).ready(function () {
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (data) {
-                   // console.log(SelectedSectionName);
+                    // console.log(SelectedSectionName);
                     // debugger;
                     console.log(data.d);
                     var result = data.d;
@@ -2004,85 +2038,85 @@ $(document).ready(function () {
     });
 
     $("#addSalesPersonName")
-      .on("keydown", function (event) {
-          if (event.keyCode === $.ui.keyCode.TAB &&
-              $(this).autocomplete("instance").menu.active) {
-              event.preventDefault();
-          }
-      })
-     .autocomplete({
-         source: function (request, response) {
-             $.ajax({
-                 type: "POST",
-                 url: "schedulecalendar.aspx/GetSalesPerson",
-                 data: "{'keyword':'" + extractLast($("#addSalesPersonName").val()) + "'}", // { keyword: extractLast(request.term) },//
-                 contentType: "application/json; charset=utf-8",
-                 dataType: "json",
-                 success: function (data) {
-                     //  console.log(data);
-                     // response(data);
+        .on("keydown", function (event) {
+            if (event.keyCode === $.ui.keyCode.TAB &&
+                $(this).autocomplete("instance").menu.active) {
+                event.preventDefault();
+            }
+        })
+        .autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    type: "POST",
+                    url: "schedulecalendar.aspx/GetSalesPerson",
+                    data: "{'keyword':'" + extractLast($("#addSalesPersonName").val()) + "'}", // { keyword: extractLast(request.term) },//
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        //  console.log(data);
+                        // response(data);
 
-                     var result = data.d;
-                     response($.map(data.d, function (item) {
-                         return {
-                             label: item.sales_person_name,
-                             desc: item.sales_person_id,
-                             value: item.sales_person_name
-                         }
-                     }));
-                 },
-                 error: function (e) {
-                     //console.log("there is some error");
-                     //console.log(e);
-                 }
-             });
-         },
-         minLength: 1,
-         select: function (event, ui) {
-             if (ui.item !== null) {
-                 //console.log(SalesPersonID);
-                 //SalesPersonID = ui.item.desc;
+                        var result = data.d;
+                        response($.map(data.d, function (item) {
+                            return {
+                                label: item.sales_person_name,
+                                desc: item.sales_person_id,
+                                value: item.sales_person_name
+                            }
+                        }));
+                    },
+                    error: function (e) {
+                        //console.log("there is some error");
+                        //console.log(e);
+                    }
+                });
+            },
+            minLength: 1,
+            select: function (event, ui) {
+                if (ui.item !== null) {
+                    //console.log(SalesPersonID);
+                    //SalesPersonID = ui.item.desc;
 
-                 var terms = split(this.value);
+                    var terms = split(this.value);
 
-                 // remove the current input
-                 terms.pop();
+                    // remove the current input
+                    terms.pop();
 
-                 // add the selected item
-                 terms.push(ui.item.value);
+                    // add the selected item
+                    terms.push(ui.item.value);
 
-                 // add placeholder to get the comma-and-space at the end
-                 terms.push("");
-                 this.value = terms.join(", ");
-                 return false;
-             }
-         },
-         search: function () {
-             // custom minLength
-             //var term = extractLast(this.value);
-             //if (term.length < 2) {
-             //    return false;
-             //}
-         },
-         focus: function () {
-             // prevent value inserted on focus
-             return false;
-         },
-         //change: function (event, ui) {
-         //    if (ui.item !== null) {
-         //        console.log(SalesPersonID);
-         //        SalesPersonID = ui.item.desc;
-         //    }
-         //},
-         messages: {
-             noResults: "",
-             results: function () { }
-         },
-         // search: function () { $(this).addClass('progress'); },
-         open: function () { $(this).removeClass('progress'); },
-         response: function () { $(this).removeClass('progress'); }
+                    // add placeholder to get the comma-and-space at the end
+                    terms.push("");
+                    this.value = terms.join(", ");
+                    return false;
+                }
+            },
+            search: function () {
+                // custom minLength
+                //var term = extractLast(this.value);
+                //if (term.length < 2) {
+                //    return false;
+                //}
+            },
+            focus: function () {
+                // prevent value inserted on focus
+                return false;
+            },
+            //change: function (event, ui) {
+            //    if (ui.item !== null) {
+            //        console.log(SalesPersonID);
+            //        SalesPersonID = ui.item.desc;
+            //    }
+            //},
+            messages: {
+                noResults: "",
+                results: function () { }
+            },
+            // search: function () { $(this).addClass('progress'); },
+            open: function () { $(this).removeClass('progress'); },
+            response: function () { $(this).removeClass('progress'); }
 
-     });
+        });
 
 
 
@@ -2182,12 +2216,12 @@ $(document).ready(function () {
     }
 
     $("#eventSalesPerson")
-         .on("keydown", function (event) {
-             if (event.keyCode === $.ui.keyCode.TAB &&
-                 $(this).autocomplete("instance").menu.active) {
-                 event.preventDefault();
-             }
-         })
+        .on("keydown", function (event) {
+            if (event.keyCode === $.ui.keyCode.TAB &&
+                $(this).autocomplete("instance").menu.active) {
+                event.preventDefault();
+            }
+        })
         .autocomplete({
             source: function (request, response) {
                 $.ajax({
@@ -2468,7 +2502,7 @@ $(document).ready(function () {
             $.ajax({
                 type: "POST",
                 url: "schedulecalendar.aspx/GetCustomer",
-                data: "{'keyword':'" + $("#head_txtSearch").val() + "'}",
+                data: "{'keyword':'" + $("#head_txtSearch").val() + "', 'divisionId':'" + $("#head_ddlDivision").val() + "'}",
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (data) {
@@ -2523,7 +2557,7 @@ $(document).ready(function () {
                 dataType: "json",
                 success: function (data) {
                     var result = data.d;
-                     console.log(data.d);
+                    console.log(data.d);
                     response($.map(data.d, function (item) {
                         return {
                             label: item.section_name,
@@ -2744,7 +2778,7 @@ $(document).ready(function () {
             $("#addlinkToParent").val('');
             $("#addlinkToSubsequent").val('');
             addChildEventID = 0;
-           
+
         }
         else {
             $('#addEventLinkSection').show();
@@ -2811,14 +2845,14 @@ $(document).ready(function () {
                 if (document.getElementById("eventName").value == '') {
                     document.getElementById("lbleventName").className = 'show';
                 }
-                    //else if (document.getElementById("eventDesc").value == '') {
-                    //    document.getElementById("lbleventDesc").className = 'show';
-                    //}
+                //else if (document.getElementById("eventDesc").value == '') {
+                //    document.getElementById("lbleventDesc").className = 'show';
+                //}
                 else if (updateStartDate >= updateEndDate) {
                     document.getElementById("lblRequired").className = 'show';
                 }
                 else {
-                   // console.log("updatedialog, eventSalesPerson: " + $("#eventName").val());
+                    // console.log("updatedialog, eventSalesPerson: " + $("#eventName").val());
                     var eventToUpdate = {
                         id: currentUpdateEvent.id,
                         title: $("#eventName").val().replace("/", "\/"),
@@ -2910,7 +2944,7 @@ $(document).ready(function () {
                         $("#eventName").val(currentUpdateEvent.temptitle + ' - ' + $("#txtTradePartner").val());
                         currentUpdateEvent.operation_notes = $("#txtNotes").val();
                         currentUpdateEvent.title = currentUpdateEvent.temptitle + ' - ' + $("#txtTradePartner").val(),
-                        currentUpdateEvent.trade_partner = $("#txtTradePartner").val();
+                            currentUpdateEvent.trade_partner = $("#txtTradePartner").val();
                         currentUpdateEvent.start = updateStartDate;
                         currentUpdateEvent.end = updateEndDate;
 
@@ -3028,10 +3062,10 @@ $(document).ready(function () {
 
 
                 $("select#addEventStartTime option")
-                .each(function () { this.selected = (this.text == "8:00 AM"); });
+                    .each(function () { this.selected = (this.text == "8:00 AM"); });
 
                 $("select#addEventEndTime option")
-                .each(function () { this.selected = (this.text == "9:00 AM"); });
+                    .each(function () { this.selected = (this.text == "9:00 AM"); });
 
                 $(this).dialog("close");
             },
@@ -3040,9 +3074,9 @@ $(document).ready(function () {
                 if (document.getElementById("addEventName").value == '') {
                     document.getElementById("lbladdEventName").className = 'show';
                 }
-                    //else if (document.getElementById("addEventDesc").value == '') {
-                    //    document.getElementById("lbladdEventDesc").className = 'show';
-                    //}
+                //else if (document.getElementById("addEventDesc").value == '') {
+                //    document.getElementById("lbladdEventDesc").className = 'show';
+                //}
                 else if (addStartDate >= addEndDate) {
                     document.getElementById("lblTime").className = 'show';
                 }
@@ -3071,12 +3105,13 @@ $(document).ready(function () {
                         IsScheduleDayException: $("#chkaddScheduleDayException").prop("checked"),
                         is_complete: $("#chkaddComplete").prop("checked"),
                         cssClassName: $("#ddladdEventColor option:selected").val(),
-                        client_id: $("#ddlDivision").val()
+                        client_id: $("#head_ddlDivision").val()
                         //customer_id: currentUpdateEvent.CustomerID,
                         //estimate_id: currentUpdateEvent.EstimateID
                     };
                     $('#loading').show();
-                    //   console.log(eventToAdd);
+
+                    console.log(eventToAdd);
                     PageMethods.addEvent(eventToAdd, addSuccess);
                     $(this).dialog("close");
                 }
@@ -3300,20 +3335,20 @@ $(document).ready(function () {
             }
 
             if (event.section_name !== undefined && event.location_name !== undefined) {
-                
+
                 element.qtip({
                     content:
-                        {
-                            title: event.section_name + (event.location_name.length != 0 ? " (" + event.location_name + ")" : ""),
-                            text: "Project: " + (event.customer_last_name.length != 0 ? event.customer_last_name + " (" + event.estimate_name + ")" : event.estimate_name) +
-                                "<br/>Start: " + moment(event.start).format('MM-DD-YYYY') +
-                                "<br/>End: " + moment(event.end).format('MM-DD-YYYY') +
-                                "<br/> Status: " + (event.is_complete === 'True' ? "Complete" : "Not Complete") +
-                                "<br/> Duration: " + (event.duration <= 1 ? event.duration + " Day" : event.duration + " Days") +
-                                "<br/> Assigned To: " + event.employee_name +
-                                "<br/> Notes: " + event.description
+                    {
+                        title: event.section_name + (event.location_name.length != 0 ? " (" + event.location_name + ")" : ""),
+                        text: "Project: " + (event.customer_last_name.length != 0 ? event.customer_last_name + " (" + event.estimate_name + ")" : event.estimate_name) +
+                            "<br/>Start: " + moment(event.start).format('MM-DD-YYYY') +
+                            "<br/>End: " + moment(event.end).format('MM-DD-YYYY') +
+                            "<br/> Status: " + (event.is_complete === 'True' ? "Complete" : "Not Complete") +
+                            "<br/> Duration: " + (event.duration <= 1 ? event.duration + " Day" : event.duration + " Days") +
+                            "<br/> Assigned To: " + event.employee_name +
+                            "<br/> Notes: " + event.description
 
-                        },
+                    },
                     position: {
                         my: 'top center',
                         at: 'bottom center'
@@ -3489,7 +3524,7 @@ function AddEventLink() {
             if (result == "Ok") {
                 loadParentEventLinkTable(currentUpdateEvent);
                 loadChildEventLinkTable(currentUpdateEvent);
-               // console.log("AddEventLink: " + HasParentEvent);
+                // console.log("AddEventLink: " + HasParentEvent);
                 $("#linkToSubsequent").val('');
                 ChildEventID = 0;
 
@@ -3847,17 +3882,17 @@ function loadParentEventLinkTable(objEvent) {
             //  debugger;
             if (response.d.length > 0) {
                 var trHTML = "<tr>" +
-                               "<th style='width: 5%; text-align: center;'>Link</th>" +
-                               "<th style='width: 60%; text-align: center;'>Title</th>" +
-                               "<th style='width: 15%; text-align: center;'>Start</th>" +
-                               "<th style='width: 15%; text-align: center;'>End</th>" +
-                               "<th class='hdnColumnCss'>&nbsp;</th>" +
-                               "<th class='hdnColumnCss'>&nbsp;</th>" +
-                               "<th class='hdnColumnCss'>&nbsp;</th>" +
-                               "<th class='hdnColumnCss'>&nbsp;</th>" +
-                               "<th class='hdnColumnCss'>&nbsp;</th>" +
-                               "<th style='width: 5%; text-align: center;'>&nbsp;</th>" +
-                               "</tr>";
+                    "<th style='width: 5%; text-align: center;'>Link</th>" +
+                    "<th style='width: 60%; text-align: center;'>Title</th>" +
+                    "<th style='width: 15%; text-align: center;'>Start</th>" +
+                    "<th style='width: 15%; text-align: center;'>End</th>" +
+                    "<th class='hdnColumnCss'>&nbsp;</th>" +
+                    "<th class='hdnColumnCss'>&nbsp;</th>" +
+                    "<th class='hdnColumnCss'>&nbsp;</th>" +
+                    "<th class='hdnColumnCss'>&nbsp;</th>" +
+                    "<th class='hdnColumnCss'>&nbsp;</th>" +
+                    "<th style='width: 5%; text-align: center;'>&nbsp;</th>" +
+                    "</tr>";
                 $.each(response.d, function (i, item) {
 
                     // console.log(item);
@@ -3865,27 +3900,27 @@ function loadParentEventLinkTable(objEvent) {
 
 
                     trHTML += "<tr>" +
-                                "<td align='left' style='width: 5%;'>" +
-                                    "<input id='chkLink" + item.link_id + "' type='checkbox' name=''>" +
-                                "</td>" +
-                                "<td style='width: 60%; text-align: left;'><label id='lbltitle" + item.link_id + "' class='csslbltitle'>" + item.title + "</label></td>" +
-                                "<td style='width: 15%; text-align: center;'><label id='lblStart" + item.link_id + "' class='csslblStart'>" + item.start + "</label></td>" +
-                                "<td style='width: 15%; text-align: center;'><label id='lblEnd" + item.link_id + "' class='csslblEnd'>" + item.end + "</label></td>" +
-                                "<td class='hdnColumnCss parent'>" + item.parent_event_id + "</td>" +
-                                "<td class='hdnColumnCss child'>" + item.child_event_id + "</td>" +
-                                "<td class='hdnColumnCss customer'>" + item.customer_id + "</td>" +
-                                "<td class='hdnColumnCss estimate'>" + item.estimate_id + "</td>" +
-                                "<td class='hdnColumnCss link'>" + item.link_id + "</td>" +
-                                "<td align='left' style='width: 5%;'>" +
-                                    "<select name='grdddldependencyType' id='ddldependencyType" + item.link_id + "' class='cssddldependencyType' onchange='dependencyTypeChange(ddldependencyType" + item.link_id + ", lblStart" + item.link_id + ", lblEnd" + item.link_id + ", txtOffsetdays" + item.link_id + ");'>" +
-                                        "<option value='1' " + (item.dependencyType == "1" ? "selected" : '') + ">Start Same Time</option>" +
-                                        "<option value='2' " + (item.dependencyType == "2" ? "selected" : '') + ">Start After Finish</option>" +
-                                        "<option value='3' " + (item.dependencyType == "3" ? "selected" : '') + ">Offset days</option>" +
-                                    "</select>" +
-                                    "<br/>" +
-                                     "<input id='txtOffsetdays" + item.link_id + "' class='csstxtOffsetdays " + (item.dependencyType == "3" ? "displayshow" : 'displayhide') + "' style='width:50px;' type='text' name='' value='" + item.offsetDays + "'>" +
-                                "</td>" +
-                                "</tr>";
+                        "<td align='left' style='width: 5%;'>" +
+                        "<input id='chkLink" + item.link_id + "' type='checkbox' name=''>" +
+                        "</td>" +
+                        "<td style='width: 60%; text-align: left;'><label id='lbltitle" + item.link_id + "' class='csslbltitle'>" + item.title + "</label></td>" +
+                        "<td style='width: 15%; text-align: center;'><label id='lblStart" + item.link_id + "' class='csslblStart'>" + item.start + "</label></td>" +
+                        "<td style='width: 15%; text-align: center;'><label id='lblEnd" + item.link_id + "' class='csslblEnd'>" + item.end + "</label></td>" +
+                        "<td class='hdnColumnCss parent'>" + item.parent_event_id + "</td>" +
+                        "<td class='hdnColumnCss child'>" + item.child_event_id + "</td>" +
+                        "<td class='hdnColumnCss customer'>" + item.customer_id + "</td>" +
+                        "<td class='hdnColumnCss estimate'>" + item.estimate_id + "</td>" +
+                        "<td class='hdnColumnCss link'>" + item.link_id + "</td>" +
+                        "<td align='left' style='width: 5%;'>" +
+                        "<select name='grdddldependencyType' id='ddldependencyType" + item.link_id + "' class='cssddldependencyType' onchange='dependencyTypeChange(ddldependencyType" + item.link_id + ", lblStart" + item.link_id + ", lblEnd" + item.link_id + ", txtOffsetdays" + item.link_id + ");'>" +
+                        "<option value='1' " + (item.dependencyType == "1" ? "selected" : '') + ">Start Same Time</option>" +
+                        "<option value='2' " + (item.dependencyType == "2" ? "selected" : '') + ">Start After Finish</option>" +
+                        "<option value='3' " + (item.dependencyType == "3" ? "selected" : '') + ">Offset days</option>" +
+                        "</select>" +
+                        "<br/>" +
+                        "<input id='txtOffsetdays" + item.link_id + "' class='csstxtOffsetdays " + (item.dependencyType == "3" ? "displayshow" : 'displayhide') + "' style='width:50px;' type='text' name='' value='" + item.offsetDays + "'>" +
+                        "</td>" +
+                        "</tr>";
                 });
                 $('#ParentLinkTbl').append(trHTML);
 
@@ -3945,17 +3980,17 @@ function loadChildEventLinkTable(objEvent) {
             if (response.d.length > 0) {
                 //  console.log(response);
                 var trHTML = "<tr>" +
-                                "<th style='width: 5%; text-align: center;'>Link</th>" +
-                                "<th style='width: 60%; text-align: center;'>Title</th>" +
-                                "<th style='width: 15%; text-align: center;'>Start</th>" +
-                                "<th style='width: 15%; text-align: center;'>End</th>" +
-                                "<th class='hdnColumnCss'>&nbsp;</th>" +
-                                "<th class='hdnColumnCss'>&nbsp;</th>" +
-                                "<th class='hdnColumnCss'>&nbsp;</th>" +
-                                "<th class='hdnColumnCss'>&nbsp;</th>" +
-                                "<th class='hdnColumnCss'>&nbsp;</th>" +
-                                "<th style='width: 5%; text-align: center;'>&nbsp;</th>" +
-                                "</tr>";
+                    "<th style='width: 5%; text-align: center;'>Link</th>" +
+                    "<th style='width: 60%; text-align: center;'>Title</th>" +
+                    "<th style='width: 15%; text-align: center;'>Start</th>" +
+                    "<th style='width: 15%; text-align: center;'>End</th>" +
+                    "<th class='hdnColumnCss'>&nbsp;</th>" +
+                    "<th class='hdnColumnCss'>&nbsp;</th>" +
+                    "<th class='hdnColumnCss'>&nbsp;</th>" +
+                    "<th class='hdnColumnCss'>&nbsp;</th>" +
+                    "<th class='hdnColumnCss'>&nbsp;</th>" +
+                    "<th style='width: 5%; text-align: center;'>&nbsp;</th>" +
+                    "</tr>";
                 $.each(response.d, function (i, item) {
 
                     // console.log(item);
@@ -3963,27 +3998,27 @@ function loadChildEventLinkTable(objEvent) {
 
 
                     trHTML += "<tr>" +
-                                "<td align='left' style='width: 5%;'>" +
-                                    "<input id='chkLink" + item.link_id + "' type='checkbox' name=''>" +
-                                "</td>" +
-                                "<td style='width: 60%; text-align: left;'><label id='lbltitle" + item.link_id + "' class='csslbltitle'>" + item.title + "</label></td>" +
-                                "<td style='width: 15%; text-align: center;'><label id='lblStart" + item.link_id + "' class='csslblStart'>" + item.start + "</label></td>" +
-                                "<td style='width: 15%; text-align: center;'><label id='lblEnd" + item.link_id + "' class='csslblEnd'>" + item.end + "</label></td>" +
-                                "<td class='hdnColumnCss parent'>" + item.parent_event_id + "</td>" +
-                                "<td class='hdnColumnCss child'>" + item.child_event_id + "</td>" +
-                                "<td class='hdnColumnCss customer'>" + item.customer_id + "</td>" +
-                                "<td class='hdnColumnCss estimate'>" + item.estimate_id + "</td>" +
-                                "<td class='hdnColumnCss link'>" + item.link_id + "</td>" +
-                                "<td align='left' style='width: 5%;'>" +
-                                    "<select name='grdddldependencyType' id='ddldependencyType" + item.link_id + "' class='cssddldependencyType' onchange='dependencyTypeChange(ddldependencyType" + item.link_id + ", lblStart" + item.link_id + ", lblEnd" + item.link_id + ", txtOffsetdays" + item.link_id + ");'>" +
-                                        "<option value='1' " + (item.dependencyType == "1" ? "selected" : '') + ">Start Same Time</option>" +
-                                        "<option value='2' " + (item.dependencyType == "2" ? "selected" : '') + ">Start After Finish</option>" +
-                                        "<option value='3' " + (item.dependencyType == "3" ? "selected" : '') + ">Offset days</option>" +
-                                    "</select>" +
-                                    "<br/>" +
-                                     "<input id='txtOffsetdays" + item.link_id + "' class='csstxtOffsetdays " + (item.dependencyType == "3" ? "displayshow" : 'displayhide') + "' style='width:50px;' type='text' name='' value='" + item.offsetDays + "'>" +
-                                "</td>" +
-                                "</tr>";
+                        "<td align='left' style='width: 5%;'>" +
+                        "<input id='chkLink" + item.link_id + "' type='checkbox' name=''>" +
+                        "</td>" +
+                        "<td style='width: 60%; text-align: left;'><label id='lbltitle" + item.link_id + "' class='csslbltitle'>" + item.title + "</label></td>" +
+                        "<td style='width: 15%; text-align: center;'><label id='lblStart" + item.link_id + "' class='csslblStart'>" + item.start + "</label></td>" +
+                        "<td style='width: 15%; text-align: center;'><label id='lblEnd" + item.link_id + "' class='csslblEnd'>" + item.end + "</label></td>" +
+                        "<td class='hdnColumnCss parent'>" + item.parent_event_id + "</td>" +
+                        "<td class='hdnColumnCss child'>" + item.child_event_id + "</td>" +
+                        "<td class='hdnColumnCss customer'>" + item.customer_id + "</td>" +
+                        "<td class='hdnColumnCss estimate'>" + item.estimate_id + "</td>" +
+                        "<td class='hdnColumnCss link'>" + item.link_id + "</td>" +
+                        "<td align='left' style='width: 5%;'>" +
+                        "<select name='grdddldependencyType' id='ddldependencyType" + item.link_id + "' class='cssddldependencyType' onchange='dependencyTypeChange(ddldependencyType" + item.link_id + ", lblStart" + item.link_id + ", lblEnd" + item.link_id + ", txtOffsetdays" + item.link_id + ");'>" +
+                        "<option value='1' " + (item.dependencyType == "1" ? "selected" : '') + ">Start Same Time</option>" +
+                        "<option value='2' " + (item.dependencyType == "2" ? "selected" : '') + ">Start After Finish</option>" +
+                        "<option value='3' " + (item.dependencyType == "3" ? "selected" : '') + ">Offset days</option>" +
+                        "</select>" +
+                        "<br/>" +
+                        "<input id='txtOffsetdays" + item.link_id + "' class='csstxtOffsetdays " + (item.dependencyType == "3" ? "displayshow" : 'displayhide') + "' style='width:50px;' type='text' name='' value='" + item.offsetDays + "'>" +
+                        "</td>" +
+                        "</tr>";
                 });
                 $('#ChildLinkTbl').append(trHTML);
 
