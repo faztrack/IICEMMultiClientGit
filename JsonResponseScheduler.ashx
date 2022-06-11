@@ -12,63 +12,66 @@ public class JsonResponseScheduler : IHttpHandler, IRequiresSessionState
     public void ProcessRequest(HttpContext context)
     {
         try {
-        context.Response.ContentType = "application/json";
+            context.Response.ContentType = "application/json";
 
-        DateTime start = new DateTime(1970, 1, 1);
-        DateTime end = new DateTime(1970, 1, 1);
-        var test = context.Request.QueryString["start"];
-        start = Convert.ToDateTime(context.Request.QueryString["start"].ToString());//start.AddSeconds(double.Parse(context.Request.QueryString["start"])); // 
-        end = Convert.ToDateTime(context.Request.QueryString["end"].ToString());// end.AddSeconds(double.Parse(context.Request.QueryString["end"])); //
+            DateTime start = new DateTime(1970, 1, 1);
+            DateTime end = new DateTime(1970, 1, 1);
+            var test = context.Request.QueryString["start"];
+            start = Convert.ToDateTime(context.Request.QueryString["start"].ToString());//start.AddSeconds(double.Parse(context.Request.QueryString["start"])); // 
+            end = Convert.ToDateTime(context.Request.QueryString["end"].ToString());// end.AddSeconds(double.Parse(context.Request.QueryString["end"])); //
 
-        //start = Convert.ToDateTime("2019-01-24");
-        //end = Convert.ToDateTime("2019-01-25");
+            //start = Convert.ToDateTime("2019-01-24");
+            //end = Convert.ToDateTime("2019-01-25");
+            int nClientId = 0;
+            int nCusId = 0;
+            string strSecName = "";
+            string strSearchUserName = "";
+            string strSearchSuperintendentName = "";
 
-        int nCusId = 0;
-        string strSecName = "";
-        string strSearchUserName = "";
-        string strSearchSuperintendentName = "";
+            if (System.Web.HttpContext.Current.Session["sClientId"] != null)
+                nClientId = (int)System.Web.HttpContext.Current.Session["sClientId"];
 
-        if (System.Web.HttpContext.Current.Session["CusId"] != null)
-            nCusId = (int)System.Web.HttpContext.Current.Session["CusId"];
+            if (System.Web.HttpContext.Current.Session["CusId"] != null)
+                nCusId = (int)System.Web.HttpContext.Current.Session["CusId"];
 
-        if (System.Web.HttpContext.Current.Session["sSecName"] != null)
-            strSecName = (string)System.Web.HttpContext.Current.Session["sSecName"];
+            if (System.Web.HttpContext.Current.Session["sSecName"] != null)
+                strSecName = (string)System.Web.HttpContext.Current.Session["sSecName"];
 
-        if (System.Web.HttpContext.Current.Session["sKeySearchUserName"] != null)
-            strSearchUserName = (string)System.Web.HttpContext.Current.Session["sKeySearchUserName"];
+            if (System.Web.HttpContext.Current.Session["sKeySearchUserName"] != null)
+                strSearchUserName = (string)System.Web.HttpContext.Current.Session["sKeySearchUserName"];
 
-        if (System.Web.HttpContext.Current.Session["sKeySearchSuperintendentName"] != null)
-            strSearchSuperintendentName = (string)System.Web.HttpContext.Current.Session["sKeySearchSuperintendentName"];
+            if (System.Web.HttpContext.Current.Session["sKeySearchSuperintendentName"] != null)
+                strSearchSuperintendentName = (string)System.Web.HttpContext.Current.Session["sKeySearchSuperintendentName"];
 
-        String result = String.Empty;
+            String result = String.Empty;
 
-        result += "[";
+            result += "[";
 
-        List<int> idList = new List<int>();
-        foreach (CalendarEvent cevent in EventDAO.getEvents(start, end, nCusId, strSecName, strSearchUserName, strSearchSuperintendentName))
-        //foreach (CalendarEvent cevent in EventDAO.getEvents(start, end))
-        {
-            result += convertCalendarEventIntoString(cevent);
-            idList.Add(cevent.id);
-        }
+            List<int> idList = new List<int>();
+            foreach (CalendarEvent cevent in EventDAO.getEvents(start, end, nCusId, strSecName, strSearchUserName, strSearchSuperintendentName, nClientId))
+            //foreach (CalendarEvent cevent in EventDAO.getEvents(start, end))
+            {
+                result += convertCalendarEventIntoString(cevent);
+                idList.Add(cevent.id);
+            }
 
-        if (result.EndsWith(","))
-        {
-            result = result.Substring(0, result.Length - 1);
-        }
+            if (result.EndsWith(","))
+            {
+                result = result.Substring(0, result.Length - 1);
+            }
 
-        result += "]";
+            result += "]";
 
-        //result = "[{" +
-        //            "\"title\": \"Test & Event\"," +
-        //            "\"start\": \"2019-01-01T00:00:00\"," +
-        //            "\"end\": \"2019-01-01T00:00:00\"" +
-        //        "}]";
+            //result = "[{" +
+            //            "\"title\": \"Test & Event\"," +
+            //            "\"start\": \"2019-01-01T00:00:00\"," +
+            //            "\"end\": \"2019-01-01T00:00:00\"" +
+            //        "}]";
 
-        //store list of event ids in Session, so that it can be accessed in web methods
-        context.Session["idList"] = idList;
+            //store list of event ids in Session, so that it can be accessed in web methods
+            context.Session["idList"] = idList;
 
-        context.Response.Write(result);
+            context.Response.Write(result);
         }
         catch (Exception ex)
         {
@@ -178,7 +181,8 @@ public class JsonResponseScheduler : IHttpHandler, IRequiresSessionState
                   "\"section_name\": " + strSection + "," +
                   "\"location_name\": " + strLocation + "," +
                   "\"description\":" + jesonDescription + "," +
-                  "\"EstimateID\": " + "\"" + cevent.estimate_id + "\"," +
+                  "\"client_id\": " + "\"" + cevent.client_id + "\"," +
+                  "\"EstimateID\": " + "\"" + cevent.estimate_id + "\"," +                 
                   "\"CustomerID\": " + "\"" + cevent.customer_id + "\"," +
                   "\"employee_id\": " + "\"" + cevent.employee_id + "\"," +
                   "\"employee_name\": " + "\"" + cevent.employee_name + "\"," +

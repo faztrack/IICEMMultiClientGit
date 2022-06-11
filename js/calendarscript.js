@@ -1702,6 +1702,11 @@ function CalStateAction() {
 
 
 $(document).ready(function () {
+
+    $("#head_ddlDivision").change(function () {
+        console.log("ddlDivision");
+    });
+
     $("#ddlEventColor").change(function () {
         $(this).removeClass();
         var SelectedClass = $(this).val();
@@ -3065,7 +3070,8 @@ $(document).ready(function () {
                         linkType: addLinkType,
                         IsScheduleDayException: $("#chkaddScheduleDayException").prop("checked"),
                         is_complete: $("#chkaddComplete").prop("checked"),
-                        cssClassName: $("#ddladdEventColor option:selected").val()
+                        cssClassName: $("#ddladdEventColor option:selected").val(),
+                        client_id: $("#ddlDivision").val()
                         //customer_id: currentUpdateEvent.CustomerID,
                         //estimate_id: currentUpdateEvent.EstimateID
                     };
