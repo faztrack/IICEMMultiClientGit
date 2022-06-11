@@ -15,6 +15,7 @@ public partial class SalesReportByLeadExcel : System.Web.UI.Page
     {
         if (!IsPostBack)
         {
+            
             KPIUtility.PageLoad(this.Page.AppRelativeVirtualPath);
             if (Session["oUser"] == null)
             {
@@ -22,17 +23,49 @@ public partial class SalesReportByLeadExcel : System.Web.UI.Page
             }
             else
             {
-                hdnClientId.Value = ((userinfo)Session["oUser"]).client_id.ToString();
-                hdnDivisionName.Value = ((userinfo)Session["oUser"]).divisionName;
+                userinfo oUser = (userinfo)Session["oUser"];
+                hdnClientId.Value = oUser.client_id.ToString();
+                hdnDivisionName.Value = oUser.divisionName;
+                hdnPrimaryDivision.Value = oUser.primaryDivision.ToString();
             }
             if (Page.User.IsInRole("rpt011") == false)
             {
                 // No Permission Page.
                 Response.Redirect("nopermission.aspx");
             }
+
+            BindDivision();
             BindSalesPersons();
+
+            if (hdnDivisionName.Value != "" && hdnDivisionName.Value.Contains(","))
+            {
+                pnlDivision.Visible = true;
+            }
+            else
+            {
+                pnlDivision.Visible = false;
+            }
         }
     }
+    private void BindDivision()
+    {
+        try
+        {
+            string sql = "select id, division_name from division order by division_name";
+            DataTable dt = csCommonUtility.GetDataTable(sql);
+            ddlDivision.DataSource = dt;
+            ddlDivision.DataTextField = "division_name";
+            ddlDivision.DataValueField = "id";
+            ddlDivision.DataBind();
+            ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
+
+        }
+        catch (Exception ex)
+        {
+            lblResult.Text = csCommonUtility.GetSystemErrorMessage(ex.ToString());
+        }
+    }
+
     private void BindSalesPersons()
     {
         string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1 and is_sales=1 " + csCommonUtility.GetSalesPersonSql(hdnDivisionName.Value) + " order by sales_person_id asc";
@@ -119,6 +152,16 @@ public partial class SalesReportByLeadExcel : System.Web.UI.Page
         //}
 
         DataClassesDataContext _db = new DataClassesDataContext();
+
+        if (strCondition.Length > 2)
+        {
+            strCondition += " AND customers.client_id = " + Convert.ToInt32(ddlDivision.SelectedValue) + " ";
+        }
+        else
+        {
+            strCondition += " WHERE customers.client_id = " + Convert.ToInt32(ddlDivision.SelectedValue) + " ";
+        }
+
 
         string strQ = " SELECT customers.customer_id,customer_estimate.estimate_id,customer_estimate.job_number,customers.first_name1+' '+customers.last_name1 AS CustomerName,customer_estimate.estimate_name,sales_person.first_name +' '+last_name AS SalesRep, customer_estimate.sale_date, " +
                      "   customers.address,  customers.city, customers.state, customers.zip_code, customers.email, customers.phone, customer_estimate.sales_person_id, " +

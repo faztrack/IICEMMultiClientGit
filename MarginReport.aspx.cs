@@ -21,17 +21,48 @@ public partial class MarginReport : System.Web.UI.Page
             }
             else
             {
-                hdnClientId.Value = ((userinfo)Session["oUser"]).client_id.ToString();
-                hdnDivisionName.Value = ((userinfo)Session["oUser"]).divisionName.ToString();
+                userinfo oUser = (userinfo)Session["oUser"];
+                hdnClientId.Value = oUser.client_id.ToString();
+                hdnDivisionName.Value = oUser.divisionName;
+                hdnPrimaryDivision.Value = oUser.primaryDivision.ToString();
             }
             if (Page.User.IsInRole("rpt007") == false)
             {
                 // No Permission Page.
                 Response.Redirect("nopermission.aspx");
             }
+            BindDivision();
             BindSalesPersons();
+
+            if (hdnDivisionName.Value != "" && hdnDivisionName.Value.Contains(","))
+            {
+                pnlDivision.Visible = true;
+            }
+            else
+            {
+                pnlDivision.Visible = false;
+            }
         }
     }
+    private void BindDivision()
+    {
+        try
+        {
+            string sql = "select id, division_name from division order by division_name";
+            DataTable dt = csCommonUtility.GetDataTable(sql);
+            ddlDivision.DataSource = dt;
+            ddlDivision.DataTextField = "division_name";
+            ddlDivision.DataValueField = "id";
+            ddlDivision.DataBind();
+            ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
+
+        }
+        catch (Exception ex)
+        {
+            lblResult.Text = csCommonUtility.GetSystemErrorMessage(ex.ToString());
+        }
+    }
+
     private void BindSalesPersons()
     {
         string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1 and is_sales=1 " + csCommonUtility.GetSalesPersonSql(hdnDivisionName.Value) + " order by sales_person_id asc";
@@ -133,7 +164,16 @@ public partial class MarginReport : System.Web.UI.Page
         {
             strCondition = " AND customer_estimate.sales_person_id =" + Convert.ToInt32(ddlSalesPersons.SelectedValue) + " AND CONVERT(DATETIME,customer_estimate.sale_date) BETWEEN '" + strStartDate + "' AND '" + strEndDate + "' ";
         }
-       
+
+        if (strCondition.Length > 2)
+        {
+            strCondition += " AND customers.client_id = " + Convert.ToInt32(ddlDivision.SelectedValue) + " ";
+        }
+        else
+        {
+            strCondition += " WHERE customers.client_id = " + Convert.ToInt32(ddlDivision.SelectedValue) + " ";
+        }
+
         DataClassesDataContext _db = new DataClassesDataContext();
        
         string strQ = " SELECT customers.customer_id,customer_estimate.estimate_id,customer_estimate.job_number, " +
@@ -156,41 +196,44 @@ public partial class MarginReport : System.Web.UI.Page
        drNew["Estimate"] = "";
        drNew["Sale Date"] = "Projected Margin:";
        drNew["Sales Person"] = "((TotalProjectRevenue - ProjectBaseCost) / TotalProjectRevenue) * 100";
-       //drNew["Initial Sales"] = drNew["Initial Sales"];
-       //drNew["C/O Total"] = drNew["C/O Total"];
-       //drNew["Total Project Revenue"] = drNew["Total Project Revenue"];
-       //drNew["Collected $"] = drNew["Collected $"];
-       //drNew["Collected %"] = drNew["Collected %"];
-       //drNew["Project Base Cost"] = drNew["Project Base Cost"];
-       //drNew["Labor Cost"] = drNew["Labor Cost"];
-       //drNew["Material Cost"] = drNew["Material Cost"];
-       //drNew["Commission"] = drNew["Commission"];
-       //drNew["Total Project Cost"] = drNew["Total Project Cost"];
-       //drNew["Margin $"] = drNew["Margin $"];
-       //drNew["Projected Margin"] = drNew["Projected Margin"];
-       //drNew["Actual Margin"] = drNew["Actual Margin"];
-       //tmpTable.Rows.Add(drNew);
-       //drNew = tmpTable.NewRow();
-       //drNew["Job #"] = "Margin Report";
-       //drNew["Last Name"] = drNew["Last Name"];
-       //drNew["First Name"] = drNew["First Name"];
-       //drNew["Estimate"] = drNew["Estimate"];
-       //drNew["Sale Date"] = drNew["Sale Date"];
-       //drNew["Sales Person"] = drNew["Sales Person"];
-       //drNew["Initial Sales"] = drNew["Initial Sales"];
-       //drNew["C/O Total"] = drNew["C/O Total"];
-       //drNew["Total Project Revenue"] = drNew["Total Project Revenue"];
-       //drNew["Collected $"] = drNew["Collected $"];
-       //drNew["Collected %"] = drNew["Collected %"];
-       //drNew["Project Base Cost"] = drNew["Project Base Cost"];
-       //drNew["Labor Cost"] = drNew["Labor Cost"];
-       //drNew["Material Cost"] = drNew["Material Cost"];
-       //drNew["Commission"] = drNew["Commission"];
-       //drNew["Total Project Cost"] = drNew["Total Project Cost"];
-       //drNew["Margin $"] = drNew["Margin $"];
-       //drNew["Projected Margin"] = drNew["Projected Margin"];
-       //drNew["Actual Margin"] = drNew["Actual Margin"];
-       tmpTable.Rows.Add(drNew);
+
+        #region comment
+        //drNew["Initial Sales"] = drNew["Initial Sales"];
+        //drNew["C/O Total"] = drNew["C/O Total"];
+        //drNew["Total Project Revenue"] = drNew["Total Project Revenue"];
+        //drNew["Collected $"] = drNew["Collected $"];
+        //drNew["Collected %"] = drNew["Collected %"];
+        //drNew["Project Base Cost"] = drNew["Project Base Cost"];
+        //drNew["Labor Cost"] = drNew["Labor Cost"];
+        //drNew["Material Cost"] = drNew["Material Cost"];
+        //drNew["Commission"] = drNew["Commission"];
+        //drNew["Total Project Cost"] = drNew["Total Project Cost"];
+        //drNew["Margin $"] = drNew["Margin $"];
+        //drNew["Projected Margin"] = drNew["Projected Margin"];
+        //drNew["Actual Margin"] = drNew["Actual Margin"];
+        //tmpTable.Rows.Add(drNew);
+        //drNew = tmpTable.NewRow();
+        //drNew["Job #"] = "Margin Report";
+        //drNew["Last Name"] = drNew["Last Name"];
+        //drNew["First Name"] = drNew["First Name"];
+        //drNew["Estimate"] = drNew["Estimate"];
+        //drNew["Sale Date"] = drNew["Sale Date"];
+        //drNew["Sales Person"] = drNew["Sales Person"];
+        //drNew["Initial Sales"] = drNew["Initial Sales"];
+        //drNew["C/O Total"] = drNew["C/O Total"];
+        //drNew["Total Project Revenue"] = drNew["Total Project Revenue"];
+        //drNew["Collected $"] = drNew["Collected $"];
+        //drNew["Collected %"] = drNew["Collected %"];
+        //drNew["Project Base Cost"] = drNew["Project Base Cost"];
+        //drNew["Labor Cost"] = drNew["Labor Cost"];
+        //drNew["Material Cost"] = drNew["Material Cost"];
+        //drNew["Commission"] = drNew["Commission"];
+        //drNew["Total Project Cost"] = drNew["Total Project Cost"];
+        //drNew["Margin $"] = drNew["Margin $"];
+        //drNew["Projected Margin"] = drNew["Projected Margin"];
+        //drNew["Actual Margin"] = drNew["Actual Margin"];
+        #endregion
+        tmpTable.Rows.Add(drNew);
        drNew = tmpTable.NewRow();
        drNew["Job #"] = "Sales Person:";
        drNew["Last Name"] = ddlSalesPersons.SelectedItem.Text;

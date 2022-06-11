@@ -1,4 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Main.master" AutoEventWireup="true" CodeFile="ActivityLogReport.aspx.cs" Inherits="ActivityLogReport" %>
+
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
@@ -23,7 +24,19 @@
                                 </td>
                                 <td>&nbsp;</td>
                             </tr>
-                             <tr>
+
+                            <asp:Panel ID="pnlDivision" runat="server" Visible="true">
+                                <tr>
+                                    <td align="right" width="45%">
+                                        <b>Division: </b>
+                                    </td>
+                                    <td align="left" valign="middle">
+                                        <asp:DropDownList ID="ddlDivision" runat="server" Width="168px"></asp:DropDownList>
+                                    </td>
+                                </tr>
+                            </asp:Panel>
+
+                            <tr>
                                 <td align="right" width="45%">
                                     <b>Sales Person: </b>
                                 </td>
@@ -93,6 +106,7 @@
                             <tr>
                                 <td align="right">
                                     <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
+                                    <asp:HiddenField ID="hdnPrimaryDivision" runat="server" Value="0" />
                                     <asp:HiddenField ID="hdnDivisionName" runat="server" Value="" />
                                 </td>
                                 <td align="left"></td>

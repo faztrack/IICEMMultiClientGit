@@ -182,7 +182,7 @@
                         <asp:BoundField />
                         <asp:TemplateField HeaderText="Selection">
                             <ItemTemplate>
-                                <asp:LinkButton ID="lnkSectionSelection" runat="server" Visible="false" OnClick="lnkSectionSelection_Onclick">View Section Selection</asp:LinkButton>
+                                <asp:LinkButton ID="lnkSectionSelection" runat="server" Visible="false" OnClick="lnkSectionSelection_Onclick" Font-Underline="true">View Section Selection</asp:LinkButton>
                             </ItemTemplate>
                             <HeaderStyle HorizontalAlign="Center" />
                             <ItemStyle HorizontalAlign="Center" />

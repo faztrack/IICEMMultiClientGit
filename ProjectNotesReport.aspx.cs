@@ -112,6 +112,7 @@ public partial class ProjectNotesReport : System.Web.UI.Page
     {
         if (!IsPostBack)
         {
+            string divisionName = "";
             KPIUtility.PageLoad(this.Page.AppRelativeVirtualPath);
             if (Session["oUser"] == null)
             {
@@ -119,7 +120,10 @@ public partial class ProjectNotesReport : System.Web.UI.Page
             }
             else
             {
-                hdnClientId.Value = ((userinfo)Session["oUser"]).client_id.ToString();
+                userinfo oUser = (userinfo)Session["oUser"];
+                hdnClientId.Value = oUser.client_id.ToString();
+                hdnPrimaryDivision.Value = oUser.primaryDivision.ToString();
+                divisionName = oUser.divisionName;
             }
             if (Page.User.IsInRole("rpt009") == false)
             {
@@ -135,7 +139,22 @@ public partial class ProjectNotesReport : System.Web.UI.Page
 
             # endregion
             //   DynamicQuery();
+
+            BindDivision();
             LoadProjectNoteInfo(0, "WHERE pn.is_complete = 0");
+
+
+            if (divisionName != "" && divisionName.Contains(","))
+            {
+                ddlDivision.Enabled = true;
+            }
+            else
+            {
+                ddlDivision.Enabled = false;
+            }
+
+
+
         }
 
     }
@@ -211,7 +230,16 @@ public partial class ProjectNotesReport : System.Web.UI.Page
             strCondition += "Where cus.status_id NOT IN(4,5) AND cus.customer_id NOT IN (SELECT DISTINCT customer_id FROM customer_estimate WHERE IsEstimateActive = 0)";
 
 
-        strQ = " SELECT pn.ProjectNoteId, pn.customer_id, cus.first_name1, cus.last_name1, cus.last_name1 + ', ' + cus.first_name1 as customer_name, pn.NoteDetails, pn.is_complete, pn.ProjectDate, pn.CreateDate, " +
+        if (ddlDivision.SelectedItem.Text != "All")
+        {
+            if (strCondition.Length > 2)
+                strCondition += " AND pn.client_id =" + Convert.ToInt32(ddlDivision.SelectedValue);
+            else
+                strCondition += " WHERE pn.client_id =" + Convert.ToInt32(ddlDivision.SelectedValue);
+        }
+
+
+        strQ = " SELECT pn.ProjectNoteId, pn.customer_id, cus.first_name1, pn.client_id as clientID,  cus.last_name1, cus.last_name1 + ', ' + cus.first_name1 as customer_name, pn.NoteDetails, pn.is_complete, pn.ProjectDate, pn.CreateDate, " +
             " pn.SectionName,pn.MaterialTrack,pn.DesignUpdates,pn.SuperintendentNotes,pn.isSOW " +
             " FROM ProjectNoteInfo as pn " +
             " INNER JOIN customers as cus ON pn.customer_id = cus.customer_id " +
@@ -232,7 +260,7 @@ public partial class ProjectNotesReport : System.Web.UI.Page
             grdProjectNote.PageSize = 200;
         }
         grdProjectNote.DataSource = dt;
-        grdProjectNote.DataKeyNames = new string[] { "customer_id", "customer_name" };
+        grdProjectNote.DataKeyNames = new string[] { "customer_id", "customer_name", "clientID" };
         grdProjectNote.DataBind();
         lblCurrentPageNo.Text = Convert.ToString(nPageNo + 1);
         if (nPageNo == 0)
@@ -266,7 +294,10 @@ public partial class ProjectNotesReport : System.Web.UI.Page
             DataClassesDataContext _db = new DataClassesDataContext();
 
             int ncid = Convert.ToInt32(grdProjectNote.DataKeys[e.Row.RowIndex].Values[0].ToString());
-          string customerName = grdProjectNote.DataKeys[e.Row.RowIndex].Values[1].ToString();
+            string customerName = grdProjectNote.DataKeys[e.Row.RowIndex].Values[1].ToString();
+            string nClientId = grdProjectNote.DataKeys[e.Row.RowIndex].Values[2].ToString();
+            Label lblDivisionName = e.Row.FindControl("lblDivisionName") as Label;
+            lblDivisionName.Text = csCommonUtility.GetDivisionName(nClientId);
 
             Label lblIsSOW = (Label)e.Row.FindControl("lblSOW");
 
@@ -586,6 +617,7 @@ public partial class ProjectNotesReport : System.Web.UI.Page
         ddlStatus.SelectedValue = "3";
         txtProjectEndDate.Text = "";
         txtProjectStartDate.Text = "";
+        ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
       
         LoadProjectNoteInfo(0, "");;
 
@@ -785,5 +817,21 @@ public partial class ProjectNotesReport : System.Web.UI.Page
         return predicate;
 
     }
+    private void BindDivision()
+    {
+        string sql = "select id, division_name from division order by division_name ";
+        DataTable dt = csCommonUtility.GetDataTable(sql);
+        ddlDivision.DataSource = dt;
+        ddlDivision.DataTextField = "division_name";
+        ddlDivision.DataValueField = "id";
+        ddlDivision.DataBind();
+        ddlDivision.Items.Insert(0, "All");
+        ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
 
+    }
+
+    protected void ddlDivision_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        LoadProjectNoteInfo(0, "");
+    }
 }

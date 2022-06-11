@@ -23,6 +23,16 @@
                                 </td>
                                 <td>&nbsp;</td>
                             </tr>
+                             <asp:Panel ID="pnlDivision" runat="server" Visible="true">
+                                <tr>
+                                    <td align="right" width="45%">
+                                        <b>Division: </b>
+                                    </td>
+                                    <td align="left" valign="middle">
+                                        <asp:DropDownList ID="ddlDivision" runat="server" Width="153px"></asp:DropDownList>
+                                    </td>
+                                </tr>
+                            </asp:Panel>
                             <tr>
                                 <td align="right" width="45%"><span class="required">*</span>
                                     <b>Start Date: </b>
@@ -83,7 +93,10 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td align="right"></td>
+                                <td align="right">
+                                    <asp:HiddenField ID="hdnPrimaryDivision" runat="server" Value="0" />
+                                    <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
+                                </td>
                                 <td align="left"></td>
                             </tr>
                         </table>

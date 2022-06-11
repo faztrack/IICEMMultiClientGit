@@ -16,13 +16,17 @@ public partial class ActivityLogReport : System.Web.UI.Page
         KPIUtility.PageLoad(this.Page.AppRelativeVirtualPath);
         if (!IsPostBack)
         {
+            string divisionName = "";
             if (Session["oUser"] == null)
             {
                 Response.Redirect(ConfigurationManager.AppSettings["LoginPage"].ToString());
             }
             else
             {
-                hdnDivisionName.Value = ((userinfo)Session["oUser"]).divisionName;
+                userinfo oUser = (userinfo)Session["oUser"];
+                hdnDivisionName.Value = oUser.divisionName;
+                hdnPrimaryDivision.Value = oUser.primaryDivision.ToString();
+                divisionName = oUser.divisionName;
             }
             
             if (Page.User.IsInRole("rpt008") == false)
@@ -30,11 +34,43 @@ public partial class ActivityLogReport : System.Web.UI.Page
                 // No Permission Page.
                 Response.Redirect("nopermission.aspx");
             }
+
+            BindDivision();
             BindSalesPersons();
+
+
+            if (divisionName != "" && divisionName.Contains(","))
+            {
+                pnlDivision.Visible = true;
+            }
+            else
+            {
+                pnlDivision.Visible = false;
+            }
 
             csCommonUtility.SetPagePermission(this.Page, new string[] { "btnViewReport", "ddlSalesPersons" });
         }
     }
+
+    private void BindDivision()
+    {
+        try
+        {
+            string sql = "select id, division_name from division order by division_name";
+            DataTable dt = csCommonUtility.GetDataTable(sql);
+            ddlDivision.DataSource = dt;
+            ddlDivision.DataTextField = "division_name";
+            ddlDivision.DataValueField = "id";
+            ddlDivision.DataBind();
+            ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
+
+        }
+        catch (Exception ex)
+        {
+            lblResult.Text = csCommonUtility.GetSystemErrorMessage(ex.ToString());
+        }
+    }
+
     private void BindSalesPersons()
     {
 
@@ -111,6 +147,15 @@ public partial class ActivityLogReport : System.Web.UI.Page
             strCondition = "  WHERE ccl.sales_person_id =" + Convert.ToInt32(ddlSalesPersons.SelectedValue) + " AND CONVERT(DATETIME,ccl.CallDate) BETWEEN '" + strStartDate + "' AND '" + strEndDate + "'";
         }
 
+        if(strCondition.Length > 2)
+        {
+            strCondition += " AND ccl.client_id = " + Convert.ToInt32(ddlDivision.SelectedValue) + " ";
+        }
+        else
+        {
+            strCondition += " WHERE ccl.client_id = " + Convert.ToInt32(ddlDivision.SelectedValue) + " ";
+        }
+
 
         DataClassesDataContext _db = new DataClassesDataContext();
 
@@ -144,4 +189,6 @@ public partial class ActivityLogReport : System.Web.UI.Page
         ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "Popup", "window.open('Reports/Common/ReportViewer.aspx');", true);
 
     }
+
+   
 }

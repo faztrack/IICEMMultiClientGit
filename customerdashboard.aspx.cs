@@ -671,6 +671,7 @@ public partial class customerdashboard : System.Web.UI.Page
         lblResult.Text = "";
         lblMessage.Text = "";
 
+        #region comment
         //if (txtAnswer1.Text.Trim() == "")
         //{
         //    lblResult.Text = "Please answer question1.";
@@ -731,6 +732,7 @@ public partial class customerdashboard : System.Web.UI.Page
 
         //    return;
         //}
+        #endregion
 
         if (Convert.ToInt32(hdnCustomerId.Value) == 0)
         {
@@ -745,6 +747,7 @@ public partial class customerdashboard : System.Web.UI.Page
         objCJS.customerid = Convert.ToInt32(hdnCustomerId.Value);
         objCJS.jobstatusid = 7;
         objCJS.estimate_id = Convert.ToInt32(hdnEstimateId.Value);
+        objCJS.client_id = Convert.ToInt32(hdnClientId.Value);
         if (_db.customer_jobstatus.Where(c => c.customerid == Convert.ToInt32(hdnCustomerId.Value) && c.estimate_id == Convert.ToInt32(hdnEstimateId.Value)).SingleOrDefault() == null)
         {
             _db.customer_jobstatus.InsertOnSubmit(objCJS);
@@ -770,6 +773,7 @@ public partial class customerdashboard : System.Web.UI.Page
         objcs.answer9 = "";
         objcs.answer10 = "";
         objcs.date = DateTime.Now;
+        objcs.client_id = Convert.ToInt32(hdnClientId.Value);
 
         _db.customersurveys.InsertOnSubmit(objcs);
         _db.SubmitChanges();
@@ -2605,6 +2609,7 @@ public partial class customerdashboard : System.Web.UI.Page
                 objPay.BillCity = BillCity;
                 objPay.BillState = BillState;
                 objPay.BillZip = BillZip;
+                objPay.client_id = Convert.ToInt32(hdnClientId.Value);
                 _db.Payments_card_Infos.InsertOnSubmit(objPay);
                 _db.SubmitChanges();
 
@@ -2701,7 +2706,7 @@ public partial class customerdashboard : System.Web.UI.Page
             objPP.CreateDate = DateTime.Now;
             objPP.LastUpdatedDate = DateTime.Now;
             objPP.LastUpdatedBy = "";// hdnCustomerLastName.Value.ToString();
-
+            objPP.client_id = Convert.ToInt32(hdnClientId.Value);
             objPP.BillAddress = txtAddress.Text;
             objPP.BillCity = txtCity.Text;
             objPP.BillState = ddlState.SelectedValue;
@@ -3453,6 +3458,7 @@ public partial class customerdashboard : System.Web.UI.Page
                 objEPay.EcheckType = "WEB";
                 objEPay.NameOnAccount = txtBank_acct_name.Text.Trim();
                 objEPay.BankName = txtbank_name.Text.Trim();
+                objEPay.client_id = Convert.ToInt32(hdnClientId.Value);
 
                 _db.PaymentECheckInfos.InsertOnSubmit(objEPay);
                 _db.SubmitChanges();

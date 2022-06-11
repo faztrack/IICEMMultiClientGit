@@ -157,6 +157,7 @@ public class PrjectNoteInfrmation
     public string DesignUpdates { get; set; }
     public string SuperintendentNotes { get; set; }
     public string SectionName { get; set; }
+    public int client_Id { get; set; }
 
 }
 

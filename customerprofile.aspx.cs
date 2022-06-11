@@ -52,14 +52,18 @@ public partial class customerprofile : System.Web.UI.Page
         else
         {
             customeruserinfo objCU = new customeruserinfo();
-            objCU = _db.customeruserinfos.Single(c => c.customerid == Convert.ToInt32(hdnCustomerId.Value));
+            objCU = _db.customeruserinfos.SingleOrDefault(c => c.customerid == Convert.ToInt32(hdnCustomerId.Value));
 
-            if (txtCurrentPassword.Text.Trim() != objCU.customerpassword)
+            if(objCU != null)
             {
-                lblResult.Text = csCommonUtility.GetSystemErrorMessage("Invalid Current Password.");
-                
-                return;
+                if (txtCurrentPassword.Text.Trim() != objCU.customerpassword)
+                {
+                    lblResult.Text = csCommonUtility.GetSystemErrorMessage("Invalid Current Password.");
+
+                    return;
+                }
             }
+            
         }
         if (txtNewPassword.Text.Trim() == "")
         {
@@ -91,7 +95,7 @@ public partial class customerprofile : System.Web.UI.Page
 
         string strNewPassword = txtNewPassword.Text.Trim();
 
-        string strQ = "UPDATE customeruserinfo SET customerpassword = '" + strNewPassword + "' WHERE customerid =" + Convert.ToInt32(hdnCustomerId.Value);
+        string strQ = "UPDATE customeruserinfo SET customerpassword = '" + strNewPassword + "'  WHERE customerid =" + Convert.ToInt32(hdnCustomerId.Value);
         _db.ExecuteCommand(strQ, string.Empty);
         _db.SubmitChanges();
 

@@ -22,15 +22,29 @@ public partial class SalesReportByLead : System.Web.UI.Page
             }
             else
             {
-                hdnClientId.Value = ((userinfo)Session["oUser"]).client_id.ToString();
-                hdnDivisionName.Value = ((userinfo)Session["oUser"]).divisionName.ToString();
+
+                userinfo oUser = (userinfo)Session["oUser"];
+                hdnClientId.Value = oUser.client_id.ToString();
+                hdnDivisionName.Value = oUser.divisionName;
+                hdnPrimaryDivision.Value = oUser.primaryDivision.ToString();
+               
             }
             if (Page.User.IsInRole("rpt006") == false)
             {
                 // No Permission Page.
                 Response.Redirect("nopermission.aspx");
             }
+            BindDivision();
             BindSalesPersons();
+
+            if (hdnDivisionName.Value != "" && hdnDivisionName.Value.Contains(","))
+            {
+                pnlDivision.Visible = true;
+            }
+            else
+            {
+                pnlDivision.Visible = false;
+            }
         }
     }
     private void BindSalesPersons()
@@ -44,6 +58,26 @@ public partial class SalesReportByLead : System.Web.UI.Page
         ddlSalesPersons.DataBind();
         ddlSalesPersons.Items.Insert(0, "All");
     }
+
+    private void BindDivision()
+    {
+        try
+        {
+            string sql = "select id, division_name from division order by division_name";
+            DataTable dt = csCommonUtility.GetDataTable(sql);
+            ddlDivision.DataSource = dt;
+            ddlDivision.DataTextField = "division_name";
+            ddlDivision.DataValueField = "id";
+            ddlDivision.DataBind();
+            ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
+
+        }
+        catch (Exception ex)
+        {
+            lblResult.Text = csCommonUtility.GetSystemErrorMessage(ex.ToString());
+        }
+    }
+
     protected void btnCancel_Click(object sender, EventArgs e)
     {
         Response.Redirect("Default.aspx");
@@ -119,6 +153,17 @@ public partial class SalesReportByLead : System.Web.UI.Page
             //strNewCondition = " AND customer_estimate.sales_person_id =" + Convert.ToInt32(ddlSalesPersons.SelectedValue) + " AND customers.appointment_date BETWEEN '" + strStartDate + "' AND '" + strEndDate + "' ";
             strNewCondition = " AND customer_estimate.sales_person_id =" + Convert.ToInt32(ddlSalesPersons.SelectedValue) + " AND customers.registration_date BETWEEN '" + strStartDate + "' AND '" + strEndDate + "' ";
         }
+
+
+        if (strCondition.Length > 2)
+        {
+            strCondition += " AND customers.client_id = " + Convert.ToInt32(ddlDivision.SelectedValue) + " ";
+        }
+        else
+        {
+            strCondition += " WHERE customers.client_id = " + Convert.ToInt32(ddlDivision.SelectedValue) + " ";
+        }
+
 
         DataClassesDataContext _db = new DataClassesDataContext();
 

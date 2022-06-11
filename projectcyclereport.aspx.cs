@@ -57,7 +57,7 @@ public partial class projectcyclereport : System.Web.UI.Page
         Session.Add("loadstarttime", DateTime.Now);
         if (!IsPostBack)
         {
-            string nClientId = "";
+            string divisionName = "";            
             KPIUtility.PageLoad(this.Page.AppRelativeVirtualPath);
             if (Session["oUser"] == null)
             {
@@ -65,13 +65,18 @@ public partial class projectcyclereport : System.Web.UI.Page
             }
             else
             {
-                nClientId = ((userinfo)Session["oUser"]).client_id.ToString();
+                userinfo oUser = (userinfo)Session["oUser"];    
+                hdnPrimaryDivision.Value = oUser.primaryDivision.ToString();
+                hdnClientId.Value = oUser.client_id.ToString();
+                divisionName = oUser.divisionName;
             }
             if (Page.User.IsInRole("pcr01") == false)
             {
                 // No Permission Page.
                 Response.Redirect("nopermission.aspx");
             }
+
+            BindDivision();
 
             // Get Leads
             # region Get Customer
@@ -80,7 +85,7 @@ public partial class projectcyclereport : System.Web.UI.Page
             // List<customer> CustomerList = _db.customers.Where(c => c.isCustomer == 1 && c.is_active == true).ToList();
             List<csCustomer> CustomerList = (from c in _db.customers
                                              join s in _db.ScheduleCalendars on c.customer_id equals s.customer_id
-                                             where c.isCustomer == 1 && c.is_active == true && s.IsEstimateActive == true && c.client_id.ToString().Contains(nClientId)
+                                             where c.isCustomer == 1 && c.is_active == true && s.IsEstimateActive == true && c.client_id.ToString().Contains(hdnClientId.Value)
                                              select new csCustomer
                                              {
                                                  first_name1 = c.first_name1,
@@ -94,7 +99,30 @@ public partial class projectcyclereport : System.Web.UI.Page
             txtSearch.Text = "";
             GetCustomerProjectList();
 
+            if (divisionName != "" && divisionName.Contains(","))
+            {
+                ddlDivision.Enabled = true;
+            }
+            else
+            {
+                ddlDivision.Enabled = false;
+            }
+
         }
+    }
+
+
+    private void BindDivision()
+    {
+        string sql = "select id, division_name from division order by division_name ";
+        DataTable dt = csCommonUtility.GetDataTable(sql);
+        ddlDivision.DataSource = dt;
+        ddlDivision.DataTextField = "division_name";
+        ddlDivision.DataValueField = "id";
+        ddlDivision.DataBind();
+        ddlDivision.Items.Insert(0, "All");
+        ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
+
     }
 
     private DataTable GetData()
@@ -145,16 +173,23 @@ public partial class projectcyclereport : System.Web.UI.Page
             strCondition = " where  ce.status_id=3  and s.employee_name != ''  and s.employee_name != 'TBD TBD' and s.event_end<GETDATE() ";
         }
 
+        if (ddlDivision.SelectedItem.Text != "All")
+        {
+            if (strCondition.Length > 2)
+                strCondition += " AND s.client_id = " + Convert.ToInt32(ddlDivision.SelectedValue) + " ";
+            else
+                strCondition = " WHERE  s.client_id = " + Convert.ToInt32(ddlDivision.SelectedValue) + " ";
+        }
 
 
-        string strQ = " select customers.first_name1 + ' ' + customers.last_name1 as customername,s.customer_id,s.estimate_id,u.first_name + ' ' + u.last_name as suername,customers.SuperintendentId,sp.first_name + ' ' + sp.last_name as salesperson, MIN(event_start) as EventFisrtDay, getdate() as currentdate, MAX(event_end) as EventLastDay ," +
+        string strQ = " select customers.first_name1 + ' ' + customers.last_name1 as customername, s.client_id as clientId, s.customer_id,s.estimate_id,u.first_name + ' ' + u.last_name as suername,customers.SuperintendentId,sp.first_name + ' ' + sp.last_name as salesperson, MIN(event_start) as EventFisrtDay, getdate() as currentdate, MAX(event_end) as EventLastDay ," +
                     " DATEDIFF(DAY, MAX(event_end),getdate()) AS LastAcitivityDate, DATEDIFF(DAY, MIN(event_start),getdate()) AS StartActivityDate, ce.sale_date,ce.job_number " +
                     " from[ScheduleCalendar]  as s " +
                     " inner join customers on customers.customer_id = s.customer_id " +
                     " inner join customer_estimate as ce on ce.customer_id = s.customer_id and ce.estimate_id = s.estimate_id " +
                     " inner join user_info as u on u.user_id = customers.SuperintendentId " +
                     " inner join sales_person as sp on sp.sales_person_id = customers.sales_person_id " + strCondition +
-                    " group by s.customer_id,s.estimate_id,customers.last_name1,customers.first_name1,ce.sale_date,ce.job_number,u.first_name,u.last_name,sp.first_name,sp.last_name,customers.SuperintendentId order by CONVERT(DATETIME, ce.sale_date)";
+                    " group by s.client_id, s.customer_id,s.estimate_id,customers.last_name1,customers.first_name1,ce.sale_date,ce.job_number,u.first_name,u.last_name,sp.first_name,sp.last_name,customers.SuperintendentId order by CONVERT(DATETIME, ce.sale_date)";
 
 
         DataTable dt = csCommonUtility.GetDataTable(strQ);
@@ -177,7 +212,7 @@ public partial class projectcyclereport : System.Web.UI.Page
             DataTable dt = (DataTable)Session["sProjectList"];
             grdProjectRecycle.DataSource = dt;
             grdProjectRecycle.PageIndex = nPageNo;
-            grdProjectRecycle.DataKeyNames = new string[] { "customer_id", "estimate_id" };
+            grdProjectRecycle.DataKeyNames = new string[] { "customer_id", "estimate_id", "clientId" };
             grdProjectRecycle.DataBind();
             lblCurrentPageNo.Text = Convert.ToString(nPageNo + 1);
 
@@ -215,6 +250,9 @@ public partial class projectcyclereport : System.Web.UI.Page
         {
             int nCustomer_id = Convert.ToInt32(grdProjectRecycle.DataKeys[e.Row.RowIndex].Values[0]);
             int nEstimate_id = Convert.ToInt32(grdProjectRecycle.DataKeys[e.Row.RowIndex].Values[1]);
+            string nClientID = grdProjectRecycle.DataKeys[e.Row.RowIndex].Values[2].ToString();
+            Label lblDivisionName = e.Row.FindControl("lblDivisionName") as Label;
+            lblDivisionName.Text = csCommonUtility.GetDivisionName(nClientID);
         }
     }
 
@@ -241,6 +279,7 @@ public partial class projectcyclereport : System.Web.UI.Page
         Session.Remove("sPage");
         ddlEstStatus.SelectedValue = "1";
         ddlStatus.SelectedValue = "2";
+        ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
         GetCustomerProjectList();
 
     }
@@ -469,5 +508,10 @@ public partial class projectcyclereport : System.Web.UI.Page
 
             ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "Popup", "window.open('Reports/excel_report/" + sFileName + "');", true);
         }
+    }
+
+    protected void ddlDivision_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        GetCustomerProjectList();
     }
 }

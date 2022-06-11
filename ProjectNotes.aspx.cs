@@ -52,6 +52,7 @@ public partial class ProjectNotes : System.Web.UI.Page
                 customer cust = new customer();
                 cust = _db.customers.SingleOrDefault(c => c.customer_id == Convert.ToInt32(hdnCustomerId.Value));
 
+                hdnClientId.Value = cust.client_id.ToString();
 
                 company_profile com = new company_profile();
                 if (_db.company_profiles.Where(cp => cp.client_id == cust.client_id).SingleOrDefault() != null)
@@ -239,7 +240,7 @@ public partial class ProjectNotes : System.Web.UI.Page
         DataClassesDataContext _db = new DataClassesDataContext();
         DataTable tmpTable = LoadDataTable();
         var item = from it in _db.ProjectNoteInfos
-                   where it.customer_id == Convert.ToInt32(hdnCustomerId.Value)
+                   where it.customer_id == Convert.ToInt32(hdnCustomerId.Value) 
                    orderby it.ProjectNoteId descending
                    select new PrjectNoteInfrmation()
                    {
@@ -254,7 +255,8 @@ public partial class ProjectNotes : System.Web.UI.Page
                        SectionName=it.SectionName,
                        is_complete = (bool)it.is_complete,
                        ProjectDate = (DateTime)it.ProjectDate,
-                       CreateDate = (DateTime)it.CreateDate
+                       CreateDate = (DateTime)it.CreateDate,
+                       client_Id = (int)it.client_id
                    };
          
 
@@ -274,6 +276,7 @@ public partial class ProjectNotes : System.Web.UI.Page
             drNew["section_id"] = pinfo.section_id;
             drNew["isSOW"] = pinfo.isSOW;
             drNew["SectionName"] = pinfo.SectionName;
+           
             tmpTable.Rows.Add(drNew);
         }
         if (tmpTable.Rows.Count == 0)
@@ -291,6 +294,7 @@ public partial class ProjectNotes : System.Web.UI.Page
             drNew["section_id"] = 0;
             drNew["isSOW"] = true;
             drNew["SectionName"] = "";
+          
             tmpTable.Rows.Add(drNew);
         }
         Session.Add("ProjectNote", tmpTable);
@@ -314,6 +318,7 @@ public partial class ProjectNotes : System.Web.UI.Page
         table.Columns.Add("section_id", typeof(int));
         table.Columns.Add("isSOW", typeof(bool));
         table.Columns.Add("SectionName", typeof(string));
+       
 
         return table;
     }
@@ -383,9 +388,7 @@ public partial class ProjectNotes : System.Web.UI.Page
                     dr["SuperintendentNotes"] = txtSuperintendentNotes.Text;
                     dr["section_id"] = Convert.ToInt32(ddlSectiong.SelectedValue);
                     dr["SectionName"] = ddlSectiong.SelectedItem.Text;
-                    //if (ddlSectiong.SelectedIndex == -1)
-                    //    dr["isSOW"] = false;
-                    //else
+                  
                       dr["isSOW"] = Convert.ToBoolean(chkSOW.Checked);
                    
                 }
@@ -440,6 +443,7 @@ public partial class ProjectNotes : System.Web.UI.Page
                 ProNInfo.SuperintendentNotes = dr["SuperintendentNotes"].ToString();
                 ProNInfo.section_id = Convert.ToInt32(dr["section_id"]);
                 ProNInfo.SectionName = dr["SectionName"].ToString();
+                ProNInfo.client_id = Convert.ToInt32(hdnClientId.Value);
                 //if (ddlSectiong.SelectedIndex == -1)
                 //    dr["isSOW"] = false;
                 //else
@@ -598,7 +602,7 @@ public partial class ProjectNotes : System.Web.UI.Page
            isSOW = Convert.ToBoolean(chkSOW.Checked);
 
         int nProjectNoteId = Convert.ToInt32(grdProjectNote.DataKeys[Convert.ToInt32(e.RowIndex)].Values[0]);
-        string strQ = "UPDATE ProjectNoteInfo SET NoteDetails='" + strDescription + "',MaterialTrack='" + txtMaterialTrack.Text.Trim().Replace("'", "''") + "', DesignUpdates='" + txtDesignUpdates.Text.Trim().Replace("'", "''") + "', SuperintendentNotes='" + txtSuperintendentNotes.Text.Trim().Replace("'", "''") + "', ProjectDate='" + dtProjectDate + "' , is_complete ='" + Convert.ToBoolean(chkIsComplete.Checked) + "', isSOW ='" + isSOW + "', section_id ='" + Convert.ToInt32(ddlSectiong.SelectedValue) + "' , SectionName ='" + ddlSectiong.SelectedItem.Text + "'  WHERE ProjectNoteId=" + nProjectNoteId + "  AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value);
+        string strQ = "UPDATE ProjectNoteInfo SET NoteDetails='" + strDescription + "',   MaterialTrack='" + txtMaterialTrack.Text.Trim().Replace("'", "''") + "', DesignUpdates='" + txtDesignUpdates.Text.Trim().Replace("'", "''") + "', SuperintendentNotes='" + txtSuperintendentNotes.Text.Trim().Replace("'", "''") + "', ProjectDate='" + dtProjectDate + "' , is_complete ='" + Convert.ToBoolean(chkIsComplete.Checked) + "', isSOW ='" + isSOW + "', section_id ='" + Convert.ToInt32(ddlSectiong.SelectedValue) + "' , SectionName ='" + ddlSectiong.SelectedItem.Text + "'  WHERE ProjectNoteId=" + nProjectNoteId + "  AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value);
         _db.ExecuteCommand(strQ, string.Empty);
         LoadSectionSec();
         LoadProjectNoteInfo();
@@ -805,6 +809,7 @@ public partial class ProjectNotes : System.Web.UI.Page
                 dr["section_id"] = Convert.ToInt32(ddlSectiong.SelectedValue);
                 dr["isSOW"] = Convert.ToBoolean(chkSOW.Checked);
                 dr["SectionName"] = ddlSectiong.SelectedItem.Text;
+            
 
             }
 
@@ -823,13 +828,14 @@ public partial class ProjectNotes : System.Web.UI.Page
         drNew["section_id"] = 0;
         drNew["isSOW"] = true;
         drNew["SectionName"] = "";
+      
 
         table.Rows.Add(drNew);
         DataView dv = table.DefaultView;
         dv.Sort = "ProjectDate desc";
         Session["ProjectNote"] = dv.ToTable();
         table = (DataTable)Session["ProjectNote"];
-        //Session.Add("ProjectNote", table);
+        
         LoadSectionSec();
         grdProjectNote.DataSource = table;
         grdProjectNote.DataKeyNames = new string[] { "ProjectNoteId", "section_id" };

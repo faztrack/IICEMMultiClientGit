@@ -108,7 +108,7 @@
                                         OnRowDataBound="grdEstimates_RowDataBound" ShowHeader="False" TabIndex="2"
                                         Width="60%">
                                         <Columns>
-                                            <asp:ButtonField CommandName="view" DataTextField="estimate_name" />
+                                            <asp:ButtonField CommandName="view" DataTextField="estimate_name" ItemStyle-Font-Underline="true" />
                                             <asp:BoundField />
                                         </Columns>
                                         <AlternatingRowStyle CssClass="alt" />
@@ -279,7 +279,7 @@
                                             <asp:BoundField DataField="changeorder_name" HeaderText="Change Order Title">
                                                 <ItemStyle HorizontalAlign="Left" />
                                             </asp:BoundField>
-                                            <asp:TemplateField HeaderText="View C/O">
+                                            <asp:TemplateField HeaderText="View C/O" ItemStyle-Font-Underline="true">
                                                 <ItemTemplate>
                                                     <asp:HyperLink ID="hypViewCO" runat="server">View</asp:HyperLink>
                                                 </ItemTemplate>
@@ -396,7 +396,7 @@
                                 <asp:TemplateField>
                                     <ItemTemplate>
                                         <asp:Label ID="lblPayInfo" runat="server" />
-                                        <asp:LinkButton ID="lnkPayment" runat="server" OnClick="CreatePayment" ToolTip="Click here to make a payment"></asp:LinkButton>
+                                        <asp:LinkButton ID="lnkPayment" runat="server" OnClick="CreatePayment" ToolTip="Click here to make a payment" Font-Underline="true"></asp:LinkButton>
                                     </ItemTemplate>
                                     <ItemStyle HorizontalAlign="Left" Width="30%" />
                                 </asp:TemplateField>

@@ -2109,9 +2109,30 @@ public partial class payment_info : System.Web.UI.Page
         ReportDocument rptFile = new ReportDocument();
         string strReportPath = "";
         if (rdoSort.SelectedValue == "1")
-            strReportPath = Server.MapPath(@"Reports\rpt\rptContact.rpt");
+        {
+            if(Convert.ToInt32(hdnClientId.Value) == 1)
+            {
+                strReportPath = Server.MapPath(@"Reports\rpt\rptContact.rpt");
+            }
+            else
+            {
+                strReportPath = Server.MapPath(@"Reports\rpt\rptContactOther.rpt");
+            }
+        }            
         else
-            strReportPath = Server.MapPath(@"Reports\rpt\rptContactSection.rpt");
+        {
+            if (Convert.ToInt32(hdnClientId.Value) == 1)
+            {
+                strReportPath = Server.MapPath(@"Reports\rpt\rptContactSection.rpt");
+            }
+            else
+            {
+                strReportPath = Server.MapPath(@"Reports\rpt\rptContactSectionOther.rpt");
+            }
+        }
+
+
+            
         // string strReportPath = Server.MapPath(@"Reports\rpt\rptContact.rpt");
         rptFile.Load(strReportPath);
         rptFile.SetDataSource(CList);
@@ -5944,10 +5965,29 @@ public partial class payment_info : System.Web.UI.Page
         ReportDocument rptFile = new ReportDocument();
 
         string strReportPath = "";
-        if (Convert.ToInt32(rdoSort.SelectedValue) == 1)
-            strReportPath = Server.MapPath(@"Reports\rpt\rptContact.rpt");
+
+        if (rdoSort.SelectedValue == "1")
+        {
+            if (Convert.ToInt32(hdnClientId.Value) == 1)
+            {
+                strReportPath = Server.MapPath(@"Reports\rpt\rptContact.rpt");
+            }
+            else
+            {
+                strReportPath = Server.MapPath(@"Reports\rpt\rptContactOther.rpt");
+            }
+        }
         else
-            strReportPath = Server.MapPath(@"Reports\rpt\rptContactSection.rpt");
+        {
+            if (Convert.ToInt32(hdnClientId.Value) == 1)
+            {
+                strReportPath = Server.MapPath(@"Reports\rpt\rptContactSection.rpt");
+            }
+            else
+            {
+                strReportPath = Server.MapPath(@"Reports\rpt\rptContactSectionOther.rpt");
+            }
+        }
 
         rptFile.Load(strReportPath);
         rptFile.SetDataSource(CList);

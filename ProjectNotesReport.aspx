@@ -123,6 +123,12 @@
                                             <td align="right" valign="middle">
                                                 <table>
                                                     <tr>
+                                                        <td>
+                                                            <b>Division: </b>
+                                                        </td>
+                                                        <td>
+                                                            <asp:DropDownList ID="ddlDivision" runat="server" OnSelectedIndexChanged="ddlDivision_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+                                                        </td>
 
                                                         <td><b>Status:</b></td>
                                                         <td>
@@ -156,6 +162,7 @@
                                                 <HeaderStyle HorizontalAlign="Center" />
                                                 <ItemStyle HorizontalAlign="Left" Width="11%" />
                                             </asp:HyperLinkField>--%>
+                                            <%-- Cell 0 --%>
                                              <asp:TemplateField HeaderText="Customer Name" SortExpression="last_name1" ControlStyle-CssClass="mGrida2" HeaderStyle-Font-Underline="true" >
                                                 <ItemTemplate>
                                                     <asp:HyperLink ID="hypCustomerName" runat="server"></asp:HyperLink>
@@ -163,6 +170,8 @@
                                                 <HeaderStyle HorizontalAlign="Center" />
                                                 <ItemStyle HorizontalAlign="Left" Width="11%" />
                                             </asp:TemplateField>
+
+                                            <%-- Cell 1 --%>
                                             <asp:TemplateField HeaderText="Date" SortExpression="ProjectDate" HeaderStyle-Font-Underline="true">
                                                 <ItemTemplate>
                                                     <asp:Label ID="lblDate" runat="server" Text='<%# Eval("ProjectDate","{0:d}")%>' />
@@ -170,6 +179,8 @@
                                                 <HeaderStyle HorizontalAlign="Center" />
                                                 <ItemStyle HorizontalAlign="Center" Width="7%" />
                                             </asp:TemplateField>
+
+                                            <%-- Cell 2 --%>
                                             <asp:TemplateField HeaderText="Section">
                                                 <ItemTemplate>
 
@@ -177,6 +188,8 @@
                                                 </ItemTemplate>
                                                 <ItemStyle Width="15%" HorizontalAlign="Left" />
                                             </asp:TemplateField>
+
+                                            <%-- Cell 3 --%>
                                             <asp:TemplateField HeaderText="Material Track">
                                                 <ItemTemplate>
 
@@ -187,6 +200,8 @@
                                                 <HeaderStyle HorizontalAlign="Center" />
                                                 <ItemStyle HorizontalAlign="Left" Width="15%" />
                                             </asp:TemplateField>
+
+                                            <%-- Cell 4 --%>
                                             <asp:TemplateField HeaderText=" Design Updates">
                                                 <ItemTemplate>
 
@@ -197,6 +212,8 @@
                                                 <HeaderStyle HorizontalAlign="Center" />
                                                 <ItemStyle HorizontalAlign="Left" Width="15%" />
                                             </asp:TemplateField>
+
+                                            <%-- Cell 5 --%>
                                             <asp:TemplateField HeaderText="Superintendent Notes">
                                                 <ItemTemplate>
 
@@ -207,6 +224,8 @@
                                                 <HeaderStyle HorizontalAlign="Center" />
                                                 <ItemStyle HorizontalAlign="Left" Width="15%" />
                                             </asp:TemplateField>
+
+                                            <%-- Cell 6 --%>
                                             <asp:TemplateField HeaderText="General Notes">
                                                 <ItemTemplate>
                                                     <asp:Label ID="lblDescription" runat="server" Text='<%# Eval("NoteDetails").ToString() %>' Style="display: inline;"></asp:Label>
@@ -216,6 +235,17 @@
                                                 <HeaderStyle HorizontalAlign="Center" />
                                                 <ItemStyle HorizontalAlign="Left" Width="15%" />
                                             </asp:TemplateField>
+
+                                            <%-- Cell 7 --%>
+                                             <asp:TemplateField HeaderText="Division" >
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblDivisionName" runat="server" ></asp:Label>
+                                                </ItemTemplate>
+                                                <HeaderStyle HorizontalAlign="Center" />
+                                                <ItemStyle HorizontalAlign="Center" Width="7%" />
+                                            </asp:TemplateField>
+
+                                            <%-- Cell 8 --%>
                                             <asp:TemplateField HeaderText="Completed" SortExpression="is_complete" HeaderStyle-Font-Underline="true">
                                                 <ItemTemplate>
                                                     <asp:Label ID="lblIsComplete" runat="server" Text='<%# Eval("is_complete") %>'></asp:Label>
@@ -223,6 +253,8 @@
                                                 <HeaderStyle HorizontalAlign="Center" />
                                                 <ItemStyle HorizontalAlign="Center" Width="7%" />
                                             </asp:TemplateField>
+
+                                            <%-- Cell 9 --%>
                                              <asp:TemplateField HeaderText="Include In SOW">
                                                 <ItemTemplate>
                                                     <asp:Label ID="lblSOW" runat="server" Text='<%# Eval("isSOW") %>'></asp:Label>
@@ -269,6 +301,7 @@
                                 <td align="center" height="10px">
                                     <asp:HiddenField ID="hdnOrder" runat="server" Value="ASC" />
                                     <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
+                                    <asp:HiddenField ID="hdnPrimaryDivision" runat="server" Value="0" />
                                 </td>
                             </tr>
                         </table>

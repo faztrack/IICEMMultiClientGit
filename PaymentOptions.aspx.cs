@@ -27,15 +27,20 @@ public partial class PaymentOptions : System.Web.UI.Page
                 if (Convert.ToInt32(hdnCustomerID.Value) > 0)
                 {
                     customer cust = new customer();
-                    cust = _db.customers.Single(c => c.customer_id == Convert.ToInt32(hdnCustomerID.Value));
+                    cust = _db.customers.SingleOrDefault(c => c.customer_id == Convert.ToInt32(hdnCustomerID.Value));
 
-                    hdnCustomerFirstName.Value = cust.first_name1.ToString();
-                    hdnCustomerLastName.Value = cust.last_name1.ToString();
-                    hdnCustomerEmail.Value = cust.email.ToString();
-                    txtAddress.Text = cust.address;
-                    txtCity.Text = cust.city;
-                    ddlState.SelectedValue = cust.state;
-                    txtZip.Text = cust.zip_code;
+                    if (cust != null)
+                    {
+                        hdnCustomerFirstName.Value = cust.first_name1.ToString();
+                        hdnCustomerLastName.Value = cust.last_name1.ToString();
+                        hdnCustomerEmail.Value = cust.email.ToString();
+                        txtAddress.Text = cust.address;
+                        txtCity.Text = cust.city;
+                        ddlState.SelectedValue = cust.state;
+                        txtZip.Text = cust.zip_code;
+
+                        hdnClientId.Value = cust.client_id.ToString();
+                    }
                 }
 
             }
@@ -126,7 +131,7 @@ public partial class PaymentOptions : System.Web.UI.Page
             objPP.BillCity = txtCity.Text;
             objPP.BillState = ddlState.SelectedValue;
             objPP.BillZip = txtZip.Text;
-
+            objPP.client_id = Convert.ToInt32(hdnClientId.Value);
 
             if (_db.PaymentProfiles.Where(pp => pp.CustomerId == nCustomerId).Count() > 0)
             {
@@ -465,6 +470,7 @@ public partial class PaymentOptions : System.Web.UI.Page
                 objPP.CardNumber = nCardNumber.ToString();
                 objPP.NameOnCard = strNameOnCard;
                 objPP.CardType = strCardType;
+                objPP.client_id = Convert.ToInt32(hdnClientId.Value);
 
                 objPP.BillAddress = txtbAddress.Text;
                 objPP.BillCity = txtbCity.Text;

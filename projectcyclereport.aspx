@@ -82,9 +82,19 @@
                                         <asp:ListItem Value="2">All</asp:ListItem>
                                         <asp:ListItem Value="1" Selected="True">Active</asp:ListItem>
                                         <asp:ListItem Value="0">InActive</asp:ListItem>
-
                                     </asp:DropDownList>
                                 </td>
+
+                                <td align="right">
+                                    <b>Division: </b>
+                                </td>
+
+                                <td>
+                                    <asp:DropDownList ID="ddlDivision" runat="server" OnSelectedIndexChanged="ddlDivision_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+                                </td>
+
+
+
                                 <td align="left" valign="middle">
                                     <table>
                                         <tr>
@@ -194,6 +204,12 @@
                                     <HeaderStyle Width="10%" />
                                     <ItemStyle HorizontalAlign="Left" />
                                 </asp:BoundField>
+                                <asp:TemplateField HeaderText="Division">
+                                    <ItemTemplate>
+                                        <asp:Label ID="lblDivisionName" runat="server"></asp:Label>
+                                    </ItemTemplate>
+                                    <ItemStyle Width="5%" HorizontalAlign="Center" />
+                                </asp:TemplateField>
 
                                 <asp:BoundField DataField="job_number" HeaderText="Job Number" SortExpression="job_number" HeaderStyle-Font-Underline="true">
                                     <HeaderStyle Width="7%" />
@@ -254,6 +270,8 @@
                 <tr>
                     <td>
                         <asp:HiddenField ID="hdnOrder" runat="server" Value="ASC" />
+                        <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
+                        <asp:HiddenField ID="hdnPrimaryDivision" runat="server" Value="0" />
                     </td>
                 </tr>
             </table>

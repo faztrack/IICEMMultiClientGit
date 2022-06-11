@@ -185,14 +185,6 @@
       <Column Name="IsInitilal" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
     </Type>
   </Table>
-  <Table Name="dbo.customer_jobstatus" Member="customer_jobstatus">
-    <Type Name="customer_jobstatus">
-      <Column Name="customerjobstatusid" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="jobstatusid" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="customerid" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="estimate_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
-    </Type>
-  </Table>
   <Table Name="dbo.customer_locations" Member="customer_locations">
     <Type Name="customer_location">
       <Column Name="customer_location_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -210,37 +202,6 @@
       <Column Name="section_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="estimate_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="client_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.customerchangeorderstatus" Member="customerchangeorderstatus">
-    <Type Name="customerchangeorderstatus">
-      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="customerid" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="estimateid" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="changeorderid" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="status" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="acceptedby" Type="System.String" DbType="VarChar(150)" CanBeNull="true" />
-      <Column Name="accepteddate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="causeforreject" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
-      <Column Name="rejectdate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.customersurvey" Member="customersurveys">
-    <Type Name="customersurvey">
-      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="customerid" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="answer1" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
-      <Column Name="answer2" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
-      <Column Name="answer3" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
-      <Column Name="answer4" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
-      <Column Name="answer5" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
-      <Column Name="answer6" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
-      <Column Name="answer7" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
-      <Column Name="answer8" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
-      <Column Name="answer9" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
-      <Column Name="answer10" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
-      <Column Name="date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="estimate_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
     </Type>
   </Table>
   <Table Name="dbo.customeruserinfo" Member="customeruserinfos">
@@ -453,42 +414,6 @@
       <Column Name="pay_amount" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
       <Column Name="pay_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="create_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.PaymentECheckInfo" Member="PaymentECheckInfos">
-    <Type Name="PaymentECheckInfo">
-      <Column Name="PaymentCheckID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="payment_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="Date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="Amount" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
-      <Column Name="AccountNumber" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="RoutingNumber" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="AccountType" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="EcheckType" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="NameOnAccount" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="BankName" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.Payments_card_Info" Member="Payments_card_Infos">
-    <Type Name="Payments_card_Info">
-      <Column Name="PaymentCardID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="PaymentMethodID" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="payment_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="Date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="CreditCardNum" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="CardHoldersName" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="CreditCardExpDate" Type="System.DateTime" DbType="SmallDateTime" CanBeNull="true" />
-      <Column Name="CreditCardAuthNum" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="Amount" Type="System.Decimal" DbType="Money" CanBeNull="true" />
-      <Column Name="Notes" Type="System.String" DbType="VarChar(1000)" CanBeNull="true" />
-      <Column Name="Message" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="Approval" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="IsEmailSent" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="TransactionId" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="BillAddress" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
-      <Column Name="BillCity" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
-      <Column Name="BillState" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="BillZip" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
     </Type>
   </Table>
   <Table Name="dbo.role_right" Member="role_rights">
@@ -720,26 +645,6 @@
       <Column Name="AddtionalEmail" Type="System.String" DbType="VarChar(1500)" CanBeNull="true" />
       <Column Name="LastUpdateDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="LastUpdateBy" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.PaymentProfile" Member="PaymentProfiles">
-    <Type Name="PaymentProfile">
-      <Column Name="PaymentProfileId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="CustomerId" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="AuthorisedPaymentId" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
-      <Column Name="AuthorisedCustomerId" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="CardNumber" Type="System.String" DbType="VarChar(10)" CanBeNull="true" />
-      <Column Name="NameOnCard" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="CardType" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="ExpirationDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="CreateDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="LastUpdatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="LastUpdatedBy" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="BillAddress" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
-      <Column Name="BillCity" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
-      <Column Name="BillState" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="BillZip" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="CVV" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
     </Type>
   </Table>
   <Table Name="dbo.BathroomSheetSelections" Member="BathroomSheetSelections">
@@ -2445,6 +2350,107 @@
       <Column Name="estimate_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="section_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="IsComplete" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="client_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Payments_card_Info" Member="Payments_card_Infos">
+    <Type Name="Payments_card_Info">
+      <Column Name="PaymentCardID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="PaymentMethodID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="payment_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="CreditCardNum" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="CardHoldersName" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="CreditCardExpDate" Type="System.DateTime" DbType="SmallDateTime" CanBeNull="true" />
+      <Column Name="CreditCardAuthNum" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Amount" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="Notes" Type="System.String" DbType="VarChar(1000)" CanBeNull="true" />
+      <Column Name="Message" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Approval" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="IsEmailSent" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="TransactionId" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="BillAddress" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="BillCity" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="BillState" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="BillZip" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="client_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PaymentProfile" Member="PaymentProfiles">
+    <Type Name="PaymentProfile">
+      <Column Name="PaymentProfileId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="CustomerId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="AuthorisedPaymentId" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="AuthorisedCustomerId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CardNumber" Type="System.String" DbType="VarChar(10)" CanBeNull="true" />
+      <Column Name="NameOnCard" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="CardType" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="ExpirationDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="LastUpdatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="LastUpdatedBy" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="BillAddress" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="BillCity" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="BillState" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="BillZip" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="CVV" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="client_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.customer_jobstatus" Member="customer_jobstatus">
+    <Type Name="customer_jobstatus">
+      <Column Name="customerjobstatusid" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="jobstatusid" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="customerid" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="estimate_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="client_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.customersurvey" Member="customersurveys">
+    <Type Name="customersurvey">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="customerid" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="answer1" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="answer2" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="answer3" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="answer4" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="answer5" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="answer6" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="answer7" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="answer8" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="answer9" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="answer10" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="estimate_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="client_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PaymentECheckInfo" Member="PaymentECheckInfos">
+    <Type Name="PaymentECheckInfo">
+      <Column Name="PaymentCheckID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="payment_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Amount" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="AccountNumber" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="RoutingNumber" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="AccountType" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="EcheckType" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="NameOnAccount" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="BankName" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="client_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.customerchangeorderstatus" Member="customerchangeorderstatus">
+    <Type Name="customerchangeorderstatus">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="customerid" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="estimateid" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="changeorderid" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="status" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="acceptedby" Type="System.String" DbType="VarChar(150)" CanBeNull="true" />
+      <Column Name="accepteddate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="causeforreject" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="rejectdate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="client_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
     </Type>
   </Table>

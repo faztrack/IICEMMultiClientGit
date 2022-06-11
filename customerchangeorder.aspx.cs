@@ -280,6 +280,7 @@ public partial class customerchangeorder : System.Web.UI.Page
                     objccos.estimateid = nEstid;
                     objccos.changeorderid = nChEstid;
                     objccos.status = 1; // Pending
+                    objccos.client_id = Convert.ToInt32(hdnClientId.Value);
 
                     _db.customerchangeorderstatus.InsertOnSubmit(objccos);
                     _db.SubmitChanges();
@@ -1809,7 +1810,7 @@ public partial class customerchangeorder : System.Web.UI.Page
 
                 pay_cost.pay_term_ids = strPayTermId;
                 pay_cost.pay_term_desc = strPayTermDesc;
-                pay_cost.client_id = 1;
+                pay_cost.client_id = Convert.ToInt32(hdnClientId.Value);
                 pay_cost.customer_id = Convert.ToInt32(hdnCustomerId.Value);
                 pay_cost.estimate_id = Convert.ToInt32(hdnEstimateId.Value);
                 pay_cost.pay_type_id = 3;
@@ -1860,6 +1861,7 @@ public partial class customerchangeorder : System.Web.UI.Page
                 objPay.TransactionId = sTranId;
                 objPay.BillAddress = BillAddress;
                 objPay.BillCity = BillCity;
+                objPay.client_id = Convert.ToInt32(hdnClientId.Value);
                 objPay.BillState = BillState;
                 objPay.BillZip = BillZip;
                 _db.Payments_card_Infos.InsertOnSubmit(objPay);
@@ -2000,6 +2002,7 @@ public partial class customerchangeorder : System.Web.UI.Page
             objPP.BillCity = txtCity.Text;
             objPP.BillState = ddlState.SelectedValue;
             objPP.BillZip = txtZip.Text;
+            objPP.client_id = Convert.ToInt32(hdnClientId.Value);
 
             List<string> sArray = api.CreateCustomerProfileFromTransaction(cardInfo.TransactionId);
 

@@ -29,15 +29,46 @@ public partial class sales_statistics : System.Web.UI.Page
             }
             else
             {
-                hdnClientId.Value = ((userinfo)Session["oUser"]).client_id.ToString();
-                hdnDivisionName.Value = ((userinfo)Session["oUser"]).divisionName;
+                userinfo oUser = (userinfo)Session["oUser"];
+                hdnClientId.Value = oUser.client_id.ToString();
+                hdnDivisionName.Value = oUser.divisionName;
+                hdnPrimaryDivision.Value = oUser.primaryDivision.ToString();
             }
             if (Page.User.IsInRole("rpt002") == false)
             {
                 // No Permission Page.
                 Response.Redirect("nopermission.aspx");
             }
+            BindDivision();
             BindSalesPersons();
+
+            if (hdnDivisionName.Value != "" && hdnDivisionName.Value.Contains(","))
+            {
+                pnlDivision.Visible = true;
+            }
+            else
+            {
+                pnlDivision.Visible = false;
+            }
+        }
+    }
+
+    private void BindDivision()
+    {
+        try
+        {
+            string sql = "select id, division_name from division order by division_name";
+            DataTable dt = csCommonUtility.GetDataTable(sql);
+            ddlDivision.DataSource = dt;
+            ddlDivision.DataTextField = "division_name";
+            ddlDivision.DataValueField = "id";
+            ddlDivision.DataBind();
+            ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
+
+        }
+        catch (Exception ex)
+        {
+            lblResult.Text = csCommonUtility.GetSystemErrorMessage(ex.ToString());
         }
     }
     private void BindSalesPersons()
@@ -112,7 +143,7 @@ public partial class sales_statistics : System.Web.UI.Page
 
        
         DataClassesDataContext _db = new DataClassesDataContext();
-        int nclient_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        int nclient_id = Convert.ToInt32(ddlDivision.SelectedValue);
         company_profile oCom = new company_profile();
         oCom = _db.company_profiles.Single(com => com.client_id == nclient_id);
         string strCompanyName = oCom.company_name;
@@ -122,7 +153,7 @@ public partial class sales_statistics : System.Web.UI.Page
               strQ = " SELECT sp.sales_person_id, sp.first_name + ' ' + sp.last_name AS Sales_Person, ISNULL(t1.Total_Price,0) AS Total_Price,ISNULL(t2.NumberOfSales,0) AS NumberOfSales, ISNULL(t3.NumberOfAppt,0) AS NumberOfAppt " +
                       " FROM customer_estimate ce " +
                       " INNER JOIN customers c ON c.customer_id = ce.customer_id AND c.client_id = ce.client_id " +
-                      " INNER JOIN sales_person sp ON sp.sales_person_id = c.sales_person_id AND sp.client_id = c.client_id " +
+                      " INNER JOIN sales_person sp ON sp.sales_person_id = c.sales_person_id " +
                       " LEFT OUTER JOIN (SELECT pd.client_id,c1.sales_person_id,ISNULL(SUM(pd.total_retail_price),0) AS Total_Price FROM pricing_details pd " +
                       " INNER JOIN customer_estimate ce1 ON ce1.estimate_id = pd.estimate_id AND ce1.customer_id = pd.customer_id  AND  ce1.client_id = pd.client_id AND ce1.status_id = 3 " +
                       " INNER JOIN customers c1 ON c1.customer_id = pd.customer_id AND c1.client_id = pd.client_id " +
@@ -142,7 +173,7 @@ public partial class sales_statistics : System.Web.UI.Page
               strQ = " SELECT sp.sales_person_id, sp.first_name + ' ' + sp.last_name AS Sales_Person, ISNULL(t1.Total_Price,0) AS Total_Price,ISNULL(t2.NumberOfSales,0) AS NumberOfSales, ISNULL(t3.NumberOfAppt,0) AS NumberOfAppt " +
                      " FROM customer_estimate ce " +
                        " INNER JOIN customers c ON c.customer_id = ce.customer_id AND c.client_id = ce.client_id " +
-                     " INNER JOIN sales_person sp ON sp.sales_person_id = c.sales_person_id AND sp.client_id = c.client_id " +
+                     " INNER JOIN sales_person sp ON sp.sales_person_id = c.sales_person_id " +
                      " LEFT OUTER JOIN (SELECT pd.client_id,c1.sales_person_id,ISNULL(SUM(pd.total_retail_price),0) AS Total_Price FROM pricing_details pd " +
                      " INNER JOIN customer_estimate ce1 ON ce1.estimate_id = pd.estimate_id AND ce1.customer_id = pd.customer_id  AND  ce1.client_id = pd.client_id AND ce1.status_id = 3 " +
                      " INNER JOIN customers c1 ON c1.customer_id = pd.customer_id AND c1.client_id = pd.client_id " +
@@ -158,9 +189,11 @@ public partial class sales_statistics : System.Web.UI.Page
 
           }
 
-        List<SalesStatisticsModel> SCList = _db.ExecuteQuery<SalesStatisticsModel>(strQ, string.Empty).ToList();
+        //List<SalesStatisticsModel> SCList = _db.ExecuteQuery<SalesStatisticsModel>(strQ, string.Empty).ToList();
+
+        DataTable SCList = csCommonUtility.GetDataTable(strQ);
         
-	if (SCList.Count == 0)
+	if (SCList.Rows.Count == 0)
         {
             lblResult.Text = csCommonUtility.GetSystemErrorMessage("No data exist.");
             

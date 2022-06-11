@@ -22,15 +22,50 @@ public partial class customerbalancereport : System.Web.UI.Page
             {
                 Response.Redirect(ConfigurationManager.AppSettings["LoginPage"].ToString());
             }
+            else
+            {
+                userinfo oUser = (userinfo)Session["oUser"];
+                hdnClientId.Value = oUser.client_id.ToString();
+                hdnDivisionName.Value = oUser.divisionName;
+                hdnPrimaryDivision.Value = oUser.primaryDivision.ToString();
+            }
             if (Page.User.IsInRole("br01") == false)
             {
                 // No Permission Page.
                 Response.Redirect("nopermission.aspx");
             }
-           
+            BindDivision();
+
+            if (hdnDivisionName.Value != "" && hdnDivisionName.Value.Contains(","))
+            {
+                pnlDivision.Visible = true;
+            }
+            else
+            {
+                pnlDivision.Visible = false;
+            }
         }
 
        
+    }
+
+    private void BindDivision()
+    {
+        try
+        {
+            string sql = "select id, division_name from division order by division_name";
+            DataTable dt = csCommonUtility.GetDataTable(sql);
+            ddlDivision.DataSource = dt;
+            ddlDivision.DataTextField = "division_name";
+            ddlDivision.DataValueField = "id";
+            ddlDivision.DataBind();
+            ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
+
+        }
+        catch (Exception ex)
+        {
+            lblResult.Text = csCommonUtility.GetSystemErrorMessage(ex.ToString());
+        }
     }
 
     protected void btnViewReport_Click(object sender, EventArgs e)
@@ -85,7 +120,15 @@ public partial class customerbalancereport : System.Web.UI.Page
 
          string strCondition = string.Empty;
          strCondition = " CONVERT(DATETIME,ce.sale_date) BETWEEN '" + strStartDate + "' AND '" + strEndDate + "' ";
-        
+
+        if (strCondition.Length > 2)
+        {
+            strCondition += " AND c.client_id = " + Convert.ToInt32(ddlDivision.SelectedValue) + " ";
+        }
+        else
+        {
+            strCondition += " WHERE c.client_id = " + Convert.ToInt32(ddlDivision.SelectedValue) + " ";
+        }
 
         DataClassesDataContext _db = new DataClassesDataContext();
 
