@@ -43,6 +43,10 @@ public partial class schedulecalendarreadonly : System.Web.UI.Page
 
             userinfo objUName = (userinfo)Session["oUser"];
 
+            hdnPrimaryDivision.Value = objUName.primaryDivision.ToString();
+            hdnClientId.Value = objUName.client_id.ToString();
+            hdnDivisionName.Value = objUName.divisionName;
+
             int nTypeId = 0;
 
             DataClassesDataContext _db = new DataClassesDataContext();
@@ -63,8 +67,30 @@ public partial class schedulecalendarreadonly : System.Web.UI.Page
                
 
             }
+
+            BindDivision(hdnDivisionName.Value);
         }
     }
+
+    private void BindDivision(string divisionName)
+    {
+        DataClassesDataContext _db = new DataClassesDataContext();
+        List<division> listDiv = new List<division>();
+
+        string[] aryDiv = divisionName.Trim().Split(',').Select(p => p.Trim().ToLower()).ToArray();
+
+        var itemList = _db.divisions.Where(d => aryDiv.Contains(d.division_name.Trim().ToLower()));
+
+        if (itemList.Any())
+            listDiv = itemList.OrderBy(d => d.division_name).ToList();
+
+        ddlDivision.DataSource = listDiv;
+        ddlDivision.DataTextField = "division_name";
+        ddlDivision.DataValueField = "id";
+        ddlDivision.DataBind();
+        ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
+    }
+
     //this method only updates title and description //this is called when a event is clicked on the calendar
     [System.Web.Services.WebMethod]
     public static csProjectLink GetEvent(int nCustId, string SectionName, string UserName)
@@ -235,13 +261,13 @@ public partial class schedulecalendarreadonly : System.Web.UI.Page
     
 
     [System.Web.Services.WebMethod]
-    public static List<csCustomer> GetCustomer(string keyword)
+    public static List<csCustomer> GetCustomer(string keyword, int divisionId)
     {
         DataClassesDataContext _db = new DataClassesDataContext();
 
         var item = (from c in _db.customers
                     join sc in _db.ScheduleCalendars on c.customer_id equals sc.customer_id
-                    where c.last_name1.ToUpper().StartsWith(keyword.Trim().ToUpper()) && sc.estimate_id != 0
+                    where c.last_name1.ToUpper().StartsWith(keyword.Trim().ToUpper()) && sc.estimate_id != 0 && c.client_id == divisionId
                     select new csCustomer
                     {
                         customer_id = c.customer_id,
@@ -263,7 +289,7 @@ public partial class schedulecalendarreadonly : System.Web.UI.Page
     }
 
     [System.Web.Services.WebMethod]
-    public static List<SectionInfo> GetSection(string keyword)
+    public static List<SectionInfo> GetSection(string keyword, int divisionId)
     {
         DataClassesDataContext _db = new DataClassesDataContext();
 
@@ -274,19 +300,19 @@ public partial class schedulecalendarreadonly : System.Web.UI.Page
         //               section_name = c.section_name.Trim()
         //           };
 
-        var item = from c in _db.sectioninfos
-                   where c.section_name.ToUpper().StartsWith(keyword.Trim().ToUpper()) && c.parent_id == 0
-                   orderby c.section_name
+        var item = from sc in _db.sectioninfos
+                   where sc.section_name.ToUpper().StartsWith(keyword.Trim().ToUpper()) && sc.parent_id == 0 && sc.client_id == divisionId
+                   orderby sc.section_name
                    select new SectionInfo
                    {
-                       section_name = c.section_name.Trim()
+                       section_name = sc.section_name.Trim()
                    };
 
         return item.ToList();
     }
 
     [System.Web.Services.WebMethod]
-    public static List<userinfo> GetUserName(string keyword)
+    public static List<userinfo> GetUserName(string keyword, int divisionId)
     {
         DataClassesDataContext _db = new DataClassesDataContext();
 
@@ -339,13 +365,14 @@ public partial class schedulecalendarreadonly : System.Web.UI.Page
         //return list.Distinct().Take(10).OrderBy(f => f.sales_person_name).ToList();
 
         var item = (from sp in _db.sales_persons
-                    where (sp.first_name.Trim().ToUpper().Contains(keyword.Trim().ToUpper()) || sp.last_name.Trim().ToUpper().Contains(keyword.Trim().ToUpper())) && sp.is_active == true
+                    where (sp.first_name.Trim().ToUpper().Contains(keyword.Trim().ToUpper()) || sp.last_name.Trim().ToUpper().Contains(keyword.Trim().ToUpper())) 
+                    && sp.is_active == true && sp.client_id.Contains(divisionId.ToString())
                     orderby sp.first_name
                     select new userinfo
                     {
                         first_name = sp.first_name.Trim(),
                         last_name = sp.last_name.Trim(),
-                        sales_person_id = sp.sales_person_id,
+                        //sales_person_id = sp.sales_person_id,
                         sales_person_name = sp.first_name.Trim() + " " + sp.last_name.Trim()
                     }).Union(
                    from cr in _db.Crew_Details
@@ -355,30 +382,30 @@ public partial class schedulecalendarreadonly : System.Web.UI.Page
                    {
                        first_name = cr.first_name.Trim(),
                        last_name = cr.last_name.Trim(),
-                       sales_person_id = cr.crew_id,
+                       //sales_person_id = cr.crew_id,
                        sales_person_name = cr.first_name.Trim() + " " + cr.last_name.Trim()
                    });
 
         if (item.ToList().Count() == 0 && keyword.ToLower().Contains("*"))
         {
             item = (from sp in _db.sales_persons
-                    where sp.is_active == true
+                    where sp.is_active == true && sp.client_id.Contains(divisionId.ToString())
                     orderby sp.first_name
                     select new userinfo
                     {
                         first_name = sp.first_name.Trim(),
                         last_name = sp.last_name.Trim(),
-                        sales_person_id = sp.sales_person_id,
+                        //sales_person_id = sp.sales_person_id,
                         sales_person_name = sp.first_name.Trim() + " " + sp.last_name.Trim()
                     }).Union(
                    from cr in _db.Crew_Details
-                   where cr.is_active == true
+                   where cr.is_active == true && cr.client_id == divisionId
                    orderby cr.first_name
                    select new userinfo
                    {
                        first_name = cr.first_name.Trim(),
                        last_name = cr.last_name.Trim(),
-                       sales_person_id = cr.crew_id,
+                       //sales_person_id = cr.crew_id,
                        sales_person_name = cr.first_name.Trim() + " " + cr.last_name.Trim()
                    });
         }

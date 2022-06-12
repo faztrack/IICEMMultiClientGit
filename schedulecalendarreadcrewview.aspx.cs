@@ -45,6 +45,10 @@ public partial class schedulecalendarreadcrewview : System.Web.UI.Page
 
             userinfo objUName = (userinfo)Session["oUser"];
 
+            hdnPrimaryDivision.Value = objUName.primaryDivision.ToString();
+            hdnClientId.Value = objUName.client_id.ToString();
+            hdnDivisionName.Value = objUName.divisionName;
+
             int nTypeId = 0;
 
             DataClassesDataContext _db = new DataClassesDataContext();
@@ -62,10 +66,31 @@ public partial class schedulecalendarreadcrewview : System.Web.UI.Page
                 lnkViewAll.Visible = true;
 
                 BindSuperintendent();
-               
+
 
             }
+
+            BindDivision(hdnDivisionName.Value);
         }
+    }
+
+    private void BindDivision(string divisionName)
+    {
+        DataClassesDataContext _db = new DataClassesDataContext();
+        List<division> listDiv = new List<division>();
+
+        string[] aryDiv = divisionName.Trim().Split(',').Select(p => p.Trim().ToLower()).ToArray();
+
+        var itemList = _db.divisions.Where(d => aryDiv.Contains(d.division_name.Trim().ToLower()));
+
+        if (itemList.Any())
+            listDiv = itemList.OrderBy(d => d.division_name).ToList();
+
+        ddlDivision.DataSource = listDiv;
+        ddlDivision.DataTextField = "division_name";
+        ddlDivision.DataValueField = "id";
+        ddlDivision.DataBind();
+        ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
     }
 
     public void BindSuperintendent()
@@ -74,7 +99,7 @@ public partial class schedulecalendarreadcrewview : System.Web.UI.Page
 
         var item = from e in _db.user_infos
                    join c in _db.customers on e.user_id equals c.SuperintendentId
-                   where e.is_active == true 
+                   where e.is_active == true
                    orderby e.first_name
                    select new
                    {
@@ -83,7 +108,7 @@ public partial class schedulecalendarreadcrewview : System.Web.UI.Page
                        employee_name = e.first_name + ' ' + e.last_name
                    };
 
-        grdSuperintendent.DataSource = item.Distinct().OrderBy(x=>x.employee_name).ToList();
+        grdSuperintendent.DataSource = item.Distinct().OrderBy(x => x.employee_name).ToList();
         grdSuperintendent.DataKeyNames = new string[] { "user_id", "cssClassName", "employee_name" };
         grdSuperintendent.DataBind();
     }
@@ -254,8 +279,8 @@ public partial class schedulecalendarreadcrewview : System.Web.UI.Page
                         && sc.event_start >= DateTime.Now
                         select sc.event_start).Min();
 
-                
-                //_db.ScheduleCalendars.Where(c => c.employee_name.Contains(UserName) && c.event_start >= DateTime.Now).Min(x => x.event_start);
+
+            //_db.ScheduleCalendars.Where(c => c.employee_name.Contains(UserName) && c.event_start >= DateTime.Now).Min(x => x.event_start);
 
             HttpContext.Current.Session.Add("crsEstSelectedByCustSearch", null);
 
@@ -286,13 +311,13 @@ public partial class schedulecalendarreadcrewview : System.Web.UI.Page
     }
 
     [System.Web.Services.WebMethod]
-    public static List<csCustomer> GetCustomer(string keyword)
+    public static List<csCustomer> GetCustomer(string keyword, int divisionId)
     {
         DataClassesDataContext _db = new DataClassesDataContext();
 
         var item = (from c in _db.customers
                     join sc in _db.ScheduleCalendars on c.customer_id equals sc.customer_id
-                    where c.last_name1.ToUpper().StartsWith(keyword.Trim().ToUpper()) && sc.estimate_id != 0
+                    where c.last_name1.ToUpper().StartsWith(keyword.Trim().ToUpper()) && sc.estimate_id != 0 && c.client_id == divisionId
                     select new csCustomer
                     {
                         customer_id = c.customer_id,
@@ -302,7 +327,7 @@ public partial class schedulecalendarreadcrewview : System.Web.UI.Page
     }
 
     [System.Web.Services.WebMethod]
-    public static List<SectionInfo> GetSection(string keyword)
+    public static List<SectionInfo> GetSection(string keyword, int divisionId)
     {
         DataClassesDataContext _db = new DataClassesDataContext();
 
@@ -314,7 +339,7 @@ public partial class schedulecalendarreadcrewview : System.Web.UI.Page
         //           };
 
         var item = from c in _db.sectioninfos
-                   where c.section_name.ToUpper().StartsWith(keyword.Trim().ToUpper()) && c.parent_id == 0
+                   where c.section_name.ToUpper().StartsWith(keyword.Trim().ToUpper()) && c.parent_id == 0 && c.client_id == divisionId
                    orderby c.section_name
                    select new SectionInfo
                    {
@@ -325,14 +350,15 @@ public partial class schedulecalendarreadcrewview : System.Web.UI.Page
     }
 
     [System.Web.Services.WebMethod]
-    public static List<userinfo> GetUserName(string keyword)
+    public static List<userinfo> GetUserName(string keyword, int divisionId)
     {
         DataClassesDataContext _db = new DataClassesDataContext();
 
 
 
         var item = from cr in _db.Crew_Details
-                   where (cr.first_name.Trim().ToUpper().Contains(keyword.Trim().ToUpper()) || cr.last_name.Trim().ToUpper().Contains(keyword.Trim().ToUpper())) && cr.is_active == true
+                   where (cr.first_name.Trim().ToUpper().Contains(keyword.Trim().ToUpper()) || cr.last_name.Trim().ToUpper().Contains(keyword.Trim().ToUpper()))
+                   && cr.is_active == true && cr.client_id == divisionId
                    orderby cr.first_name
                    select new userinfo
                    {
@@ -341,12 +367,12 @@ public partial class schedulecalendarreadcrewview : System.Web.UI.Page
                        sales_person_id = cr.crew_id,
                        sales_person_name = cr.first_name.Trim() + " " + cr.last_name.Trim()
                    };
-          
+
 
         if (item.ToList().Count() == 0 && keyword.ToLower().Contains("*"))
         {
-            item =  from cr in _db.Crew_Details
-                   where cr.is_active == true
+            item = from cr in _db.Crew_Details
+                   where cr.is_active == true && cr.client_id == divisionId
                    orderby cr.first_name
                    select new userinfo
                    {
@@ -355,7 +381,7 @@ public partial class schedulecalendarreadcrewview : System.Web.UI.Page
                        sales_person_id = cr.crew_id,
                        sales_person_name = cr.first_name.Trim() + " " + cr.last_name.Trim()
                    };
-              
+
         }
 
         return item.Distinct().OrderBy(f => f.first_name).ToList();
@@ -364,7 +390,7 @@ public partial class schedulecalendarreadcrewview : System.Web.UI.Page
     }
 
     [System.Web.Services.WebMethod]
-    public static List<userinfo> GetSuperintendentName(string keyword)
+    public static List<userinfo> GetSuperintendentName(string keyword, int divisionId)
     {
         DataClassesDataContext _db = new DataClassesDataContext();
 
@@ -372,7 +398,8 @@ public partial class schedulecalendarreadcrewview : System.Web.UI.Page
 
         var item = from u in _db.user_infos
                    join c in _db.customers on u.user_id equals c.SuperintendentId
-                   where (u.first_name.Trim().ToUpper().Contains(keyword.Trim().ToUpper()) || u.last_name.Trim().ToUpper().Contains(keyword.Trim().ToUpper())) && u.is_active == true 
+                   where (u.first_name.Trim().ToUpper().Contains(keyword.Trim().ToUpper()) || u.last_name.Trim().ToUpper().Contains(keyword.Trim().ToUpper())) 
+                   && u.is_active == true && u.client_id.Contains(divisionId.ToString())
                    orderby u.first_name
                    select new userinfo
                    {
@@ -381,13 +408,13 @@ public partial class schedulecalendarreadcrewview : System.Web.UI.Page
                        sales_person_id = u.user_id,
                        sales_person_name = u.first_name.Trim() + " " + u.last_name.Trim()
                    };
-       
+
 
         if (item.ToList().Count() == 0 && keyword.ToLower().Contains("*"))
         {
             item = from u in _db.user_infos
                    join c in _db.customers on u.user_id equals c.SuperintendentId
-                   where u.is_active == true 
+                   where u.is_active == true && u.client_id.Contains(divisionId.ToString())
                    orderby u.first_name
                    select new userinfo
                    {
@@ -396,12 +423,12 @@ public partial class schedulecalendarreadcrewview : System.Web.UI.Page
                        sales_person_id = u.user_id,
                        sales_person_name = u.first_name.Trim() + " " + u.last_name.Trim()
                    };
-           
+
         }
 
         return item.Distinct().OrderBy(f => f.first_name).ToList();
 
-       
+
     }
 
     public class scEventLink

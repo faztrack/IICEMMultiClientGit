@@ -38,7 +38,7 @@ public partial class schedulecalendar : System.Web.UI.Page
                 hdnDivisionName.Value = oUser.divisionName;
             }
 
-            
+
 
             //if (Page.User.IsInRole("Call003") == false)
             //{
@@ -52,7 +52,7 @@ public partial class schedulecalendar : System.Web.UI.Page
             //Clear Search
 
             if (HttpContext.Current.Session["sSetDivisionIdOnCahnge"] != null)
-            {                
+            {
                 hdnPrimaryDivision.Value = HttpContext.Current.Session["sSetDivisionIdOnCahnge"].ToString();
             }
 
@@ -542,7 +542,8 @@ public partial class schedulecalendar : System.Web.UI.Page
                     string sSqlINSERT = "INSERT INTO [ScheduleCalendarTemp] " +
                                     " SELECT [title],[description],[event_start],[event_end],[customer_id],[estimate_id],[employee_id],[section_name], " +
                                     " [location_name],[create_date],[last_updated_date],[last_updated_by],[type_id],[parent_id],[job_start_date], " +
-                                    " [co_pricing_list_id],[cssClassName],[google_event_id],[operation_notes],[is_complete],[IsEstimateActive],[employee_name],[event_id], [duration], [IsScheduleDayException], [IsEWSCalendarSynch],[selectedweekends],[weekends] " +
+                                    " [co_pricing_list_id],[cssClassName],[google_event_id],[operation_notes],[is_complete],[IsEstimateActive],[employee_name], " +
+                                    " [event_id], [duration], [IsScheduleDayException], [IsEWSCalendarSynch],[selectedweekends],[weekends], [client_id] " +
                                     " FROM [ScheduleCalendar] " +
                                     " WHERE type_id NOT IN (2,22,11,5)  AND [customer_id] = " + nCustId + " AND [estimate_id] in (" + EstimateIds.TrimEnd(',') + ")";
 
@@ -593,7 +594,8 @@ public partial class schedulecalendar : System.Web.UI.Page
                 string sSQLINSERT = "INSERT INTO [ScheduleCalendar] " +
                                 " SELECT [title],[description],[event_start],[event_end],[customer_id],[estimate_id],[employee_id],[section_name], " +
                                 " [location_name],[create_date],[last_updated_date],[last_updated_by],[type_id],[parent_id],[job_start_date], " +
-                                " [co_pricing_list_id],[cssClassName],[google_event_id],[operation_notes],[is_complete],[IsEstimateActive],[employee_name],[event_id], [duration], [IsScheduleDayException], [IsEWSCalendarSynch],[selectedweekends],[weekends] " +
+                                " [co_pricing_list_id],[cssClassName],[google_event_id],[operation_notes],[is_complete],[IsEstimateActive],[employee_name], "+
+                                " [event_id], [duration], [IsScheduleDayException], [IsEWSCalendarSynch],[selectedweekends],[weekends], [client_id] " +
                                 " FROM [ScheduleCalendarTemp] " +
                                 " WHERE type_id NOT IN (2,22,11,5)  AND [customer_id] = " + nCustId + " AND [estimate_id] in (" + EstimateIds.TrimEnd(',') + ")";
 
@@ -692,7 +694,7 @@ public partial class schedulecalendar : System.Web.UI.Page
         }
 
     }
-   
+
 
 
     //protected void ddlEst_SelectedIndexChanged(object sender, EventArgs e)
@@ -1061,7 +1063,8 @@ public partial class schedulecalendar : System.Web.UI.Page
                        serial = (int)sec.serial,
                        section_name = cpm.section_name.Trim() + " - (" + l.location_name.Trim() + ")",
                        customer_id = (int)cpm.customer_id,
-                       estimate_id = (int)cpm.estimate_id
+                       estimate_id = (int)cpm.estimate_id,
+                       client_id = (int)cpm.client_id
                    };
         }
         else
@@ -1078,7 +1081,8 @@ public partial class schedulecalendar : System.Web.UI.Page
                        serial = (int)sec.serial,
                        section_name = cpm.section_name.Trim() + " - (" + l.location_name.Trim() + ")",
                        customer_id = (int)cpm.customer_id,
-                       estimate_id = (int)cpm.estimate_id
+                       estimate_id = (int)cpm.estimate_id,
+                       client_id = (int)cpm.client_id
                    };
         }
 
@@ -1086,7 +1090,7 @@ public partial class schedulecalendar : System.Web.UI.Page
 
 
         grdProjectSection.DataSource = item.Distinct().OrderBy(o => o.section_name).OrderBy(o => o.estimate_id).ToList();
-        grdProjectSection.DataKeyNames = new string[] { "cssClassName", "customer_id", "estimate_id" };
+        grdProjectSection.DataKeyNames = new string[] { "cssClassName", "customer_id", "estimate_id", "client_id" };
         grdProjectSection.DataBind();
     }
 
@@ -1804,12 +1808,12 @@ public partial class schedulecalendar : System.Web.UI.Page
     }
 
     [System.Web.Services.WebMethod]
-    public static List<SectionInfo> GetSection(string keyword)
+    public static List<SectionInfo> GetSection(string keyword, int divisionId)
     {
         DataClassesDataContext _db = new DataClassesDataContext();
 
         var item = from sc in _db.ScheduleCalendars
-                   where sc.section_name.ToUpper().StartsWith(keyword.Trim().ToUpper()) && (sc.type_id == 1 || sc.type_id == 11)
+                   where sc.section_name.ToUpper().StartsWith(keyword.Trim().ToUpper()) && (sc.type_id == 1 || sc.type_id == 11) && sc.client_id == divisionId
                    select new SectionInfo
                    {
                        section_name = sc.section_name.Trim()
@@ -1827,12 +1831,13 @@ public partial class schedulecalendar : System.Web.UI.Page
     }
 
     [System.Web.Services.WebMethod]
-    public static List<userinfo> GetUserName(string keyword)
+    public static List<userinfo> GetUserName(string keyword, int divisionId)
     {
         DataClassesDataContext _db = new DataClassesDataContext();
 
         var item = (from cr in _db.Crew_Details
-                    where (cr.first_name.Trim().ToUpper().Contains(keyword.Trim().ToUpper()) || cr.last_name.Trim().ToUpper().Contains(keyword.Trim().ToUpper())) && cr.is_active == true
+                    where (cr.first_name.Trim().ToUpper().Contains(keyword.Trim().ToUpper()) || cr.last_name.Trim().ToUpper().Contains(keyword.Trim().ToUpper()))
+                    && cr.is_active == true && cr.client_id == divisionId
                     orderby cr.first_name
                     select new userinfo
                     {
@@ -1845,7 +1850,7 @@ public partial class schedulecalendar : System.Web.UI.Page
         if (item.ToList().Count() == 0 && keyword.ToLower().Contains("*"))
         {
             item = (from cr in _db.Crew_Details
-                    where cr.is_active == true
+                    where cr.is_active == true && cr.client_id == divisionId
                     orderby cr.first_name
                     select new userinfo
                     {
@@ -1860,7 +1865,7 @@ public partial class schedulecalendar : System.Web.UI.Page
     }
 
     [System.Web.Services.WebMethod]
-    public static List<userinfo> GetSuperintendentName(string keyword)
+    public static List<userinfo> GetSuperintendentName(string keyword, int divisionId)
     {
         DataClassesDataContext _db = new DataClassesDataContext();
 
@@ -1868,7 +1873,8 @@ public partial class schedulecalendar : System.Web.UI.Page
 
         var item = from u in _db.user_infos
                    join c in _db.customers on u.user_id equals c.SuperintendentId
-                   where (u.first_name.Trim().ToUpper().Contains(keyword.Trim().ToUpper()) || u.last_name.Trim().ToUpper().Contains(keyword.Trim().ToUpper())) && u.is_active == true
+                   where (u.first_name.Trim().ToUpper().Contains(keyword.Trim().ToUpper()) || u.last_name.Trim().ToUpper().Contains(keyword.Trim().ToUpper()))
+                   && u.is_active == true && u.client_id.Contains(divisionId.ToString())
                    orderby u.first_name
                    select new userinfo
                    {
@@ -1883,7 +1889,7 @@ public partial class schedulecalendar : System.Web.UI.Page
         {
             item = from u in _db.user_infos
                    join c in _db.customers on u.user_id equals c.SuperintendentId
-                   where u.is_active == true
+                   where u.is_active == true && u.client_id.Contains(divisionId.ToString())
                    orderby u.first_name
                    select new userinfo
                    {
@@ -3688,6 +3694,7 @@ public partial class schedulecalendar : System.Web.UI.Page
         public string section_name { get; set; }
         public int customer_id { get; set; }
         public int estimate_id { get; set; }
+        public int client_id { get; set; }
 
     }
 
@@ -3836,7 +3843,7 @@ public partial class schedulecalendar : System.Web.UI.Page
         {
             var objCust = _db.customers.Where(c => c.customer_id == ncid);
 
-            if (objCust != null)
+            if (objCust.Any())
             {
                 IsCalendarOnline = (bool)objCust.SingleOrDefault().isCalendarOnline;
             }

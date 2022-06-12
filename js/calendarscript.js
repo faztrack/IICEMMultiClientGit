@@ -526,7 +526,7 @@ function UpdateTimeSuccessAll(updateResult) {
     hideimagefunction();
 }
 
-function addeventOnDrop(start, title, sectionname, locationname, cssClassName, customer_id, estimate_id) {
+function addeventOnDrop(start, title, sectionname, locationname, cssClassName, customer_id, estimate_id, client_id) {
 
     var addStartDate = new Date(start + " " + "8:00:00 AM");
     var addEndDate = new Date(start + " " + "9:00:00 AM");
@@ -543,10 +543,11 @@ function addeventOnDrop(start, title, sectionname, locationname, cssClassName, c
         employee_id: 0,
         employee_name: 'TBD TBD',
         customer_id: customer_id,
-        estimate_id: estimate_id
+        estimate_id: estimate_id,
+        client_id: client_id
     };
-    //alert("sdfgrf");
-    //console.log(eventToAdd);
+    console.log("addeventOnDrop");
+    console.log(eventToAdd);
     PageMethods.addEvent(eventToAdd, addSuccess);
 
     //document.getElementById("eventName").value = sectionname;
@@ -2552,7 +2553,7 @@ $(document).ready(function () {
             $.ajax({
                 type: "POST",
                 url: "schedulecalendar.aspx/GetSection",
-                data: "{'keyword':'" + $("#head_txtSection").val() + "'}",
+                data: "{'keyword':'" + $("#head_txtSection").val() + "', 'divisionId':'" + $("#head_ddlDivision").val() + "'}",
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (data) {
@@ -2603,7 +2604,7 @@ $(document).ready(function () {
             $.ajax({
                 type: "POST",
                 url: "schedulecalendar.aspx/GetUserName",
-                data: "{'keyword':'" + $("#head_txtUser").val() + "'}",
+                data: "{'keyword':'" + $("#head_txtUser").val() + "', 'divisionId':'" + $("#head_ddlDivision").val() + "'}",
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (data) {
@@ -2654,7 +2655,7 @@ $(document).ready(function () {
             $.ajax({
                 type: "POST",
                 url: "schedulecalendar.aspx/GetSuperintendentName",
-                data: "{'keyword':'" + $("#head_txtSuperintendent").val() + "'}",
+                data: "{'keyword':'" + $("#head_txtSuperintendent").val() + "', 'divisionId':'" + $("#head_ddlDivision").val() + "'}",
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (data) {
@@ -3204,6 +3205,7 @@ $(document).ready(function () {
             customer_id: $(this).closest("tr").find("input[type=hidden][id*=customer_id]").val(),
             estimate_id: $(this).closest("tr").find("input[type=hidden][id*=estimate_id]").val(),
             cssClassName: $(this).closest("tr").find("input[type=hidden][id*=cssClassName]").val(),
+            client_id: $(this).closest("tr").find("input[type=hidden][id*=client_id]").val(),
         });
 
         // make the event draggable using jQuery UI
@@ -3371,8 +3373,9 @@ $(document).ready(function () {
         },
         droppable: isSelectable, // this allows things to be dropped onto the calendar
         drop: function (date, jsEvent, ui, resourceId) {
-            debugger;
-            //console.log($(this).data('event'));
+            //debugger;
+            console.log("drop");
+            console.log($(this).data('event'));
             //console.log(jsEvent);
             if ($(this).data('event') === undefined)
                 return;
@@ -3380,6 +3383,7 @@ $(document).ready(function () {
             var nCustomer_id = $(this).data('event').customer_id;
             var nEstimate_id = $(this).data('event').estimate_id;
             var cssClassName = $(this).data('event').cssClassName;
+            var nclient_id = $(this).data('event').client_id;
             var id = jsEvent.target.id;
             var title = jsEvent.target.innerText;
 
@@ -3442,7 +3446,7 @@ $(document).ready(function () {
                 //    $(this).remove();
                 //}
 
-                addeventOnDrop(strDate, title, vtSection, vtLocation.replace(")", ""), cssClassName, nCustomer_id, nEstimate_id);
+                addeventOnDrop(strDate, title, vtSection, vtLocation.replace(")", ""), cssClassName, nCustomer_id, nEstimate_id, nclient_id);
                 $('#calendar').fullCalendar('refetchEvents');
             }
         }

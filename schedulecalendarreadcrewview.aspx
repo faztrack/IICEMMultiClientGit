@@ -43,6 +43,14 @@
                                         <td align="left">
                                             <table style="padding: 0px; margin: 0px;">
                                                 <tr>
+                                                    <td align="right">
+                                                        <b>Division:</b>
+                                                    </td>
+                                                    <td align="left">
+                                                        <asp:DropDownList ID="ddlDivision" runat="server" AutoPostBack="false"></asp:DropDownList>
+                                                    </td>
+                                                </tr>
+                                                <tr>
                                                     <td align="right">Last Name:&nbsp;</td>
                                                     <td align="left">
                                                         <asp:TextBox ID="txtSearch" CssClass="acSearch" runat="server" onkeypress="return searchKeyPress(event);"></asp:TextBox>
@@ -179,6 +187,10 @@
         <asp:HiddenField ID="hdnUpdateDialogShow" runat="server" Value="false" />
         <asp:HiddenField ID="hdnEventLinkCount" runat="server" Value="0" />
 
+
+         <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
+        <asp:HiddenField ID="hdnPrimaryDivision" runat="server" Value="0" />
+        <asp:HiddenField ID="hdnDivisionName" runat="server" Value="" />
         <br />
         <br />
     </div>

@@ -325,6 +325,7 @@
                                                                                                     <asp:HiddenField ID="customer_id" runat="server" Value='<%#Eval("customer_id") %>' />
                                                                                                     <asp:HiddenField ID="estimate_id" runat="server" Value='<%#Eval("estimate_id") %>' />
                                                                                                     <asp:HiddenField ID="cssClassName" runat="server" Value='<%#Eval("cssClassName") %>' />
+                                                                                                     <asp:HiddenField ID="client_id" runat="server" Value='<%#Eval("client_id") %>' />
                                                                                                 </ItemTemplate>
                                                                                                 <ItemStyle Width="100%" HorizontalAlign="Left" />
                                                                                             </asp:TemplateField>
@@ -393,6 +394,7 @@
                                                                                         <asp:HiddenField ID="customer_id" runat="server" Value='<%#Eval("customer_id") %>' />
                                                                                         <asp:HiddenField ID="estimate_id" runat="server" Value='<%#Eval("estimate_id") %>' />
                                                                                         <asp:HiddenField ID="cssClassName" runat="server" Value='<%#Eval("cssClassName") %>' />
+                                                                                        <asp:HiddenField ID="client_id" runat="server" Value='<%#Eval("client_id") %>' />
                                                                                     </ItemTemplate>
                                                                                     <ItemStyle Width="100%" HorizontalAlign="Left" />
                                                                                     <HeaderStyle Width="100%" HorizontalAlign="Left" />

@@ -2620,7 +2620,7 @@ public class EventDAO
                                 " SELECT [title],[description],[event_start],[event_end],[customer_id],[estimate_id],[employee_id],[section_name], " +
                                 " [location_name],[create_date],[last_updated_date],[last_updated_by],[type_id],[parent_id],[job_start_date], " +
                                 " [co_pricing_list_id],[cssClassName],[google_event_id],[operation_notes],[is_complete],[IsEstimateActive],[employee_name],[event_id], [duration], [IsScheduleDayException], " +
-                                " [IsEWSCalendarSynch], [auto_event_id] AS [ScheduleCalendar_id], '" + deletedFrom + "' AS [deletedFrom], '" + strUName + "' AS deletedBy,  CONVERT(DATETIME, '" + dtDeletedBy + "', 101) AS deletedDate, CAST (0 AS bit) as IsDeletedSync " +
+                                " [IsEWSCalendarSynch], [auto_event_id] AS [ScheduleCalendar_id], '" + deletedFrom + "' AS [deletedFrom], '" + strUName + "' AS deletedBy,  CONVERT(DATETIME, '" + dtDeletedBy + "', 101) AS deletedDate, CAST (0 AS bit) as IsDeletedSync, [client_id] " +
                                 " FROM " + strSclTBL + " " +
                                 " WHERE [customer_id] = " + ncid + " AND event_id =" + id;
 
@@ -2813,7 +2813,10 @@ public class EventDAO
             {
                 nCustomerID = (int)System.Web.HttpContext.Current.Session["cid"];
 
+                var cust = _db.customers.Where(sp => sp.customer_id == nCustomerID);
 
+                if (cust.Any())
+                    cevent.client_id = (int)cust.FirstOrDefault().client_id;
 
 
 
@@ -3929,6 +3932,7 @@ public class EventDAO
                 calEvntObjforWeekend.estimate_name = "";
                 calEvntObjforWeekend.duration = 0;
                 calEvntObjforWeekend.WeekEnds = "";
+                calEvntObjforWeekend.client_id = 0;
 
                 if (events.Any(e => (e.selectedweekends ?? "").Contains(calEvntObjforWeekend.start.ToShortDateString()) && e.IsScheduleDayException))
                 {

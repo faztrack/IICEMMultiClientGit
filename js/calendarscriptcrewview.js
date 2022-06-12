@@ -413,6 +413,15 @@ function getSuccess(getResult) {
 
 $(document).ready(function () {
 
+    $("#head_ddlDivision").change(function () {
+
+        $("#head_txtSearch").val("");
+        $("#head_txtSection").val("");
+        $("#head_txtUser").val("");
+        $("#head_txtSuperintendent").val("");
+
+    });
+
     $('body').on('click', 'button.fc-basicWeek-button', function () {
         var vSDate = $('#calendar').fullCalendar('getDate');
         var viewCurrentDate = new Date(vSDate);
@@ -479,7 +488,7 @@ $(document).ready(function () {
             $.ajax({
                 type: "POST",
                 url: "schedulecalendarreadcrewview.aspx/GetCustomer",
-                data: "{'keyword':'" + $("#head_txtSearch").val() + "'}",
+                data: "{'keyword':'" + $("#head_txtSearch").val() + "', 'divisionId':'" + $("#head_ddlDivision").val() + "'}",
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (data) {
@@ -529,7 +538,7 @@ $(document).ready(function () {
             $.ajax({
                 type: "POST",
                 url: "schedulecalendarreadcrewview.aspx/GetSection",
-                data: "{'keyword':'" + $("#head_txtSection").val() + "'}",
+                data: "{'keyword':'" + $("#head_txtSection").val() + "', 'divisionId':'" + $("#head_ddlDivision").val() + "'}",
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (data) {
@@ -580,7 +589,7 @@ $(document).ready(function () {
             $.ajax({
                 type: "POST",
                 url: "schedulecalendarreadcrewview.aspx/GetUserName",
-                data: "{'keyword':'" + $("#head_txtUser").val() + "'}",
+                data: "{'keyword':'" + $("#head_txtUser").val() + "', 'divisionId':'" + $("#head_ddlDivision").val() + "'}",
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (data) {
@@ -631,7 +640,7 @@ $(document).ready(function () {
             $.ajax({
                 type: "POST",
                 url: "schedulecalendarreadcrewview.aspx/GetSuperintendentName",
-                data: "{'keyword':'" + $("#head_txtSuperintendent").val() + "'}",
+                data: "{'keyword':'" + $("#head_txtSuperintendent").val() + "', 'divisionId':'" + $("#head_ddlDivision").val() + "'}",
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (data) {
