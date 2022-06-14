@@ -25,107 +25,161 @@
         </tr>
         <tr>
             <td align="center" valign="top">
-                <div style="margin: 0 auto; width: 1080px">
+                <div style="margin: 0 auto; width: 100%">
                     <asp:UpdatePanel ID="UpdatePanel2" runat="server">
                         <ContentTemplate>
-                            <table style="margin-top: 10px;" class="wrapper" width="1080" border="0" cellspacing="0" cellpadding="0" align="center">
+
+
+
+
+
+                            <table class="wrapper" width="100%">
                                 <tr>
-                                    <td align="left" valign="top">
-                                        <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+                                    <td style="width: 220px; border-right: 1px solid #ddd;" align="left" valign="top">
+                                        <table width="100%">
                                             <tr>
-                                                <td align="left" width="20%">
-                                                    <b>Customer Name:</b> </td>
-                                                <td align="left" valign="middle" width="35%">
-                                                    <asp:Label ID="lblCustomerName" runat="server"></asp:Label>
+                                                <td width="74px">
+                                                    <img src="images/icon-customer-info.png" /></td>
+                                                <td align="left">
+                                                    <h2>Customer Information</h2>
                                                 </td>
-                                                <td align="left" width="15%" valign="top">
-                                                    <b>Address: </b></td>
-                                                <td align="left">
-                                                    <asp:Label ID="lblAddress" runat="server"></asp:Label>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td align="right" width="20%">&nbsp;</td>
-                                                <td align="left" valign="middle" width="35%">&nbsp;</td>
-                                                <td align="right" valign="top" width="15%">&nbsp;</td>
-                                                <td align="left">
-                                                    <asp:HyperLink ID="hypGoogleMap" runat="server"
-                                                        ImageUrl="~/images/img_map.gif" Target="_blank"></asp:HyperLink>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td align="left">
-                                                    <b>Phone: </b></td>
-                                                <td align="left" valign="middle">
-                                                    <asp:Label ID="lblPhone" runat="server" Text=""></asp:Label>
-                                                </td>
-                                                <td align="left">
-                                                    <b>Email: </b></td>
-                                                <td align="left">
-                                                    <asp:Label ID="lblEmail" runat="server" Text=""></asp:Label>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td align="left">
-                                                    <b>Estimate Name: </b></td>
-                                                <td align="left" valign="middle">
-                                                    <asp:Label ID="lblEstimateName" runat="server" Font-Bold="True"></asp:Label>
-                                                    &nbsp;</td>
-                                                <td align="left">
-                                                    <b>C/O Status: </b></td>
-                                                <td align="left">
-                                                    <asp:DropDownList ID="ddlStatus" runat="server" AutoPostBack="True" Enabled="False">
-                                                        <asp:ListItem Value="1">Draft</asp:ListItem>
-                                                        <asp:ListItem Value="2">Pending</asp:ListItem>
-                                                        <asp:ListItem Value="3">Executed</asp:ListItem>
-                                                        <asp:ListItem Value="4">Declined</asp:ListItem>
-                                                    </asp:DropDownList>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td align="left">
-                                                    <b>Change Order Name: </b></td>
-                                                <td align="left">
-                                                    <asp:Label ID="lblChangeOrderName" runat="server"></asp:Label>
-                                                     <asp:LinkButton ID="lnkUpdateCoEstimate" runat="server"><span 
-                                                        style="color:#2d7dcf; text-decoration:underline; font-weight:bold; ">Rename</span></asp:LinkButton>
-                                                </td>
-                                                <td align="left"><b>C/O Type: </b></td>
-                                                <td align="left" valign="middle">
-                                                    <asp:DropDownList ID="ddlChangeOrderType" runat="server" AutoPostBack="True" Enabled="False">
-                                                        <asp:ListItem Value="1">Change Order</asp:ListItem>
-                                                        <asp:ListItem Value="2">Clarification</asp:ListItem>
-                                                        <asp:ListItem Value="3">Internal Use Only</asp:ListItem>
-                                                    </asp:DropDownList>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td align="left">
-                                                    <b>
-                                                        <asp:Label ID="lblCoDate" runat="server" Text="Change Order Date:"></asp:Label>
-                                                    </b>
-                                                </td>
-                                                <td align="left">
-                                                    <asp:TextBox ID="txtChangeOrderDate" runat="server"></asp:TextBox>
-                                                </td>
-                                                <td align="right">&nbsp;</td>
-                                                <td align="left" valign="middle">&nbsp;</td>
-                                            </tr>
-                                            <tr>
-                                                <td align="left" valign="top">
-                                                    <b>Notes: </b></td>
-                                                <td align="left" colspan="3">
-                                                    <asp:TextBox ID="txtNotes1" runat="server" Height="44px" TabIndex="1"
-                                                        TextMode="MultiLine" Width="603px" ReadOnly="True"></asp:TextBox>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td align="center" colspan="4">
-                                                    <asp:Label ID="lblMessagefinal" runat="server" Font-Bold="True"></asp:Label>
-                                                    &nbsp;                  &nbsp;                  &nbsp;&nbsp;</td>
                                             </tr>
                                         </table>
                                     </td>
+                                    <td style="width: 390px;" align="left" valign="top">
+                                        <table style="width: 390px;">
+                                            <tr>
+                                                <td style="width: 113px;" align="left" valign="top"><b>Customer Name: </b></td>
+                                                <td style="width: auto; height: 18px;">
+                                                    <asp:Label ID="lblCustomerName" runat="server"></asp:Label>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td align="left" valign="top"><b>Phone: </b></td>
+                                                <td style="width: auto;">
+                                                    <asp:Label ID="lblPhone" runat="server" Text=""></asp:Label>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td align="left" valign="top"><b>Email: </b></td>
+                                                <td style="width: auto;">
+                                                    <asp:Label ID="lblEmail" runat="server" Text=""></asp:Label>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td align="left" valign="top">
+                                        <table>
+                                            <tr>
+                                                <td style="width: 100px;" align="left" valign="top"><b>Address: </b></td>
+                                                <td align="left" valign="top">
+                                                    <asp:Label ID="lblAddress" runat="server"></asp:Label>
+                                                </td>
+                                                <td align="left" valign="top">&nbsp;
+                                                                <asp:HyperLink ID="hypGoogleMap" runat="server"
+                                                                    ImageUrl="~/images/img_map.gif" Target="_blank"></asp:HyperLink>
+                                                </td>
+
+                                            </tr>
+
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+
+
+
+                            <table style="margin-top: 10px;" class="wrapper" width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+                                <tr>
+                                    <td align="left" valign="top">
+
+                                        <table class="wrapper" width="100%">
+                                            <tr>
+                                                <td style="width: 220px; border-right: 1px solid #ddd;" align="left" valign="middle">
+                                                    <table width="220px">
+                                                        <tr>
+                                                            <td width="74px">
+                                                                <img src="images/icon-estimate-info.png" /></td>
+                                                            <td align="left">
+                                                                <h2>Estimate Information</h2>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                                <td style="width: 780px;" align="left" valign="top">
+                                                    <table style="width: 780px">
+
+                                                        <tr>
+                                                            <td style="width: 155px;" align="left" valign="top"><b>Estimate Name:</b></td>
+                                                            <td>
+                                                                <asp:Label ID="lblEstimateName" runat="server" Font-Bold="True"></asp:Label>
+                                                            </td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td align="left"  valign="middle"><b>Change Order Name: </b></td>
+                                                            <td align="left" valign="top">
+                                                                <asp:Label ID="lblChangeOrderName" runat="server"></asp:Label>
+                                                                <asp:LinkButton ID="lnkUpdateCoEstimate" runat="server"><span 
+                                                        style="color:#2d7dcf; text-decoration:underline; font-weight:bold; ">Rename</span></asp:LinkButton>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td align="left">
+                                                                <b>
+                                                                    <asp:Label ID="lblCoDate" runat="server" Text="Change Order Date:"></asp:Label></b>
+                                                            </td>
+                                                            <td align="left">
+                                                                <asp:TextBox ID="txtChangeOrderDate" runat="server"></asp:TextBox>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td align="left" valign="middle"><b>Notes: </b></td>
+                                                            <td>
+                                                                <asp:TextBox ID="txtNotes1" runat="server" Height="44px" TabIndex="1"
+                                                                    TextMode="MultiLine" Width="503px" ReadOnly="True"></asp:TextBox>
+                                                            </td>
+                                                        </tr>
+
+                                                    </table>
+                                                </td>
+                                                <td align="left" valign="top">
+                                                    <table style="width: 520px;">
+                                                        <tr>
+                                                            <td align="left" style="width: 112px;" valign="middle"><b>C/O Status: </b></td>
+                                                            <td style="width: auto;" align="left" valign="middle">
+                                                                <asp:DropDownList ID="ddlStatus" runat="server" AutoPostBack="True" Enabled="False">
+                                                                    <asp:ListItem Value="1">Draft</asp:ListItem>
+                                                                    <asp:ListItem Value="2">Pending</asp:ListItem>
+                                                                    <asp:ListItem Value="3">Executed</asp:ListItem>
+                                                                    <asp:ListItem Value="4">Declined</asp:ListItem>
+                                                                </asp:DropDownList>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="width: auto;" align="left" valign="middle">
+                                                                <b><b>C/O Type: </b></b>
+                                                            </td>
+                                                            <td style="width: auto;" align="left" valign="middle">
+                                                                <asp:DropDownList ID="ddlChangeOrderType" runat="server" AutoPostBack="True" Enabled="False">
+                                                                    <asp:ListItem Value="1">Change Order</asp:ListItem>
+                                                                    <asp:ListItem Value="2">Clarification</asp:ListItem>
+                                                                    <asp:ListItem Value="3">Internal Use Only</asp:ListItem>
+                                                                </asp:DropDownList>
+                                                        </tr>
+
+
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center" colspan="4">
+                                        <asp:Label ID="lblMessagefinal" runat="server" Font-Bold="True"></asp:Label>
+                                        &nbsp;                  &nbsp;                  &nbsp;&nbsp;</td>
                                 </tr>
                                 <tr>
                                     <td align="center">
@@ -335,37 +389,41 @@
                                                     </asp:GridView>
                                                 </td>
                                             </tr>
-                                            <tr>
-                                                <td align="left" valign="top" width="20%">
-                                                    <b>Comments: </b></td>
-                                                <td>
-                                                    <asp:TextBox ID="txtComments" runat="server" Height="44px" TabIndex="1"
-                                                        TextMode="MultiLine" Width="603px" ReadOnly="True"></asp:TextBox>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td align="left" width="20%">
-                                                    <b>Total Due/Payment: </b>
-                                                </td>
-                                                <td align="left" valign="middle">
-                                                    <asp:DropDownList ID="ddlTotalHeader" runat="server" Enabled="False" Width="610px">
-                                                        <asp:ListItem Value="1">ADDITIONAL CHARGE TOTAL FOR WORK DESCRIBED ABOVE</asp:ListItem>
-                                                        <asp:ListItem Value="2">TOTAL CREDIT FOR WORK DESCRIBED ABOVE</asp:ListItem>
-                                                    </asp:DropDownList>
-                                                </td>
-                                            </tr>
+
                                         </table>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td align="center" valign="top">
-                                        <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                        <table align="center" class="wrappermini" border="0" cellpadding="0" cellspacing="0" width="50%">
                                             <tr>
-                                                <td align="left" valign="middle" colspan="2">
-                                                    <table class="wrappermini" id="Table1" width="100%">
+                                                <tr>
+                                                    <td align="left" valign="top" width="20%">
+                                                        <b>Comments: </b></td>
+                                                    <td>
+                                                        <asp:TextBox ID="txtComments" runat="server" Height="44px" TabIndex="1"
+                                                            TextMode="MultiLine" Width="603px" ReadOnly="True"></asp:TextBox>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td align="left" width="20%">
+                                                        <b>Total Due/Payment: </b>
+                                                    </td>
+                                                    <td align="left" valign="middle">
+                                                        <asp:DropDownList ID="ddlTotalHeader" runat="server" Enabled="False" Width="610px">
+                                                            <asp:ListItem Value="1">ADDITIONAL CHARGE TOTAL FOR WORK DESCRIBED ABOVE</asp:ListItem>
+                                                            <asp:ListItem Value="2">TOTAL CREDIT FOR WORK DESCRIBED ABOVE</asp:ListItem>
+                                                        </asp:DropDownList>
+                                                    </td>
+                                                </tr>
+
+
+                                                <td align="center" valign="middle" colspan="2">
+                                                    <table class="wrappermini" id="Table1" width="50%">
                                                         <tbody>
+
                                                             <tr>
-                                                                <td align="middle">
+                                                                <td align="left">
                                                                     <!--StartFragment-->
                                                                     <table id="Table2" width="100%">
                                                                         <tbody>
@@ -536,7 +594,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td align="center" valign="top">
+                                    <td align="center" valign="top" style="padding-top:10px">
                                         <asp:Button ID="btnGotoChangeOrderList" runat="server" CssClass="button"
                                             OnClick="btnGotoChangeOrderList_Click" Text="Change Order List" />
                                         <asp:Button ID="btnGotoCustomerList" runat="server"
@@ -626,7 +684,8 @@
                             </table>
                         </ContentTemplate>
                     </asp:UpdatePanel>
-                 <asp:Panel ID="pnlUpdateCoEstimate" runat="server" Width="550px" Height="260px" BackColor="Snow">
+
+                    <asp:Panel ID="pnlUpdateCoEstimate" runat="server" Width="550px" Height="260px" BackColor="Snow">
                         <asp:UpdatePanel ID="UpdatePanel1" runat="server">
                             <ContentTemplate>
                                 <table cellpadding="0" cellspacing="2" width="100%">

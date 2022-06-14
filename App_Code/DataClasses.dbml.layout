@@ -716,10 +716,10 @@
         <elementListCompartment Id="86c4bf32-0ace-4e2d-ab6c-846d53ae057b" absoluteBounds="9.765, 4.585, 1.9700000000000002, 2.364705403645833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="d3535d16-25a5-4313-b90f-4085a0fca281" isExpanded="false" absoluteBounds="0.75, 5, 2, 0.45">
+    <classShape Id="d130f472-1c7b-4cde-883e-e94397441cea" isExpanded="false" absoluteBounds="0.75, 5, 2, 0.45">
       <DataClassMoniker Name="/DataClassesDataContext/customerchangeorderstatus" />
       <nestedChildShapes>
-        <elementListCompartment Id="30413800-ed3d-4b13-a366-c239e92bff74" absoluteBounds="0.76500000000000012, 5.46, 1.9700000000000002, 2.1724039713541665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="9c3760f2-7be5-4970-bc46-e572cbe52e96" absoluteBounds="0.76500000000000012, 5.46, 1.9700000000000002, 1.9801025390625" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
   </nestedChildShapes>

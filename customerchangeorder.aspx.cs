@@ -280,7 +280,7 @@ public partial class customerchangeorder : System.Web.UI.Page
                     objccos.estimateid = nEstid;
                     objccos.changeorderid = nChEstid;
                     objccos.status = 1; // Pending
-                    objccos.client_id = Convert.ToInt32(hdnClientId.Value);
+                    //objccos.client_id = Convert.ToInt32(hdnClientId.Value);
 
                     _db.customerchangeorderstatus.InsertOnSubmit(objccos);
                     _db.SubmitChanges();

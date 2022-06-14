@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><Database Name="IICEMDB05122022" Class="DataClassesDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
-  <Connection Mode="WebSettings" ConnectionString="Data Source=GITBD-TFS\SQL2017;Initial Catalog=IICEMDB05122022;User ID=sa" SettingsObjectName="System.Configuration.ConfigurationManager.ConnectionStrings" SettingsPropertyName="IICEMDB05122022ConnectionString" Provider="System.Data.SqlClient" />
+  <Connection Mode="WebSettings" ConnectionString="Data Source=GITBD-TFS\SQL2017;Initial Catalog=IICEMDB05122022;Persist Security Info=True;User ID=sa" SettingsObjectName="System.Configuration.ConfigurationManager.ConnectionStrings" SettingsPropertyName="IICEMDB05122022ConnectionString1" Provider="System.Data.SqlClient" />
   <Table Name="dbo.accept_payments" Member="accept_payments">
     <Type Name="accept_payment">
       <Column Name="payment_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -2451,7 +2451,6 @@
       <Column Name="accepteddate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="causeforreject" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
       <Column Name="rejectdate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="client_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
     </Type>
   </Table>
 </Database>

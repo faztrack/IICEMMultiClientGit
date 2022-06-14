@@ -392,7 +392,7 @@ public partial class DataClassesDataContext : System.Data.Linq.DataContext
   #endregion
 	
 	public DataClassesDataContext() : 
-			base(global::System.Configuration.ConfigurationManager.ConnectionStrings["IICEMDB05122022ConnectionString"].ConnectionString, mappingSource)
+			base(global::System.Configuration.ConfigurationManager.ConnectionStrings["CRMDBConnectionString"].ConnectionString, mappingSource)
 	{
 		OnCreated();
 	}
@@ -53064,8 +53064,6 @@ public partial class customerchangeorderstatus : INotifyPropertyChanging, INotif
 	
 	private System.Nullable<System.DateTime> _rejectdate;
 	
-	private System.Nullable<int> _client_id;
-	
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -53088,8 +53086,6 @@ public partial class customerchangeorderstatus : INotifyPropertyChanging, INotif
     partial void OncauseforrejectChanged();
     partial void OnrejectdateChanging(System.Nullable<System.DateTime> value);
     partial void OnrejectdateChanged();
-    partial void Onclient_idChanging(System.Nullable<int> value);
-    partial void Onclient_idChanged();
     #endregion
 	
 	public customerchangeorderstatus()
@@ -53273,26 +53269,6 @@ public partial class customerchangeorderstatus : INotifyPropertyChanging, INotif
 				this._rejectdate = value;
 				this.SendPropertyChanged("rejectdate");
 				this.OnrejectdateChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_client_id", DbType="Int")]
-	public System.Nullable<int> client_id
-	{
-		get
-		{
-			return this._client_id;
-		}
-		set
-		{
-			if ((this._client_id != value))
-			{
-				this.Onclient_idChanging(value);
-				this.SendPropertyChanging();
-				this._client_id = value;
-				this.SendPropertyChanged("client_id");
-				this.Onclient_idChanged();
 			}
 		}
 	}

@@ -49,6 +49,8 @@ public partial class labor_hour_list : System.Web.UI.Page
                 Response.Redirect("nopermission.aspx");
             }
 
+            txtStartDate.Text = DateTime.Now.AddDays(-30).ToShortDateString();
+            txtEndDate.Text = DateTime.Now.ToShortDateString();
 
             BindDivision();
 
@@ -91,8 +93,8 @@ public partial class labor_hour_list : System.Web.UI.Page
 
 
                 nPageNo = Convert.ToInt32(ht["PageNo"].ToString());
-                txtStartDate.Text = ht["StartDate"].ToString();
-                txtEndDate.Text = ht["EndDate"].ToString();
+                //txtStartDate.Text = ht["StartDate"].ToString();
+                //txtEndDate.Text = ht["EndDate"].ToString();
 
 
             }
@@ -1036,6 +1038,8 @@ public partial class labor_hour_list : System.Web.UI.Page
         txtEndDate.Text = "";
         chkTotalhours.Checked = false;
         ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
+        txtStartDate.Text = DateTime.Now.AddDays(-30).ToShortDateString();
+        txtEndDate.Text = DateTime.Now.ToShortDateString();
         Session.Remove("Installer");
         Session.Remove("");
         radEmployeeType.SelectedValue = "3";
