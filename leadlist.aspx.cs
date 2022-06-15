@@ -292,14 +292,8 @@ public partial class leadlist : System.Web.UI.Page
 
     private void BindLeadSource()
     {
-        //DataClassesDataContext _db = new DataClassesDataContext();
-        //var item = from l in _db.lead_sources
-        //           where l.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && l.is_active == Convert.ToBoolean(1)
-        //           orderby l.lead_name
-        //           select l;
-
-
-        string sql = "select * from lead_source where client_id in (" + hdnClientId.Value + ") AND is_active = 1";
+        
+        string sql = "select * from lead_source where is_active = 1";
         DataTable item = csCommonUtility.GetDataTable(sql);
 
         ddlLeadSource.DataSource = item;

@@ -29,6 +29,10 @@
     <script src="jquery/multiselect/multiselectjquery.js"></script>
     <link href="jquery/multiselect/sumomultiselect.min.css" rel="stylesheet" />
     <script src="jquery/multiselect/sumoselect.min.js"></script>   
+    
+      <%-- Select Droupdown--%>
+    <link href="SelectJs/select2.css" rel="stylesheet" />
+    <script type="text/javascript" src="SelectJs/select2.js"></script>
 
     <!-- dd menu -->
     <script type="text/javascript">
@@ -115,6 +119,8 @@
         document.getElementById('dialogSystemIcons').style.display = "none";
     }
     </script>
+
+  
 </head>
 <body>
 

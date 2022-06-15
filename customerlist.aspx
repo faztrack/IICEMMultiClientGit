@@ -4,6 +4,25 @@
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
 
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+
+            $('.select2').select2();
+
+        });
+
+
+
+        Sys.WebForms.PageRequestManager.getInstance().add_endRequest(EndRequestHandler);
+        function EndRequestHandler(sender, args) {
+
+            $('.select2').select2();
+        }
+
+    </script>
+
     <script language="Javascript" type="text/javascript">
         function ChangeImage(id) {
             document.getElementById(id).src = 'Images/loading.gif';
@@ -28,6 +47,7 @@
             window.open('sendsms.aspx?custId=' + cid, 'MyWindow', 'left=400,top=100,width=550,height=600,status=0,toolbar=0,resizable=0,scrollbars=1');
         }
     </script>
+
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
         <ContentTemplate>
             <table cellpadding="0" cellspacing="0" width="100%">
@@ -113,7 +133,7 @@
 
                                             <td><b>Sales Person:</b></td>
                                             <td>
-                                                <asp:DropDownList ID="ddlSalesRep" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlSalesRep_SelectedIndexChanged"></asp:DropDownList></td>
+                                                <asp:DropDownList ID="ddlSalesRep"  CssClass="select2" runat="server" AutoPostBack="True" width="168px" OnSelectedIndexChanged="ddlSalesRep_SelectedIndexChanged"></asp:DropDownList></td>
                                             <td><b>Status:</b></td>
                                             <td>
                                                 <asp:DropDownList ID="ddlStatus" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlStatus_SelectedIndexChanged">

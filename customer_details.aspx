@@ -10,7 +10,7 @@
     <link href="css/calendar-blue.css" rel="stylesheet" type="text/css" />
     <script src="js/jquery-1.4.1.min.js" type="text/javascript"></script>
     <script src="js/jquery.dynDateTime.min.js" type="text/javascript"></script>
-    <script src="js/calendar-en.min.js" type="text/javascript"></script>
+    <script src="js/calendar-en.min.js" type="text/javascript"></script> 
 
     <script type="text/javascript">
         function confirmDelete() {

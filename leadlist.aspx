@@ -3,7 +3,20 @@
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
+      <script type="text/javascript">
+          $(document).ready(function () {
 
+
+              $('.select2').select2();
+
+          });
+          Sys.WebForms.PageRequestManager.getInstance().add_endRequest(EndRequestHandler);
+          function EndRequestHandler(sender, args) {
+
+              $('.select2').select2();
+          }
+
+      </script>
     <script language="Javascript" type="text/javascript">
         function ChangeImage(id) {
             document.getElementById(id).src = 'Images/loading.gif';
@@ -26,6 +39,12 @@
             return true;
         }
     </script>
+    
+  <style>
+      .select2-container .select2-selection--single .select2-selection__rendered {
+          text-align:left!important;
+      }
+  </style>
 
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
         <ContentTemplate>
@@ -103,10 +122,10 @@
                                     <b>Division:</b>
                                     <asp:DropDownList ID="ddlDivision" runat="server" OnSelectedIndexChanged="ddlDivision_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
                                     <b>Sales Person:</b> 
-                                    <asp:DropDownList ID="ddlSalesRep" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlSalesRep_SelectedIndexChanged">
-                                    </asp:DropDownList>
+                                    <asp:DropDownList ID="ddlSalesRep"  CssClass="select2" runat="server" AutoPostBack="True" width="168px" OnSelectedIndexChanged="ddlSalesRep_SelectedIndexChanged">
+                                    </asp:DropDownList> 
                                     <b>Source:</b>
-                                    <asp:DropDownList ID="ddlLeadSource" runat="server" TabIndex="14" AutoPostBack="True" OnSelectedIndexChanged="ddlLeadSource_SelectedIndexChanged">
+                                    <asp:DropDownList ID="ddlLeadSource" runat="server" TabIndex="14"  AutoPostBack="True" OnSelectedIndexChanged="ddlLeadSource_SelectedIndexChanged">
                                     </asp:DropDownList>
                                     <b>Status:</b>
                                     <asp:DropDownList ID="ddlStatus" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlStatus_SelectedIndexChanged">

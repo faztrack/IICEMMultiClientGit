@@ -489,7 +489,7 @@ public partial class customer_details : System.Web.UI.Page
         ddlSalesPerson.DataSource = mList;
         ddlSalesPerson.DataTextField = "sales_person_name";
         ddlSalesPerson.DataValueField = "sales_person_id";
-        ddlSalesPerson.DataBind();
+        ddlSalesPerson.DataBind(); 
 
     }
 
@@ -497,7 +497,7 @@ public partial class customer_details : System.Web.UI.Page
     {
         DataClassesDataContext _db = new DataClassesDataContext();
         var item = from l in _db.lead_sources
-                   where l.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && l.is_active == Convert.ToBoolean(1)
+                   where l.is_active == Convert.ToBoolean(1)
                    orderby l.lead_name
                    select l;
         ddlLeadSource.DataSource = item;
