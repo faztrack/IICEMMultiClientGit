@@ -2025,7 +2025,84 @@ public partial class customerchangeorder : System.Web.UI.Page
         }
     }
 
+    string body(string fullName, string amount, string strTerms, string strPMName, string strCCNum, string companyName, string website)
+    {
 
+
+
+
+        string body = @"<div marginwidth='0' marginheight='0' style='font:14px/20px 'Helvetica',Arial,sans-serif;margin:0;padding:75px 0 0 0;text-align:center;background-color:#330f02'>
+    <center>
+       <table border='0' cellpadding='20' cellspacing='0' height='100%' width='100%' id='m_1588011772617908220m_3406656465879084808m_-7536552561093049624bodyTable' style='background-color:#330f02'>
+          <tbody>
+             <tr>
+                <td align='center' valign='top'>
+                   <table border='0' cellpadding='0' cellspacing='0' width='100%' style='max-width:600px;border-radius:6px;background-color:none' id='m_1588011772617908220m_3406656465879084808m_-7536552561093049624templateContainer'>
+                      <tbody>
+                         <tr>
+                            <td align='center' valign='top'>
+                               <table border='0' cellpadding='0' cellspacing='0' width='100%' style='max-width:600px'>
+                                  <tbody>
+                                     <tr>
+                                        <td style='margin: 0 auto; text-align: center'>
+                                           <h1 style='font-size:24px;line-height:100%;margin-bottom:30px;margin-top:0;padding:0'>
+                                             
+                                                <img src='https://ii.faztrack.com/assets/II_EMAIL_LOGO.png' alt='' border='0' width='50%'  ></a>
+                                           </h1>
+                                        </td>
+                                     </tr>
+                                  </tbody>
+                               </table>
+                            </td>
+                         </tr>
+                         <tr>
+                            <td align='center' valign='top'>
+                               <table border='0' cellpadding='0' cellspacing='0' width='100%' style='max-width:600px;border-radius:6px;background-color:#d6dfdb' id='m_1588011772617908220m_3406656465879084808m_-7536552561093049624templateBody'>
+                                  <tbody>
+                                     <tr>
+                                        <td align='left' valign='top' style='line-height:110%;font-family:Verdana;font-size:14px;color:#333333;padding:20px'>
+                                           <div>Dear " + fullName + ",</div> " + Environment.NewLine + Environment.NewLine +
+                                           "<p style='line-height:20px'>Your payment of <b>" + amount + "</b> for <b>" + strTerms + "</b> using your <b>" + strPMName + "</b> ending in <b>" + strCCNum + "</b> was processed.</p>" + Environment.NewLine + Environment.NewLine +
+                                           "<p>Please click <a target='_blank' href='" + csCommonUtility.GetProjectUrl() + "/customerlogin.aspx'> here </a> to view your current project status.</p>" + Environment.NewLine +
+                                           "<p>Should you have any question please do not hesitate to contact us.</p>" + Environment.NewLine + Environment.NewLine;
+
+
+        body += @"<p>Sincerely,</p>" + Environment.NewLine +
+                "<p>" + companyName + "</p>" + Environment.NewLine +
+                "<p>" + website + "</p>";
+
+        body += @"</td>
+                                         </tr>
+                                      </tbody>
+                                   </table>
+                                </td>
+                             </tr>
+                             <tr>
+                                <td align='center' valign='top'>
+                                   <table border='0' cellpadding='20' cellspacing='0' width='100%' style='max-width:600px'>
+                                      <tbody>
+                                         <tr>
+                                            <td align='center' valign='top'>
+                                            </td>
+                                         </tr>
+                                      </tbody>
+                                   </table>
+                                </td>
+                             </tr>
+                          </tbody>
+                       </table>
+                    </td>
+                 </tr>
+              </tbody>
+           </table>
+        </center>
+    
+     </div>";
+
+        return body;
+
+
+    }
 
 
     private void SendEmailToCustomer(int nCustomerId, decimal amount, string strTerms, string strPMName, string strCCNum)
@@ -2041,19 +2118,22 @@ public partial class customerchangeorder : System.Web.UI.Page
         company_profile oCom = new company_profile();
         oCom = _db.company_profiles.Single(c => c.client_id == Convert.ToInt32(hdnClientId.Value));
 
-        string strTable = "<table align='center' width='704px' border='0'>" + Environment.NewLine +
-                "<tr><td align='left'>Dear " + objCust.first_name1 + " " + objCust.last_name1 + ",</td></tr>" + Environment.NewLine +
-                "<tr><td align='left'></td></tr><tr><td align='left'></td></tr>" + Environment.NewLine +
-                "<tr><td align='left'>Your payment of  <b>" + Convert.ToDecimal(amount).ToString("c") + "</b> for <b>" + strTerms + "</b> using your <b>" + strPMName + "</b> ending in <b>" + strCCNum + "</b> was processed.</td></tr>" + Environment.NewLine +
-                "<tr><td align='left'></td></tr><tr><td align='left'></td></tr>" + Environment.NewLine +
-                "<tr><td align='left'>Please click <a target='_blank' href='https://ii.faztrack.com/customerlogin.aspx'> here </a> to view your current project status.</td></tr>" + Environment.NewLine +
-                "<tr><td align='left'></td></tr><tr><td align='left'></td></tr>" + Environment.NewLine +
-                "<tr><td align='left'>Should you have any question please do not hesitate to contact us.</td></tr>" + Environment.NewLine +
-                "<tr><td align='left'></td></tr><tr><td align='left'></td></tr>" + Environment.NewLine +
-                "<tr><td align='left'>Sincerely,</td></tr>" + Environment.NewLine +
-                "<tr><td align='left'>" + oCom.company_name + "</td></tr>" + Environment.NewLine +
-                "<tr><td align='left'>" + oCom.website + "</td></tr>" + Environment.NewLine +
-                "<tr><td align='left'></td></tr></table>";
+        string strTable = "";
+        strTable = body(objCust.first_name1 + " " + objCust.last_name1, Convert.ToDecimal(amount).ToString("c"), strTerms, strPMName, strCCNum, oCom.company_name, oCom.website);
+
+        //string strTable = "<table align='center' width='704px' border='0'>" + Environment.NewLine +
+        //        "<tr><td align='left'>Dear " + objCust.first_name1 + " " + objCust.last_name1 + ",</td></tr>" + Environment.NewLine +
+        //        "<tr><td align='left'></td></tr><tr><td align='left'></td></tr>" + Environment.NewLine +
+        //        "<tr><td align='left'>Your payment of  <b>" + Convert.ToDecimal(amount).ToString("c") + "</b> for <b>" + strTerms + "</b> using your <b>" + strPMName + "</b> ending in <b>" + strCCNum + "</b> was processed.</td></tr>" + Environment.NewLine +
+        //        "<tr><td align='left'></td></tr><tr><td align='left'></td></tr>" + Environment.NewLine +
+        //        "<tr><td align='left'>Please click <a target='_blank' href='https://ii.faztrack.com/customerlogin.aspx'> here </a> to view your current project status.</td></tr>" + Environment.NewLine +
+        //        "<tr><td align='left'></td></tr><tr><td align='left'></td></tr>" + Environment.NewLine +
+        //        "<tr><td align='left'>Should you have any question please do not hesitate to contact us.</td></tr>" + Environment.NewLine +
+        //        "<tr><td align='left'></td></tr><tr><td align='left'></td></tr>" + Environment.NewLine +
+        //        "<tr><td align='left'>Sincerely,</td></tr>" + Environment.NewLine +
+        //        "<tr><td align='left'>" + oCom.company_name + "</td></tr>" + Environment.NewLine +
+        //        "<tr><td align='left'>" + oCom.website + "</td></tr>" + Environment.NewLine +
+        //        "<tr><td align='left'></td></tr></table>";
 
         string strToEmail = objCust.email;
         string FromEmail = oCom.email;
