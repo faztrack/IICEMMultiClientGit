@@ -70,10 +70,10 @@ public partial class warrentycertificate : System.Web.UI.Page
                 strCross = objCust.cross_street;
                 string strCityStaeZip = objCust.city + ", " + objCust.state + " " + objCust.zip_code;
                 string strAddress2 = strAddress + " " + strCityStaeZip;
-                if (_db.estimate_payments.Where(pay => pay.estimate_id == EstId && pay.customer_id == CusId && pay.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).SingleOrDefault() != null)
+                if (_db.estimate_payments.Where(pay => pay.estimate_id == EstId && pay.customer_id == CusId && pay.client_id == Convert.ToInt32(objCust.client_id)).SingleOrDefault() != null)
                 {
                     estimate_payment objEstPay = new estimate_payment();
-                    objEstPay = _db.estimate_payments.Single(pay => pay.estimate_id == EstId && pay.customer_id == CusId && pay.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+                    objEstPay = _db.estimate_payments.Single(pay => pay.estimate_id == EstId && pay.customer_id == CusId && pay.client_id == Convert.ToInt32(objCust.client_id));
                     strContractDate = objEstPay.contract_date;
                 }
                 customersurvey csv = new customersurvey();
@@ -138,10 +138,10 @@ public partial class warrentycertificate : System.Web.UI.Page
                 strCross = objCust.cross_street;
                 string strCityStaeZip = objCust.city + ", " + objCust.state + " " + objCust.zip_code;
                 string strAddress2 = strAddress + " " + strCityStaeZip;
-                if (_db.estimate_payments.Where(pay => pay.estimate_id == EstId && pay.customer_id == CusId && pay.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).SingleOrDefault() != null)
+                if (_db.estimate_payments.Where(pay => pay.estimate_id == EstId && pay.customer_id == CusId && pay.client_id == Convert.ToInt32(objCust.client_id)).SingleOrDefault() != null)
                 {
                     estimate_payment objEstPay = new estimate_payment();
-                    objEstPay = _db.estimate_payments.Single(pay => pay.estimate_id == EstId && pay.customer_id == CusId && pay.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+                    objEstPay = _db.estimate_payments.Single(pay => pay.estimate_id == EstId && pay.customer_id == CusId && pay.client_id == Convert.ToInt32(objCust.client_id));
                     strContractDate = objEstPay.contract_date;
                 }
                
