@@ -354,6 +354,9 @@
                                 </td>
                                 <td align="left" colspan="2">
                                     <asp:TextBox ID="txtEmailPassword" runat="server" TextMode="Password" TabIndex="9" Width="200px"></asp:TextBox>
+
+                                     <asp:ImageButton ID="imgPasswordShow" runat="server" CssClass="noEffectNew" ToolTip="Show Password and Re-type Passowrd" ImageUrl="~/assets/customerstatemind/icon_hide.png" Width="20px" OnClick="imgPasswordShow_Click" />
+                                        <asp:ImageButton ID="imgPasswordHide" runat="server" CssClass="noEffectNew" ToolTip="Hide Password and Re-type Passowrd" ImageUrl="~/assets/customerstatemind/icon_view.png" Width="20px" OnClick="imgPasswordHide_Click" Visible="false" />
                                 </td>
                             </tr>
                             <tr>

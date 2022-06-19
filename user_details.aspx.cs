@@ -1088,4 +1088,49 @@ public partial class user_details : System.Web.UI.Page
     }
 
 
+
+    protected void imgPasswordShow_Click(object sender, ImageClickEventArgs e)
+    {
+        imgPasswordShow.Visible = false;
+        imgPasswordHide.Visible = true;
+
+
+        DataClassesDataContext _db = new DataClassesDataContext();
+
+        user_info objU = _db.user_infos.SingleOrDefault(c => c.user_id == Convert.ToInt32(hdnUserId.Value));
+        if (objU != null)
+        {
+            txtEmailPassword.TextMode = TextBoxMode.SingleLine;
+            txtEmailPasswordCon.TextMode = TextBoxMode.SingleLine;
+
+
+        }
+        else
+        {
+            txtEmailPassword.TextMode = TextBoxMode.SingleLine;
+            txtEmailPasswordCon.TextMode = TextBoxMode.SingleLine;
+        }
+        lblResult.Text = "";
+    }
+
+    protected void imgPasswordHide_Click(object sender, ImageClickEventArgs e)
+    {
+        imgPasswordShow.Visible = true;
+        imgPasswordHide.Visible = false;
+
+        DataClassesDataContext _db = new DataClassesDataContext();
+        user_info objU = _db.user_infos.SingleOrDefault(c => c.user_id == Convert.ToInt32(hdnUserId.Value));
+        if (objU != null)
+        {
+            txtEmailPassword.TextMode = TextBoxMode.Password;
+            txtEmailPasswordCon.TextMode = TextBoxMode.Password;
+        }
+        else
+        {
+            txtEmailPassword.TextMode = TextBoxMode.Password;
+            txtEmailPasswordCon.TextMode = TextBoxMode.Password;
+
+        }
+        lblResult.Text = "";
+    }
 }

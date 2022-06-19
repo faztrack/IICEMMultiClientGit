@@ -146,10 +146,15 @@ public partial class companyprofile : System.Web.UI.Page
     {
         Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
         Match match1 = regex.Match(txtContractEmail.Text.Trim());
-        if (!match1.Success)
+       
+
+        if (txtContractEmail.Text.Trim() != "")
         {
-            lblResult.Text = csCommonUtility.GetSystemRequiredMessage("Invalid email address.");
-            return;
+            if (!match1.Success)
+            {
+                lblResult.Text = csCommonUtility.GetSystemRequiredMessage("Invalid email address.");
+                return;
+            }
         }
 
         KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnSave.ID, btnSave.GetType().Name, "Click"); 
