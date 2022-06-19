@@ -11,6 +11,7 @@ using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Xml.Linq;
 using System.Drawing;
+using System.Text.RegularExpressions;
 
 public partial class companyprofile : System.Web.UI.Page
 {
@@ -141,6 +142,14 @@ public partial class companyprofile : System.Web.UI.Page
 
     protected void btnSave_Click(object sender, EventArgs e)
     {
+        Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
+        Match match1 = regex.Match(txtContractEmail.Text.Trim());
+        if (!match1.Success)
+        {
+            lblResult.Text = csCommonUtility.GetSystemRequiredMessage("Invalid email address.");
+            return;
+        }
+
         KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnSave.ID, btnSave.GetType().Name, "Click"); 
         lblResult.Text = "";
         if (txtCompanyName.Text.Trim() == "")
@@ -167,6 +176,7 @@ public partial class companyprofile : System.Web.UI.Page
 
             return;
         }
+        
         if (txtPhone.Text.Trim() == "")
         {
             lblResult.Text = csCommonUtility.GetSystemRequiredMessage("Missing required field: Phone.");
@@ -390,7 +400,8 @@ public partial class companyprofile : System.Web.UI.Page
 
 
     protected void ddlDivision_SelectedIndexChanged(object sender, EventArgs e)
-    {       
+    {
+        lblResult.Text = "";
         GetCompanyProfile();
     }
 }

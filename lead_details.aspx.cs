@@ -168,7 +168,7 @@ public partial class lead_details : System.Web.UI.Page
             BindLeadStatus();
             
             BindLeadSource();
-            
+            BindSalesPerson();
 
             //int ncid = Convert.ToInt32(Request.QueryString.Get("cid"));
             //hdnCustomerId.Value = ncid.ToString();
@@ -303,7 +303,7 @@ public partial class lead_details : System.Web.UI.Page
            
           
 
-            BindSalesPerson();
+            
 
             csCommonUtility.SetPagePermission(this.Page, new string[] { "btnSubmit", "rdbEstimateIsActive", "btnUpload", "HyperLink1", "HyperLink2", "btnSaveCall", "btnSalesCalendar", "btnSaveContact", "ddlLeadSource", "ddlSalesPerson", "ddlLeadStatus", "hypMap", "btnImageGallery" });
 
