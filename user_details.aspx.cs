@@ -13,6 +13,7 @@ using System.Xml.Linq;
 using System.Collections.Generic;
 using System.Drawing;
 using Prabhu;
+using System.Net;
 
 public partial class user_details : System.Web.UI.Page
 {
@@ -22,6 +23,7 @@ public partial class user_details : System.Web.UI.Page
         if (!IsPostBack)
         {
             KPIUtility.PageLoad(this.Page.AppRelativeVirtualPath);
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             if (Session["oUser"] == null)
             {
                 Response.Redirect(ConfigurationManager.AppSettings["LoginPage"].ToString());
