@@ -12,6 +12,7 @@ using System.Web.UI.WebControls.WebParts;
 using System.Xml.Linq;
 using System.Drawing;
 using System.Net;
+using System.Text.RegularExpressions;
 
 public partial class companyprofile : System.Web.UI.Page
 {
