@@ -96,7 +96,7 @@ public partial class warrentycertificate : System.Web.UI.Page
                 ht.Add("p_CompletionDate", strCompletionDate);
                 ht.Add("p_WarrentyValidDate", strWarrentyValidDate);
                 sourceFile = Server.MapPath("Images\\Signature\\") + objCust.customer_id + @"\";
-                rptFile.DataDefinition.FormulaFields["picturepath"].Text = @"'" + sourceFile + "signature.png" + "'";
+               // rptFile.DataDefinition.FormulaFields["picturepath"].Text = @"'" + sourceFile + "signature.png" + "'";
                 Session.Add(SessionInfo.Report_File, rptFile);
                 Session.Add(SessionInfo.Report_Param, ht);
                 Response.Redirect("Reports/Common/ReportViewer.aspx");
