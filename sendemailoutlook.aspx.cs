@@ -1190,12 +1190,181 @@ public partial class sendemailoutlook : System.Web.UI.Page
         }
         catch (Exception ex)
         {
-            lblMessage.Text = csCommonUtility.GetSystemErrorMessage(ex.Message);
+            setErrorMessage(ex.Message);
 
         }
     }
-    
-    
+    private void setErrorMessage(string Message)
+    {
+        if (Message.Contains("400"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage("Bad Request.");
+        }
+        else if (Message.Contains("401"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage(txtFrom.Text + " or Password does not match in the Outlook / Exchange server");
+        }
+        else if (Message.Contains("402"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage("Payment Required.");
+        }
+        else if (Message.Contains("403"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage("Forbidden.");
+        }
+
+
+        else if (Message.Contains("404"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage("Not Found.");
+        }
+        else if (Message.Contains("405"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage("Method Not Allowed.");
+        }
+        else if (Message.Contains("406"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage("Not Acceptable.");
+        }
+        else if (Message.Contains("407"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage("Proxy Authentication Required.");
+        }
+        else if (Message.Contains("408"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage("Request Timeout.");
+        }
+        else if (Message.Contains("409"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage("Conflict.");
+        }
+        else if (Message.Contains("410"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage("Gone.");
+        }
+        else if (Message.Contains("411"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage("Length Required.");
+        }
+        else if (Message.Contains("412"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage("Precondition Failed.");
+        }
+        else if (Message.Contains("413"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage("Payload Too Large.");
+        }
+        else if (Message.Contains("414"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage("URI Too Long.");
+        }
+        else if (Message.Contains("415"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage("Unsupported Media Type.");
+        }
+        else if (Message.Contains("416"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage("Range Not Satisfiable.");
+        }
+        else if (Message.Contains("417"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage("Expectation Failed.");
+        }
+        else if (Message.Contains("418"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage("I'm a Teapot.");
+        }
+        else if (Message.Contains("421"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage("Misdirected Request.");
+        }
+        else if (Message.Contains("422"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage("Unprocessable Entity.");
+        }
+        else if (Message.Contains("423"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage("Locked.");
+        }
+        else if (Message.Contains("424"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage("Failed Dependency.");
+        }
+        else if (Message.Contains("425"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage("Too Early.");
+        }
+        else if (Message.Contains("426"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage("Upgrade Required.");
+        }
+        else if (Message.Contains("428"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage("Precondition Required.");
+        }
+        else if (Message.Contains("429"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage("Too Many Requests.");
+        }
+        else if (Message.Contains("431"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage("Request Header Fields Too Large.");
+        }
+        else if (Message.Contains("451"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage("Unavailable For Legal Reasons.");
+        }
+        else if (Message.Contains("500"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage("Internal Server Error.");
+        }
+        else if (Message.Contains("501"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage("Not Implemented.");
+        }
+        else if (Message.Contains("502"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage("Bad Gateway.");
+        }
+        else if (Message.Contains("503"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage("Service Unavailable.");
+        }
+        else if (Message.Contains("504"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage("Gateway Timeout.");
+        }
+        else if (Message.Contains("505"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage("HTTP Version Not Supported.");
+        }
+        else if (Message.Contains("506"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage("Variant Also Negotiates.");
+        }
+        else if (Message.Contains("507"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage("Insufficient Storage.");
+        }
+        else if (Message.Contains("508"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage("Loop Detected.");
+        }
+        else if (Message.Contains("510"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage("Not Extended.");
+        }
+        else if (Message.Contains("511"))
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage("Network Authentication Required.");
+        }
+        else
+        {
+            lblMessage.Text = csCommonUtility.GetSystemErrorMessage(Message);
+        }
+
+    }
+
     protected void btnUpload_Click(object sender, EventArgs e)
     {
         KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnUpload.ID, btnUpload.GetType().Name, "Click"); 
