@@ -11,6 +11,7 @@ using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Xml.Linq;
 using System.Drawing;
+using System.Net;
 
 public partial class companyprofile : System.Web.UI.Page
 {
@@ -19,6 +20,7 @@ public partial class companyprofile : System.Web.UI.Page
         
         if (!IsPostBack)
         {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             KPIUtility.PageLoad(this.Page.AppRelativeVirtualPath);
             if (Session["oUser"] == null)
             {
