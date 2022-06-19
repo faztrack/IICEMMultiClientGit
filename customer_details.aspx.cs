@@ -483,7 +483,7 @@ public partial class customer_details : System.Web.UI.Page
         division dv = _db.divisions.FirstOrDefault(x => x.Id == Convert.ToInt32(hdnClientId.Value));
         string divisionName = dv.division_name;
 
-        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1 and is_sales=1 " + csCommonUtility.GetSalesPersonSql(divisionName) + " order by sales_person_id asc";
+        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1 and is_sales=1 " + csCommonUtility.GetSalesPersonSql(divisionName) + " order by sales_person_name asc";
 
         DataTable mList = csCommonUtility.GetDataTable(strQ);
         ddlSalesPerson.DataSource = mList;

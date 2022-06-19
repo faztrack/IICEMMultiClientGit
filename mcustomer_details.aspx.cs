@@ -151,7 +151,7 @@ public partial class mcustomer_details : System.Web.UI.Page
     private void BindSalesPerson()
     {
         DataClassesDataContext _db = new DataClassesDataContext();
-        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1  and is_sales=1 and sales_person.client_id in ('" + Convert.ToInt32(ddlDivision.SelectedValue) + "') order by sales_person_id asc";
+        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1  and is_sales=1 and sales_person.client_id in ('" + Convert.ToInt32(ddlDivision.SelectedValue) + "') order by sales_person_name asc";
         //List<userinfo> mList = _db.ExecuteQuery<userinfo>(strQ, string.Empty).ToList();
         DataTable mList = csCommonUtility.GetDataTable(strQ);
         ddlSalesPerson.DataSource = mList;

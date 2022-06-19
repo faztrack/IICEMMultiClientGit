@@ -47,7 +47,7 @@ public partial class GoogleCalendarRefreshToken : System.Web.UI.Page
     private void BindSalesPerson()
     {
         DataClassesDataContext _db = new DataClassesDataContext();
-        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE google_calendar_account is not null and google_calendar_account != '' and sales_person.is_active = 1 and sales_person.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " order by sales_person_id asc";
+        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE google_calendar_account is not null and google_calendar_account != '' and sales_person.is_active = 1 and sales_person.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " order by sales_person_name asc";
         List<userinfo> mList = _db.ExecuteQuery<userinfo>(strQ, string.Empty).ToList();
         ddlSalesPerson.DataSource = mList;
         ddlSalesPerson.DataTextField = "sales_person_name";

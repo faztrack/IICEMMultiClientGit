@@ -161,7 +161,7 @@ public partial class advanced_report : System.Web.UI.Page
     }
     private void BindSalesPerson()
     {
-        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1 and is_sales=1 " + csCommonUtility.GetSalesPersonSql(hdnDivisionName.Value) + " order by sales_person_id asc";
+        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1 and is_sales=1 " + csCommonUtility.GetSalesPersonSql(hdnDivisionName.Value) + " order by sales_person_name asc";
         DataTable dt = csCommonUtility.GetDataTable(strQ);
         lsbSalesRep.DataSource = dt;
         lsbSalesRep.DataTextField = "sales_person_name";

@@ -35,7 +35,7 @@ public partial class sales_statistics_excel : System.Web.UI.Page
     }
     private void BindSalesPersons()
     {
-        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1 and is_sales=1 " + csCommonUtility.GetSalesPersonSql(hdnDivisionName.Value) + " order by sales_person_id asc";
+        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1 and is_sales=1 " + csCommonUtility.GetSalesPersonSql(hdnDivisionName.Value) + " order by sales_person_name asc";
 
         DataTable mList = csCommonUtility.GetDataTable(strQ);
         ddlSalesPersons.DataSource = mList;

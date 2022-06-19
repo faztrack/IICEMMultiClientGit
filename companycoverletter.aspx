@@ -54,5 +54,16 @@
             </table>
         </ContentTemplate>
     </asp:UpdatePanel>
+    <asp:UpdateProgress ID="UpdateProgress1" runat="server" DisplayAfter="1" AssociatedUpdatePanelID="UpdatePanel1" DynamicLayout="False">
+        <ProgressTemplate>
+            <div class="overlay" />
+            <div class="overlayContent">
+                <p>
+                    Please wait while your data is being processed
+                </p>
+                <img src="images/ajax_loader.gif" alt="Loading" border="1" />
+            </div>
+        </ProgressTemplate>
+    </asp:UpdateProgress>
 </asp:Content>
 
