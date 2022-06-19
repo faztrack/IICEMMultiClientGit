@@ -141,7 +141,7 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td align="center" colspan="6">
+                                            <td align="center" colspan="7">
                                                 <asp:GridView ID="grdUserList" runat="server" AllowPaging="True"
                                                     AutoGenerateColumns="False" DataKeyNames="user_id"
                                                     OnPageIndexChanging="grdUserList_PageIndexChanging"
@@ -237,6 +237,7 @@
                                             <td align="right">
                                                 <asp:HiddenField ID="hdnPrimaryDivision" runat="server" Value="0" />
                                             </td>
+                                            <td align="left">&nbsp;</td>
                                             <td align="left">&nbsp;</td>
                                             <td align="left">&nbsp;</td>
                                             <td align="left">&nbsp;</td>
