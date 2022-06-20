@@ -147,7 +147,7 @@ public partial class customer_details : System.Web.UI.Page
 
 
             BindStates();
-            BindSalesPerson();
+            
             BindLeadSource();
 
             //int ncid = Convert.ToInt32(Request.QueryString.Get("cid"));
@@ -268,9 +268,6 @@ public partial class customer_details : System.Web.UI.Page
                 GetCustomerContactInfo(Convert.ToInt32(hdnCustomerId.Value));
             }
 
-
-
-
             else
             {
 
@@ -286,6 +283,8 @@ public partial class customer_details : System.Web.UI.Page
 
                 pnlEstimate.Visible = false;
             }
+
+            BindSalesPerson();
 
             csCommonUtility.SetPagePermission(this.Page, new string[] { "btnSubmit", "btnSalesCalendar", "hypMap", "rdoCustomerLogin","btnImageGallery", "btnSaveContact", "HyperLink1", "btnUpload", "HyperLink2", "btnSaveCall", "chkFollowup", "pnlLeadListPopup" });
             csCommonUtility.SetPagePermissionForGrid(this.Page, new string[] { "hypMessageDetails", "Edit", "Update", "Delete" });
