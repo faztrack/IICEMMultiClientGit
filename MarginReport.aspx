@@ -3,6 +3,25 @@
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#<%=ddlSalesPersons.ClientID%>").select2({
+                placeholder: "All",
+			allowClear: true,
+		});
+
+	});
+
+	Sys.WebForms.PageRequestManager.getInstance().add_endRequest(EndRequestHandler);
+	function EndRequestHandler(sender, args) {
+
+		$("#<%=ddlSalesPersons.ClientID%>").select2({
+                placeholder: "All",
+                allowClear: true
+            });
+
+        }
+    </script>
 
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
         <ContentTemplate>

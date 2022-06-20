@@ -146,13 +146,6 @@ public partial class customer_details : System.Web.UI.Page
             }
 
 
-            if (Convert.ToInt32(hdnCustomerId.Value) > 0)
-            {
-                customer custForClientId = _db.customers.Single(c => c.customer_id == Convert.ToInt32(hdnCustomerId.Value));
-                hdnClientId.Value = custForClientId.client_id.ToString();
-            }
-
-
             BindStates();
             BindSalesPerson();
             BindLeadSource();
@@ -191,7 +184,7 @@ public partial class customer_details : System.Web.UI.Page
                 string strAddress = cust.address + ",+" + cust.city + ",+" + cust.state + ",+" + cust.zip_code;
                 hypMap.NavigateUrl = "http://maps.google.com/maps?f=q&source=s_q&hl=en&geocode=&q=" + strAddress;
 
-                
+                hdnClientId.Value = cust.client_id.ToString();
 
                 txtCompany.Text = cust.company;
                 txtCrossStreet.Text = cust.cross_street;

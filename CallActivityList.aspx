@@ -25,8 +25,31 @@
             return true;
         }
     </script>
+    
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#<%=ddlLeadSource.ClientID%>").select2({
+			placeholder: "All",
+			allowClear: true,
+		});
 
+	});
 
+	Sys.WebForms.PageRequestManager.getInstance().add_endRequest(EndRequestHandler);
+	function EndRequestHandler(sender, args) {
+
+		$("#<%=ddlLeadSource.ClientID%>").select2({
+            placeholder: "All",
+            allowClear: true
+        });
+
+    }
+</script>
+    <style>
+        .selection{
+            text-align:left;
+        }
+    </style>
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
         <ContentTemplate>
             <table cellpadding="0" cellspacing="0" width="100%">

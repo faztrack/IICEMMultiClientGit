@@ -179,14 +179,13 @@ public partial class CallActivityList : System.Web.UI.Page
         //           select l;
 
 
-        string sql = "select * from lead_source where client_id in (" + hdnClientId.Value + ") AND is_active = 1";
+        string sql = "select * from lead_source where client_id in (" + hdnClientId.Value + ") AND is_active = 1 order by lead_name asc";
         DataTable item = csCommonUtility.GetDataTable(sql);
 
         ddlLeadSource.DataSource = item;
         ddlLeadSource.DataSource = item;
         ddlLeadSource.DataTextField = "lead_name";
         ddlLeadSource.DataValueField = "lead_source_id";
-
         ddlLeadSource.DataBind();
         ddlLeadSource.Items.Insert(0, "All");
         ddlLeadSource.SelectedIndex = 0;

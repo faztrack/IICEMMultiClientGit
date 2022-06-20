@@ -461,8 +461,8 @@
                                                                 <asp:Button ID="btnCustomizeItemAdd" runat="server" CssClass="button" OnClick="btnCustomizeItemAdd_Click"
                                                                     Text="Add" />
                                                             </td>
-                                                            <td class="tabGridtd">
-                                                                <asp:TextBox ID="txtCustomizeItemName" runat="server" Width="290px"></asp:TextBox>
+                                                            <td class="tabGridtd" align="center">
+                                                                <asp:TextBox ID="txtCustomizeItemName" runat="server" Width="350px" ></asp:TextBox>
                                                             </td>
                                                             <td class="tabGridtd" >
                                                                 <asp:TextBox ID="txtCustomizeUOM" runat="server"></asp:TextBox>

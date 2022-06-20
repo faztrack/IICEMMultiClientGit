@@ -106,7 +106,7 @@
 
 
                                         <tr>
-                                            <td align="center" colspan="7">
+                                            <td align="center" colspan="8">
                                                 <asp:GridView ID="grdCrewList" runat="server" AllowPaging="True" AllowSorting="true"
                                                     AutoGenerateColumns="False" DataKeyNames="user_id"
                                                     OnPageIndexChanging="grdCrewList_PageIndexChanging"
@@ -188,6 +188,7 @@
                                             <td align="right">&nbsp;</td>
                                             <td align="left">&nbsp;</td>
                                               <td align="left">&nbsp;</td>
+                                            <td align="left">&nbsp;</td>
                                             <td align="left">&nbsp;</td>
                                             <td align="left">&nbsp;
                                                 <asp:Label ID="lblLoadTime" runat="server" Text="" ForeColor="White"></asp:Label></td>

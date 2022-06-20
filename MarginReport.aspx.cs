@@ -54,6 +54,7 @@ public partial class MarginReport : System.Web.UI.Page
             ddlDivision.DataTextField = "division_name";
             ddlDivision.DataValueField = "id";
             ddlDivision.DataBind();
+            ddlDivision.Items.Insert(0, "All");
             ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
 
         }
@@ -165,14 +166,20 @@ public partial class MarginReport : System.Web.UI.Page
             strCondition = " AND customer_estimate.sales_person_id =" + Convert.ToInt32(ddlSalesPersons.SelectedValue) + " AND CONVERT(DATETIME,customer_estimate.sale_date) BETWEEN '" + strStartDate + "' AND '" + strEndDate + "' ";
         }
 
-        if (strCondition.Length > 2)
+      
+
+        if (ddlDivision.SelectedItem.Text != "All")
         {
-            strCondition += " AND customers.client_id = " + Convert.ToInt32(ddlDivision.SelectedValue) + " ";
+            if (strCondition.Length > 2)
+            {
+                strCondition += " AND customers.client_id = " + Convert.ToInt32(ddlDivision.SelectedValue) + " ";
+            }
+            else
+            {
+                strCondition += " WHERE customers.client_id = " + Convert.ToInt32(ddlDivision.SelectedValue) + " ";
+            }
         }
-        else
-        {
-            strCondition += " WHERE customers.client_id = " + Convert.ToInt32(ddlDivision.SelectedValue) + " ";
-        }
+
 
         DataClassesDataContext _db = new DataClassesDataContext();
        

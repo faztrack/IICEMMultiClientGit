@@ -156,6 +156,7 @@
                                 <td align="center">
                                     <asp:GridView ID="grdProjectNote" runat="server" AutoGenerateColumns="False" AllowPaging="true" CssClass="mGrid" OnRowDataBound="grdProjectNote_RowDataBound"
                                         TabIndex="2" Width="100%" AllowSorting="True" OnSorting="grdProjectNote_Sorting" OnPageIndexChanging="grdProjectNote_PageIndexChanging">
+                                        <PagerSettings Position="TopAndBottom" />
                                         <Columns>
                                            <%-- <asp:HyperLinkField DataNavigateUrlFields="customer_id" DataNavigateUrlFormatString="ProjectNotes.aspx?cid={0}&TypeId=4" ControlStyle-CssClass="mGrida2" HeaderStyle-Font-Underline="true"
                                                 DataTextField="customer_name" HeaderText="Customer Name" ItemStyle-Width="0%" SortExpression="last_name1">

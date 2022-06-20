@@ -62,6 +62,7 @@ public partial class ActivityLogReport : System.Web.UI.Page
             ddlDivision.DataTextField = "division_name";
             ddlDivision.DataValueField = "id";
             ddlDivision.DataBind();
+            ddlDivision.Items.Insert(0, "All");
             ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
 
         }
@@ -147,14 +148,19 @@ public partial class ActivityLogReport : System.Web.UI.Page
             strCondition = "  WHERE ccl.sales_person_id =" + Convert.ToInt32(ddlSalesPersons.SelectedValue) + " AND CONVERT(DATETIME,ccl.CallDate) BETWEEN '" + strStartDate + "' AND '" + strEndDate + "'";
         }
 
-        if(strCondition.Length > 2)
+        if(ddlDivision.SelectedItem.Text != "All")
         {
-            strCondition += " AND ccl.client_id = " + Convert.ToInt32(ddlDivision.SelectedValue) + " ";
+            if (strCondition.Length > 2)
+            {
+                strCondition += " AND ccl.client_id = " + Convert.ToInt32(ddlDivision.SelectedValue) + " ";
+            }
+            else
+            {
+                strCondition += " WHERE ccl.client_id = " + Convert.ToInt32(ddlDivision.SelectedValue) + " ";
+            }
         }
-        else
-        {
-            strCondition += " WHERE ccl.client_id = " + Convert.ToInt32(ddlDivision.SelectedValue) + " ";
-        }
+
+       
 
 
         DataClassesDataContext _db = new DataClassesDataContext();

@@ -3,6 +3,19 @@
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('.select2').select2();
+
+	});
+	Sys.WebForms.PageRequestManager.getInstance().add_endRequest(EndRequestHandler);
+        function EndRequestHandler(sender, args) {
+
+            $('.select2').select2();
+
+	}
+    </script>
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
         <ContentTemplate>
             <table cellpadding="0" cellspacing="2" width="100%">
@@ -40,7 +53,7 @@
                                     <b>Sales Person: </b>
                                 </td>
                                 <td align="left" valign="middle">
-                                    <asp:DropDownList ID="ddlSalesPersons" runat="server">
+                                    <asp:DropDownList ID="ddlSalesPersons" runat="server" CssClass="select2">
                                     </asp:DropDownList>
                                 </td>
                             </tr>

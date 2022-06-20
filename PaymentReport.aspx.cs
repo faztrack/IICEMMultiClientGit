@@ -57,7 +57,8 @@ public partial class PaymentReport : System.Web.UI.Page
             ddlDivision.DataSource = dt;
             ddlDivision.DataTextField = "division_name";
             ddlDivision.DataValueField = "id";
-            ddlDivision.DataBind();
+            ddlDivision.DataBind(); 
+            ddlDivision.Items.Insert(0, "All");
             ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
 
         }
@@ -132,13 +133,17 @@ public partial class PaymentReport : System.Web.UI.Page
         //    strCondition = " AND customer_estimate.sales_person_id =" + Convert.ToInt32(ddlSalesPersons.SelectedValue) + " AND pay_date BETWEEN '" + strStartDate + "' AND '" + strEndDate + "' ";
         //}
 
-        if (strCondition.Length > 2)
+        
+        if (ddlDivision.SelectedItem.Text != "All")
         {
-            strCondition += " AND pp.client_id = " + Convert.ToInt32(ddlDivision.SelectedValue) + " ";
-        }
-        else
-        {
-            strCondition += " WHERE pp.client_id = " + Convert.ToInt32(ddlDivision.SelectedValue) + " ";
+            if (strCondition.Length > 2)
+            {
+                strCondition += " AND pp.client_id = " + Convert.ToInt32(ddlDivision.SelectedValue) + " ";
+            }
+            else
+            {
+                strCondition += " WHERE pp.client_id = " + Convert.ToInt32(ddlDivision.SelectedValue) + " ";
+            }
         }
 
         DataClassesDataContext _db = new DataClassesDataContext();

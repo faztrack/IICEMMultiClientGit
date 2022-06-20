@@ -550,7 +550,7 @@ public partial class ProjectNotesReport : System.Web.UI.Page
 
         Session.Add("ProjectNote", dtProjectNote);
         grdProjectNote.DataSource = dtProjectNote;
-        grdProjectNote.DataKeyNames = new string[] { "customer_id", "customer_name" };
+        grdProjectNote.DataKeyNames = new string[] { "customer_id", "customer_name",  "clientID" };
         grdProjectNote.DataBind();
 
     }

@@ -63,6 +63,7 @@ public partial class sales_statistics : System.Web.UI.Page
             ddlDivision.DataTextField = "division_name";
             ddlDivision.DataValueField = "id";
             ddlDivision.DataBind();
+            ddlDivision.Items.Insert(0, "All");
             ddlDivision.SelectedValue = hdnPrimaryDivision.Value;
 
         }
@@ -141,12 +142,27 @@ public partial class sales_statistics : System.Web.UI.Page
             return;
         }
 
-       
-        DataClassesDataContext _db = new DataClassesDataContext();
-        int nclient_id = Convert.ToInt32(ddlDivision.SelectedValue);
-        company_profile oCom = new company_profile();
-        oCom = _db.company_profiles.Single(com => com.client_id == nclient_id);
-        string strCompanyName = oCom.company_name;
+        string pdClient = " ";
+        string ce2Client = " ";
+        string pdmClient = " ";
+        string ceClient = " ";
+
+        if (ddlDivision.SelectedItem.Text != "All")
+        {
+            pdClient += " pd.client_id = " + Convert.ToInt32(ddlDivision.SelectedValue) + " AND ";
+            ce2Client += " ce2.client_id = " + Convert.ToInt32(ddlDivision.SelectedValue) + " AND ";
+            pdmClient += " pdm.client_id = " + Convert.ToInt32(ddlDivision.SelectedValue) + " AND ";
+            ceClient += " ce.client_id = " + Convert.ToInt32(ddlDivision.SelectedValue) + " AND ";
+        }
+        
+
+        //DataClassesDataContext _db = new DataClassesDataContext();
+        //int nclient_id = Convert.ToInt32(ddlDivision.SelectedValue);
+        //company_profile oCom = new company_profile();
+        //oCom = _db.company_profiles.Single(com => com.client_id == nclient_id);
+        //string strCompanyName = oCom.company_name;
+
+
           string strQ ="";
           if (ddlSalesPersons.SelectedItem.Text == "All")
           {
@@ -157,15 +173,15 @@ public partial class sales_statistics : System.Web.UI.Page
                       " LEFT OUTER JOIN (SELECT pd.client_id,c1.sales_person_id,ISNULL(SUM(pd.total_retail_price),0) AS Total_Price FROM pricing_details pd " +
                       " INNER JOIN customer_estimate ce1 ON ce1.estimate_id = pd.estimate_id AND ce1.customer_id = pd.customer_id  AND  ce1.client_id = pd.client_id AND ce1.status_id = 3 " +
                       " INNER JOIN customers c1 ON c1.customer_id = pd.customer_id AND c1.client_id = pd.client_id " +
-                      " WHERE pd.client_id = " + nclient_id + " AND c1.registration_date BETWEEN '" + strStartDate + "' AND '" + strEndDate + "'  GROUP BY c1.sales_person_id,pd.client_id) AS t1 ON t1.sales_person_id = c.sales_person_id AND t1.client_id = ce.client_id " +
+                      " WHERE  " + pdClient + " c1.registration_date BETWEEN '" + strStartDate + "' AND '" + strEndDate + "'  GROUP BY c1.sales_person_id,pd.client_id) AS t1 ON t1.sales_person_id = c.sales_person_id AND t1.client_id = ce.client_id " +
                       " LEFT OUTER JOIN (select ce2.client_id,c2.sales_person_id,COUNT(ce2.estimate_id) AS NumberOfSales " +
                       "  from customer_estimate ce2 "+
                       "INNER JOIN customers c2 ON c2.customer_id = ce2.customer_id AND c2.client_id = ce2.client_id "+
-                      " where ce2.status_id = 3 AND ce2.client_id =" + nclient_id + "  AND c2.registration_date BETWEEN '" + strStartDate + "' AND '" + strEndDate + "'  GROUP BY c2.sales_person_id,ce2.client_id) AS t2 ON t2.sales_person_id = c.sales_person_id AND t2.client_id = ce.client_id " +
+                      " where " + ce2Client + " ce2.status_id = 3 AND c2.registration_date BETWEEN '" + strStartDate + "' AND '" + strEndDate + "'  GROUP BY c2.sales_person_id,ce2.client_id) AS t2 ON t2.sales_person_id = c.sales_person_id AND t2.client_id = ce.client_id " +
                       " LEFT OUTER JOIN (select pdm.client_id,c3.sales_person_id,COUNT(distinct pdm.customer_id) AS NumberOfAppt from pricing_details pdm " +
                       " INNER JOIN customers c3 ON c3.customer_id = pdm.customer_id AND c3.client_id = pdm.client_id "+
-                      " where  pdm.client_id = " + nclient_id + " AND c3.registration_date BETWEEN '" + strStartDate + "' AND '" + strEndDate + "'  GROUP BY c3.sales_person_id,pdm.client_id ) AS t3 ON t3.sales_person_id = c.sales_person_id AND t3.client_id = ce.client_id " +
-                      " WHERE  ce.client_id = " + nclient_id + "  AND c.registration_date BETWEEN '" + strStartDate + "' AND '" + strEndDate + "' GROUP BY sp.sales_person_id,sp.first_name, sp.last_name,Total_Price,NumberOfSales,NumberOfAppt";
+                      " where " + pdmClient + " c3.registration_date BETWEEN '" + strStartDate + "' AND '" + strEndDate + "'  GROUP BY c3.sales_person_id,pdm.client_id ) AS t3 ON t3.sales_person_id = c.sales_person_id AND t3.client_id = ce.client_id " +
+                      " WHERE " + ceClient + " c.registration_date BETWEEN '" + strStartDate + "' AND '" + strEndDate + "' GROUP BY sp.sales_person_id,sp.first_name, sp.last_name,Total_Price,NumberOfSales,NumberOfAppt";
           }
           else
           {
@@ -177,15 +193,15 @@ public partial class sales_statistics : System.Web.UI.Page
                      " LEFT OUTER JOIN (SELECT pd.client_id,c1.sales_person_id,ISNULL(SUM(pd.total_retail_price),0) AS Total_Price FROM pricing_details pd " +
                      " INNER JOIN customer_estimate ce1 ON ce1.estimate_id = pd.estimate_id AND ce1.customer_id = pd.customer_id  AND  ce1.client_id = pd.client_id AND ce1.status_id = 3 " +
                      " INNER JOIN customers c1 ON c1.customer_id = pd.customer_id AND c1.client_id = pd.client_id " +
-                     " WHERE pd.client_id = " + nclient_id + " AND c1.sales_person_id = " + nSalesPersonId + " AND c1.registration_date BETWEEN '" + strStartDate + "' AND '" + strEndDate + "'  GROUP BY c1.sales_person_id,pd.client_id) AS t1 ON t1.sales_person_id = c.sales_person_id AND t1.client_id = ce.client_id " +
+                     " WHERE " + pdClient + " c1.sales_person_id = " + nSalesPersonId + " AND c1.registration_date BETWEEN '" + strStartDate + "' AND '" + strEndDate + "'  GROUP BY c1.sales_person_id,pd.client_id) AS t1 ON t1.sales_person_id = c.sales_person_id AND t1.client_id = ce.client_id " +
                      " LEFT OUTER JOIN (select ce2.client_id,c2.sales_person_id,COUNT(ce2.estimate_id) AS NumberOfSales " +
                      "  from customer_estimate ce2 " +
                      "INNER JOIN customers c2 ON c2.customer_id = ce2.customer_id AND c2.client_id = ce2.client_id " +
-                     " where ce2.status_id = 3 AND ce2.client_id =" + nclient_id + " AND c2.sales_person_id = " + nSalesPersonId + "  AND c2.registration_date BETWEEN '" + strStartDate + "' AND '" + strEndDate + "'  GROUP BY c2.sales_person_id,ce2.client_id) AS t2 ON t2.sales_person_id = c.sales_person_id AND t2.client_id = ce.client_id " +
+                     " where " + ce2Client + " ce2.status_id = 3 AND c2.sales_person_id = " + nSalesPersonId + "  AND c2.registration_date BETWEEN '" + strStartDate + "' AND '" + strEndDate + "'  GROUP BY c2.sales_person_id,ce2.client_id) AS t2 ON t2.sales_person_id = c.sales_person_id AND t2.client_id = ce.client_id " +
                      " LEFT OUTER JOIN (select pdm.client_id,c3.sales_person_id,COUNT(distinct pdm.customer_id) AS NumberOfAppt from pricing_details pdm " +
                      " INNER JOIN customers c3 ON c3.customer_id = pdm.customer_id AND c3.client_id = pdm.client_id " +
-                     " where  pdm.client_id = " + nclient_id + "  AND c3.sales_person_id = " + nSalesPersonId + " AND c3.registration_date BETWEEN '" + strStartDate + "' AND '" + strEndDate + "'  GROUP BY c3.sales_person_id,pdm.client_id ) AS t3 ON t3.sales_person_id = c.sales_person_id AND t3.client_id = ce.client_id " +
-                     " WHERE  ce.client_id = " + nclient_id + " AND c.sales_person_id = " + nSalesPersonId + "  AND c.registration_date BETWEEN '" + strStartDate + "' AND '" + strEndDate + "' GROUP BY sp.sales_person_id,sp.first_name, sp.last_name,Total_Price,NumberOfSales,NumberOfAppt";
+                     " where " + pdmClient + "  c3.sales_person_id = " + nSalesPersonId + " AND c3.registration_date BETWEEN '" + strStartDate + "' AND '" + strEndDate + "'  GROUP BY c3.sales_person_id,pdm.client_id ) AS t3 ON t3.sales_person_id = c.sales_person_id AND t3.client_id = ce.client_id " +
+                     " WHERE " + ceClient + " c.sales_person_id = " + nSalesPersonId + "  AND c.registration_date BETWEEN '" + strStartDate + "' AND '" + strEndDate + "' GROUP BY sp.sales_person_id,sp.first_name, sp.last_name,Total_Price,NumberOfSales,NumberOfAppt";
 
           }
 
