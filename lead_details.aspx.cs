@@ -35,7 +35,7 @@ public partial class lead_details : System.Web.UI.Page
     {
         string divisionName = "";
         Session.Add("loadstarttime", DateTime.Now);
-       
+
 
         if (!IsPostBack)
         {
@@ -44,19 +44,19 @@ public partial class lead_details : System.Web.UI.Page
 
 
             userinfo oUser = new userinfo();
-           string custEmail = "";
+            string custEmail = "";
             if (Session["oUser"] == null)
             {
                 Response.Redirect(ConfigurationManager.AppSettings["LoginPage"].ToString());
             }
             else
             {
-                 oUser = (userinfo)Session["oUser"];
+                oUser = (userinfo)Session["oUser"];
                 hdnEmailType.Value = oUser.EmailIntegrationType.ToString();
                 divisionName = oUser.divisionName;
 
             }
-            
+
             if (Page.User.IsInRole("le02") == false)
             {
                 // No Permission Page.
@@ -73,13 +73,13 @@ public partial class lead_details : System.Web.UI.Page
             }
             BindDivision();
 
-           
+
 
             if (Convert.ToInt32(hdnCustomerId.Value) > 0)
             {
 
 
-                oUser = (userinfo)Session["oUser"];
+
 
                 if (oUser.role_id == 1 || oUser.role_id == 2)
                 {
@@ -161,20 +161,20 @@ public partial class lead_details : System.Web.UI.Page
             ddlCallMinutes.SelectedItem.Text = DateTime.Now.ToString("mm", CultureInfo.InvariantCulture);
             ddlCallAMPM.SelectedValue = DateTime.Now.ToString("tt", CultureInfo.InvariantCulture);
 
-            
+
 
 
             BindStates();
             BindLeadStatus();
-            
+
             BindLeadSource();
-            BindSalesPerson();
+         
 
             //int ncid = Convert.ToInt32(Request.QueryString.Get("cid"));
             //hdnCustomerId.Value = ncid.ToString();
             custId = hdnCustomerId.Value;
 
-            
+
 
             if (Convert.ToInt32(hdnCustomerId.Value) > 0)
             {
@@ -216,7 +216,9 @@ public partial class lead_details : System.Web.UI.Page
                 //    }
                 //}
                 ddlDivision.SelectedValue = cust.client_id.ToString();
-                hdnClientId.Value = cust.client_id.ToString();                
+                hdnClientId.Value = cust.client_id.ToString();
+
+                BindSalesPerson();
 
                 txtFax.Text = cust.fax;
                 txtEmail.Text = cust.email;
@@ -246,7 +248,7 @@ public partial class lead_details : System.Web.UI.Page
                     string strSalesPerson = sep.first_name + " " + sep.last_name;
                     ddlSalesPerson.Items.Insert(0, new ListItem(strSalesPerson, str1));
                 }
-               // ddlSalesPerson.SelectedValue = cust.sales_person_id.ToString();
+                // ddlSalesPerson.SelectedValue = cust.sales_person_id.ToString();
                 txtNotes.Text = cust.notes;
 
                 lblRegDate.Visible = true;
@@ -281,7 +283,7 @@ public partial class lead_details : System.Web.UI.Page
             {
 
                 ddlDivision.SelectedValue = oUser.primaryDivision.ToString();
-
+                BindSalesPerson();
 
                 hypMap.Visible = false;
                 lblHeaderTitle.Text = "Add New Lead";
@@ -293,17 +295,17 @@ public partial class lead_details : System.Web.UI.Page
 
             if (divisionName != "" && divisionName.Contains(","))
             {
-                ddlDivision.Enabled = true;                
+                ddlDivision.Enabled = true;
             }
             else
             {
                 ddlDivision.Enabled = false;
             }
 
-           
-          
 
-            
+
+
+
 
             csCommonUtility.SetPagePermission(this.Page, new string[] { "btnSubmit", "rdbEstimateIsActive", "btnUpload", "HyperLink1", "HyperLink2", "btnSaveCall", "btnSalesCalendar", "btnSaveContact", "ddlLeadSource", "ddlSalesPerson", "ddlLeadStatus", "hypMap", "btnImageGallery" });
 
@@ -489,14 +491,14 @@ public partial class lead_details : System.Web.UI.Page
         ddlLeadStatus.DataValueField = "lead_status_id";
         ddlLeadStatus.DataBind();
     }
-    private void BindSalesPerson() 
+    private void BindSalesPerson()
     {
         DataClassesDataContext _db = new DataClassesDataContext();
 
-        division dv = _db.divisions.FirstOrDefault(x => x.Id == Convert.ToInt32(ddlDivision.SelectedValue));
-        string divisionName = dv.division_name;
 
-        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1 and is_sales=1 " + csCommonUtility.GetSalesPersonSql(divisionName) + " order by sales_person_name asc";
+
+
+        string strQ = "select first_name+' '+last_name AS sales_person_name,sales_person_id from sales_person WHERE is_active=1 and is_sales=1 " + csCommonUtility.GetSalesPersonSql(ddlDivision.SelectedItem.Text) + " order by sales_person_name asc";
 
         DataTable mList = csCommonUtility.GetDataTable(strQ);
         ddlSalesPerson.DataSource = mList;
@@ -510,7 +512,7 @@ public partial class lead_details : System.Web.UI.Page
     {
         DataClassesDataContext _db = new DataClassesDataContext();
         var item = from l in _db.lead_sources
-                   where  l.is_active == Convert.ToBoolean(1)
+                   where l.is_active == Convert.ToBoolean(1)
                    orderby l.lead_name
                    select l;
         ddlLeadSource.DataSource = item;
@@ -544,7 +546,7 @@ public partial class lead_details : System.Web.UI.Page
         Response.Redirect("leadlist.aspx");
     }
 
-    public void SaveCustomerData() 
+    public void SaveCustomerData()
     {
         DataClassesDataContext _db = new DataClassesDataContext();
         if (Request.QueryString.Get("cid") == null)
@@ -557,10 +559,10 @@ public partial class lead_details : System.Web.UI.Page
                     hdnCustomerId.Value = custcheck.customer_id.ToString();
             }
         }
-       
+
         customer cust = new customer();
         int nCount = GetCountCustomer();
-        if(Convert.ToInt32(hdnCustomerId.Value) > 0)
+        if (Convert.ToInt32(hdnCustomerId.Value) > 0)
             cust = _db.customers.Single(c => c.customer_id == Convert.ToInt32(hdnCustomerId.Value));
 
 
@@ -571,7 +573,7 @@ public partial class lead_details : System.Web.UI.Page
 
         cust.address = txtAddress.Text;
         cust.city = txtCity.Text;
-        
+
         cust.company = txtCompany.Text;
         cust.cross_street = txtCrossStreet.Text;
         cust.email2 = txtEmail2.Text;
@@ -591,9 +593,9 @@ public partial class lead_details : System.Web.UI.Page
 
         //cust.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
 
-        
+
         cust.client_id = Convert.ToInt32(ddlDivision.SelectedValue);
-        
+
 
         DateTime dt = Convert.ToDateTime("1900-01-01");
 
@@ -601,7 +603,7 @@ public partial class lead_details : System.Web.UI.Page
         cust.lead_source_id = Convert.ToInt32(ddlLeadSource.SelectedValue);
         cust.lead_status_id = Convert.ToInt32(ddlLeadStatus.SelectedValue);
         cust.islead = 1;
-        
+
 
         cust.status_note = "";
 
@@ -634,7 +636,7 @@ public partial class lead_details : System.Web.UI.Page
                 cust.CreatedBy = oUser.first_name + " " + oUser.last_name;
             }
             cust.SuperintendentId = 0;
-            
+
             _db.customers.InsertOnSubmit(cust);
             lblResult.Text = csCommonUtility.GetSystemMessage("Lead '" + txtLastName1.Text + "' has been saved successfully.");
 
@@ -785,7 +787,7 @@ public partial class lead_details : System.Web.UI.Page
     }
     protected void btnUpdateLatlong_Click(object sender, EventArgs e)
     {
-        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnUpdateLatlong.ID, btnUpdateLatlong.GetType().Name, "Click"); 
+        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnUpdateLatlong.ID, btnUpdateLatlong.GetType().Name, "Click");
         if (Request.QueryString.Get("cid") != null)
         {
             int cid = Convert.ToInt32(Request.QueryString.Get("cid"));
@@ -831,14 +833,14 @@ public partial class lead_details : System.Web.UI.Page
                         XElement locationElement = result.Element("geometry").Element("location");
                         XElement Latitude = locationElement.Element("lat");
                         XElement Longitude = locationElement.Element("lng");
-                   
-              
-                   
 
-                    string lat = (string)Latitude.Value;
-                    string lang = (string)Longitude.Value;
-                    Cuustomer.Latitude = lat;
-                    Cuustomer.Longitude = lang;
+
+
+
+                        string lat = (string)Latitude.Value;
+                        string lang = (string)Longitude.Value;
+                        Cuustomer.Latitude = lat;
+                        Cuustomer.Longitude = lang;
                     }
                     catch
                     {
@@ -866,7 +868,7 @@ public partial class lead_details : System.Web.UI.Page
     }
     protected void btnSubmit_Click(object sender, EventArgs e)
     {
-        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnSubmit.ID, btnSubmit.GetType().Name, "Click"); 
+        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnSubmit.ID, btnSubmit.GetType().Name, "Click");
         lblResult.Text = "";
 
         if (!IsCustomerDataValid())
@@ -988,7 +990,7 @@ public partial class lead_details : System.Web.UI.Page
 
         BindLeadSource();
     }
-   
+
 
 
 
@@ -1513,7 +1515,7 @@ public partial class lead_details : System.Web.UI.Page
         cover_page objCP = _db.cover_pages.SingleOrDefault(c => c.client_id == Convert.ToInt32(hdnClientId.Value));
         if (objCP != null)
             ContactAddress = objCP.cover_page_content;
-        if (ConfigurationManager.AppSettings["IsContactProductionServer"]=="true")
+        if (ConfigurationManager.AppSettings["IsContactProductionServer"] == "true")
         {
             string IsTestServer = System.Configuration.ConfigurationManager.AppSettings["IsTestServer"];
             if (IsTestServer == "true")
@@ -1724,7 +1726,7 @@ public partial class lead_details : System.Web.UI.Page
         GetCustomerFileInfo(Convert.ToInt32(hdnCustomerId.Value));
     }
 
-    
+
     private void BindTempGrid()
     {
         DataClassesDataContext _db = new DataClassesDataContext();
@@ -1758,7 +1760,7 @@ public partial class lead_details : System.Web.UI.Page
     }
     protected void btnSaveFiles_Click(object sender, EventArgs e)
     {
-        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnSaveFiles.ID, btnSaveFiles.GetType().Name, "Click"); 
+        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnSaveFiles.ID, btnSaveFiles.GetType().Name, "Click");
         DataClassesDataContext _db = new DataClassesDataContext();
         foreach (GridViewRow di in grdTemp.Rows)
         {
@@ -1803,9 +1805,9 @@ public partial class lead_details : System.Web.UI.Page
                 ImageUtility.SaveSlideImage(file, Server.MapPath("~/Document//" + hdnCustomerId.Value));
                 ImageUtility.SaveThumbnailImage(file, Server.MapPath("~/Document//" + hdnCustomerId.Value) + "\\Thumbnail");
 
-                if (!System.IO.Directory.Exists(NewDir+ "\\Original"))
+                if (!System.IO.Directory.Exists(NewDir + "\\Original"))
                 {
-                    System.IO.Directory.CreateDirectory(NewDir+ "\\Original");
+                    System.IO.Directory.CreateDirectory(NewDir + "\\Original");
                 }
                 File.Move(file, Path.Combine(NewDir + "\\Original", FileName));
             }
@@ -1844,7 +1846,7 @@ public partial class lead_details : System.Web.UI.Page
 
     protected void btnSalesCalendar_Click(object sender, EventArgs e)
     {
-        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnSalesCalendar.ID, btnSalesCalendar.GetType().Name, "Click"); 
+        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnSalesCalendar.ID, btnSalesCalendar.GetType().Name, "Click");
         //DataClassesDataContext _db = new DataClassesDataContext();
         //if (_db.ScheduleCalendars.Where(sc => sc.customer_id == Convert.ToInt32(hdnCustomerId.Value) && sc.type_id == 2).Count() == 0)
         //{
@@ -1940,7 +1942,7 @@ public partial class lead_details : System.Web.UI.Page
 
     protected void btnSaveCall_Click(object sender, EventArgs e)
     {
-        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnSaveCall.ID, btnSaveCall.GetType().Name, "Click"); 
+        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnSaveCall.ID, btnSaveCall.GetType().Name, "Click");
         lblMessage.Text = "";
         lblResult.Text = "";
         lblResultCallLog.Text = "";
@@ -2183,7 +2185,7 @@ public partial class lead_details : System.Web.UI.Page
     }
     protected void lnkAddNewCall_Click(object sender, EventArgs e)
     {
-        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, lnkAddNewCall.ID, lnkAddNewCall.GetType().Name, "Click"); 
+        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, lnkAddNewCall.ID, lnkAddNewCall.GetType().Name, "Click");
         lblResultCallLog.Text = string.Empty;
         ResetCallLog();
         //hdnCallLogId.Value = "0";
@@ -2236,7 +2238,7 @@ public partial class lead_details : System.Web.UI.Page
 
     protected void btnSaveContact_Click(object sender, EventArgs e)
     {
-        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnSaveContact.ID, btnSaveContact.GetType().Name, "Click"); 
+        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnSaveContact.ID, btnSaveContact.GetType().Name, "Click");
         try
         {
             string strRequired = "";
@@ -2398,7 +2400,7 @@ public partial class lead_details : System.Web.UI.Page
 
     protected void chkFollowup_CheckedChanged(object sender, EventArgs e)
     {
-        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, chkFollowup.ID, chkFollowup.GetType().Name, "CheckedChanged"); 
+        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, chkFollowup.ID, chkFollowup.GetType().Name, "CheckedChanged");
         if (Convert.ToBoolean(chkFollowup.Checked))
         {
             tblFollowUp.Visible = true;
@@ -2410,7 +2412,7 @@ public partial class lead_details : System.Web.UI.Page
     }
     protected void cmbStartTimec_SelectedIndexChanged(object sender, EventArgs e)
     {
-        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, cmbStartTimec.ID, cmbStartTimec.GetType().Name, "SelectedIndexChanged"); 
+        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, cmbStartTimec.ID, cmbStartTimec.GetType().Name, "SelectedIndexChanged");
         DateTime dateTime = DateTime.ParseExact(cmbStartTimec.SelectedValue.ToString(), "h:mm tt", CultureInfo.InvariantCulture).AddHours(1);
         string endTime = dateTime.ToShortTimeString();
         //Appointment End Time
@@ -2425,7 +2427,7 @@ public partial class lead_details : System.Web.UI.Page
     }
     protected void ddlCallType_SelectedIndexChanged(object sender, EventArgs e)
     {
-        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, ddlCallType.ID, ddlCallType.GetType().Name, "SelectedIndexChanged"); 
+        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, ddlCallType.ID, ddlCallType.GetType().Name, "SelectedIndexChanged");
         if (Convert.ToInt32(ddlCallType.SelectedValue) == 3)
         {
             tblApptDate.Visible = true;
@@ -2438,15 +2440,15 @@ public partial class lead_details : System.Web.UI.Page
         }
 
     }
-  
-       private void GetCustomerMessageInfo(int nCustId)
+
+    private void GetCustomerMessageInfo(int nCustId)
     {
         if (nCustId > 0)
         {
 
             try
             {
-              //  ExchangeService service = EWSAPI.GetEWSService("alyons@interiorinnovations.biz", "");
+                //  ExchangeService service = EWSAPI.GetEWSService("alyons@interiorinnovations.biz", "");
 
                 // ExchangeService service = EWSAPI.GetEWSServiceByCustomer(Convert.ToInt32(hdnCustomerId.Value));
                 //  DSMessage dsMessageSent = EWSAPI.GetEmailList(lblEmail.Text, nCustId, service);
@@ -2692,7 +2694,7 @@ public partial class lead_details : System.Web.UI.Page
             custCall.CallAMPM = ddlCallAMPM.SelectedValue;
 
             custCall.client_id = Convert.ToInt32(hdnClientId.Value);
-        
+
             if (txtDurationH.Text == "" && txtDurationH.Text == "0")
             {
                 custCall.CallDuration = ddlDurationMin.SelectedValue + " Minutes";
@@ -2848,7 +2850,7 @@ public partial class lead_details : System.Web.UI.Page
                     objsc.co_pricing_list_id = 0;
                     objsc.cssClassName = strClassName;
                     objsc.google_event_id = GoogleEventID;
-                    objsc.operation_notes = "";                   
+                    objsc.operation_notes = "";
                     objsc.is_complete = false;
                     objsc.IsEstimateActive = true;
                     objsc.duration = 1;
@@ -2889,7 +2891,7 @@ public partial class lead_details : System.Web.UI.Page
 
     protected void btnSalesCalendarC_Click(object sender, EventArgs e)
     {
-        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnSalesCalendarC.ID, btnSalesCalendarC.GetType().Name, "Click"); 
+        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnSalesCalendarC.ID, btnSalesCalendarC.GetType().Name, "Click");
         try
         {
             if (IsCallDataValid())
