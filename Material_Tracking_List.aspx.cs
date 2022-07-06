@@ -685,6 +685,7 @@ public partial class Material_Tracking_List : System.Web.UI.Page
             else
             {
                 Session.Remove("nMaterilaList");
+                lblcount.Text = "0";
             }
 
             if (Session["htMaterialTrackingList"] != null)
