@@ -366,25 +366,10 @@ public partial class lead_details : System.Web.UI.Page
 
             // Appointment Start Time
             lblStartTime.Text = startTime;
-            //ListItem item = cmbStartTime.Items.FindByText(startTime);
-            //if (item != null)
-            //    cmbStartTime.SelectedValue = startTime;
-            //else
-            //{
-            //    cmbStartTime.Items.Insert(0, new ListItem(startTime));
-            //    cmbStartTime.SelectedValue = startTime;
-            //}
-
+            
             //Appointment End Time
             lblEndTime.Text = endTime;
-            //ListItem eitem = cmbEndTime.Items.FindByText(endTime);
-            //if (eitem != null)
-            //    cmbEndTime.SelectedValue = endTime;
-            //else
-            //{
-            //    cmbEndTime.Items.Insert(0, new ListItem(endTime));
-            //    cmbEndTime.SelectedValue = endTime;
-            //}
+           
         }
         else
         {
@@ -591,7 +576,6 @@ public partial class lead_details : System.Web.UI.Page
         cust.update_date = Convert.ToDateTime(DateTime.Now);
         cust.website = txtWebsite.Text.Trim();
 
-        //cust.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
 
 
         cust.client_id = Convert.ToInt32(ddlDivision.SelectedValue);
@@ -618,10 +602,7 @@ public partial class lead_details : System.Web.UI.Page
             else
             {
                 cust.status_id = 2;
-                //if (Convert.ToInt32(ddlSalesPerson.SelectedValue) == 0)
-                //    cust.status_id = 1;//
-                //else
-                //    cust.status_id = 2;
+                
             }
             cust.IsEnableSMS = true;
             cust.CustomerCalendarWeeklyView = 1;
@@ -654,10 +635,7 @@ public partial class lead_details : System.Web.UI.Page
             else
             {
                 cust.status_id = 2;
-                //if (Convert.ToInt32(ddlSalesPerson.SelectedValue) == 0)
-                //    cust.status_id = 1;// Convert.ToInt32(ddlStatus.SelectedValue);
-                //else
-                //    cust.status_id = 2;
+               
             }
             cust.email = txtEmail.Text;
             cust.update_date = DateTime.Now;
@@ -674,116 +652,6 @@ public partial class lead_details : System.Web.UI.Page
 
 
 
-
-        #region Schedule Calendar Block Code
-        /* userinfo objUName = (userinfo)Session["oUser"];
-        string strUName = objUName.first_name;
-        string strClassName = "fc-sales";
-        //Google Calendar
-        sales_person objSP = new sales_person();
-        string calendarId = string.Empty;
-        //calendarId = ConfigurationManager.AppSettings["GoogleSalesCalendarID"];
-
-        //Get Sales Person ID
-        int nSalesPersonID = Convert.ToInt32(ddlSalesPerson.SelectedValue);
-
-        if (txtAppointmentDate.Text != "")
-        {
-            try
-            {
-                DateTime ndt = Convert.ToDateTime(GetDayOfWeek(txtAppointmentDate.Text));
-                var GoogleEventID = "";
-
-                //Get calendarId by Sales Person ID
-                if (_db.sales_persons.Where(sp => sp.sales_person_id == nSalesPersonID && sp.google_calendar_account != null && sp.google_calendar_account != "").Count() > 0)
-                {
-                    objSP = _db.sales_persons.Where(sp => sp.sales_person_id == nSalesPersonID && sp.google_calendar_account != null && sp.google_calendar_account != "").SingleOrDefault();
-                    calendarId = objSP.google_calendar_id;
-                }
-
-                if (calendarId != "")
-                {
-                    // Google Calendar DELETE------------
-                    if (ConfigurationManager.AppSettings["IsProduction"].ToString() == "True")
-                    {
-                        List<ScheduleCalendar> sclist = _db.ScheduleCalendars.Where(sc => sc.customer_id == Convert.ToInt32(hdnCustomerId.Value) && sc.type_id == 2).ToList();
-                        foreach (ScheduleCalendar sc in sclist)
-                        {
-                            if (sc.google_event_id != "")
-                            {
-                                var authenticator = GetAuthenticator(nSalesPersonID); //  Sales Persion ID
-                                var service = new GoogleCalendarServiceProxy(authenticator);
-                                service.DeleteEvent(calendarId, sc.google_event_id); // Delete
-                            }
-                        }
-                    }
-
-                    ////Google Calendar Insert----------------------------------------------------------
-                    if (ConfigurationManager.AppSettings["IsProduction"].ToString() == "True")
-                    {
-                        var calendarEvent = new gCalendarEvent()
-                        {
-                            CalendarId = calendarId,
-                            Title = (txtLastName1.Text.Trim() + " " + txtPhone.Text.Trim() + " (" + ddlSalesPerson.SelectedItem.ToString() + ")").Trim(),
-                            Location = txtAddress.Text.Trim() + " " + txtCity.Text.Trim() + ", " + ddlState.SelectedItem.Text.Trim() + " " + txtZipCode.Text.Trim() + ", USA",
-                            StartDate = DateTime.Parse(ndt.ToShortDateString() + " " + cmbStartTime.SelectedValue.ToString()),
-                            EndDate = DateTime.Parse(ndt.ToShortDateString() + " " + cmbEndTime.SelectedValue.ToString()),
-                            Description = txtNotes.Text.Trim(),
-                            ColorId = 1
-                        };
-
-                        var authenticator = GetAuthenticator(nSalesPersonID); // Sales Persion ID
-                        var service = new GoogleCalendarServiceProxy(authenticator);
-                        GoogleEventID = service.CreateEvent(calendarEvent);
-                    }
-                    ////Google Calendar Insert End Code----------------------------------------------------------
-                }
-
-                // Calendar DELETE------------
-                if (_db.ScheduleCalendars.Where(sc => sc.customer_id == Convert.ToInt32(hdnCustomerId.Value) && sc.type_id == 2).Count() > 0)
-                {
-
-                    string sql2 = "DELETE ScheduleCalendar WHERE customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND type_id = 2";
-                    _db.ExecuteCommand(sql2, string.Empty);
-
-                }
-
-                ScheduleCalendar objsc = new ScheduleCalendar();
-                if (_db.ScheduleCalendars.Where(sc => sc.customer_id == Convert.ToInt32(hdnCustomerId.Value) && sc.type_id == 2).Count() == 0)
-                {
-                    objsc.title = (txtLastName1.Text.Trim() + " (" + ddlSalesPerson.SelectedItem.ToString() + ")").Trim();
-                    objsc.description = txtNotes.Text.Trim();
-                    objsc.event_start = DateTime.Parse(ndt.ToShortDateString() + " " + cmbStartTime.SelectedValue.ToString());
-                    objsc.event_end = DateTime.Parse(ndt.ToShortDateString() + " " + cmbEndTime.SelectedValue.ToString());
-                    objsc.customer_id = Convert.ToInt32(hdnCustomerId.Value);
-                    objsc.estimate_id = 0;
-                    objsc.employee_id = 0;
-                    objsc.section_name = "";
-                    objsc.location_name = "";
-                    objsc.type_id = 2;
-                    objsc.create_date = DateTime.Now;
-                    objsc.last_updated_date = DateTime.Now;
-                    objsc.last_updated_by = strUName;
-                    objsc.week_id = 0;
-                    objsc.job_start_date = DateTime.Now;
-                    objsc.co_pricing_list_id = 0;
-                    objsc.cssClassName = strClassName;
-                    objsc.google_event_id = GoogleEventID;
-                    objsc.operation_notes = "";
-                    objsc.trade_partner = "";
-                    objsc.is_complete = false;
-                    objsc.IsEstimateActive = true;
-
-                    _db.ScheduleCalendars.InsertOnSubmit(objsc);
-                    _db.SubmitChanges();
-                }
-            }
-            catch (Exception ex)
-            {
-                lblResult.Text = csCommonUtility.GetSystemErrorMessage(ex.StackTrace);
-            }
-        }*/
-        #endregion
     }
     protected void btnUpdateLatlong_Click(object sender, EventArgs e)
     {
@@ -913,21 +781,7 @@ public partial class lead_details : System.Web.UI.Page
             strRequired += "Missing required field: Email.<br/>";
         }
 
-        //if (txtAppointmentDate.Text.Trim() == "")
-        //{
-        //    strRequired += "Missing required field: Appointment Date.<br/>";
-        //}
-        //else
-        //{
-        //    try
-        //    {
-        //        Convert.ToDateTime(txtAppointmentDate.Text);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        strRequired += "Invalid Appointment Date.<br/>";
-        //    }
-        //}
+      
 
         if (ddlLeadSource.SelectedItem.Text == "Select Lead Source")
         {
@@ -1846,18 +1700,7 @@ public partial class lead_details : System.Web.UI.Page
 
     protected void btnSalesCalendar_Click(object sender, EventArgs e)
     {
-        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnSalesCalendar.ID, btnSalesCalendar.GetType().Name, "Click");
-        //DataClassesDataContext _db = new DataClassesDataContext();
-        //if (_db.ScheduleCalendars.Where(sc => sc.customer_id == Convert.ToInt32(hdnCustomerId.Value) && sc.type_id == 2).Count() == 0)
-        //{
-        //    lblResult1.Text = "Appointment must be saved before the Calendar can be used";
-        //    lblResult1.ForeColor = System.Drawing.Color.Red;            
-        //}
-        //else
-        //{
-        //Response.Redirect("schedulecalendar.aspx?cid=" + hdnCustomerId.Value + "&TypeID=2");
-        // }
-
+       
         if (IsCustomerDataValid())
         {
             SaveCustomerData();
@@ -1907,10 +1750,7 @@ public partial class lead_details : System.Web.UI.Page
 
     private GoogleAuthenticator GetAuthenticator(int salespersonid)
     {
-        //var authenticator = (GoogleAuthenticator)Session["authenticator"];
-
-        //if (authenticator == null || !authenticator.IsValid)
-        //{
+      
         DataClassesDataContext _db = new DataClassesDataContext();
         // Get a new Authenticator using the Refresh Token
         int nUserID = salespersonid;
@@ -1922,22 +1762,7 @@ public partial class lead_details : System.Web.UI.Page
         return authenticator;
     }
 
-    //private GoogleAuthenticator GetAuthenticator()
-    //{
-    //    var authenticator = (GoogleAuthenticator)Session["authenticator"];
 
-    //    if (authenticator == null || !authenticator.IsValid)
-    //    {
-    //        DataClassesDataContext _db = new DataClassesDataContext();
-    //        // Get a new Authenticator using the Refresh Token
-    //        string strUserName = "tislam";
-    //        var refreshToken = _db.GoogleRefreshTokens.FirstOrDefault(c => c.UserName == strUserName).RefreshToken;
-    //        authenticator = GoogleAuthorizationHelper.RefreshAuthenticator(refreshToken);
-    //        Session["authenticator"] = authenticator;
-    //    }
-
-    //    return authenticator;
-    //}
 
 
     protected void btnSaveCall_Click(object sender, EventArgs e)
@@ -1990,10 +1815,7 @@ public partial class lead_details : System.Web.UI.Page
 
             txtCallSubject.Text = custCall.CallSubject;
             txtCallStartDate.Text = custCall.CallDate;
-            //ddlCallHour.SelectedValue = custCall.CallHour;
-            //ddlCallMinutes.SelectedValue = custCall.CallMinutes;
-            //ddlCallAMPM.SelectedValue = custCall.CallAMPM;
-
+            
             ddlCallHour.SelectedItem.Text = dtCallDate.ToString("hh", CultureInfo.InvariantCulture);
             ddlCallMinutes.SelectedItem.Text = dtCallDate.ToString("mm", CultureInfo.InvariantCulture);
             ddlCallAMPM.SelectedValue = dtCallDate.ToString("tt", CultureInfo.InvariantCulture);
@@ -2448,11 +2270,7 @@ public partial class lead_details : System.Web.UI.Page
 
             try
             {
-                //  ExchangeService service = EWSAPI.GetEWSService("alyons@interiorinnovations.biz", "");
-
-                // ExchangeService service = EWSAPI.GetEWSServiceByCustomer(Convert.ToInt32(hdnCustomerId.Value));
-                //  DSMessage dsMessageSent = EWSAPI.GetEmailList(lblEmail.Text, nCustId, service);
-
+                
                 DSMessage dsMessageSent = new DSMessage();
 
                 DataClassesDataContext _db = new DataClassesDataContext();
@@ -2465,27 +2283,7 @@ public partial class lead_details : System.Web.UI.Page
                 {
                     DSMessage.MessageRow mes = dsMessageSent.Message.NewMessageRow();
 
-                    //string strQ = "select * from message_upolad_info where customer_id=" + nCustId + " and message_id=" + msg.message_id + " and client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
-                    //IEnumerable<message_upolad_info> list = _db.ExecuteQuery<message_upolad_info>(strQ, string.Empty);
-
-                    //string mess_file = "";
-                    //foreach (message_upolad_info message_upolad in list)
-                    //{
-                    //    mess_file += message_upolad.mess_file_name.Replace("amp;", "").Trim() + ", "; ;
-                    //}
-                    //mess_file = mess_file.Trim().TrimEnd(',');
-
-                    //if (mess_file.Length > 0)
-                    //{
-                    //    mes.HasAttachments = true;
-                    //    mes.AttachmentList = mess_file.Trim().TrimEnd(',');
-                    //}
-                    //else
-                    //{
-                    //    mes.AttachmentList = "";
-                    //    mes.HasAttachments = false;// msg.HasAttachments;
-                    //}
-
+                    
                     if (msg.HasAttachments == null)
                     {
                         string strQ = "select * from message_upolad_info where customer_id=" + nCustId + " and message_id=" + msg.message_id + " and client_id=" + Convert.ToInt32(hdnClientId.Value);

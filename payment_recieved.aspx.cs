@@ -66,6 +66,8 @@ public partial class payment_recieved : System.Web.UI.Page
                 lblEmail.Text = cust.email;
 
                 hdnSalesPersonId.Value = cust.sales_person_id.ToString();
+                hdnClientId.Value = cust.client_id.ToString();
+
 
                 if (_db.sales_persons.Any(c => c.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && c.sales_person_id > 0))
                 {
@@ -502,7 +504,7 @@ public partial class payment_recieved : System.Web.UI.Page
             drNew["pay_term_ids"] = "";
             drNew["pay_term_desc"] = "";
             drNew["pay_type_id"] = 1;
-            drNew["client_id"] = 1;
+            drNew["client_id"] = Convert.ToInt32(hdnClientId.Value);
             drNew["customer_id"] = Convert.ToInt32(hdnCustomerId.Value);
             drNew["estimate_id"] = Convert.ToInt32(hdnEstimateId.Value);
             drNew["reference"] = "";
@@ -801,7 +803,7 @@ public partial class payment_recieved : System.Web.UI.Page
 
                     dr["pay_term_ids"] = strPayTermId;
                     dr["pay_term_desc"] = strPayTermDesc;
-                    dr["client_id"] = 1;
+                    dr["client_id"] = Convert.ToInt32(hdnClientId.Value); 
                     dr["customer_id"] = Convert.ToInt32(hdnCustomerId.Value);
                     dr["estimate_id"] = Convert.ToInt32(hdnEstimateId.Value);
                     dr["reference"] = txtReference.Text;
@@ -1062,7 +1064,7 @@ public partial class payment_recieved : System.Web.UI.Page
 
                 dr["pay_term_ids"] = strPayTermId;
                 dr["pay_term_desc"] = strPayTermDesc;
-                dr["client_id"] = 1;
+                dr["client_id"] = Convert.ToInt32(hdnClientId.Value); ;
                 dr["customer_id"] = Convert.ToInt32(hdnCustomerId.Value);
                 dr["estimate_id"] = Convert.ToInt32(hdnEstimateId.Value);
                 dr["reference"] = txtReference.Text;
@@ -1078,7 +1080,7 @@ public partial class payment_recieved : System.Web.UI.Page
         drNew["payment_id"] = 0;
         drNew["pay_term_ids"] = "";
         drNew["pay_term_desc"] = "";
-        drNew["client_id"] = 1;
+        drNew["client_id"] = Convert.ToInt32(hdnClientId.Value); ;
         drNew["customer_id"] = Convert.ToInt32(hdnCustomerId.Value);
         drNew["estimate_id"] = Convert.ToInt32(hdnEstimateId.Value);
         drNew["reference"] = "";

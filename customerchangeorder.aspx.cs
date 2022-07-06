@@ -139,7 +139,7 @@ public partial class customerchangeorder : System.Web.UI.Page
                     decimal dBalanceDueAmount = 0;
                     decimal dOtherAmount = 0;
                     int nTermId = 0;
-                    // if (_db.Co_PaymentTerms.Where(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(hdnCOId.Value) && est_p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).SingleOrDefault() != null)
+
                     if (_db.Co_PaymentTerms.Any(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(hdnCOId.Value) && est_p.client_id == Convert.ToInt32(hdnClientId.Value)))
                     {
                         Co_PaymentTerm objPayTerm = _db.Co_PaymentTerms.FirstOrDefault(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(hdnCOId.Value) && est_p.client_id == Convert.ToInt32(hdnClientId.Value));
@@ -450,14 +450,14 @@ public partial class customerchangeorder : System.Web.UI.Page
             string strQ = "";
             if (rdoSort.SelectedValue == "2")
             {
-                strQ = " select DISTINCT section_level AS colId,'SECTION: '+ section_name as colName from co_pricing_master where co_pricing_master.location_id IN (Select location_id from changeorder_locations WHERE changeorder_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_locations.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
+                strQ = " select DISTINCT section_level AS colId,'SECTION: '+ section_name as colName from co_pricing_master where co_pricing_master.location_id IN (Select location_id from changeorder_locations WHERE changeorder_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_locations.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
                        " AND co_pricing_master.section_level IN (Select section_id from changeorder_sections WHERE changeorder_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
                        " AND co_pricing_master.item_status_id!=1 AND co_pricing_master.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND co_pricing_master.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND is_direct=1 AND co_pricing_master.client_id =" + Convert.ToInt32(hdnClientId.Value) + "  order by section_level asc";
 
             }
             else
             {
-                strQ = "select DISTINCT co_pricing_master.location_id AS colId,'LOCATION: '+ location.location_name as colName from co_pricing_master  INNER JOIN location on location.location_id = co_pricing_master.location_id where co_pricing_master.location_id IN (Select location_id from changeorder_locations WHERE changeorder_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_locations.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
+                strQ = "select DISTINCT co_pricing_master.location_id AS colId,'LOCATION: '+ location.location_name as colName from co_pricing_master  INNER JOIN location on location.location_id = co_pricing_master.location_id where co_pricing_master.location_id IN (Select location_id from changeorder_locations WHERE changeorder_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_locations.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
                     " AND co_pricing_master.section_level IN (Select section_id from changeorder_sections WHERE changeorder_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
                     " AND   co_pricing_master.item_status_id!=1 AND co_pricing_master.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND co_pricing_master.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND is_direct=1 AND co_pricing_master.client_id =" + Convert.ToInt32(hdnClientId.Value) + " order by colName asc";
             }
@@ -481,13 +481,13 @@ public partial class customerchangeorder : System.Web.UI.Page
             string strQ = "";
             if (rdoSort.SelectedValue == "2")
             {
-                strQ = "select DISTINCT section_level AS colId,'SECTION: '+ section_name as colName from co_pricing_master where co_pricing_master.location_id IN (Select location_id from changeorder_locations WHERE changeorder_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_locations.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
+                strQ = "select DISTINCT section_level AS colId,'SECTION: '+ section_name as colName from co_pricing_master where co_pricing_master.location_id IN (Select location_id from changeorder_locations WHERE changeorder_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_locations.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
                        " AND co_pricing_master.section_level IN (Select section_id from changeorder_sections WHERE changeorder_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
                        " AND  co_pricing_master.item_status_id!=1 AND co_pricing_master.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND co_pricing_master.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND is_direct=2 AND co_pricing_master.client_id =" + Convert.ToInt32(hdnClientId.Value) + "  order by section_level asc";
             }
             else
             {
-                strQ = "select DISTINCT co_pricing_master.location_id AS colId,'LOCATION: '+ location.location_name as colName from co_pricing_master  INNER JOIN location on location.location_id = co_pricing_master.location_id where co_pricing_master.location_id IN (Select location_id from changeorder_locations WHERE changeorder_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_locations.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
+                strQ = "select DISTINCT co_pricing_master.location_id AS colId,'LOCATION: '+ location.location_name as colName from co_pricing_master  INNER JOIN location on location.location_id = co_pricing_master.location_id where co_pricing_master.location_id IN (Select location_id from changeorder_locations WHERE changeorder_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_locations.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
                        " AND co_pricing_master.section_level IN (Select section_id from changeorder_sections WHERE changeorder_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
                        " AND  co_pricing_master.item_status_id!=1 AND co_pricing_master.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND co_pricing_master.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND is_direct=2 AND co_pricing_master.client_id =" + Convert.ToInt32(hdnClientId.Value) + " order by colName asc";
             }
@@ -634,7 +634,7 @@ public partial class customerchangeorder : System.Web.UI.Page
                 var price_detail = from p in _db.co_pricing_masters
                                    join lc in _db.locations on p.location_id equals lc.location_id
                                    where (from clc in _db.changeorder_locations
-                                          where clc.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && clc.customer_id == Convert.ToInt32(hdnCustomerId.Value) && clc.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                          where clc.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && clc.customer_id == Convert.ToInt32(hdnCustomerId.Value) 
                                           select clc.location_id).Contains(p.location_id) &&
                                           (from cs in _db.changeorder_sections
                                            where cs.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cs.client_id == Convert.ToInt32(hdnClientId.Value)
@@ -739,7 +739,7 @@ public partial class customerchangeorder : System.Web.UI.Page
                 var price_detail = from p in _db.co_pricing_masters
                                    join lc in _db.locations on p.location_id equals lc.location_id
                                    where (from clc in _db.changeorder_locations
-                                          where clc.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && clc.customer_id == Convert.ToInt32(hdnCustomerId.Value) && clc.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                          where clc.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && clc.customer_id == Convert.ToInt32(hdnCustomerId.Value) 
                                           select clc.location_id).Contains(p.location_id) &&
                                           (from cs in _db.changeorder_sections
                                            where cs.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cs.client_id == Convert.ToInt32(hdnClientId.Value)
@@ -1133,28 +1133,6 @@ public partial class customerchangeorder : System.Web.UI.Page
         }
     }
 
-    //protected void btnAcceptUP_Click(object sender, EventArgs e)
-    //{
-    //    lblAcceptMessage.Text = "";
-
-    //    DataClassesDataContext _db = new DataClassesDataContext();
-
-    //    customerchangeorderstatus objccos = new customerchangeorderstatus();
-    //    objccos = _db.customerchangeorderstatus.Single(c => c.id == Convert.ToInt32(hdnID.Value));
-
-    //    string strQ = "UPDATE customerchangeorderstatus SET status = 2, accepteddate = '" + DateTime.Now + "' WHERE customerid =" + Convert.ToInt32(hdnCustomerId.Value) + " AND estimateid =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorderid =" + Convert.ToInt32(hdnCOId.Value);
-    //    _db.ExecuteCommand(strQ, string.Empty);
-    //    _db.SubmitChanges();
-
-    //    rdoStatus.Enabled = false;
-
-    //    btnAcceptDOWN.Visible = false;
-
-
-    //    lblAcceptMessage.Text = "Change order accepted successfully.";
-
-
-    //}
     protected void btnReject_Click(object sender, EventArgs e)
     {
         try
@@ -1345,28 +1323,6 @@ public partial class customerchangeorder : System.Web.UI.Page
             }
 
 
-            //MailMessage msg = new MailMessage();
-            //msg.From = new MailAddress("info@interiorinnovations.biz", "InteriorInnovations (system msg: do not reply)");
-            //msg.To.Add(strToEmail);
-            //if (strCCEmail.Length > 4)
-            //    msg.CC.Add(strCCEmail);
-            //msg.Bcc.Add("avijit019@gmail.com, tislam007@gmail.com");
-            //msg.Subject = lblLastName.Text + "- Change Order Accepted on " + DateTime.Now.ToShortDateString();
-            //msg.IsBodyHtml = true;
-            //msg.Body = CreateHtml();
-            //msg.Priority = MailPriority.High;
-
-            //try
-            //{
-            //    csCommonUtility.SendByLocalhost(msg);
-            //    //SmtpClient smtp = new SmtpClient();
-            //    //smtp.Host = System.Configuration.ConfigurationManager.AppSettings["smtpserver"];
-            //    //smtp.Send(msg);
-            //}
-            //catch (Exception ex)
-            //{
-            //    throw (ex);
-            //}
 
 
             lblAcceptMessage.Text = csCommonUtility.GetSystemMessage("Change order accepted successfully.");
@@ -1936,13 +1892,7 @@ public partial class customerchangeorder : System.Web.UI.Page
 
             return false;
         }
-        //else if (imgCardType.AlternateText.Equals("Amex"))
-        //{
-        //    lblReason.Text = csCommonUtility.GetSystemRequiredMessage("Sorry, we do not accept AMEX. Please use an alternate credit card.");
-        //    return false;
-
-
-        //}
+     
 
         if (ddlMonth.SelectedIndex == 0)
         {
@@ -2121,19 +2071,7 @@ public partial class customerchangeorder : System.Web.UI.Page
         string strTable = "";
         strTable = body(objCust.first_name1 + " " + objCust.last_name1, Convert.ToDecimal(amount).ToString("c"), strTerms, strPMName, strCCNum, oCom.company_name, oCom.website);
 
-        //string strTable = "<table align='center' width='704px' border='0'>" + Environment.NewLine +
-        //        "<tr><td align='left'>Dear " + objCust.first_name1 + " " + objCust.last_name1 + ",</td></tr>" + Environment.NewLine +
-        //        "<tr><td align='left'></td></tr><tr><td align='left'></td></tr>" + Environment.NewLine +
-        //        "<tr><td align='left'>Your payment of  <b>" + Convert.ToDecimal(amount).ToString("c") + "</b> for <b>" + strTerms + "</b> using your <b>" + strPMName + "</b> ending in <b>" + strCCNum + "</b> was processed.</td></tr>" + Environment.NewLine +
-        //        "<tr><td align='left'></td></tr><tr><td align='left'></td></tr>" + Environment.NewLine +
-        //        "<tr><td align='left'>Please click <a target='_blank' href='https://ii.faztrack.com/customerlogin.aspx'> here </a> to view your current project status.</td></tr>" + Environment.NewLine +
-        //        "<tr><td align='left'></td></tr><tr><td align='left'></td></tr>" + Environment.NewLine +
-        //        "<tr><td align='left'>Should you have any question please do not hesitate to contact us.</td></tr>" + Environment.NewLine +
-        //        "<tr><td align='left'></td></tr><tr><td align='left'></td></tr>" + Environment.NewLine +
-        //        "<tr><td align='left'>Sincerely,</td></tr>" + Environment.NewLine +
-        //        "<tr><td align='left'>" + oCom.company_name + "</td></tr>" + Environment.NewLine +
-        //        "<tr><td align='left'>" + oCom.website + "</td></tr>" + Environment.NewLine +
-        //        "<tr><td align='left'></td></tr></table>";
+       
 
         string strToEmail = objCust.email;
         string FromEmail = oCom.email;
@@ -2197,35 +2135,7 @@ public partial class customerchangeorder : System.Web.UI.Page
             email.SendEmail();
         }
 
-            //MailMessage msg = new MailMessage();
-            //if (strToEmail.Length > 4)
-            //    msg.From = new MailAddress(oCom.email);
-            //else
-            //    msg.From = new MailAddress("info@interiorinnovations.biz");
-
-            //msg.To.Add(strToEmail.Trim());
-            //if (strCCEmail.Length > 4)
-            //    msg.Bcc.Add(strCCEmail);
-            //msg.Bcc.Add("avijit019@gmail.com, tislam007@gmail.com");
-            //msg.Subject = "Your payment with Interior Innovations";
-            //msg.IsBodyHtml = true;
-            //msg.Body = strTable;
-            //msg.Priority = MailPriority.High;
-
-            //try
-            //{
-            //    csCommonUtility.SendByLocalhost(msg);
-            //    //SmtpClient smtp = new SmtpClient();
-            //    //smtp.Host = System.Configuration.ConfigurationManager.AppSettings["smtpserver"];
-            //    //smtp.Send(msg);
-            //}
-            //catch (Exception ex)
-            //{
-            //    lblReason.Text = csCommonUtility.GetSystemErrorMessage(ex.Message);
-            //    lblAcceptMessage.Text = csCommonUtility.GetSystemErrorMessage(ex.Message);
-            //    return;
-            //}
-        //}
+           
 
     }
     protected void txtCreditCardNumber_TextChanged(object sender, EventArgs e)
@@ -2239,17 +2149,7 @@ public partial class customerchangeorder : System.Web.UI.Page
             imgCardType.ImageUrl = "~/Images/" + strCardType.ToUpper() + ".png";
             imgCardType.AlternateText = strCardType;
 
-            //if (strCardType.Equals("Amex"))
-            //{
-            //    lblReason.Text = csCommonUtility.GetSystemRequiredMessage("Sorry, we do not accept AMEX. Please use an alternate credit card.");
-            //    chkSaveCardInfo.Visible = false;
-            //    chkSaveCardInfo.Checked = false;
-            //    txtCreditCardNumber.Text = "";
-            //    imgCardType.ImageUrl = "";
-            //    imgCardType.AlternateText = "";
-            //    ModalPopupExtender3.Show();
-            //}
-            //else
+           
             chkSaveCardInfo.Visible = true;
         }
         else
@@ -2296,10 +2196,7 @@ public partial class customerchangeorder : System.Web.UI.Page
                     if ((cNumber.StartsWith("34") || cNumber.StartsWith("37")) && cLength == 15)
                         args.IsValid = true;
                     break;
-                //					case "OC":	//optima
-                //						if ((cNumber.StartsWith("34") || cNumber.StartsWith("37")) && cLength == 15)
-                //							args.IsValid = true;
-                //						break;
+            
 
                 case "Discover":	//discover
                     if (cNumber.StartsWith("6011") && cLength == 16)
@@ -2333,7 +2230,6 @@ public partial class customerchangeorder : System.Web.UI.Page
                     break;
 
                 default:
-                    //if (rdCreditCardType.SelectedIndex > 0) args.IsValid = true;
                     break;
             }
 
