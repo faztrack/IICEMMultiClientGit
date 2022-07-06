@@ -74,7 +74,7 @@ public partial class compse_email : System.Web.UI.Page
                 company_profile com = new company_profile();
                 if (_db.company_profiles.Where(cp => cp.client_id == Convert.ToInt32(hdnClientId.Value)).SingleOrDefault() != null)
                 {
-                    com = _db.company_profiles.Single(cp => cp.client_id == 1);
+                    com = _db.company_profiles.Single(cp => cp.client_id == Convert.ToInt32(hdnClientId.Value));
 
                     txtCc.Text = com.email;
 

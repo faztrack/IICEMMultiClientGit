@@ -36,12 +36,16 @@ public partial class sectionemail : System.Web.UI.Page
             hdnCallId.Value = nsid.ToString();
             int ndirectId = Convert.ToInt32(Request.QueryString.Get("directId"));
             hdnTypeId.Value = ndirectId.ToString();
-
-            company_profile com = new company_profile();
-            int clientId = Convert.ToInt32(((userinfo)Session["oUser"]).client_id);
-            if (_db.company_profiles.Where(cp => cp.client_id == clientId).SingleOrDefault() != null)
+            if(Convert.ToInt32(hdnCustomerId.Value)> 0)
             {
-                com = _db.company_profiles.Single(cp => cp.client_id == 1);
+                customer_message cust = _db.customer_messages.FirstOrDefault(x => x.customer_id == Convert.ToInt32(hdnCustomerId.Value));
+                hdnClientId.Value = cust.client_id.ToString();
+            }
+            company_profile com = new company_profile();
+            
+            if (_db.company_profiles.Where(cp => cp.client_id == Convert.ToInt32(hdnClientId.Value)).SingleOrDefault() != null)
+            {
+                com = _db.company_profiles.Single(cp => cp.client_id == Convert.ToInt32(hdnClientId.Value));
 
                 txtCc.Text = com.email;
                 if ((userinfo)Session["oUser"] != null)
@@ -56,12 +60,12 @@ public partial class sectionemail : System.Web.UI.Page
             var price_detail = from p in _db.co_pricing_masters
                                join lc in _db.locations on p.location_id equals lc.location_id
                                where (from clc in _db.changeorder_locations
-                                      where clc.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && clc.customer_id == Convert.ToInt32(hdnCustomerId.Value) && clc.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                      where clc.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && clc.customer_id == Convert.ToInt32(hdnCustomerId.Value) 
                                       select clc.location_id).Contains(p.location_id) &&
                                       (from cs in _db.changeorder_sections
-                                       where cs.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cs.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                       where cs.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.customer_id == Convert.ToInt32(hdnCustomerId.Value) 
                                        select cs.section_id).Contains(p.section_level)
-                                      && p.item_status_id != 3 && p.section_level == nsid && p.is_direct == ndirectId && p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                      && p.item_status_id != 3 && p.section_level == nsid && p.is_direct == ndirectId && p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && p.customer_id == Convert.ToInt32(hdnCustomerId.Value) 
                                orderby p.week_id, p.section_level, p.execution_unit, lc.location_name ascending
 
                                select new CO_PricingDeatilModel()
@@ -94,12 +98,12 @@ public partial class sectionemail : System.Web.UI.Page
                 price_detail = from p in _db.co_pricing_masters
                                join lc in _db.locations on p.location_id equals lc.location_id
                                where (from clc in _db.changeorder_locations
-                                      where clc.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && clc.customer_id == Convert.ToInt32(hdnCustomerId.Value) && clc.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                      where clc.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && clc.customer_id == Convert.ToInt32(hdnCustomerId.Value) 
                                       select clc.location_id).Contains(p.location_id) &&
                                       (from cs in _db.changeorder_sections
-                                       where cs.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cs.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                       where cs.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.customer_id == Convert.ToInt32(hdnCustomerId.Value)
                                        select cs.section_id).Contains(p.section_level)
-                                      && p.item_status_id != 3 && p.week_id == nsid && p.is_direct == ndirectId && p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                                      && p.item_status_id != 3 && p.week_id == nsid && p.is_direct == ndirectId && p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && p.customer_id == Convert.ToInt32(hdnCustomerId.Value)
                                orderby p.week_id, p.section_level, p.execution_unit, lc.location_name ascending
 
                                select new CO_PricingDeatilModel()
@@ -151,7 +155,7 @@ public partial class sectionemail : System.Web.UI.Page
         if (Convert.ToInt32(hdnEstimateId.Value) > 0)
         {
             customer_estimate cus_est = new customer_estimate();
-            cus_est = _db.customer_estimates.Single(ce => ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value));
+            cus_est = _db.customer_estimates.Single(ce => ce.customer_id == Convert.ToInt32(hdnCustomerId.Value)  && ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value));
             strPO = cus_est.job_number;
         }
 
@@ -247,34 +251,7 @@ public partial class sectionemail : System.Web.UI.Page
                 }
             }
         }
-        //if (strCC2Email.Length > 4)
-        //{
-        //    string[] strCC2Ids = strCC2Email.Split(',');
-        //    foreach (string strCC2Id in strCC2Ids)
-        //    {
-        //        Match match1 = regex.Match(strCC2Id.Trim());
-        //        if (!match1.Success)
-        //        {
-        //            lblMessage.Text = csCommonUtility.GetSystemRequiredMessage("CC (Email 2) email address " + strCC2Id + " is not in correct format, Please enter valid email address (Ex: john@domain.com)");
-        //            return;
-
-        //        }
-        //    }
-        //}
-        //if (strBCCEmail.Length > 4)
-        //{
-        //    string[] strBCCIds = strBCCEmail.Split(',');
-        //    foreach (string strBCCId in strBCCIds)
-        //    {
-        //        Match match1 = regex.Match(strBCCId.Trim());
-        //        if (!match1.Success)
-        //        {
-        //            lblMessage.Text = csCommonUtility.GetSystemRequiredMessage("BCC email address " + strBCCId + " is not in correct format, Please enter valid email address (Ex: john@domain.com)");
-        //            return;
-
-        //        }
-        //    }
-        //}
+     
 
         DataClassesDataContext _db = new DataClassesDataContext();
         string strpath = Request.PhysicalApplicationPath + "Uploads\\";
@@ -284,8 +261,11 @@ public partial class sectionemail : System.Web.UI.Page
         {
             int nMsId = 0;
             var result = (from cm in _db.customer_messages
-                          where cm.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cm.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                          where cm.customer_id == Convert.ToInt32(hdnCustomerId.Value) 
                           select cm.message_id);
+
+
+            
 
             int n = result.Count();
             if (result != null && n > 0)
@@ -296,7 +276,7 @@ public partial class sectionemail : System.Web.UI.Page
             string strUser = obj.first_name + " " + obj.last_name;
 
             customer_message cus_ms = new customer_message();
-            cus_ms.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+            cus_ms.client_id = Convert.ToInt32(hdnClientId.Value);
             cus_ms.customer_id = Convert.ToInt32(hdnCustomerId.Value);
             cus_ms.message_id = Convert.ToInt32(hdnEstimateId.Value);
             cus_ms.sent_by = strUser;
@@ -332,9 +312,9 @@ public partial class sectionemail : System.Web.UI.Page
                     if (Convert.ToInt32(hdnCustomerId.Value) > 0 && Convert.ToInt32(hdnEstimateId.Value) > 0)
                     {
                         message_upolad_info mui = new message_upolad_info();
-                        if (_db.message_upolad_infos.Where(l => l.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && l.customer_id == Convert.ToInt32(hdnCustomerId.Value) && l.message_id == Convert.ToInt32(hdnEstimateId.Value) && l.mess_file_name == FileName.ToString()).SingleOrDefault() == null)
+                        if (_db.message_upolad_infos.Where(l => l.client_id == Convert.ToInt32(hdnClientId.Value) && l.customer_id == Convert.ToInt32(hdnCustomerId.Value) && l.message_id == Convert.ToInt32(hdnEstimateId.Value) && l.mess_file_name == FileName.ToString()).SingleOrDefault() == null)
                         {
-                            mui.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                            mui.client_id = Convert.ToInt32(hdnClientId.Value);
                             mui.customer_id = Convert.ToInt32(hdnCustomerId.Value);
                             mui.message_id = Convert.ToInt32(hdnEstimateId.Value); ;
                             mui.mess_file_name = FileName.ToString();
@@ -361,10 +341,7 @@ public partial class sectionemail : System.Web.UI.Page
             msg.To.Add(strToEmail);
         if (strCCEmail.Length > 4)
             msg.CC.Add(strCCEmail);
-        //if (strCC2Email.Length > 4)
-        //    msg.CC.Add(strCC2Email);
-        //if (strBCCEmail.Length > 4)
-        //    msg.Bcc.Add(strBCCEmail);
+        
         msg.Subject = txtSubject.Text.ToString();
         msg.IsBodyHtml = true;
         msg.Body = Editor1.Content;

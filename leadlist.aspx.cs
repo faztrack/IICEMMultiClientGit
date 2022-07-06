@@ -479,18 +479,7 @@ public partial class leadlist : System.Web.UI.Page
 
 
 
-        // if (strCondition.Length > 0)
-        // {
-        //    strCondition = "Where customers.client_id in("+obj.client_id+")  and "+ strCondition;
-        // }
-        //if (strCondition.Length > 0)
-        //{
-        //    strCondition = "Where customers.islead = 1 and " + strCondition;
-        //}
-        //else
-        //{
-        //    strCondition = "Where customers.islead = 1";
-        //}
+       
         string strQ = string.Empty;
         if (Convert.ToInt32(hdnLeadId.Value) > 0)
         {
@@ -848,16 +837,13 @@ public partial class leadlist : System.Web.UI.Page
             ddlEst.DataBind();
 
 
-            //var resultCount = (from ce in _db.customer_estimates
-            //                   where ce.customer_id == ncid && ce.client_id == 1 && ce.status_id == 3
-            //                   select ce.estimate_id);
-            //int nEstCount = resultCount.Count();
+          
 
             if (_db.customer_estimates.Where(ce => ce.customer_id == ncid && ce.client_id == Convert.ToInt32(cust.client_id)).ToList().Count > 0)
             {
                 int nEstId = 0;
                 var result = (from ce in _db.customer_estimates
-                              where ce.customer_id == ncid && ce.client_id == 1
+                              where ce.customer_id == ncid
                               select ce.estimate_id);
 
                 int n = result.Count();
@@ -1373,9 +1359,9 @@ public partial class leadlist : System.Web.UI.Page
         decimal total_incentives = 0;
         estimate_payment esp = new estimate_payment();
 
-        if (_db.estimate_payments.Where(ep => ep.estimate_id == EstID && ep.customer_id == ncustid && ep.client_id == clientId).SingleOrDefault() != null)
+        if (_db.estimate_payments.Where(ep => ep.estimate_id == EstID && ep.customer_id == ncustid ).SingleOrDefault() != null)
         {
-            esp = _db.estimate_payments.Single(ep => ep.estimate_id == EstID && ep.customer_id == ncustid && ep.client_id == clientId);
+            esp = _db.estimate_payments.Single(ep => ep.estimate_id == EstID && ep.customer_id == ncustid );
             dRetail = Convert.ToDecimal(esp.new_total_with_tax);
             total_incentives = Convert.ToDecimal(esp.total_incentives);
             if (Convert.ToDecimal(esp.adjusted_price) > 0)
@@ -1398,7 +1384,7 @@ public partial class leadlist : System.Web.UI.Page
                                  select clc.location_id).Contains(pd.location_id) &&
                                  (from cs in _db.customer_sections
                                   where cs.estimate_id == EstID && cs.customer_id == ncustid && cs.client_id == clientId
-                                  select cs.section_id).Contains(pd.section_level) && pd.estimate_id == EstID && pd.customer_id == ncustid && pd.client_id == clientId && pd.pricing_type == "A"
+                                  select cs.section_id).Contains(pd.section_level) && pd.estimate_id == EstID && pd.customer_id == ncustid && pd.pricing_type == "A"
                           select pd.total_retail_price);
             int n = result.Count();
             if (result != null && n > 0)

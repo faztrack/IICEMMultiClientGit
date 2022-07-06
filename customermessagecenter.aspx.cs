@@ -77,7 +77,7 @@ public partial class customermessagecenter : System.Web.UI.Page
 
                 GetCustomerMessageInfo(Convert.ToInt32(hdnCustomerId.Value));
                 var resultCount = (from ce in _db.customer_estimates
-                                   where ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == 1 && ce.status_id == 3
+                                   where ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.status_id == 3
                                    select ce.estimate_id);
                 int nEstCount = resultCount.Count();
                 if (nEstCount == 0)
@@ -182,7 +182,7 @@ public partial class customermessagecenter : System.Web.UI.Page
     private void GetEstimate(int nCustId)
     {
         DataClassesDataContext _db = new DataClassesDataContext();
-        string strQ = "select * from customer_estimate where customer_id=" + nCustId + " and client_id= 1 and status_id != 3 order by estimate_id desc ";
+        string strQ = "select * from customer_estimate where customer_id=" + nCustId + " and status_id != 3 order by estimate_id desc ";
         IEnumerable<customer_estimate_model> clist = _db.ExecuteQuery<customer_estimate_model>(strQ, string.Empty);
         ddlEstimate.DataSource = clist;
         ddlEstimate.DataTextField = "estimate_name";
@@ -262,113 +262,6 @@ public partial class customermessagecenter : System.Web.UI.Page
 
         }
     }
-    //private void GetEmail(int nPageNo)
-    //{
-    //    userinfo obj = (userinfo)Session["oUser"];
-
-    //    string strEmail = "";
-    //    string strPass = "";
-    //    if (obj.is_verify)
-    //    {
-    //        strEmail = obj.company_email;
-    //        strPass = obj.email_password;
-    //    }
-    //    else
-    //    {
-    //        strEmail = "info@interiorinnovations.biz";
-    //        strPass = "Brody2";
-    //    }
-
-    //    if (strEmail != "" && strPass != "" && strEmail.Contains("@interiorinnovations.biz"))
-    //    {
-    //        Session["email"] = strEmail.ToString();
-    //        Session["pwd"] = strPass.ToString();
-
-    //        string strCusEmail = "";
-    //        //strCusEmail = "@cox.net";
-    //        if (lblEmail.Text.Trim().Length > 3)
-    //            strCusEmail = lblEmail.Text;
-
-    //        DataTable dt = new DataTable();
-    //        dt.Columns.Add("NoCell", typeof(int));
-    //        dt.Columns.Add("From", typeof(string));
-    //        dt.Columns.Add("Subject", typeof(string));
-    //        dt.Columns.Add("Date", typeof(DateTime));
-
-    //        Email = strEmail.ToString();
-    //        Password = strPass.ToString();
-
-    //        int totalEmails;
-    //        List<Email> emails;
-    //        string emailAddress;
-    //        using (Prabhu.Pop3Client client = new Prabhu.Pop3Client(Host, Port, Email, Password, true))
-    //        {
-    //            emailAddress = client.Email;
-    //            client.Connect();
-    //            totalEmails = client.GetEmailCount();
-    //            emails = client.FetchEmailList(0, totalEmails);
-    //            emails.Reverse();
-    //        }
-
-    //        for (int i = 0; i < emails.Count; i++)
-    //        {
-    //            Email email = emails[i];
-    //            if (email.From.Contains(strCusEmail))
-    //            {
-    //                int emailId = i + 1;
-
-    //                DataRow dr = dt.NewRow();
-    //                dr["NoCell"] = emailId;
-    //                dr["From"] = email.From;
-    //                dr["Subject"] = email.Subject;
-    //                if (email.UtcDateTime != DateTime.MinValue)
-    //                    dr["Date"] = email.UtcDateTime.ToString();
-    //                dt.Rows.Add(dr);
-    //            }
-    //        }
-
-    //        if (dt.Rows.Count > 0)
-    //        {
-
-    //            grdEmailData.PageIndex = nPageNo;
-    //            grdEmailData.DataKeyNames = new string[] { "NoCell", "Subject" };
-    //            grdEmailData.DataSource = dt;
-    //            grdEmailData.DataBind();
-    //        }
-    //    }
-    //}
-
-    //protected void grdEmailData_PageIndexChanging(object sender, GridViewPageEventArgs e)
-    //{
-    //    GetEmail(e.NewPageIndex);
-
-    //}
-    //protected void grdEmailData_RowDataBound(object sender, GridViewRowEventArgs e)
-    //{
-    //    if (e.Row.RowType == DataControlRowType.DataRow)
-    //    {
-
-    //        HyperLink hypReplyMessage = (HyperLink)e.Row.FindControl("hypReplyMessage");
-
-    //        HyperLink hypSubject = (HyperLink)e.Row.FindControl("hypSubject");
-    //        int nNoCell = Convert.ToInt32(grdEmailData.DataKeys[e.Row.RowIndex].Values[0]);
-    //        string strSubject = grdEmailData.DataKeys[e.Row.RowIndex].Values[1].ToString();
-    //        hypSubject.Text = strSubject;
-    //        hypSubject.ToolTip = "Click on a Subject to view specific email details.";
-    //        hypSubject.NavigateUrl = "DisplayPop3Email.aspx?emailId=" + nNoCell;
-    //        hypSubject.Target = "MyWindow";
-    //        string script1 = String.Format("GetdatakeyValue2('{0}')", grdEmailData.DataKeys[e.Row.RowIndex].Values[0].ToString());
-    //        hypSubject.Attributes.Add("onclick", script1);
-
-    //        hypReplyMessage.NavigateUrl = "replaymail.aspx?custId=" + Convert.ToInt32(hdnCustomerId.Value) + "&emailId=" + nNoCell;
-    //        hypReplyMessage.Target = "MyWindow";
-    //        hypSubject.ToolTip = "Click on Reply to Reply specific email.";
-    //        string script = String.Format("GetdatakeyValue('{0}')", grdEmailData.DataKeys[e.Row.RowIndex].Values[0].ToString());
-    //        hypReplyMessage.Attributes.Add("onclick", script);
-
-    //    }
-
-    //}
 
     private void SendInitialeMailwithestimateToCustomer(string strEstimate)
     {

@@ -391,16 +391,6 @@ public partial class customer_sow : System.Web.UI.Page
             payAmount = result.Sum();
         lblTotalRecievedAmount.Text = payAmount.ToString("c");
 
-        //decimal COAmount = 0;
-        //var Co_result = (from cpi in _db.change_order_pricing_lists
-        //                 join cho in _db.changeorder_estimates on new { cpi.chage_order_id, cpi.customer_id, cpi.estimate_id } equals new { chage_order_id = cho.chage_order_id, customer_id = cho.customer_id, estimate_id = cho.estimate_id }
-        //                 where cpi.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cpi.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cho.change_order_status_id == 3 && cho.change_order_type_id != 3 && cpi.client_id == 1
-        //                 select cpi.EconomicsCost);
-
-        //int co_AM = Co_result.Count();
-        //if (result != null && co_AM > 0)
-        //    COAmount = Co_result.Sum();
-
         decimal TotalCOAmount = 0;
         var COitem = from co in _db.changeorder_estimates
                      where co.customer_id == Convert.ToInt32(hdnCustomerId.Value) && co.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && co.change_order_status_id == 3

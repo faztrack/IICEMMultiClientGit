@@ -42,9 +42,8 @@ public partial class change_section_markup : System.Web.UI.Page
     private void LoadTree()
     {
         DataClassesDataContext _db = new DataClassesDataContext();
-        string strQ = " SELECT * FROM sectioninfo WHERE  client_id in (" + hdnClientId.Value + " ) AND section_id NOT IN (SELECT item_id FROM item_price WHERE client_id in (" + hdnClientId.Value + "))";
+        string strQ = " SELECT * FROM sectioninfo WHERE  client_id = 1 AND section_id NOT IN (SELECT item_id FROM item_price WHERE client_id = 1)";
         IEnumerable<sectioninfo> list = _db.ExecuteQuery<sectioninfo>(strQ, string.Empty);
-        // List<sectioninfo> list = _db.sectioninfos.Where(c => c.client_id == 1).ToList();
         trvSection.Nodes.Clear();
         foreach (sectioninfo sec in list)
         {
@@ -63,9 +62,8 @@ public partial class change_section_markup : System.Web.UI.Page
     private void AddChildMenu(TreeNode parentNode, sectioninfo sec)
     {
         DataClassesDataContext _db = new DataClassesDataContext();
-        string strQ = " SELECT * FROM sectioninfo WHERE  client_id in (" + hdnClientId.Value + " ) AND section_id NOT IN (SELECT item_id FROM item_price WHERE client_id in (" + hdnClientId.Value + " ))";
+        string strQ = " SELECT * FROM sectioninfo WHERE  client_id in (" + hdnClientId.Value + " ) AND section_id NOT IN (SELECT item_id FROM item_price WHERE client_id = 1)";
         IEnumerable<sectioninfo> list = _db.ExecuteQuery<sectioninfo>(strQ, string.Empty);
-        //List<sectioninfo> list = _db.sectioninfos.Where(c => c.client_id == 1).ToList();
         foreach (sectioninfo subsec in list)
         {
             if (subsec.parent_id.ToString() == parentNode.Value)
@@ -101,10 +99,10 @@ public partial class change_section_markup : System.Web.UI.Page
             //txtSectionName.Text = "";
             DataClassesDataContext _db = new DataClassesDataContext();
             sectioninfo sinfo = new sectioninfo();
-            sinfo = _db.sectioninfos.Single(c => c.section_id == Convert.ToInt32(hdnParentId.Value) && c.client_id.ToString().Contains(hdnClientId.Value));
+            sinfo = _db.sectioninfos.Single(c => c.section_id == Convert.ToInt32(hdnParentId.Value) && c.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
             hdnSectionLevel.Value = sinfo.section_level.ToString();
             var result = (from sin in _db.sectioninfos
-                          where sin.section_level == Convert.ToInt32(hdnSectionLevel.Value) && sin.client_id.ToString().Contains(hdnClientId.Value) && sin.section_id < Convert.ToInt32(hdnSectionLevel.Value) + 100
+                          where sin.section_level == Convert.ToInt32(hdnSectionLevel.Value) && sin.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && sin.section_id < Convert.ToInt32(hdnSectionLevel.Value) + 100
                           select sin.section_id);
             int nsectionId = 0;
             int n = result.Count();
@@ -189,7 +187,7 @@ public partial class change_section_markup : System.Web.UI.Page
             hdnSectionLevel.Value = sinfo.section_level.ToString();
 
             var result = (from sin in _db.sectioninfos
-                          where sin.section_level == Convert.ToInt32(hdnSectionLevel.Value) && sin.client_id.ToString().Contains(hdnClientId.Value) && sin.section_id > Convert.ToInt32(hdnSectionLevel.Value) + 100
+                          where sin.section_level == Convert.ToInt32(hdnSectionLevel.Value) && sin.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && sin.section_id > Convert.ToInt32(hdnSectionLevel.Value) + 100
                           select sin.section_id);
             int nsectionId = 0;
             int n = result.Count();
@@ -228,7 +226,7 @@ public partial class change_section_markup : System.Web.UI.Page
             }
             DataClassesDataContext _db = new DataClassesDataContext();
             var result = (from sin in _db.sectioninfos
-                          where sin.parent_id == Convert.ToInt32(hdnParentId.Value) && sin.client_id.ToString().Contains(hdnClientId.Value)
+                          where sin.parent_id == Convert.ToInt32(hdnParentId.Value) && sin.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
                           select sin.section_id);
             int nsectionId = 0;
             int n = result.Count();
@@ -489,33 +487,10 @@ public partial class change_section_markup : System.Web.UI.Page
                 }
 
             }
-            //hdnParentId.Value = hdnSectionId.Value;
             hdnParentId.Value = hdnTrvSelectedValue.Value;
             txtSectionName.Text = "";
             lblSection.Text = "Sub Section Name";
-            //DataClassesDataContext _db = new DataClassesDataContext();
-            //sectioninfo sinfo = new sectioninfo();
-            //sinfo = _db.sectioninfos.Single(c => c.section_id == Convert.ToInt32(hdnParentId.Value) && c.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
-            //hdnSectionLevel.Value = sinfo.section_level.ToString();
-            //var result = (from si in _db.sectioninfos
-            //              where si.section_level == Convert.ToInt32(hdnSectionLevel.Value) && si.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && si.section_id < Convert.ToInt32(hdnSectionLevel.Value) + 100
-            //              select si.section_id);
-            //int nsectionId = 0;
-            //int n = result.Count();
-            //if (result != null && n > 0)
-            //    nsectionId = result.Max();
-
-            //if (hdnParentId.Value == "0")
-            //{
-            //    nsectionId = nsectionId + 1000;
-            //}
-            //else
-            //{
-            //    nsectionId = nsectionId + 1;
-            //}
-            //hdnSectionId.Value = nsectionId.ToString();
-            //hdnSectionSerial.Value = nsectionId.ToString();
-            //lblSerial.Text = hdnSectionSerial.Value;
+            
 
             hdnItem.Value = "3";
             btnSave.Text = "Save";
@@ -563,42 +538,7 @@ public partial class change_section_markup : System.Web.UI.Page
                 txtLabor.Visible = true;
             }
 
-            //hdnParentId.Value = hdnSectionId.Value;
-
-            //DataClassesDataContext _db = new DataClassesDataContext();
-            //sectioninfo sinfo = new sectioninfo();
-            //sinfo = _db.sectioninfos.Single(c => c.section_id == Convert.ToInt32(hdnParentId.Value) && c.client_id == 1);
-            //hdnSectionLevel.Value = sinfo.section_level.ToString();
-
-            //var result = (from si in _db.sectioninfos
-            //              where si.section_level == Convert.ToInt32(hdnSectionLevel.Value) &&  si.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && si.section_id > Convert.ToInt32(hdnSectionLevel.Value) + 100
-            //              select si.section_id);
-            //int nsectionId = 0;
-            //int n = result.Count();
-            //if (result != null&& n>0)
-            //    nsectionId = result.Max();
-
-            //if (hdnParentId.Value == "0")
-            //{
-            //    nsectionId = nsectionId + 1000;
-            //}
-            //else if(nsectionId==0)
-            //{
-            //    nsectionId = Convert.ToInt32(hdnSectionLevel.Value) + 100 + 1;
-            //}
-            //else 
-            //{
-            //    nsectionId = nsectionId+1;
-            //}
-            //hdnSectionId.Value = nsectionId.ToString();
-            //string strSerial = nsectionId.ToString();
-            //string str = "";
-            //if (strSerial.Length <5 )
-            //{
-            //    str = strSerial.Substring(2);
-            //}
-            //hdnSectionSerial.Value = hdnSectionLevel.Value + "." + str;
-            //lblSerial.Text = hdnSectionSerial.Value;
+            
             pnlItem.Visible = true;
             hdnItem.Value = "1";
         }
@@ -625,19 +565,7 @@ public partial class change_section_markup : System.Web.UI.Page
             chkNewSubSection.Checked = false;
             lblSection.Text = "Section Name";
             pnlItem.Visible = false;
-            //DataClassesDataContext _db = new DataClassesDataContext();
-            //var result = (from si in _db.sectioninfos
-            //              where si.parent_id == Convert.ToInt32(hdnParentId.Value) && si.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
-            //              select si.section_id);
-            //int nsectionId = 0;
-            //int n = result.Count();
-            //if (result != null && n > 0)
-            //    nsectionId = result.Max();
-
-            //nsectionId = nsectionId + 1000;
-            //hdnSectionId.Value = nsectionId.ToString();
-            //hdnSectionLevel.Value = nsectionId.ToString();
-            //hdnSectionSerial.Value = nsectionId.ToString();
+           
             hdnItem.Value = "2";
         }
 
@@ -647,7 +575,6 @@ public partial class change_section_markup : System.Web.UI.Page
         KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, rdoLabor.ID, rdoLabor.GetType().Name, "Click"); 
         if (rdoLabor.SelectedValue == "1")
         {
-            //txtLabor.Text = "0";
             lblLabor0.Visible = false;
             txtLabor.Visible = false;
         }

@@ -38,7 +38,7 @@ public partial class customerlogin : System.Web.UI.Page
                 {
                     DataClassesDataContext _db = new DataClassesDataContext();
                     int adminType = Convert.ToInt32(Request.QueryString.Get("aType"));
-                    if (_db.customer_estimates.Where(ce => ce.customer_id == nCustomerId && ce.client_id == 1 && ce.status_id == 3).ToList().Count > 0)
+                    if (_db.customer_estimates.Where(ce => ce.customer_id == nCustomerId &&  ce.status_id == 3).ToList().Count > 0)
                     {
                         var customeruserinfo = _db.customeruserinfos.Where(cu => cu.isactive == 1 && cu.customerid == nCustomerId).FirstOrDefault();
                         if (customeruserinfo != null)
@@ -63,7 +63,7 @@ public partial class customerlogin : System.Web.UI.Page
     {
         DataClassesDataContext _db = new DataClassesDataContext();
         string strUserStatus = "";
-        if (_db.customer_estimates.Where(ce => ce.customer_id == nCustomerId && ce.client_id == 1 && ce.status_id == 3).ToList().Count > 0)
+        if (_db.customer_estimates.Where(ce => ce.customer_id == nCustomerId && ce.status_id == 3).ToList().Count > 0)
         {
             var customeruserinfo = _db.customeruserinfos.Where(cu => cu.isactive == 1 && cu.customerid == nCustomerId).FirstOrDefault();
             var customer = _db.customers.Where(cu => cu.is_active == true && cu.customer_id == nCustomerId).FirstOrDefault();
@@ -232,7 +232,7 @@ public partial class customerlogin : System.Web.UI.Page
             {
                 nCustomerId = Convert.ToInt32(customeruserinfo.customerid);
 
-                if (_db.customer_estimates.Where(ce => ce.customer_id == nCustomerId && ce.client_id == 1 && ce.status_id == 3).ToList().Count > 0)
+                if (_db.customer_estimates.Where(ce => ce.customer_id == nCustomerId && ce.status_id == 3).ToList().Count > 0)
                 {
                     Session.Add("oCustomerUser", customeruserinfo);
                     if (Request.QueryString.Get("sc")!=null)

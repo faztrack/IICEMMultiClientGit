@@ -867,16 +867,16 @@ public partial class mlandingpage : System.Web.UI.Page
                     List<csCustomer> mList = _db.ExecuteQuery<csCustomer>(strQ, string.Empty).ToList();
                     if (mList.Count == 1)
                     {
-                        if (_db.customer_estimates.Where(ce => ce.job_number == job.Trim() && ce.client_id == 1 && ce.status_id == 3).ToList().Count > 0)
+                        if (_db.customer_estimates.Where(ce => ce.job_number == job.Trim() && ce.status_id == 3).ToList().Count > 0)
                         {
-                            customer_estimate objE = _db.customer_estimates.FirstOrDefault(ce => ce.job_number == job.Trim() && ce.client_id == 1 && ce.status_id == 3);
+                            customer_estimate objE = _db.customer_estimates.FirstOrDefault(ce => ce.job_number == job.Trim()  && ce.status_id == 3);
 
                             ddCustomer.SelectedValue = objE.customer_estimate_id.ToString();
                             GetCustomerByCustomerID(objE.customer_estimate_id);
                         }
                         else
                         {
-                            customer_estimate objE = _db.customer_estimates.FirstOrDefault(ce => ce.alter_job_number == job.Trim() && ce.client_id == 1 && ce.status_id == 3);
+                            customer_estimate objE = _db.customer_estimates.FirstOrDefault(ce => ce.alter_job_number == job.Trim() && ce.status_id == 3);
                             if (objE != null)
                             {
                                 ddCustomer.SelectedValue = objE.customer_estimate_id.ToString();
@@ -910,16 +910,16 @@ public partial class mlandingpage : System.Web.UI.Page
 
                     if (mList.Count == 1)
                     {
-                        if (_db.customer_estimates.Where(ce => ce.job_number == job.Trim() && ce.client_id == 1 && ce.status_id == 3).ToList().Count > 0)
+                        if (_db.customer_estimates.Where(ce => ce.job_number == job.Trim() &&  ce.status_id == 3).ToList().Count > 0)
                         {
-                            customer_estimate objE = _db.customer_estimates.FirstOrDefault(ce => ce.job_number == job.Trim() && ce.client_id == 1 && ce.status_id == 3);
+                            customer_estimate objE = _db.customer_estimates.FirstOrDefault(ce => ce.job_number == job.Trim() && ce.status_id == 3);
 
                             ddCustomer.SelectedValue = objE.customer_estimate_id.ToString();
                             GetCustomerByCustomerID(objE.customer_estimate_id);
                         }
                         else
                         {
-                            customer_estimate objE = _db.customer_estimates.FirstOrDefault(ce => ce.alter_job_number == job.Trim() && ce.client_id == 1 && ce.status_id == 3);
+                            customer_estimate objE = _db.customer_estimates.FirstOrDefault(ce => ce.alter_job_number == job.Trim() && ce.status_id == 3);
                             if (objE != null)
                             {
                                 ddCustomer.SelectedValue = objE.customer_estimate_id.ToString();

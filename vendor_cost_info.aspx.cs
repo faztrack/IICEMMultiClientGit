@@ -45,10 +45,11 @@ public partial class vendor_cost_info : System.Web.UI.Page
 
                 lblCustomerName.Text = cust.first_name1 + " " + cust.last_name1;
                 hdnSalesPersonId.Value = cust.sales_person_id.ToString();
+                hdnClientId.Value = cust.client_id.ToString();
             }
             // Get Estimate Info
             var item = from l in _db.estimate_commissions
-                       where l.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && l.customer_id == Convert.ToInt32(hdnCustomerId.Value) && l.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                       where l.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && l.customer_id == Convert.ToInt32(hdnCustomerId.Value) && l.client_id == Convert.ToInt32(hdnClientId.Value)
                        orderby l.estimate_com_id
                        select l;
 
@@ -58,9 +59,9 @@ public partial class vendor_cost_info : System.Web.UI.Page
             decimal project_subtotal = 0;
             decimal tax_amount = 0;
             estimate_payment esp = new estimate_payment();
-            if (_db.estimate_payments.Where(ep => ep.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ep.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ep.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).SingleOrDefault() != null)
+            if (_db.estimate_payments.Where(ep => ep.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ep.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ep.client_id == Convert.ToInt32(hdnClientId.Value)).SingleOrDefault() != null)
             {
-                esp = _db.estimate_payments.Single(ep => ep.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ep.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ep.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+                esp = _db.estimate_payments.Single(ep => ep.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ep.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ep.client_id == Convert.ToInt32(hdnClientId.Value));
                 totalwithtax = Convert.ToDecimal(esp.new_total_with_tax);
                 if (Convert.ToDecimal(esp.adjusted_price) > 0)
                     project_subtotal = Convert.ToDecimal(esp.adjusted_price);
@@ -78,11 +79,10 @@ public partial class vendor_cost_info : System.Web.UI.Page
                 hdnEstPaymentId.Value = esp.est_payment_id.ToString();
 
             }
-            //var item = from it in _db.partial_payment_infos
-            //       where it.customer_id == Convert.ToInt32(hdnCustomerId.Value) && it.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && it.client_id == 1
+
             decimal payAmount = 0;
             var result = (from ppi in _db.partial_payment_infos
-                          where ppi.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ppi.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ppi.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                          where ppi.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ppi.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ppi.client_id == Convert.ToInt32(hdnClientId.Value)
                           select ppi.pay_amount);
             int n = result.Count();
             if (result != null && n > 0)
@@ -92,7 +92,7 @@ public partial class vendor_cost_info : System.Web.UI.Page
             decimal COAmount = 0;
             var Co_result = (from cpi in _db.change_order_pricing_lists
                              join cho in _db.changeorder_estimates on new { cpi.chage_order_id, cpi.customer_id, cpi.estimate_id } equals new {chage_order_id = cho.chage_order_id,customer_id = cho.customer_id,estimate_id=cho.estimate_id }
-                             where cpi.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cpi.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cho.change_order_status_id == 3 && cho.change_order_type_id != 3 && cpi.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                             where cpi.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cpi.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cho.change_order_status_id == 3 && cho.change_order_type_id != 3 && cpi.client_id == Convert.ToInt32(hdnClientId.Value)
                              select  cpi.EconomicsCost);
             
             int co_AM = Co_result.Count();
@@ -102,8 +102,8 @@ public partial class vendor_cost_info : System.Web.UI.Page
 
             decimal COpayAmount = 0;
             var Coresult = (from cpi in _db.co_partial_payments
-                          where cpi.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cpi.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cpi.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
-                          select cpi.co_pay_amount);
+                          where cpi.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cpi.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cpi.client_id == Convert.ToInt32(hdnClientId.Value)
+                            select cpi.co_pay_amount);
             int co = Coresult.Count();
             if (result != null && co > 0)
                 COpayAmount = Coresult.Sum();
@@ -211,7 +211,7 @@ public partial class vendor_cost_info : System.Web.UI.Page
         }
 
         var item = from it in _db.estimate_commissions
-                   where it.customer_id == Convert.ToInt32(hdnCustomerId.Value) && it.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && it.client_id == 1
+                   where it.customer_id == Convert.ToInt32(hdnCustomerId.Value) && it.estimate_id == Convert.ToInt32(hdnEstimateId.Value) 
                    select new EstCom()
                    {
                        client_id = (int)it.client_id,
@@ -235,7 +235,7 @@ public partial class vendor_cost_info : System.Web.UI.Page
         if (tmpCTable.Rows.Count == 0)
         {
             DataRow drNew = tmpCTable.NewRow();
-            drNew["client_id"] = 1;
+            drNew["client_id"] = Convert.ToInt32(hdnClientId.Value);
             drNew["estimate_com_id"] = 0;
             drNew["customer_id"] = Convert.ToInt32(hdnCustomerId.Value);
             drNew["estimate_id"] = Convert.ToInt32(hdnEstimateId.Value);
@@ -274,7 +274,7 @@ public partial class vendor_cost_info : System.Web.UI.Page
         }
 
         var item = from it in _db.co_estimate_commissions
-                   where it.customer_id == Convert.ToInt32(hdnCustomerId.Value) && it.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && it.client_id == 1
+                   where it.customer_id == Convert.ToInt32(hdnCustomerId.Value) && it.estimate_id == Convert.ToInt32(hdnEstimateId.Value)
                    select new EstCO_Com()
                    {
                        client_id = (int)it.client_id,
@@ -298,7 +298,7 @@ public partial class vendor_cost_info : System.Web.UI.Page
         if (tmpCTable.Rows.Count == 0)
         {
             DataRow drNew = tmpCTable.NewRow();
-            drNew["client_id"] = 1;
+            drNew["client_id"] = Convert.ToInt32(hdnClientId.Value);
             drNew["co_estimate_com_id"] = 0;
             drNew["customer_id"] = Convert.ToInt32(hdnCustomerId.Value);
             drNew["estimate_id"] = Convert.ToInt32(hdnEstimateId.Value);
@@ -326,7 +326,7 @@ public partial class vendor_cost_info : System.Web.UI.Page
 
         var item = from it in _db.customer_sections
                    join si in _db.sectioninfos on it.section_id equals si.section_id
-                    where it.customer_id == Convert.ToInt32(hdnCustomerId.Value) && it.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && it.client_id == 1
+                    where it.customer_id == Convert.ToInt32(hdnCustomerId.Value) && it.estimate_id == Convert.ToInt32(hdnEstimateId.Value)
                    select new SectionInfo()
                    {
                        section_id = (int)it.section_id,
@@ -358,7 +358,7 @@ public partial class vendor_cost_info : System.Web.UI.Page
         tmpVTable.Rows.Add(dr);
 
         var item = from it in _db.vendor_infos
-                   where it.client_id == 1
+                   where it.client_id == Convert.ToInt32(hdnClientId.Value)
                    select new vendorInfrmation()
                    {
                        vendor_id = (int)it.vendor_id,
@@ -386,7 +386,7 @@ public partial class vendor_cost_info : System.Web.UI.Page
         DataTable tmpTable = LoadDataTable();
 
         var item = from it in _db.vendor_costs
-                   where it.customer_id == Convert.ToInt32(hdnCustomerId.Value) && it.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && it.client_id == 1
+                   where it.customer_id == Convert.ToInt32(hdnCustomerId.Value) && it.estimate_id == Convert.ToInt32(hdnEstimateId.Value) 
                    select new VendorCost()
                    {
                        vendor_cost_id = (int)it.vendor_cost_id,
@@ -423,7 +423,7 @@ public partial class vendor_cost_info : System.Web.UI.Page
             DataRow drNew = tmpTable.NewRow();
             drNew["vendor_cost_id"] = 0;
             drNew["vendor_id"] = -1;
-            drNew["client_id"] = 1;
+            drNew["client_id"] = Convert.ToInt32(hdnClientId.Value);
             drNew["customer_id"] = Convert.ToInt32(hdnCustomerId.Value);
             drNew["estimate_id"] = Convert.ToInt32(hdnEstimateId.Value);
             drNew["section_id"] = -1;
@@ -521,7 +521,7 @@ public partial class vendor_cost_info : System.Web.UI.Page
 
                     dr["vendor_cost_id"] = Convert.ToInt32(grdVendorCost.DataKeys[di.RowIndex].Values[0]);
                     dr["vendor_id"] = Convert.ToInt32(ddlVendor.SelectedValue);
-                    dr["client_id"] = 1;
+                    dr["client_id"] = Convert.ToInt32(hdnClientId.Value);
                     dr["customer_id"] = Convert.ToInt32(hdnCustomerId.Value);
                     dr["estimate_id"] = Convert.ToInt32(hdnEstimateId.Value);
                     dr["section_id"] = Convert.ToInt32(ddlTrade.SelectedValue); 
@@ -714,7 +714,7 @@ public partial class vendor_cost_info : System.Web.UI.Page
 
                 dr["vendor_cost_id"] = Convert.ToInt32(grdVendorCost.DataKeys[di.RowIndex].Values[0]);
                 dr["vendor_id"] = Convert.ToInt32(ddlVendor.SelectedValue);
-                dr["client_id"] = 1;
+                dr["client_id"] = Convert.ToInt32(hdnClientId.Value);
                 dr["customer_id"] = Convert.ToInt32(hdnCustomerId.Value);
                 dr["estimate_id"] = Convert.ToInt32(hdnEstimateId.Value);
                 dr["section_id"] = Convert.ToInt32(ddlTrade.SelectedValue);
@@ -730,7 +730,7 @@ public partial class vendor_cost_info : System.Web.UI.Page
         DataRow drNew = table.NewRow();
         drNew["vendor_cost_id"] = 0;
         drNew["vendor_id"] = -1;
-        drNew["client_id"] = 1;
+        drNew["client_id"] = Convert.ToInt32(hdnClientId.Value);
         drNew["customer_id"] = Convert.ToInt32(hdnCustomerId.Value);
         drNew["estimate_id"] = Convert.ToInt32(hdnEstimateId.Value);
         drNew["section_id"] = -1;
@@ -787,7 +787,7 @@ public partial class vendor_cost_info : System.Web.UI.Page
                 DataRow dr = dtCom.Rows[di.RowIndex];
 
                 dr["estimate_com_id"] = Convert.ToInt32(grdCom.DataKeys[di.RowIndex].Values[0]);
-                dr["client_id"] = 1;
+                dr["client_id"] = Convert.ToInt32(hdnClientId.Value);
                 dr["customer_id"] = Convert.ToInt32(hdnCustomerId.Value);
                 dr["estimate_id"] = Convert.ToInt32(hdnEstimateId.Value);
                 dr["comission_amount"] = Convert.ToDecimal(txtComAmount.Text.Replace("$", "").Replace("(", "-").Replace(")", ""));
@@ -862,7 +862,7 @@ public partial class vendor_cost_info : System.Web.UI.Page
                 DataRow dr = dtcoCom.Rows[di.RowIndex];
 
                 dr["co_estimate_com_id"] = Convert.ToInt32(grdCom_CO.DataKeys[di.RowIndex].Values[0]);
-                dr["client_id"] = 1;
+                dr["client_id"] = Convert.ToInt32(hdnClientId.Value);
                 dr["customer_id"] = Convert.ToInt32(hdnCustomerId.Value);
                 dr["estimate_id"] = Convert.ToInt32(hdnEstimateId.Value);
                 dr["comission_amount"] = Convert.ToDecimal(txtComAmount.Text.Replace("$", "").Replace("(", "-").Replace(")", ""));

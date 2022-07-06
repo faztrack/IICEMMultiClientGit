@@ -282,9 +282,9 @@ public class csCommonUtility
         DataClassesDataContext _db = new DataClassesDataContext();
         customer_estimate cus_est = new customer_estimate();
 
-        if (_db.customer_estimates.Any(ce => ce.customer_id == nCusId && ce.client_id == 1 && ce.estimate_id == nEstId))
+        if (_db.customer_estimates.Any(ce => ce.customer_id == nCusId && ce.estimate_id == nEstId))
         {
-            cus_est = _db.customer_estimates.Single(ce => ce.customer_id == nCusId && ce.client_id == 1 && ce.estimate_id == nEstId);
+            cus_est = _db.customer_estimates.Single(ce => ce.customer_id == nCusId && ce.estimate_id == nEstId);
         }
         return cus_est;
     }

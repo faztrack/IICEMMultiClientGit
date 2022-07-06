@@ -272,7 +272,7 @@ public partial class composite_workoerder : System.Web.UI.Page
                 }
                 string strQ2 = "select DISTINCT cop.section_level AS colId,'SECTION: '+ section_name as colName from change_order_pricing_list cop " +
                                " INNER JOIN changeorder_estimate as ce   on ce.customer_id = cop.customer_id AND  ce.estimate_id = cop.estimate_id AND  ce.chage_order_id = cop.chage_order_id " +
-                                " where ce.customer_id = " + Convert.ToInt32(hdnCustomerId.Value) + "  AND ce.estimate_id = " + Convert.ToInt32(hdnEstimateId.Value) + "  and ce.change_order_status_id = 3 AND cop.is_direct=1 AND cop.client_id =1  " +
+                                " where ce.customer_id = " + Convert.ToInt32(hdnCustomerId.Value) + "  AND ce.estimate_id = " + Convert.ToInt32(hdnEstimateId.Value) + "  and ce.change_order_status_id = 3 AND cop.is_direct=1  " +
                                 " order by section_level asc";
                 DataTable dtsec2 = csCommonUtility.GetDataTable(strQ2);
                 DataRow drNew = null;
@@ -311,7 +311,7 @@ public partial class composite_workoerder : System.Web.UI.Page
                                 " INNER JOIN location on location.location_id = cop.location_id " +
                                 " INNER JOIN changeorder_estimate as ce   on ce.customer_id = cop.customer_id AND  ce.estimate_id = cop.estimate_id AND  ce.chage_order_id = cop.chage_order_id " +
                                 " where ce.customer_id = " + Convert.ToInt32(hdnCustomerId.Value) + "  AND ce.estimate_id = " + Convert.ToInt32(hdnEstimateId.Value) + " and ce.change_order_status_id = 3 " +
-                                " AND is_direct=1 AND cop.client_id =1 order by colName asc ";
+                                " AND is_direct=1  order by colName asc ";
                 DataTable dtLoc2 = csCommonUtility.GetDataTable(strQ4);
                 DataRow drNew = null;
                 if (dtLoc2.Rows.Count > 0)
@@ -372,7 +372,7 @@ public partial class composite_workoerder : System.Web.UI.Page
             }
             string strQ2 = "select DISTINCT cop.section_level AS colId,'SECTION: '+ section_name as colName from change_order_pricing_list cop " +
                            " INNER JOIN changeorder_estimate as ce   on ce.customer_id = cop.customer_id AND  ce.estimate_id = cop.estimate_id AND  ce.chage_order_id = cop.chage_order_id " +
-                            " where ce.customer_id = " + Convert.ToInt32(hdnCustomerId.Value) + "  AND ce.estimate_id = " + Convert.ToInt32(hdnEstimateId.Value) + "  and ce.change_order_status_id = 3 AND cop.is_direct = 2 AND cop.client_id =1  " +
+                            " where ce.customer_id = " + Convert.ToInt32(hdnCustomerId.Value) + "  AND ce.estimate_id = " + Convert.ToInt32(hdnEstimateId.Value) + "  and ce.change_order_status_id = 3 AND cop.is_direct = 2   " +
                             " order by section_level asc";
             DataTable dtsec2 = csCommonUtility.GetDataTable(strQ2);
             DataRow drNew = null;
@@ -411,7 +411,7 @@ public partial class composite_workoerder : System.Web.UI.Page
                             " INNER JOIN location on location.location_id = cop.location_id " +
                             " INNER JOIN changeorder_estimate as ce   on ce.customer_id = cop.customer_id AND  ce.estimate_id = cop.estimate_id AND  ce.chage_order_id = cop.chage_order_id " +
                             " where ce.customer_id = " + Convert.ToInt32(hdnCustomerId.Value) + "  AND ce.estimate_id = " + Convert.ToInt32(hdnEstimateId.Value) + " and ce.change_order_status_id = 3 " +
-                            " AND is_direct = 2 AND cop.client_id =1 order by colName asc ";
+                            " AND is_direct = 2 order by colName asc ";
             DataTable dtLoc2 = csCommonUtility.GetDataTable(strQ4);
             DataRow drNew = null;
             if (dtLoc2.Rows.Count > 0)
@@ -445,9 +445,9 @@ public partial class composite_workoerder : System.Web.UI.Page
         bool bincentives = false;
         DataClassesDataContext _db = new DataClassesDataContext();
         estimate_payment esp = new estimate_payment();
-        if (_db.estimate_payments.Where(ep => ep.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ep.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ep.client_id == 1).SingleOrDefault() != null)
+        if (_db.estimate_payments.Where(ep => ep.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ep.customer_id == Convert.ToInt32(hdnCustomerId.Value) ).SingleOrDefault() != null)
         {
-            esp = _db.estimate_payments.Single(ep => ep.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ep.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ep.client_id == 1);
+            esp = _db.estimate_payments.Single(ep => ep.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ep.customer_id == Convert.ToInt32(hdnCustomerId.Value));
             totalwithtax = Convert.ToDecimal(esp.new_total_with_tax);
             if (Convert.ToDecimal(esp.adjusted_price) > 0)
                 project_subtotal = Convert.ToDecimal(esp.adjusted_price);
@@ -470,22 +470,13 @@ public partial class composite_workoerder : System.Web.UI.Page
         }
         decimal payAmount = 0;
         var result = (from ppi in _db.New_partial_payments
-                      where ppi.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ppi.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ppi.client_id == 1
+                      where ppi.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ppi.customer_id == Convert.ToInt32(hdnCustomerId.Value)
                       select ppi.pay_amount);
         int n = result.Count();
         if (result != null && n > 0)
             payAmount = result.Sum();
         lblTotalRecievedAmount.Text = payAmount.ToString("c");
 
-        //decimal COAmount = 0;
-        //var Co_result = (from cpi in _db.change_order_pricing_lists
-        //                 join cho in _db.changeorder_estimates on new { cpi.chage_order_id, cpi.customer_id, cpi.estimate_id } equals new { chage_order_id = cho.chage_order_id, customer_id = cho.customer_id, estimate_id = cho.estimate_id }
-        //                 where cpi.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cpi.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cho.change_order_status_id == 3 && cho.change_order_type_id != 3 && cpi.client_id == 1
-        //                 select cpi.EconomicsCost);
-
-        //int co_AM = Co_result.Count();
-        //if (result != null && co_AM > 0)
-        //    COAmount = Co_result.Sum();
 
         decimal TotalCOAmount = 0;
         var COitem = from co in _db.changeorder_estimates
@@ -501,7 +492,7 @@ public partial class composite_workoerder : System.Web.UI.Page
             CoTaxRate = Convert.ToDecimal(cho.tax);
             decimal dEconCost = 0;
             var Coresult = (from chpl in _db.change_order_pricing_lists
-                            where chpl.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && chpl.customer_id == Convert.ToInt32(hdnCustomerId.Value) && chpl.client_id == 1 && chpl.chage_order_id == ncoeid
+                            where chpl.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && chpl.customer_id == Convert.ToInt32(hdnCustomerId.Value)  && chpl.chage_order_id == ncoeid
                             select chpl.EconomicsCost);
             int cn = Coresult.Count();
             if (Coresult != null && cn > 0)
@@ -771,7 +762,7 @@ public partial class composite_workoerder : System.Web.UI.Page
                    " AND pricing_details.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND pricing_details.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND is_direct = " + nDirectId + " AND pricing_details.client_id =" + Convert.ToInt32(hdnClientId.Value) + " AND " +
                     " pricing_details.pricing_id  NOT IN (  SELECT PD.pricing_id FROM pricing_details PD INNER JOIN " +
                    " ( SELECT item_id,item_name,total_retail_price,short_notes,location_id FROM change_order_pricing_list cop INNER JOIN changeorder_estimate as ce   on ce.customer_id = cop.customer_id AND  ce.estimate_id = cop.estimate_id AND  ce.chage_order_id = cop.chage_order_id where ce.customer_id = " + Convert.ToInt32(hdnCustomerId.Value) + " AND ce.estimate_id = " + Convert.ToInt32(hdnEstimateId.Value) + " and ce.change_order_status_id = 3 AND cop.is_direct = 1 ) b ON b.item_id = PD.item_id AND b.item_name = PD.item_name AND b.total_retail_price = PD.total_retail_price AND b.short_notes = PD.short_notes AND b.location_id = PD.location_id " +
-                    " where  PD.estimate_id = " + Convert.ToInt32(hdnEstimateId.Value) + " AND PD.customer_id = " + Convert.ToInt32(hdnCustomerId.Value) + " AND is_direct = " + nDirectId + " AND PD.client_id = 1 ) " +
+                    " where  PD.estimate_id = " + Convert.ToInt32(hdnEstimateId.Value) + " AND PD.customer_id = " + Convert.ToInt32(hdnCustomerId.Value) + " AND is_direct = " + nDirectId + "  ) " +
                    " order by section_level";
             DataTable dt = csCommonUtility.GetDataTable(strP);
             DataRow drNew = null;
@@ -786,23 +777,7 @@ public partial class composite_workoerder : System.Web.UI.Page
             DataTable dtcol = csCommonUtility.GetDataTable(strQ);
             foreach (DataRow dr in dtcol.Rows)
             {
-                //var k = (from r in dt.Rows.OfType<DataRow>() where r["co_pricing_list_id"].ToString() == dr["co_pricing_list_id"].ToString() select r).FirstOrDefault();
-                //var k = (from r in dt.Rows.OfType<DataRow>() where r["item_id"].ToString() == dr["item_id"].ToString() && r["item_name"].ToString() == dr["item_name"].ToString() && r["total_retail_price"].ToString() == dr["total_retail_price"].ToString() && r["short_notes"].ToString() == dr["short_notes"].ToString() select r).FirstOrDefault();
-                //if (k != null)
-                //{
-                //    foreach (DataRow drM in dt.Rows)
-                //    {
-                //        if (Convert.ToInt32(drM["item_id"]) == Convert.ToInt32(dr["item_id"]) && drM["item_name"] == dr["item_name"] && drM["total_retail_price"] == dr["total_retail_price"] && drM["short_notes"] == dr["short_notes"])
-                //        {
-                //            string strTmp = " (" + dr["changeorder_name"].ToString() + ", " + Convert.ToDateTime(dr["execute_date"]).ToShortDateString() + ")";
-                //            drM["item_status_id"] = dr["item_status_id"];
-                //            drM["tmpCo"] = strTmp;
-
-                //        }
-                //    }
-                //}
-                //else
-                //{
+              
                 string strTmp = " (" + dr["changeorder_name"].ToString() + ", " + Convert.ToDateTime(dr["execute_date"]).ToShortDateString() + ")";
 
                 drNew = dt.NewRow();
@@ -868,7 +843,7 @@ public partial class composite_workoerder : System.Web.UI.Page
                    " AND pricing_details.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND pricing_details.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND is_direct = " + nDirectId + " AND   pricing_details.client_id =" + Convert.ToInt32(hdnClientId.Value) + " AND " +
                    " pricing_details.pricing_id  NOT IN (  SELECT PD.pricing_id FROM pricing_details PD INNER JOIN " +
                    " ( SELECT item_id,item_name,total_retail_price,short_notes,location_id FROM change_order_pricing_list cop INNER JOIN changeorder_estimate as ce   on ce.customer_id = cop.customer_id AND  ce.estimate_id = cop.estimate_id AND  ce.chage_order_id = cop.chage_order_id where ce.customer_id = " + Convert.ToInt32(hdnCustomerId.Value) + " AND ce.estimate_id = " + Convert.ToInt32(hdnEstimateId.Value) + " and ce.change_order_status_id = 3 AND cop.is_direct = 1 ) b ON b.item_id = PD.item_id AND b.item_name = PD.item_name AND b.total_retail_price = PD.total_retail_price AND b.short_notes = PD.short_notes AND b.location_id = PD.location_id " +
-                    " where  PD.estimate_id = " + Convert.ToInt32(hdnEstimateId.Value) + " AND PD.customer_id = " + Convert.ToInt32(hdnCustomerId.Value) + " AND is_direct = " + nDirectId + " AND PD.client_id = 1 ) " +
+                    " where  PD.estimate_id = " + Convert.ToInt32(hdnEstimateId.Value) + " AND PD.customer_id = " + Convert.ToInt32(hdnCustomerId.Value) + " AND is_direct = " + nDirectId + " ) " +
                    " order by location.location_name";
             DataTable dt = csCommonUtility.GetDataTable(strP);
             DataRow drNew = null;
@@ -883,23 +858,7 @@ public partial class composite_workoerder : System.Web.UI.Page
             DataTable dtcol = csCommonUtility.GetDataTable(strQ);
             foreach (DataRow dr in dtcol.Rows)
             {
-                //var k = (from r in dt.Rows.OfType<DataRow>() where r["item_id"].ToString() == dr["item_id"].ToString() && r["item_name"].ToString() == dr["item_name"].ToString() && r["total_retail_price"].ToString() == dr["total_retail_price"].ToString() && r["short_notes"].ToString() == dr["short_notes"].ToString() select r).FirstOrDefault();
-                //if (k != null)
-                //{
-                //    foreach (DataRow drM in dt.Rows)
-                //    {
-                //        if (Convert.ToInt32(drM["item_id"]) == Convert.ToInt32(dr["item_id"]) && drM["item_name"] == dr["item_name"] && drM["total_retail_price"] == dr["total_retail_price"] && drM["short_notes"] == dr["short_notes"])
-                //        {
-                //            string strTmp = " (" + dr["changeorder_name"].ToString() + ", " + Convert.ToDateTime(dr["execute_date"]).ToShortDateString() + ")";
-                //            drM["item_status_id"] = dr["item_status_id"];
-                //            drM["tmpCo"] = strTmp;
-                //            break;
-
-                //        }
-                //    }
-                //}
-                //else
-                //{
+                
                 string strTmp = " (" + dr["changeorder_name"].ToString() + ", " + Convert.ToDateTime(dr["execute_date"]).ToShortDateString() + ")";
 
                 drNew = dt.NewRow();
@@ -1497,7 +1456,7 @@ public partial class composite_workoerder : System.Web.UI.Page
                 }
                 string strQ2 = "select DISTINCT cop.section_level AS colId,'SECTION: '+ section_name as colName from change_order_pricing_list cop " +
                                " INNER JOIN changeorder_estimate as ce   on ce.customer_id = cop.customer_id AND  ce.estimate_id = cop.estimate_id AND  ce.chage_order_id = cop.chage_order_id " +
-                                " where ce.customer_id = " + Convert.ToInt32(hdnCustomerId.Value) + "  AND ce.estimate_id = " + Convert.ToInt32(hdnEstimateId.Value) + "  and ce.change_order_status_id = 3 AND cop.is_direct=1 AND cop.client_id =1  " +
+                                " where ce.customer_id = " + Convert.ToInt32(hdnCustomerId.Value) + "  AND ce.estimate_id = " + Convert.ToInt32(hdnEstimateId.Value) + "  and ce.change_order_status_id = 3 AND cop.is_direct=1   " +
                                 " order by section_level asc";
                 DataTable dtsec2 = csCommonUtility.GetDataTable(strQ2);
                 DataRow drNew = null;
@@ -1534,7 +1493,7 @@ public partial class composite_workoerder : System.Web.UI.Page
                                 " INNER JOIN location on location.location_id = cop.location_id " +
                                 " INNER JOIN changeorder_estimate as ce   on ce.customer_id = cop.customer_id AND  ce.estimate_id = cop.estimate_id AND  ce.chage_order_id = cop.chage_order_id " +
                                 " where ce.customer_id = " + Convert.ToInt32(hdnCustomerId.Value) + "  AND ce.estimate_id = " + Convert.ToInt32(hdnEstimateId.Value) + " and ce.change_order_status_id = 3 " +
-                                " AND is_direct=1 AND cop.client_id =1 order by colName asc ";
+                                " AND is_direct=1 order by colName asc ";
                 DataTable dtLoc2 = csCommonUtility.GetDataTable(strQ4);
                 DataRow drNew = null;
                 if (dtLoc2.Rows.Count > 0)
@@ -1581,7 +1540,7 @@ public partial class composite_workoerder : System.Web.UI.Page
             }
             string strQ2 = "select DISTINCT cop.section_level AS colId,'SECTION: '+ section_name as colName from change_order_pricing_list cop " +
                            " INNER JOIN changeorder_estimate as ce   on ce.customer_id = cop.customer_id AND  ce.estimate_id = cop.estimate_id AND  ce.chage_order_id = cop.chage_order_id " +
-                            " where ce.customer_id = " + Convert.ToInt32(hdnCustomerId.Value) + "  AND ce.estimate_id = " + Convert.ToInt32(hdnEstimateId.Value) + "  and ce.change_order_status_id = 3 AND cop.is_direct = 2 AND cop.client_id =1  " +
+                            " where ce.customer_id = " + Convert.ToInt32(hdnCustomerId.Value) + "  AND ce.estimate_id = " + Convert.ToInt32(hdnEstimateId.Value) + "  and ce.change_order_status_id = 3 AND cop.is_direct = 2   " +
                             " order by section_level asc";
             DataTable dtsec2 = csCommonUtility.GetDataTable(strQ2);
             DataRow drNew = null;
@@ -1618,7 +1577,7 @@ public partial class composite_workoerder : System.Web.UI.Page
                             " INNER JOIN location on location.location_id = cop.location_id " +
                             " INNER JOIN changeorder_estimate as ce   on ce.customer_id = cop.customer_id AND  ce.estimate_id = cop.estimate_id AND  ce.chage_order_id = cop.chage_order_id " +
                             " where ce.customer_id = " + Convert.ToInt32(hdnCustomerId.Value) + "  AND ce.estimate_id = " + Convert.ToInt32(hdnEstimateId.Value) + " and ce.change_order_status_id = 3 " +
-                            " AND is_direct = 2 AND cop.client_id =1 order by colName asc ";
+                            " AND is_direct = 2  order by colName asc ";
             DataTable dtLoc2 = csCommonUtility.GetDataTable(strQ4);
             DataRow drNew = null;
             if (dtLoc2.Rows.Count > 0)

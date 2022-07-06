@@ -64,7 +64,7 @@ public partial class laborhourinfo : System.Web.UI.Page
 
         var item = from it in _db.customer_sections
                    join si in _db.sectioninfos on it.section_id equals si.section_id
-                   where it.customer_id == custID && it.estimate_id == estID && it.client_id == 1
+                   where it.customer_id == custID && it.estimate_id == estID 
                    select new SectionInfo()
                    {
                        section_id = (int)it.section_id,
@@ -1563,9 +1563,9 @@ public partial class laborhourinfo : System.Web.UI.Page
         int Estimate_id = 0;
 
         
-        if (_db.customer_estimates.Where(ce => ce.job_number == job.Trim() && ce.client_id == 1 && ce.status_id == 3).ToList().Count > 0)
+        if (_db.customer_estimates.Where(ce => ce.job_number == job.Trim() && ce.status_id == 3).ToList().Count > 0)
         {
-            customer_estimate obj = _db.customer_estimates.FirstOrDefault(ce => ce.job_number == job.Trim() && ce.client_id == 1 && ce.status_id == 3);
+            customer_estimate obj = _db.customer_estimates.FirstOrDefault(ce => ce.job_number == job.Trim() && ce.status_id == 3);
 
             customer_id = Convert.ToInt32(obj.customer_id);
             Estimate_id = Convert.ToInt32(obj.estimate_id);

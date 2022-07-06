@@ -106,74 +106,12 @@ public partial class PricingMangement : System.Web.UI.Page
                 trvSection.Nodes.Add(node);
                 AddChildMenu(node, sec);
 
-                //Test
-                //if (!_db.sectioninfos.Any(s => s.parent_id == sec.section_id && s.parent_id != 0))
-                //{
-                //    strTest += sec.section_id.ToString() + ", ";
-                //}
+               
             }
         }
 
     }
-    //bool nBlock = false;
-    //public void LoadNewTreeNode()
-    //{
-    //    LoadTree();
-    //    DataClassesDataContext _db = new DataClassesDataContext();
-
-    //    //after new Node Add----------------------------------------------------------------
-    //    var sMaxID = _db.sectioninfos.Select(s => s.section_auto_id).Max();
-    //    var sName = _db.sectioninfos.Where(s => s.section_auto_id == sMaxID).SingleOrDefault();
-
-    //    if (nBlock == true)  // stop recursive re-entrancy, For Expand
-    //        return;
-    //    nBlock = true;
-    //    trvSection.CollapseAll();        
-
-    //    TreeNode nNode = FindNode(trvSection.Nodes, sName.section_name);
-
-    //    while (nNode != null) // For Expand
-    //    {
-    //        nNode.Expand();
-    //        nNode = nNode.Parent;
-    //    }
-    //    nBlock = false;
-    //}
-
-    //TreeNode n_found_node = null;
-    //bool b_node_found = false;
-    //bool b_cNode_found = false;
-    //public TreeNode FindNode(TreeNodeCollection nCollection, string sectionName)
-    //{        
-
-    //    foreach (TreeNode node in nCollection)
-    //    {
-    //        if (node.Text.ToString() == sectionName)
-    //        {
-    //            b_node_found = true;
-    //            n_found_node = node;                
-    //            break;
-    //        }
-    //        if (!b_node_found)
-    //        {
-    //            //n_found_node = FindNode(node.ChildNodes, sectionName);
-    //            foreach (TreeNode cNode in node.ChildNodes)
-    //            {
-    //                if (cNode.Text.ToString() == sectionName)
-    //                {
-    //                    b_cNode_found = true;
-    //                    n_found_node = node;                        
-    //                    break;
-    //                }
-    //                if (!b_cNode_found)
-    //                {
-    //                    n_found_node = FindNode(cNode.ChildNodes, sectionName);
-    //                }
-    //            }
-    //        }
-    //    }
-    //    return n_found_node;
-    //}
+    
 
     private void AddChildMenu(TreeNode parentNode, sectioninfo sec)
     {
@@ -191,11 +129,7 @@ public partial class PricingMangement : System.Web.UI.Page
                     parentNode.ChildNodes.Add(node);
                     AddChildMenu(node, subsec);
 
-                    ////Test
-                    //if (!_db.sectioninfos.Any(s => s.parent_id == subsec.section_id))
-                    //{
-                    //    strTest += subsec.section_id.ToString() + ", ";
-                    //}
+                 
                 }
             }
         }
@@ -773,20 +707,7 @@ public partial class PricingMangement : System.Web.UI.Page
                 " AND section_id NOT IN (9139, 9140, 9151, 9152, 9155, 9156, 9145, 9137, 9138, 9163) ORDER BY section_name";
         }
         IEnumerable<sectioninfo> list = _db.ExecuteQuery<sectioninfo>(strQ, string.Empty);
-        //var item = from sin in _db.sectioninfos
-        //           where sin.parent_id == Convert.ToInt32(hdnSubItemParentId.Value) && sin.section_level == Convert.ToInt32(hdnSectionLevel.Value) && sin.client_id == 1 && sin.section_id < Convert.ToInt32(hdnSectionLevel.Value) + 100
-        //           select new SectionInfo()
-        //           {
-        //               section_id = (int)sin.section_id,
-        //               client_id = (int)sin.client_id,
-        //               section_name = sin.section_name,
-        //               parent_id = (int)sin.parent_id,
-        //               section_notes = sin.section_notes,
-        //               section_level = (int)sin.section_level,
-        //               section_serial = (decimal)sin.section_serial,
-        //               is_active = (bool)sin.is_active,
-        //               create_date = (DateTime)sin.create_date
-        //           };
+       
         foreach (sectioninfo Sinfo in list)
         {
 

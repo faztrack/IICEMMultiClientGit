@@ -42,7 +42,7 @@ public partial class ToolsMenu : System.Web.UI.UserControl
 
             hyp_vendor.NavigateUrl = "Vendor_cost_details.aspx?eid=" + neid + "&cid=" + ncid;
 
-            if (!_db.estimate_payments.Any(est_p => est_p.estimate_id == neid && est_p.customer_id == ncid && est_p.client_id == 1))
+            if (!_db.estimate_payments.Any(est_p => est_p.estimate_id == neid && est_p.customer_id == ncid ))
             {
                 hyp_Payment.NavigateUrl = "payment_info.aspx?eid=" + neid + "&cid=" + ncid;
 
@@ -50,7 +50,7 @@ public partial class ToolsMenu : System.Web.UI.UserControl
             else
             {
                 estimate_payment objEstPay = new estimate_payment();
-                objEstPay = _db.estimate_payments.Single(pay => pay.estimate_id == neid && pay.customer_id == ncid && pay.client_id == 1);
+                objEstPay = _db.estimate_payments.Single(pay => pay.estimate_id == neid && pay.customer_id == ncid );
                 hyp_Payment.NavigateUrl = "payment_recieved.aspx?cid=" + ncid + "&epid=" + objEstPay.est_payment_id + "&eid=" + neid;
 
             }

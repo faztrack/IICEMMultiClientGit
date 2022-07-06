@@ -372,7 +372,7 @@ public partial class CompositeSOWCost : System.Web.UI.Page
                             " INNER JOIN location on location.location_id = cop.location_id " +
                             " INNER JOIN changeorder_estimate as ce   on ce.customer_id = cop.customer_id AND  ce.estimate_id = cop.estimate_id AND  ce.chage_order_id = cop.chage_order_id " +
                             " where ce.customer_id = " + Convert.ToInt32(hdnCustomerId.Value) + "  AND ce.estimate_id = " + Convert.ToInt32(hdnEstimateId.Value) + " and ce.change_order_status_id = 3 " +
-                            " AND is_direct = 2 AND cop.client_id =1 order by colName asc ";
+                            " AND is_direct = 2 order by colName asc ";
             DataTable dtLoc2 = csCommonUtility.GetDataTable(strQ4);
             DataRow drNew = null;
             if (dtLoc2.Rows.Count > 0)
@@ -396,106 +396,6 @@ public partial class CompositeSOWCost : System.Web.UI.Page
             grdGroupingDirect.DataBind();
         }
     }
-    //private void Calculate()
-    //{
-    //    decimal totalwithtax = 0;
-    //    decimal project_subtotal = 0;
-    //    decimal tax_amount = 0;
-    //    decimal ntotal_incentives = 0;
-    //    bool bincentives = false;
-    //    DataClassesDataContext _db = new DataClassesDataContext();
-    //    estimate_payment esp = new estimate_payment();
-    //    if (_db.estimate_payments.Where(ep => ep.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ep.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ep.client_id == 1).SingleOrDefault() != null)
-    //    {
-    //        esp = _db.estimate_payments.Single(ep => ep.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ep.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ep.client_id == 1);
-    //        totalwithtax = Convert.ToDecimal(esp.new_total_with_tax);
-    //        if (Convert.ToDecimal(esp.adjusted_price) > 0)
-    //            project_subtotal = Convert.ToDecimal(esp.adjusted_price);
-    //        else
-    //            project_subtotal = Convert.ToDecimal(esp.project_subtotal);
-    //        if (Convert.ToDecimal(esp.adjusted_tax_amount) > 0)
-    //            tax_amount = Convert.ToDecimal(esp.adjusted_tax_amount);
-    //        else
-    //            tax_amount = Convert.ToDecimal(esp.tax_amount);
-
-    //        if (totalwithtax == 0)
-    //            totalwithtax = project_subtotal + tax_amount;
-    //        lblProjectTotal.Text = totalwithtax.ToString("c"); //with Taxes
-    //        //lblProjectTotal.Text = project_subtotal.ToString("c");// Without Taxes
-
-    //        ntotal_incentives = Convert.ToDecimal(esp.total_incentives);
-    //        bincentives = Convert.ToBoolean(esp.is_incentives);
-
-
-    //    }
-    //    decimal payAmount = 0;
-    //    var result = (from ppi in _db.New_partial_payments
-    //                  where ppi.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ppi.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ppi.client_id == 1
-    //                  select ppi.pay_amount);
-    //    int n = result.Count();
-    //    if (result != null && n > 0)
-    //        payAmount = result.Sum();
-    //    lblTotalRecievedAmount.Text = payAmount.ToString("c");
-
-    //    //decimal COAmount = 0;
-    //    //var Co_result = (from cpi in _db.change_order_pricing_lists
-    //    //                 join cho in _db.changeorder_estimates on new { cpi.chage_order_id, cpi.customer_id, cpi.estimate_id } equals new { chage_order_id = cho.chage_order_id, customer_id = cho.customer_id, estimate_id = cho.estimate_id }
-    //    //                 where cpi.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cpi.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cho.change_order_status_id == 3 && cho.change_order_type_id != 3 && cpi.client_id == 1
-    //    //                 select cpi.EconomicsCost);
-
-    //    //int co_AM = Co_result.Count();
-    //    //if (result != null && co_AM > 0)
-    //    //    COAmount = Co_result.Sum();
-
-    //    decimal TotalCOAmount = 0;
-    //    var COitem = from co in _db.changeorder_estimates
-    //                 where co.customer_id == Convert.ToInt32(hdnCustomerId.Value) && co.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && co.change_order_status_id == 3
-    //                 orderby co.changeorder_name ascending
-    //                 select co;
-    //    foreach (changeorder_estimate cho in COitem)
-    //    {
-    //        int ncoeid = cho.chage_order_id;
-    //        decimal CoTaxRate = 0;
-    //        decimal CoPrice = 0;
-    //        decimal CoTax = 0;
-    //        CoTaxRate = Convert.ToDecimal(cho.tax);
-    //        decimal dEconCost = 0;
-    //        var Coresult = (from chpl in _db.change_order_pricing_lists
-    //                        where chpl.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && chpl.customer_id == Convert.ToInt32(hdnCustomerId.Value) && chpl.client_id == 1 && chpl.chage_order_id == ncoeid
-    //                        select chpl.EconomicsCost);
-    //        int cn = Coresult.Count();
-    //        if (Coresult != null && cn > 0)
-    //            dEconCost = Coresult.Sum();
-
-    //        if (CoTaxRate > 0)
-    //        {
-    //            CoTax = dEconCost * (CoTaxRate / 100);
-    //            CoPrice = dEconCost + CoTax;
-
-    //        }
-    //        else
-    //        {
-    //            CoPrice = dEconCost;
-    //        }
-    //        TotalCOAmount += CoPrice;
-
-    //    }
-    //    lblTotalCOAmount.Text = TotalCOAmount.ToString("c");
-
-    //    decimal TotalCostAmount = 0;
-    //    TotalCostAmount = totalwithtax + TotalCOAmount;
-    //    lblTotalAmount.Text = TotalCostAmount.ToString("c");
-
-    //    decimal TotalBalanceAmount = 0;
-    //    TotalBalanceAmount = TotalCostAmount - payAmount;
-    //    lblTotalBalanceAmount.Text = TotalBalanceAmount.ToString("c");
-
-    //    lblIncentive.Text = ntotal_incentives.ToString("c");
-    //    if (bincentives)
-    //        trIncentive.Visible = true;
-    //    else
-    //        trIncentive.Visible = false;
-    //}
 
     protected void grdSelectedItem_RowDataBound(object sender, GridViewRowEventArgs e)
     {
@@ -714,7 +614,7 @@ public partial class CompositeSOWCost : System.Web.UI.Page
                    " AND pricing_details.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND pricing_details.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND is_direct = " + nDirectId + " AND pricing_details.client_id =" + Convert.ToInt32(hdnClientId.Value) + " AND " +
                     " pricing_details.pricing_id  NOT IN (  SELECT PD.pricing_id FROM pricing_details PD INNER JOIN " +
                    " ( SELECT item_id,item_name,total_retail_price,short_notes,location_id FROM change_order_pricing_list cop INNER JOIN changeorder_estimate as ce   on ce.customer_id = cop.customer_id AND  ce.estimate_id = cop.estimate_id AND  ce.chage_order_id = cop.chage_order_id where ce.customer_id = " + Convert.ToInt32(hdnCustomerId.Value) + " AND ce.estimate_id = " + Convert.ToInt32(hdnEstimateId.Value) + " and ce.change_order_status_id = 3 AND cop.is_direct = 1 ) b ON b.item_id = PD.item_id AND b.item_name = PD.item_name AND b.total_retail_price = PD.total_retail_price AND b.short_notes = PD.short_notes AND b.location_id = PD.location_id " +
-                    " where  PD.estimate_id = " + Convert.ToInt32(hdnEstimateId.Value) + " AND PD.customer_id = " + Convert.ToInt32(hdnCustomerId.Value) + " AND is_direct = " + nDirectId + " AND PD.client_id = 1 ) " +
+                    " where  PD.estimate_id = " + Convert.ToInt32(hdnEstimateId.Value) + " AND PD.customer_id = " + Convert.ToInt32(hdnCustomerId.Value) + " AND is_direct = " + nDirectId + " ) " +
                    " order by section_level";
             DataTable dt = csCommonUtility.GetDataTable(strP);
             DataRow drNew = null;
@@ -858,7 +758,7 @@ public partial class CompositeSOWCost : System.Web.UI.Page
                    " AND pricing_details.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND pricing_details.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND is_direct = " + nDirectId + " AND   pricing_details.client_id =" + Convert.ToInt32(hdnClientId.Value) + " AND " +
                    " pricing_details.pricing_id  NOT IN (  SELECT PD.pricing_id FROM pricing_details PD INNER JOIN " +
                    " ( SELECT item_id,item_name,total_retail_price,short_notes,location_id FROM change_order_pricing_list cop INNER JOIN changeorder_estimate as ce   on ce.customer_id = cop.customer_id AND  ce.estimate_id = cop.estimate_id AND  ce.chage_order_id = cop.chage_order_id where ce.customer_id = " + Convert.ToInt32(hdnCustomerId.Value) + " AND ce.estimate_id = " + Convert.ToInt32(hdnEstimateId.Value) + " and ce.change_order_status_id = 3 AND cop.is_direct = 1 ) b ON b.item_id = PD.item_id AND b.item_name = PD.item_name AND b.total_retail_price = PD.total_retail_price AND b.short_notes = PD.short_notes AND b.location_id = PD.location_id " +
-                    " where  PD.estimate_id = " + Convert.ToInt32(hdnEstimateId.Value) + " AND PD.customer_id = " + Convert.ToInt32(hdnCustomerId.Value) + " AND is_direct = " + nDirectId + " AND PD.client_id = 1 ) " +
+                    " where  PD.estimate_id = " + Convert.ToInt32(hdnEstimateId.Value) + " AND PD.customer_id = " + Convert.ToInt32(hdnCustomerId.Value) + " AND is_direct = " + nDirectId + " ) " +
                    " order by location.location_name";
             DataTable dt = csCommonUtility.GetDataTable(strP);
             DataRow drNew = null;
@@ -1242,7 +1142,7 @@ public partial class CompositeSOWCost : System.Web.UI.Page
                   " AND pricing_details.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND pricing_details.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND pricing_details.client_id =" + Convert.ToInt32(hdnClientId.Value) + " AND " +
                    " pricing_details.pricing_id  NOT IN (  SELECT PD.pricing_id FROM pricing_details PD INNER JOIN " +
                   " ( SELECT item_id,item_name,total_retail_price,short_notes,location_id FROM change_order_pricing_list cop INNER JOIN changeorder_estimate as ce   on ce.customer_id = cop.customer_id AND  ce.estimate_id = cop.estimate_id AND  ce.chage_order_id = cop.chage_order_id where ce.customer_id = " + Convert.ToInt32(hdnCustomerId.Value) + " AND ce.estimate_id = " + Convert.ToInt32(hdnEstimateId.Value) + " and ce.change_order_status_id = 3 AND cop.is_direct = 1 ) b ON b.item_id = PD.item_id AND b.item_name = PD.item_name AND b.total_retail_price = PD.total_retail_price AND b.short_notes = PD.short_notes AND b.location_id = PD.location_id " +
-                   " where  PD.estimate_id = " + Convert.ToInt32(hdnEstimateId.Value) + " AND PD.customer_id = " + Convert.ToInt32(hdnCustomerId.Value) + "  AND PD.client_id = 1 ) " +
+                   " where  PD.estimate_id = " + Convert.ToInt32(hdnEstimateId.Value) + " AND PD.customer_id = " + Convert.ToInt32(hdnCustomerId.Value) + "  AND  ) " +
                   " order by section_level";
         DataTable dtP = csCommonUtility.GetDataTable(strP);
         DataRow drNew = null;

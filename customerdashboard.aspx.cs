@@ -216,15 +216,7 @@ public partial class customerdashboard : System.Web.UI.Page
             payAmount = result.Sum();
         lblTotalRecievedAmount.Text = payAmount.ToString("c");
 
-        //decimal COAmount = 0;
-        //var Co_result = (from cpi in _db.change_order_pricing_lists
-        //                 join cho in _db.changeorder_estimates on new { cpi.chage_order_id, cpi.customer_id, cpi.estimate_id } equals new { chage_order_id = cho.chage_order_id, customer_id = cho.customer_id, estimate_id = cho.estimate_id }
-        //                 where cpi.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cpi.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cho.change_order_status_id == 3 && cho.change_order_type_id != 3 && cpi.client_id == 1
-        //                 select cpi.EconomicsCost);
-
-        //int co_AM = Co_result.Count();
-        //if (result != null && co_AM > 0)
-        //    COAmount = Co_result.Sum();
+     
 
         decimal TotalCOAmount = 0;
         var COitem = from co in _db.changeorder_estimates
@@ -378,30 +370,7 @@ public partial class customerdashboard : System.Web.UI.Page
         KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, grdChangeOrders.ID, grdChangeOrders.GetType().Name, "PageIndexChanging"); 
         GetChangeOrders(Convert.ToInt32(hdnCustomerId.Value), e.NewPageIndex);
     }
-    //private void GetCustomerMessageInfo(int nCustId, int nPageNo)
-    //{
-    //    DataClassesDataContext _db = new DataClassesDataContext();
-    //    string custEmail =  lblEmail.Text;
-
-
-    //    if (Convert.ToInt32(hdnCustomerId.Value) > 0)
-    //    {
-    //        var mess = from mess_info in _db.customer_messages
-    //                   where mess_info.customer_id == nCustId && mess_info.mess_to.Contains(custEmail.Trim()) && mess_info.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
-    //                   orderby mess_info.cust_message_id descending
-    //                   select mess_info;
-    //        grdCustomersMessage.PageIndex = nPageNo;
-    //        grdCustomersMessage.DataSource = mess;
-    //        grdCustomersMessage.DataKeyNames = new string[] { "customer_id", "message_id", "mess_description" };
-    //        grdCustomersMessage.DataBind();
-
-    //        if (mess.Count() == 0)
-    //            tblMessage.Visible = false;
-    //        else
-    //            tblMessage.Visible = true;
-    //    }
-
-    //}
+   
     private void GetCustomerMessageInfo(int nCustId, int nPageNo)
     {
         if (nCustId > 0)
@@ -873,13 +842,7 @@ public partial class customerdashboard : System.Web.UI.Page
                 strCompletionDate = Convert.ToDateTime(csv.date).ToShortDateString();
 
             }
-            //string strQ = "select * from customer_estimate where customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " and status_id=3 and client_id=1";
-            //IEnumerable<customer_estimate_model> list = _db.ExecuteQuery<customer_estimate_model>(strQ, string.Empty);
-
-            //foreach (customer_estimate_model cus_est in list)
-            //{
-            //    nEstimateId = Convert.ToInt32(cus_est.estimate_id);
-            //}
+           
             if (_db.estimate_payments.Where(pay => pay.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && pay.customer_id == Convert.ToInt32(hdnCustomerId.Value) && pay.client_id == Convert.ToInt32(hdnClientId.Value)).SingleOrDefault() != null)
             {
                 estimate_payment objEstPay = new estimate_payment();
@@ -1448,7 +1411,7 @@ public partial class customerdashboard : System.Web.UI.Page
                 decimal dBalanceDueAmount = 0;
                 decimal dOtherAmount = 0;
 
-                //  if (_db.Co_PaymentTerms.Where(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(cn.change_order_id) && est_p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).SingleOrDefault() != null)
+
                 if (_db.Co_PaymentTerms.Any(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(cn.change_order_id) && est_p.client_id == Convert.ToInt32(hdnClientId.Value)))
                 {
                     Co_PaymentTerm objPayTerm = _db.Co_PaymentTerms.FirstOrDefault(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(cn.change_order_id) && est_p.client_id == Convert.ToInt32(hdnClientId.Value));
@@ -1495,13 +1458,8 @@ public partial class customerdashboard : System.Web.UI.Page
                         string CreditCardType = string.Empty;
                         decimal dAmount = 0;
                         dv.RowFilter = "pay_term_ids='" + strTermId + "' AND customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND estimate_id = " + Convert.ToInt32(hdnEstimateId.Value);
-                        //if (dv.Count == 0)
-                        //{
-                        //    nTermId = 100 + cn.change_order_id;
-                        //    strTermId = nTermId.ToString();
-                        //    dv.RowFilter = "pay_term_ids='" + strTermId + "' AND customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND estimate_id = " + Convert.ToInt32(hdnEstimateId.Value);
+                      
 
-                        //}
                         if (dv.Count > 0)
                         {
                             for (int i = 0; i < dv.Count; i++)
@@ -1548,13 +1506,8 @@ public partial class customerdashboard : System.Web.UI.Page
                         string CreditCardType = string.Empty;
                         decimal dAmount = 0;
                         dv.RowFilter = "pay_term_ids='" + strTermId + "' AND customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND estimate_id = " + Convert.ToInt32(hdnEstimateId.Value);
-                        //if (dv.Count == 0)
-                        //{
-                        //    nTermId = 100 + cn.change_order_id;
-                        //    strTermId = nTermId.ToString();
-                        //    dv.RowFilter = "pay_term_ids='" + strTermId + "' AND customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND estimate_id = " + Convert.ToInt32(hdnEstimateId.Value);
+                       
 
-                        //}
                         if (dv.Count > 0)
                         {
                             for (int i = 0; i < dv.Count; i++)
@@ -1898,64 +1851,7 @@ public partial class customerdashboard : System.Web.UI.Page
 
         return table;
     }
-    //protected void grdPyement_RowDataBound(object sender, GridViewRowEventArgs e)
-    //{
-    //    if (e.Row.RowType == DataControlRowType.DataRow)
-    //    {
 
-    //        DropDownList ddlType = (DropDownList)e.Row.FindControl("ddlType");
-    //        TextBox txtReference = (TextBox)e.Row.FindControl("txtReference");
-
-    //        Label lblPayTerms = (Label)e.Row.FindControl("lblPayTerms");
-    //        Label lblReference = (Label)e.Row.FindControl("lblReference");
-    //        Label lblDate = (Label)e.Row.FindControl("lblDate");
-    //        Label lblAmount = (Label)e.Row.FindControl("lblAmount");
-    //        Label lblPayType = (Label)e.Row.FindControl("lblPayType");
-
-    //        string strPayTermsId = grdPyement.DataKeys[e.Row.RowIndex].Values[1].ToString();
-    //        string strPayTerms = grdPyement.DataKeys[e.Row.RowIndex].Values[2].ToString();
-    //        int pay_type_id = Convert.ToInt32(grdPyement.DataKeys[e.Row.RowIndex].Values[3].ToString());
-
-    //        string TransactionId = grdPyement.DataKeys[e.Row.RowIndex].Values[4].ToString();
-    //        string CreditCardNum = grdPyement.DataKeys[e.Row.RowIndex].Values[5].ToString();
-    //        string CreditCardType = grdPyement.DataKeys[e.Row.RowIndex].Values[6].ToString();
-
-
-
-    //        Label lblCardInfo = (Label)e.Row.FindControl("lblCardInfo");
-
-    //        if (TransactionId.Length > 5)
-    //        {
-    //            lblCardInfo.Text = CreditCardType + " " + CreditCardNum + " ID: " + TransactionId;
-    //        }
-    //        else
-    //        {
-    //            lblCardInfo.Text = "";
-    //        }
-    //        if (strPayTermsId.Trim().Length > 0)
-    //        {
-    //            lblPayTerms.Text = strPayTerms;
-    //            lblPayTerms.Visible = true;
-    //        }
-    //        if (pay_type_id == 1)
-    //        {
-    //            lblPayType.Text = "Cash";
-
-    //        }
-    //        else if (pay_type_id == 2)
-    //        {
-    //            lblPayType.Text = "Check";
-    //        }
-    //        else
-    //        {
-    //            lblPayType.Text = "Credit Card";
-    //        }
-
-
-
-    //    }
-
-    //}
     private bool ValidateSecurityDigits()
     {
         // default to true, since user might accidentally turn on the security digits box, when the selected credit card type
@@ -2021,10 +1917,7 @@ public partial class customerdashboard : System.Web.UI.Page
                     if ((cNumber.StartsWith("34") || cNumber.StartsWith("37")) && cLength == 15)
                         args.IsValid = true;
                     break;
-                //					case "OC":	//optima
-                //						if ((cNumber.StartsWith("34") || cNumber.StartsWith("37")) && cLength == 15)
-                //							args.IsValid = true;
-                //						break;
+               
 
                 case "Discover":	//discover
                     if (cNumber.StartsWith("6011") && cLength == 16)
@@ -2098,14 +1991,7 @@ public partial class customerdashboard : System.Web.UI.Page
 
             return false;
         }
-        //else if (imgCardType.AlternateText.Equals("Amex"))
-        //{
-        //    lblCardResult.Text = csCommonUtility.GetSystemRequiredMessage("Sorry, we do not accept AMEX. Please use an alternate credit card.");
-        //    return false;
-
-
-        //}
-
+      
         if (ddlMonth.SelectedIndex == 0)
         {
             lblCardResult.Text = csCommonUtility.GetSystemRequiredMessage("Select expiry month");
@@ -2483,7 +2369,7 @@ public partial class customerdashboard : System.Web.UI.Page
                     decimal total_amount = Convert.ToDecimal(txtAmount.Text.Replace("$", string.Empty));
 
 
-                    // List<string> sReturn = api.ChargeCreditCard_Key(txtCreditCardNumber.Text.Trim(), ddlMonth.SelectedItem.Text.Trim() + ddlYear.SelectedValue.Trim(), txtCVV.Text, total_amount, txtCardHolderName.Text.Trim(), objcust.email, txtAddress.Text, txtCity.Text, ddlState.SelectedItem.Text, txtZip.Text, "", "");
+                   
 
                     sTranId = api.ChargeCreditCard(txtCreditCardNumber.Text.Trim(), ddlMonth.SelectedItem.Text.Trim() + ddlYear.SelectedValue.Trim(), txtCVV.Text, total_amount, txtCardHolderName.Text.Trim(), objcust.email, txtAddress.Text, txtCity.Text, ddlState.SelectedItem.Text, txtZip.Text);
 
@@ -2854,38 +2740,11 @@ public partial class customerdashboard : System.Web.UI.Page
         else
         {
             pnlNewCard.Visible = false;
-            //if (chkPaymentECheck.Checked)
-            //{
-            //    pnlECheckPayment.Visible = true;
-            //    btnEcheckPayment.Visible = true;
-            //    btnFinalizePayment.Visible = false;
-            //    if (grdCardList.Rows.Count > 0)
-            //    {
-            //        foreach (GridViewRow di in grdCardList.Rows)
-            //        {
-            //            RadioButton rdoSelect = (RadioButton)di.FindControl("rdoSelect");
-            //            if (rdoSelect.Checked)
-            //            {
-            //                rdoSelect.Checked = false;
-            //            }
-
-            //        }
-
-
-            //    }
-            //}
-            //else
-            //{
-            //    btnEcheckPayment.Visible = false ;
-            //    btnFinalizePayment.Visible = true;
-            //}
+            
         }
 
     }
-    //protected void btnSaveCardInfo_Click(object sender, EventArgs e)
-    //{
-    //    SaveCustomerProfile(Convert.ToInt32(hdnPayId.Value));
-    //}
+   
     protected void grdPaymentTerm_RowDataBound(object sender, GridViewRowEventArgs e)
     {
         if (e.Row.RowType == DataControlRowType.DataRow)
@@ -3015,9 +2874,6 @@ public partial class customerdashboard : System.Web.UI.Page
         lblCardResult.Text = "";
         lblReason.Text = "";
 
-        //lblPayTermc.Text = PayTerm;
-        //txtCAmount.Text = pay_term_amount.ToString("c");
-        //lblamount.Text = pay_term_amount.ToString("c");
 
     }
 
@@ -3116,19 +2972,7 @@ public partial class customerdashboard : System.Web.UI.Page
             string strTable = "";
             strTable = body(objCust.first_name1 + " " + objCust.last_name1, Convert.ToDecimal(amount).ToString("c"), strTerms, strPMName, strCCNum, oCom.company_name, oCom.website);
 
-            //string strTable = "<table align='center' width='704px' border='0'>" + Environment.NewLine +
-            //        "<tr><td align='left'>Dear " + objCust.first_name1 + " " + objCust.last_name1 + ",</td></tr>" + Environment.NewLine +
-            //        "<tr><td align='left'></td></tr><tr><td align='left'></td></tr>" + Environment.NewLine +
-            //        "<tr><td align='left'>Your payment of  <b>" + Convert.ToDecimal(amount).ToString("c") + "</b> for <b>" + strTerms + "</b> using your <b>" + strPMName + "</b> ending in <b>" + strCCNum + "</b> was processed.</td></tr>" + Environment.NewLine +
-            //        "<tr><td align='left'></td></tr><tr><td align='left'></td></tr>" + Environment.NewLine +
-            //        "<tr><td align='left'>Please click <a target='_blank' href='https://ii.faztrack.com/customerlogin.aspx'> here </a> to view your current project status.</td></tr>" + Environment.NewLine +
-            //        "<tr><td align='left'></td></tr><tr><td align='left'></td></tr>" + Environment.NewLine +
-            //        "<tr><td align='left'>Should you have any question please do not hesitate to contact us.</td></tr>" + Environment.NewLine +
-            //        "<tr><td align='left'></td></tr><tr><td align='left'></td></tr>" + Environment.NewLine +
-            //        "<tr><td align='left'>Sincerely,</td></tr>" + Environment.NewLine +
-            //        "<tr><td align='left'>" + oCom.company_name + "</td></tr>" + Environment.NewLine +
-            //        "<tr><td align='left'>" + oCom.website + "</td></tr>" + Environment.NewLine +
-            //        "<tr><td align='left'></td></tr></table>";
+            
 
             string strToEmail = objCust.email;
             string FromEmail = oCom.email;
@@ -3153,24 +2997,7 @@ public partial class customerdashboard : System.Web.UI.Page
             }
             strCCEmail = strCCEmail.TrimEnd(',');
 
-            //if (strCCEmail.Length > 4)
-            //{
-            //    string[] strCCIds = strCCEmail.Split(',');
-            //    foreach (string strCCId in strCCIds)
-            //    {
-            //        Match match1 = regex.Match(strCCId.Trim());
-            //        if (!match1.Success)
-            //        {
-            //            strCCEmail = "alyons@azinteriorinnovations.com, sroman@interiorinnovations.biz, trohlik@interiorinnovations.biz";
-
-            //        }
-            //    }
-            //}
-            //else
-            //{
-            //    strCCEmail = "alyons@azinteriorinnovations.com, sroman@interiorinnovations.biz, trohlik@interiorinnovations.biz";
-
-            //}
+           
 
             Match match = regex.Match(strToEmail);
             if (!match.Success)
@@ -3344,19 +3171,7 @@ public partial class customerdashboard : System.Web.UI.Page
             imgCardType.ImageUrl = "~/Images/" + strCardType.ToUpper() + ".png";
             imgCardType.AlternateText = strCardType;
 
-            //if (strCardType.Equals("Amex"))
-            //{
-            //    pnlPopup.Visible = true;
-            //    lblCardResult.Text = csCommonUtility.GetSystemRequiredMessage("Sorry, we do not accept AMEX. Please use an alternate credit card.");
-            //    chkSaveCardInfo.Visible = false;
-            //    chkSaveCardInfo.Checked = false;
-
-            //    txtCreditCardNumber.Text = "";
-            //    imgCardType.ImageUrl = "";
-            //    imgCardType.AlternateText = "";
-            //    ModalPopupExtender3.Show();
-            //}
-            //else
+           
             chkSaveCardInfo.Visible = true;
         }
         else
@@ -3371,62 +3186,7 @@ public partial class customerdashboard : System.Web.UI.Page
         lblamount.Text = "$" + str;
         lblamount1.Text = "$" + str;
     }
-    //protected void chkPaymentECheck_CheckedChanged(object sender, EventArgs e)
-    //{
-    //    if (chkPaymentECheck.Checked)
-    //    {
-    //        btnEcheckPayment.Visible = true;
-    //        btnFinalizePayment.Visible = false;
 
-    //        pnlECheckPayment.Visible = true;
-    //        chkNewCard.Checked = false;
-    //        pnlNewCard.Visible = false;
-    //        if (grdCardList.Rows.Count > 0)
-    //        {
-    //            foreach (GridViewRow di in grdCardList.Rows)
-    //            {
-    //                RadioButton rdoSelect = (RadioButton)di.FindControl("rdoSelect");
-    //                if (rdoSelect.Checked)
-    //                {
-    //                    rdoSelect.Checked = false;
-    //                }
-
-    //            }
-
-
-    //        }
-    //    }
-    //    else
-    //    {
-    //        btnEcheckPayment.Visible = false ;
-    //        btnFinalizePayment.Visible = true;
-
-    //        pnlECheckPayment.Visible = false;
-
-    //        tblNewPayment.Visible = true;
-    //        pnlNewCard.Visible = true;
-    //        lblCardResult.Text = "";
-    //        lblReason.Text = "";
-    //        if (chkNewCard.Checked)
-    //        {
-    //            pnlNewCard.Visible = true;
-    //            if (grdCardList.Rows.Count > 0)
-    //            {
-    //                foreach (GridViewRow di in grdCardList.Rows)
-    //                {
-    //                    RadioButton rdoSelect = (RadioButton)di.FindControl("rdoSelect");
-    //                    if (rdoSelect.Checked)
-    //                    {
-    //                        rdoSelect.Checked = false;
-    //                    }
-
-    //                }
-
-
-    //            }
-    //        }
-    //    }
-    //}
     protected void btnEcheckPayment_Click(object sender, EventArgs e)
     {
         KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnEcheckPayment.ID, btnEcheckPayment.GetType().Name, "Click"); 

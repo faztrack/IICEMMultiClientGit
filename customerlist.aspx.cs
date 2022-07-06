@@ -578,15 +578,7 @@ public partial class customerlist : System.Web.UI.Page
         {
             strCondition = "Where " + strCondition;
         }
-        //if (strCondition.Length > 0)
-        //{
-        //    strCondition = "Where " + strCondition + " AND isCustomer = 1 ";
-        //}
-        //else
-        //{
-        //    strCondition = "Where  isCustomer = 1 ";
-
-        //}
+        
 
         if (ddlDivision.SelectedItem.Text != "All")
         {
@@ -655,15 +647,6 @@ public partial class customerlist : System.Web.UI.Page
         IEnumerable<csCustomer> mList = _db.ExecuteQuery<csCustomer>(strQ, string.Empty).ToList();
         DataTable dt = csCommonUtility.LINQToDataTable(mList);
 
-        //arefin (09-11-2018)
-        //if (dt.Rows.Count == 1)
-        //{
-        //    if (!mList.SingleOrDefault().IsEstimateActive)
-        //        ddlStatus.SelectedValue = "8";
-        //    else
-        //        ddlStatus.SelectedValue = "2";
-        //}
-        //arefin (09-11-2018)
 
         if (dt.Rows.Count > 0)
         {
@@ -1039,37 +1022,6 @@ public partial class customerlist : System.Web.UI.Page
             ddlEst.DataValueField = "estimate_id";
             ddlEst.DataBind();
 
-
-            //var resultCount = (from ce in _db.customer_estimates
-            //                   where ce.customer_id == ncid && ce.client_id == 1 && ce.status_id == 3
-            //                   select ce.estimate_id);
-            //int nEstCount = resultCount.Count();
-
-            //if (_db.customer_estimates.Where(ce => ce.customer_id == ncid && ce.client_id == 1 && ce.status_id == 3).ToList().Count > 0)
-            //{
-            //    int nEstId = 0;
-            //    var result = (from ce in _db.customer_estimates
-            //                  where ce.customer_id == ncid && ce.client_id == 1 && ce.status_id == 3
-            //                  select ce.estimate_id);
-
-            //    int n = result.Count();
-            //    if (result != null && n > 0)
-            //        nEstId = result.Max();
-            //    ddlEst.SelectedValue = nEstId.ToString();
-
-            //}
-            //else
-            //{
-            //    int nEstId = 0;
-            //    var result = (from ce in _db.customer_estimates
-            //                  where ce.customer_id == ncid && ce.client_id == 1
-            //                  select ce.estimate_id);
-
-            //    int n = result.Count();
-            //    if (result != null && n > 0)
-            //        nEstId = result.Max();
-            //    ddlEst.SelectedValue = nEstId.ToString();
-            //}
 
             if (ddlEst.Items.Count > 0)
             {

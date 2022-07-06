@@ -117,7 +117,7 @@ public partial class VendorManger : System.Web.UI.Page
                 if (Convert.ToInt32(dr["vendor_id"]) > 0)
                     VenInfo = _db.vendor_infos.Single(l => l.vendor_id == Convert.ToInt32(dr["vendor_id"]));
                 else
-                    if (_db.vendor_infos.Where(l => l.client_id == 1 && l.vendor_name == dr["vendor_name"].ToString()).SingleOrDefault() != null)
+                    if (_db.vendor_infos.Where(l =>  l.vendor_name == dr["vendor_name"].ToString()).SingleOrDefault() != null)
                     {
                         lblResult.Text = csCommonUtility.GetSystemErrorMessage("Vendor name already exist. Please try another name.");
                         return;

@@ -252,12 +252,12 @@ public partial class jobdesc_popup : System.Web.UI.Page
             var price_detail = from p in _db.co_pricing_masters
                                join lc in _db.locations on p.location_id equals lc.location_id
                                where (from clc in _db.changeorder_locations
-                                      where clc.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && clc.customer_id == Convert.ToInt32(hdnCustomerId.Value) && clc.client_id == 1
+                                      where clc.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && clc.customer_id == Convert.ToInt32(hdnCustomerId.Value) 
                                       select clc.location_id).Contains(p.location_id) &&
                                       (from cs in _db.changeorder_sections
-                                       where cs.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cs.client_id == 1
+                                       where cs.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.customer_id == Convert.ToInt32(hdnCustomerId.Value) 
                                        select cs.section_id).Contains(p.section_level)
-                                      && p.item_status_id != 3  && p.section_level == colId && p.is_direct == nDirectId && p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && p.client_id == 1
+                                      && p.item_status_id != 3  && p.section_level == colId && p.is_direct == nDirectId && p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && p.customer_id == Convert.ToInt32(hdnCustomerId.Value) 
                                orderby p.week_id,p.section_level, p.execution_unit, lc.location_name ascending
 
                                select new CO_PricingDeatilModel()
@@ -296,12 +296,12 @@ public partial class jobdesc_popup : System.Web.UI.Page
             var price_detail = from p in _db.co_pricing_masters
                                join lc in _db.locations on p.location_id equals lc.location_id
                                where (from clc in _db.customer_locations
-                                      where clc.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && clc.customer_id == Convert.ToInt32(hdnCustomerId.Value) && clc.client_id == 1
+                                      where clc.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && clc.customer_id == Convert.ToInt32(hdnCustomerId.Value) 
                                       select clc.location_id).Contains(p.location_id) &&
                                       (from cs in _db.customer_sections
-                                       where cs.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cs.client_id == 1
+                                       where cs.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.customer_id == Convert.ToInt32(hdnCustomerId.Value) 
                                        select cs.section_id).Contains(p.section_level)
-                                       && p.item_status_id != 3 && p.week_id == colId && p.is_direct == nDirectId && p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && p.client_id == 1
+                                       && p.item_status_id != 3 && p.week_id == colId && p.is_direct == nDirectId && p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && p.customer_id == Convert.ToInt32(hdnCustomerId.Value) 
                                orderby p.week_id,p.section_level, p.execution_unit, lc.location_name ascending
 
                                select new CO_PricingDeatilModel()

@@ -71,11 +71,11 @@ public partial class CustomerMain : System.Web.UI.MasterPage
             menuBar.Items.Add(menuBarItem3);
 
             MenuItem menuBarItem4 = new MenuItem("SOW", "4");
-            if (_db.customer_estimates.Where(ce => ce.customer_id == nCustomerId && ce.client_id == 1 && ce.status_id == 3).ToList().Count > 0)
+            if (_db.customer_estimates.Where(ce => ce.customer_id == nCustomerId && ce.status_id == 3).ToList().Count > 0)
             {
                 int nEstId = 0;
                 var result = (from ce in _db.customer_estimates
-                              where ce.customer_id == nCustomerId && ce.client_id == 1 && ce.status_id == 3
+                              where ce.customer_id == nCustomerId  && ce.status_id == 3
                               select ce.estimate_id);
 
                 int n = result.Count();
@@ -97,7 +97,7 @@ public partial class CustomerMain : System.Web.UI.MasterPage
             {
                 int nEstId = 0;
                 var result = (from ce in _db.customer_estimates
-                              where ce.customer_id == nCustomerId && ce.client_id == 1
+                              where ce.customer_id == nCustomerId 
                               select ce.estimate_id);
 
                 int n = result.Count();

@@ -257,7 +257,7 @@ public partial class payment_withco : System.Web.UI.Page
         DataTable tmpTable = LoadDataTable();
 
         var item = from it in _db.partial_payment_infos
-                   where it.customer_id == Convert.ToInt32(hdnCustomerId.Value) && it.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && it.client_id == 1
+                   where it.customer_id == Convert.ToInt32(hdnCustomerId.Value) && it.estimate_id == Convert.ToInt32(hdnEstimateId.Value) 
                    select new PartialPayment()
                    {
                        payment_id = (int)it.payment_id,
@@ -688,7 +688,7 @@ public partial class payment_withco : System.Web.UI.Page
         DataTable tmpTable = LoadCODataTable();
 
         var item = from it in _db.co_partial_payments
-                   where it.customer_id == Convert.ToInt32(hdnCustomerId.Value) && it.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && it.client_id == 1
+                   where it.customer_id == Convert.ToInt32(hdnCustomerId.Value) && it.estimate_id == Convert.ToInt32(hdnEstimateId.Value) 
                    select new COPartialPayment()
                    {
                        co_payment_id = (int)it.co_payment_id,

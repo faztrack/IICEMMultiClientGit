@@ -115,8 +115,7 @@ public partial class changeorderlist : System.Web.UI.Page
             LinkButton lnkCO = (LinkButton)e.Row.FindControl("lnkCO");
             lnkCO.CommandArgument = ncoeid.ToString();
 
-            //LinkButton lnkHTML = (LinkButton)e.Row.FindControl("lnkHTML");
-            //lnkHTML.CommandArgument = ncoeid.ToString();
+           
 
             changeorder_estimate objCOE = new changeorder_estimate();
             objCOE = _db.changeorder_estimates.Single(coe => coe.chage_order_id == ncoeid && coe.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && coe.customer_id == Convert.ToInt32(hdnCustomerId.Value));
@@ -125,10 +124,7 @@ public partial class changeorderlist : System.Web.UI.Page
             hypTitle.Text = objCOE.changeorder_name;
             hypTitle.NavigateUrl = "change_order_worksheet.aspx?coestid=" + ncoeid + "&eid=" + hdnEstimateId.Value + "&cid=" + hdnCustomerId.Value;
 
-            //HyperLink hypHTMLCO = (HyperLink)e.Row.FindControl("hypHTMLCO");
-            //hypHTMLCO.NavigateUrl = "htmlco.aspx?coestid=" + ncoeid + "&eid=" + hdnEstimateId.Value + "&cid=" + hdnCustomerId.Value;
-            
-            //e.Row.Cells[5].Text = obj.first_name + " " + obj.last_name;
+           
             sales_person sp = new sales_person();
             sp = _db.sales_persons.Single(s => s.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value));
             e.Row.Cells[5].Text = sp.first_name + " " + sp.last_name;
@@ -177,7 +173,7 @@ public partial class changeorderlist : System.Web.UI.Page
         decimal CoTaxRate = Convert.ToDecimal(cho.tax);
         decimal dEconCost = 0;
         var Coresult = (from chpl in _db.change_order_pricing_lists
-                        where chpl.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && chpl.customer_id == Convert.ToInt32(hdnCustomerId.Value) && chpl.client_id == 1 && chpl.chage_order_id == ncoId
+                        where chpl.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && chpl.customer_id == Convert.ToInt32(hdnCustomerId.Value)  && chpl.chage_order_id == ncoId
                         select chpl.EconomicsCost);
         int cn = Coresult.Count();
         if (Coresult != null && cn > 0)
@@ -373,7 +369,7 @@ public partial class changeorderlist : System.Web.UI.Page
         decimal CoTaxRate = Convert.ToDecimal(cho.tax);
         decimal dEconCost = 0;
         var Coresult = (from chpl in _db.change_order_pricing_lists
-                        where chpl.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && chpl.customer_id == Convert.ToInt32(hdnCustomerId.Value) && chpl.client_id == 1 && chpl.chage_order_id == ncoId
+                        where chpl.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && chpl.customer_id == Convert.ToInt32(hdnCustomerId.Value)  && chpl.chage_order_id == ncoId
                         select chpl.EconomicsCost);
         int cn = Coresult.Count();
         if (Coresult != null && cn > 0)
