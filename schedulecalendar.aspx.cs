@@ -829,7 +829,7 @@ public partial class schedulecalendar : System.Web.UI.Page
 
         if (_db.estimate_payments.Any(pay => pay.estimate_id == nEstId && pay.customer_id == nCustId && pay.client_id == Convert.ToInt32(hdnClientId.Value)))
         {
-            objEstPay = _db.estimate_payments.Single(pay => pay.estimate_id == nEstId && pay.customer_id == nCustId && pay.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+            objEstPay = _db.estimate_payments.Single(pay => pay.estimate_id == nEstId && pay.customer_id == nCustId && pay.client_id == Convert.ToInt32(hdnClientId.Value));
 
             List<csExternalEvents> list = new List<csExternalEvents>();
             csExternalEvents objPT = new csExternalEvents();
@@ -1256,11 +1256,11 @@ public partial class schedulecalendar : System.Web.UI.Page
     {
         DataClassesDataContext _db = new DataClassesDataContext();
 
-        if (_db.co_pricing_masters.Where(cl => cl.customer_id == nCustId && cl.estimate_id == nEstId && cl.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).ToList().Count == 0)
+        if (_db.co_pricing_masters.Where(cl => cl.customer_id == nCustId && cl.estimate_id == nEstId).ToList().Count == 0)
         {
-            List<customer_location> Cust_LocList = _db.customer_locations.Where(cl => cl.estimate_id == nEstId && cl.customer_id == nCustId && cl.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).ToList();
-            List<customer_section> Cust_SecList = _db.customer_sections.Where(cs => cs.estimate_id == nEstId && cs.customer_id == nCustId && cs.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).ToList();
-            List<pricing_detail> Pm_List = _db.pricing_details.Where(pd => pd.estimate_id == nEstId && pd.customer_id == nCustId && pd.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && pd.pricing_type == "A").ToList();
+            List<customer_location> Cust_LocList = _db.customer_locations.Where(cl => cl.estimate_id == nEstId).ToList();
+            List<customer_section> Cust_SecList = _db.customer_sections.Where(cs => cs.estimate_id == nEstId && cs.customer_id == nCustId ).ToList();
+            List<pricing_detail> Pm_List = _db.pricing_details.Where(pd => pd.estimate_id == nEstId && pd.customer_id == nCustId && pd.pricing_type == "A").ToList();
 
             foreach (customer_location objcl in Cust_LocList)
             {
