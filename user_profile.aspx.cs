@@ -315,7 +315,7 @@ public partial class user_profile : System.Web.UI.Page
             }
             if (Convert.ToInt32(hdnSalesPersonId.Value) > 0)
             {
-                string strQ = "UPDATE sales_person SET google_calendar_account='" + txtEmail.Text + "', is_active='" + obj.is_active + "' WHERE sales_person_id =" + obj.sales_person_id + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                string strQ = "UPDATE sales_person SET google_calendar_account='" + txtEmail.Text + "', is_active='" + obj.is_active + "' WHERE sales_person_id =" + obj.sales_person_id ;
                 _db.ExecuteCommand(strQ, string.Empty);
             }
             lblResult.Text = csCommonUtility.GetSystemMessage("Data updated successfully.");

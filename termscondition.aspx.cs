@@ -63,7 +63,7 @@ public partial class termscondition : System.Web.UI.Page
             {
                 DataRow drNew = tmpTable.NewRow();
                 drNew["terms_condition_id"] = 0;
-                drNew["client_id"] = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                drNew["client_id"] = Convert.ToInt32(ddlDivision.SelectedValue);
                 drNew["terms_condition"] = "";
                 drNew["terms_header"] = "";
                 drNew["IsInitilal"] = false;
