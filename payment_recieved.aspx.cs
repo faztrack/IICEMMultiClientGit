@@ -653,9 +653,9 @@ public partial class payment_recieved : System.Web.UI.Page
             decimal dBalanceDueAmount = 0;
             decimal dOtherAmount = 0;
 
-            if (_db.Co_PaymentTerms.Any(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(cn.change_order_id) && est_p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])))
+            if (_db.Co_PaymentTerms.Any(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(cn.change_order_id)))
             {
-                Co_PaymentTerm objPayTerm = _db.Co_PaymentTerms.FirstOrDefault(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(cn.change_order_id) && est_p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+                Co_PaymentTerm objPayTerm = _db.Co_PaymentTerms.FirstOrDefault(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(cn.change_order_id));
                 //hdnChPaymentId.Value = objPayTerm.co_payment_id.ToString();
 
 
