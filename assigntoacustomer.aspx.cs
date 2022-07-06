@@ -153,44 +153,7 @@ public partial class assigntoacustomer : System.Web.UI.Page
             }
             List<customer> LeadList = item.ToList();
             Session.Add("cSearch", LeadList);
-            //if (Convert.ToInt32(hdnSalesPersonId.Value) > 0)
-            //{
-            //    var itemCustomer = from cus in _db.customers
-            //                       where cus.status_id != 5 && cus.status_id != 4 && cus.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && cus.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
-            //                       orderby cus.first_name1 ascending, cus.registration_date descending
-            //                       select new CustomerModel()
-            //                       {
-            //                           customer_id = (int)cus.customer_id,
-            //                           customer_name = cus.first_name1 + " " + cus.last_name1
-
-            //                       };
-
-            //    ddlCustomers.DataSource = itemCustomer;
-            //    ddlCustomers.DataTextField = "customer_name";
-            //    ddlCustomers.DataValueField = "customer_id";
-            //    ddlCustomers.DataBind();
-            //    ddlCustomers.Items.Insert(0, "Select Customer");
-            //    ddlCustomers.SelectedValue = "0";
-            //}
-            //else 
-            //{
-            //    var itemCustomer = from cus in _db.customers
-            //                       where cus.status_id != 5 && cus.status_id != 4 && cus.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
-            //                       orderby cus.registration_date descending, cus.last_name1 ascending
-            //                       select new CustomerModel()
-            //                       {
-            //                           customer_id = (int)cus.customer_id,
-            //                           customer_name = cus.first_name1 + " " + cus.last_name1
-
-            //                       };
-
-            //    ddlCustomers.DataSource = itemCustomer;
-            //    ddlCustomers.DataTextField = "customer_name";
-            //    ddlCustomers.DataValueField = "customer_id";
-            //    ddlCustomers.DataBind();
-            //    ddlCustomers.Items.Insert(0, "Select Customer");
-            //    ddlCustomers.SelectedValue = "0";
-            //}
+           
 
             model_estimate me = new model_estimate();
             me = _db.model_estimates.Single(mest => mest.model_estimate_id == Convert.ToInt32(hdnModelEstimateId.Value) && mest.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mest.client_id == Convert.ToInt32(hdnClientId.Value));

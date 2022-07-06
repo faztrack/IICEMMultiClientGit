@@ -139,7 +139,7 @@ public partial class customerchangeorder : System.Web.UI.Page
                     decimal dBalanceDueAmount = 0;
                     decimal dOtherAmount = 0;
                     int nTermId = 0;
-                    // if (_db.Co_PaymentTerms.Where(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(hdnCOId.Value) && est_p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])).SingleOrDefault() != null)
+                    
                     if (_db.Co_PaymentTerms.Any(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(hdnCOId.Value) && est_p.client_id == Convert.ToInt32(hdnClientId.Value)))
                     {
                         Co_PaymentTerm objPayTerm = _db.Co_PaymentTerms.FirstOrDefault(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == Convert.ToInt32(hdnCOId.Value) && est_p.client_id == Convert.ToInt32(hdnClientId.Value));
