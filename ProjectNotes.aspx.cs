@@ -172,34 +172,7 @@ public partial class ProjectNotes : System.Web.UI.Page
         dr["section_id"] = 2;
         dr["section_name"] = "PAYMENT SCHEDULE";
         tmpSTable.Rows.Add(dr);
-        //if (_db.changeorder_sections.Any(cs => cs.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && cs.customer_id == Convert.ToInt32(hdnCustomerId.Value) && cs.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])))
-        //{
-        //    sSQL = "select distinct sectioninfo.section_name as section_name,sectioninfo.section_id as section_id  from co_pricing_master inner join sectioninfo on co_pricing_master.section_level=sectioninfo.section_id " +
-        //         " where customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " and estimate_id=" + Convert.ToInt32(hdnEstimateId.Value) + " and parent_id=0 order by section_name ";
-        //    DataTable td = csCommonUtility.GetDataTable(sSQL);
-        //    foreach (DataRow drt in td.Rows)
-        //    {
-        //        DataRow drNew = tmpSTable.NewRow();
-        //        drNew["section_id"] = drt["section_id"];
-        //        drNew["section_name"] = drt["section_name"];
-        //        tmpSTable.Rows.Add(drNew);
-        //    }
-        //}
-        //else
-        //{
-
-        //    sSQL = "select distinct sectioninfo.section_name as section_name,sectioninfo.section_id as section_id from pricing_details inner join sectioninfo on pricing_details.section_level=sectioninfo.section_id " +
-        //        " where customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " and estimate_id=" + Convert.ToInt32(hdnEstimateId.Value) + " and parent_id=0 order by section_name ";
-        //    DataTable td = csCommonUtility.GetDataTable(sSQL);
-        //    foreach (DataRow drt in td.Rows)
-        //    {
-        //           DataRow drNew = tmpSTable.NewRow();
-        //           drNew["section_id"] = drt["section_id"];
-        //           drNew["section_name"] = drt["section_name"];
-        //          tmpSTable.Rows.Add(drNew);
-        //    }
-           
-        //}
+       
 
             sSQL = " select distinct sectioninfo.section_name as section_name,sectioninfo.section_id as section_id  from " +
                    " pricing_details "+

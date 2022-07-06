@@ -447,36 +447,7 @@ public partial class mcomposite_sow : System.Web.UI.Page
     {
         DataClassesDataContext _db = new DataClassesDataContext();
         string strP = string.Empty;
-        //if (hdnCOMasterDataExist.Value == "1")
-        //{
-        //    strP = " SELECT co_pricing_list_id, item_id, labor_id, section_serial, " +
-        //       " location.location_name as section_name,section_name as location_name,item_name,measure_unit,item_cost,total_retail_price,total_direct_price, " +
-        //      " minimum_qty,quantity,retail_multiplier,labor_rate,short_notes,short_notes_new,1 as item_status_id,last_update_date, " +
-        //      " is_direct,section_level,location.location_id,'' as tmpCo  " +
-        //      " FROM co_pricing_master " +
-        //      " INNER JOIN location on location.location_id = co_pricing_master.location_id where co_pricing_master.location_id IN (Select location_id from changeorder_locations WHERE changeorder_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_locations.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-        //      " AND co_pricing_master.section_level IN (Select section_id from changeorder_sections WHERE changeorder_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND changeorder_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND changeorder_sections.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-        //      " AND co_pricing_master.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND co_pricing_master.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND is_direct = " + nDirectId + " AND   co_pricing_master.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " AND " +
-        //      " co_pricing_master.co_pricing_list_id  NOT IN (  SELECT PD.co_pricing_list_id FROM co_pricing_master PD INNER JOIN " +
-        //      " ( SELECT item_id,item_name,total_retail_price,short_notes,location_id FROM change_order_pricing_list cop INNER JOIN changeorder_estimate as ce   on ce.customer_id = cop.customer_id AND  ce.estimate_id = cop.estimate_id AND  ce.chage_order_id = cop.chage_order_id where ce.customer_id = " + Convert.ToInt32(hdnCustomerId.Value) + " AND ce.estimate_id = " + Convert.ToInt32(hdnEstimateId.Value) + " and ce.change_order_status_id = 3 AND cop.is_direct = 1 ) b ON b.item_id = PD.item_id AND b.item_name = PD.item_name AND b.total_retail_price = PD.total_retail_price AND b.short_notes = PD.short_notes AND b.location_id = PD.location_id " +
-        //       " where  PD.estimate_id = " + Convert.ToInt32(hdnEstimateId.Value) + " AND PD.customer_id = " + Convert.ToInt32(hdnCustomerId.Value) + " AND is_direct = " + nDirectId + " AND PD.client_id = 1 ) " +
-        //      " order by location.location_name";
-        //}
-        //else
-        //{
-        //     strP = " SELECT pricing_id as co_pricing_list_id, item_id, labor_id, section_serial, " +
-        //       " location.location_name as section_name,section_name as location_name,item_name,measure_unit,item_cost,total_retail_price,total_direct_price, " +
-        //      " minimum_qty,quantity,retail_multiplier,labor_rate,short_notes,short_notes_new,1 as item_status_id,last_update_date, " +
-        //      " is_direct,section_level,location.location_id,'' as tmpCo  " +
-        //      " FROM pricing_details " +
-        //      " INNER JOIN location on location.location_id = pricing_details.location_id where pricing_details.location_id IN (Select location_id from customer_locations WHERE customer_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_locations.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-        //      " AND pricing_details.section_level IN (Select section_id from customer_sections WHERE customer_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_sections.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " ) " +
-        //      " AND pricing_details.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND pricing_details.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND is_direct = " + nDirectId + " AND   pricing_details.client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) + " AND " +
-        //      " pricing_details.pricing_id  NOT IN (  SELECT PD.pricing_id FROM pricing_details PD INNER JOIN " +
-        //      " ( SELECT item_id,item_name,total_retail_price,short_notes,location_id FROM change_order_pricing_list cop INNER JOIN changeorder_estimate as ce   on ce.customer_id = cop.customer_id AND  ce.estimate_id = cop.estimate_id AND  ce.chage_order_id = cop.chage_order_id where ce.customer_id = " + Convert.ToInt32(hdnCustomerId.Value) + " AND ce.estimate_id = " + Convert.ToInt32(hdnEstimateId.Value) + " and ce.change_order_status_id = 3 AND cop.is_direct = 1 ) b ON b.item_id = PD.item_id AND b.item_name = PD.item_name AND b.total_retail_price = PD.total_retail_price AND b.short_notes = PD.short_notes AND b.location_id = PD.location_id " +
-        //       " where  PD.estimate_id = " + Convert.ToInt32(hdnEstimateId.Value) + " AND PD.customer_id = " + Convert.ToInt32(hdnCustomerId.Value) + " AND is_direct = " + nDirectId + " AND PD.client_id = 1 ) " +
-        //      " order by location.location_name";
-        //}
+       
 
         strP = " SELECT pricing_id as co_pricing_list_id, item_id, labor_id, section_serial, " +
               " location.location_name as section_name,section_name as location_name,item_name,measure_unit,item_cost,total_retail_price,total_direct_price, " +
@@ -502,13 +473,8 @@ public partial class mcomposite_sow : System.Web.UI.Page
                        " INNER JOIN changeorder_estimate  on changeorder_estimate.customer_id = change_order_pricing_list.customer_id AND  changeorder_estimate.estimate_id = change_order_pricing_list.estimate_id AND  changeorder_estimate.chage_order_id = change_order_pricing_list.chage_order_id " +
                        " where changeorder_estimate.customer_id = " + Convert.ToInt32(hdnCustomerId.Value) + "  AND changeorder_estimate.estimate_id = " + Convert.ToInt32(hdnEstimateId.Value) + " and is_direct = " + nDirectId + " AND changeorder_estimate.change_order_status_id = 3 order by location.location_name";
 
-        //string strQ = " SELECT change_order_pricing_list.co_pricing_list_id, change_order_pricing_list.item_id,1 as labor_id, change_order_pricing_list.section_serial,  location.location_name AS section_name,change_order_pricing_list.section_name AS location_name,change_order_pricing_list.item_name,change_order_pricing_list.measure_unit,1 as item_cost, "+
-        //              " change_order_pricing_list.total_retail_price,change_order_pricing_list.total_direct_price,  1 as minimum_qty,change_order_pricing_list.quantity,1 as retail_multiplier,1 as labor_rate,change_order_pricing_list.short_notes,co_pricing_master.short_notes_new,change_order_pricing_list.item_status_id,change_order_pricing_list.last_update_date, "+
-        //               " change_order_pricing_list.is_direct,change_order_pricing_list.section_level,location.location_id,changeorder_estimate.changeorder_name,changeorder_estimate.execute_date  FROM change_order_pricing_list " +
-        //               " INNER JOIN location on location.location_id = change_order_pricing_list.location_id "+
-        //               " INNER JOIN changeorder_estimate  on changeorder_estimate.customer_id = change_order_pricing_list.customer_id AND  changeorder_estimate.estimate_id = change_order_pricing_list.estimate_id AND  changeorder_estimate.chage_order_id = change_order_pricing_list.chage_order_id  "+
-        //               " left outer join co_pricing_master on co_pricing_master.customer_id = change_order_pricing_list.customer_id AND  co_pricing_master.estimate_id = change_order_pricing_list.estimate_id AND  co_pricing_master.co_pricing_list_id = change_order_pricing_list.co_pricing_list_id  "+
-        //               " where changeorder_estimate.customer_id = " + Convert.ToInt32(hdnCustomerId.Value) + "  AND changeorder_estimate.estimate_id = " + Convert.ToInt32(hdnEstimateId.Value) + " and change_order_pricing_list.is_direct = " + nDirectId + " AND changeorder_estimate.change_order_status_id = 3 order by location.location_name";
+        
+      
         DataTable dtcol = csCommonUtility.GetDataTable(strQ);
         foreach (DataRow dr in dtcol.Rows)
         {

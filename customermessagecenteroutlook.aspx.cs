@@ -143,26 +143,7 @@ public partial class customermessagecenteroutlook : System.Web.UI.Page
                 {
                     DSMessage.MessageRow mes = dsMessageSent.Message.NewMessageRow();
 
-                    //string strQ = "select * from message_upolad_info where customer_id=" + nCustId + " and message_id=" + msg.message_id + " and client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
-                    //IEnumerable<message_upolad_info> list = _db.ExecuteQuery<message_upolad_info>(strQ, string.Empty);
-
-                    //string mess_file = "";
-                    //foreach (message_upolad_info message_upolad in list)
-                    //{
-                    //    mess_file += message_upolad.mess_file_name.Replace("amp;", "").Trim() + ", "; ;
-                    //}
-                    //mess_file = mess_file.Trim().TrimEnd(',');
-
-                    //if (mess_file.Length > 0)
-                    //{
-                    //    mes.HasAttachments = true;
-                    //    mes.AttachmentList = mess_file.Trim().TrimEnd(',');
-                    //}
-                    //else
-                    //{
-                    //    mes.AttachmentList = "";
-                    //    mes.HasAttachments = false;// msg.HasAttachments;
-                    //}
+                   
 
                     if (msg.HasAttachments == null)
                     {

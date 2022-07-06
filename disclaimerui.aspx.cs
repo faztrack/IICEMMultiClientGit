@@ -158,10 +158,7 @@ public partial class disclaimerui : System.Web.UI.Page
         try
         {
             DataClassesDataContext _db = new DataClassesDataContext();
-            //string strQ_Delete = "Delete disclaimers WHERE  client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
-            //_db.ExecuteCommand(strQ_Delete, string.Empty);
-
-            //DataTable table = (DataTable)Session["Disclaimer"];
+           
 
 
 
@@ -217,23 +214,7 @@ public partial class disclaimerui : System.Web.UI.Page
                 }
 
 
-                    //DataRow dr = table.Rows[di.RowIndex];
-                    //CheckBox chkInitial = (CheckBox)di.FindControl("chkInitial");
-                    //int disclaimerId = Convert.ToInt32(grdDisclaimer.DataKeys[di.RowIndex].Values[0]);
-                    //DropDownList ddlSectiong = (DropDownList)di.FindControl("ddlSectiong");
-                    //dr["disclaimer_id"] = Convert.ToInt32(grdDisclaimer.DataKeys[di.RowIndex].Values[0]);
-                    //dr["client_id"] = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
-                    //dr["section_heading"] = ((TextBox)di.FindControl("txtHeader")).Text;
-                    //dr["disclaimer_name"] = ((TextBox)di.FindControl("txtDetails")).Text;
-                    //dr["IsInitilal"] = Convert.ToBoolean(chkInitial.Checked);
-                    //objDis.section_level = Convert.ToInt32(ddlSectiong.SelectedValue);
-                    //objDis.section_name = ddlSectiong.SelectedItem.Text;
-                    //objDis.section_heading = ((TextBox)di.FindControl("txtHeader")).Text;
-                    //objDis.disclaimer_name = ((TextBox)di.FindControl("txtDetails")).Text;
-                    //objDis.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
-                    //objDis.IsInitilal = Convert.ToBoolean(chkInitial.Checked);
-                    //if (disclaimerId == 0)
-                    //_db.disclaimers.InsertOnSubmit(objDis);
+                  
                 
             }
            
@@ -259,22 +240,7 @@ public partial class disclaimerui : System.Web.UI.Page
             dtSection = (DataTable)Session["gSection"];
             if (e.CommandName == "Add")
             {
-                //foreach (GridViewRow di in grdDisclaimer.Rows)
-                //{
-
-                //    DataRow dr = table.Rows[di.RowIndex];
-                //    CheckBox chkInitial = (CheckBox)di.FindControl("chkInitial");
-                //    DropDownList ddlSectiong = (DropDownList)di.FindControl("ddlSectiong");
-
-                //    dr["disclaimer_id"] = Convert.ToInt32(grdDisclaimer.DataKeys[di.RowIndex].Values[0]);
-                //    dr["client_id"] = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
-                //    dr["section_heading"] = ((TextBox)di.FindControl("txtHeader")).Text;
-                //    dr["disclaimer_name"] = ((TextBox)di.FindControl("txtDetails")).Text;
-                //    dr["IsInitilal"] = Convert.ToBoolean(chkInitial.Checked);
-
-
-
-                //}
+               
 
 
                 DataRow drNew = table.NewRow();
