@@ -159,7 +159,9 @@
                                     <td>
                                         <table style="padding-top: 7px; padding-bottom: 7px;">
                                             <tr>
-                                                <td align="left" style="font-weight: bold;">Customer Calendar Show weekly view</td>
+                                                <td align="left" style="font-weight: bold;">
+                                                    <asp:Label ID="lblCustomerCalander" runat="server"  Text="Customer Calendar Show weekly view"></asp:Label>
+                                                </td>
                                                 <td align="left" style="font-weight: bold;" valign="top">
                                                     <asp:RadioButtonList ID="rdoconfirm" runat="server" OnClick="ShowProgress();"
                                                         OnSelectedIndexChanged="rdoconfirm_SelectedIndexChanged"

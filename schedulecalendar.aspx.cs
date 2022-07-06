@@ -100,10 +100,14 @@ public partial class schedulecalendar : System.Web.UI.Page
                 hdnCalStateAction.Value = "false";
                 if (Request.QueryString.Get("cid") == null && Request.QueryString.Get("eid") == null)
                 {
+                    rdoconfirm.Visible = false;
+                    lblCustomerCalander.Visible = false;
                     if (System.Web.HttpContext.Current.Session["cid"] != null)
                     {
                         hdnCustIDSelected.Value = System.Web.HttpContext.Current.Session["cid"].ToString();
                         nCustomerID = (int)System.Web.HttpContext.Current.Session["cid"];
+                        lblCustomerCalander.Visible = true;
+                        rdoconfirm.Visible = true;
                     }
 
                     if (System.Web.HttpContext.Current.Session["eid"] != null)
@@ -115,6 +119,7 @@ public partial class schedulecalendar : System.Web.UI.Page
 
 
                 }
+                
             }
             if (nTypeId == 2)
             {
@@ -3701,17 +3706,32 @@ public partial class schedulecalendar : System.Web.UI.Page
 
     protected void rdoconfirm_SelectedIndexChanged(object sender, EventArgs e)
     {
-        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, rdoconfirm.ID, rdoconfirm.GetType().Name, "SelectedIndexChanged");
-        DataClassesDataContext _db = new DataClassesDataContext();
 
-        customer objCust = _db.customers.Single(c => c.customer_id == Convert.ToInt32(hdnCustomerID.Value));
+        
+
+        try
+        {
+
+            KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, rdoconfirm.ID, rdoconfirm.GetType().Name, "SelectedIndexChanged");
+            DataClassesDataContext _db = new DataClassesDataContext();
+
+            customer objCust = new customer();
+            objCust = _db.customers.Single(c => c.customer_id == Convert.ToInt32(hdnCustomerID.Value));
+
+            objCust.CustomerCalendarWeeklyView = Convert.ToInt32(rdoconfirm.SelectedValue);
+
+            _db.SubmitChanges();
+
+            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "HideProgress", "HideProgress();", true);
+        }
+        catch (Exception ex)
+        {
+            
+        }
 
 
-        objCust.CustomerCalendarWeeklyView = Convert.ToInt32(rdoconfirm.SelectedValue);
 
-        _db.SubmitChanges();
-
-        ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "HideProgress", "HideProgress();", true);
+       
     }
 
     [System.Web.Services.WebMethod]
