@@ -686,6 +686,7 @@ public partial class Material_Tracking_List : System.Web.UI.Page
             {
                 Session.Remove("nMaterilaList");
                 lblcount.Text = "0";
+                
             }
 
             if (Session["htMaterialTrackingList"] != null)
@@ -693,14 +694,22 @@ public partial class Material_Tracking_List : System.Web.UI.Page
                 Hashtable ht = (Hashtable)Session["htMaterialTrackingList"];
                 nPageNo = Convert.ToInt32(ht["sPageNo"].ToString());
                 BindOrderList(nPageNo);
+                
             }
             else
             {
                 BindOrderList(0);
+                
+            }
+
+            if (dt.Rows.Count == 0)
+            {
+                lblCurrentPageNo.Text = "0";
             }
 
 
-        }
+
+            }
         catch (Exception ex)
         {
         }
