@@ -239,19 +239,13 @@ public partial class crewdetails : System.Web.UI.Page
 
 
             txtPhone.Text = csCommonUtility.GetPhoneFormat(txtPhone.Text.Trim());
-            // txtFax.Text = csCommonUtility.GetPhoneFormat(txtFax.Text.Trim());
 
             objCrew.client_id = Convert.ToInt32(ddlDivision.SelectedValue);
             objCrew.crew_id = Convert.ToInt32(hdnCrewId.Value);
             objCrew.first_name = txtFirstName.Text;
-            objCrew.last_name = txtLastName.Text;
-            // objCrew.Address = txtAddress.Text;
-            //objCrew.city = txtCity.Text;
-            // objCrew.state = ddlState.SelectedItem.Text;
-            // objCrew.zip_code = txtZip.Text;
+            objCrew.last_name = txtLastName.Text;          
             objCrew.phone = txtPhone.Text;
-            // objCrew.fax = txtFax.Text;
-            // objCrew.email = txtEmailAddress.Text;
+           
             if (chkIsActive.Checked)
             {
                 objCrew.is_active = true;
@@ -358,7 +352,7 @@ public partial class crewdetails : System.Web.UI.Page
                         {
                             objCrewSec.section_id = Convert.ToInt32(li.Value);
                             objCrewSec.SectionName = li.Text;
-                            objCrewSec.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                            objCrewSec.client_id = Convert.ToInt32(ddlDivision.SelectedValue);
                             objCrewSec.crew_Id = objCrew.crew_id; ;
                             objCrewSec.LastUpdateDate = DateTime.Now;
                             objCrewSec.UpdateBy = User.Identity.Name;
@@ -386,7 +380,7 @@ public partial class crewdetails : System.Web.UI.Page
                 //Section Details;
 
                 // 
-                string strQ = "DELETE crew_section WHERE crew_Id =" + Convert.ToInt32(hdnCrewId.Value) + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                string strQ = "DELETE crew_section WHERE crew_Id =" + Convert.ToInt32(hdnCrewId.Value);
                 _db.ExecuteCommand(strQ, string.Empty);
                 _db.SubmitChanges();
 
@@ -400,7 +394,7 @@ public partial class crewdetails : System.Web.UI.Page
                         {
                             objCrewSec.section_id = Convert.ToInt32(li.Value);
                             objCrewSec.SectionName = li.Text;
-                            objCrewSec.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                            objCrewSec.client_id = Convert.ToInt32(ddlDivision.SelectedValue);
                             objCrewSec.crew_Id = Convert.ToInt32(hdnCrewId.Value);
                             objCrewSec.LastUpdateDate = DateTime.Now;
                             objCrewSec.UpdateBy = User.Identity.Name;

@@ -212,48 +212,7 @@ public partial class assigntomodelstimate : System.Web.UI.Page
             Session.Add("cSearch", LeadList);
 
 
-            //var item = from loc in _db.locations
-            //           join mel in _db.model_estimate_locations on loc.location_id equals mel.location_id
-            //           where mel.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && mel.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mel.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
-            //           select new LocationModel()
-            //           {
-            //               location_id = (int)mel.location_id,
-            //               location_name = loc.location_name
-            //           };
-
-            //ddlCustomerLocations.DataSource = item;
-            //ddlCustomerLocations.DataTextField = "location_name";
-            //ddlCustomerLocations.DataValueField = "location_id";
-            //ddlCustomerLocations.DataBind();
-            //ddlCustomerLocations.Items.Insert(0, "Select Location");
-            //ddlCustomerLocations.SelectedValue = "0";
-
-            //var section = from sec in _db.sectioninfos
-            //              join mes in _db.model_estimate_sections on sec.section_id equals mes.section_id
-            //              where mes.model_estimate_id == Convert.ToInt32(hdnEstimateId.Value) && mes.sales_person_id == Convert.ToInt32(hdnSalesPersonId.Value) && mes.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
-            //              select new SectionInfo()
-            //              {
-            //                  section_id = (int)mes.section_id,
-            //                  section_name = sec.section_name
-            //              };
-
-            //DataTable dtSectionId = csCommonUtility.LINQToDataTable(section);
-
-            //ddlSections.DataSource = section;
-            //ddlSections.DataTextField = "section_name";
-            //ddlSections.DataValueField = "section_id";
-            //ddlSections.DataBind();
-            //ddlSections.Items.Insert(0, "Select Section");
-            //ddlSections.SelectedValue = "0";
-            //ddlSections.Items.Insert(1, "All Selected Section");
-            //ddlSections.SelectedValue = "-1";
-            //int[] terms = new int[dtSectionId.Rows.Count]; ;
-            //for (int i = 0; i < dtSectionId.Rows.Count; i++)
-            //{
-            //    terms[i] = Convert.ToInt32(dtSectionId.Rows[i]["section_id"]);
-            //}
-            //Session["myIds"] = terms;
-            // DataTable dtNew = LoadFullSection();
+            
             hdnSortDesc.Value = "0";
             BindSelectedItemGrid();
             BindSelectedItemGrid_Direct();

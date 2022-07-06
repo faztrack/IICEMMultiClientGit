@@ -33,6 +33,7 @@ public partial class SiteProgress_graphics : System.Web.UI.Page
               
                 customer objCust = new customer();
                 objCust = _db.customers.Single(c => c.customer_id == nCustomerId);
+                hdnClientId.Value = objCust.client_id.ToString();
 
                 lblCustomerName.Text = objCust.first_name1 + " " + objCust.last_name1;
 
@@ -150,7 +151,7 @@ public partial class SiteProgress_graphics : System.Web.UI.Page
     {
         DataClassesDataContext _db = new DataClassesDataContext();
         int upload_ImageId = Convert.ToInt32(grdCustomersImage.DataKeys[e.RowIndex].Values[0].ToString());
-        string strQ = "Delete file_upload_info WHERE upload_fileId=" + Convert.ToInt32(upload_ImageId) + " AND client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        string strQ = "Delete file_upload_info WHERE upload_fileId=" + Convert.ToInt32(upload_ImageId) + " AND client_id =" + Convert.ToInt32(hdnClientId.Value);
         _db.ExecuteCommand(strQ, string.Empty);
         GetCustomerImageInfo(Convert.ToInt32(hdnCustomerId.Value));
 
@@ -182,7 +183,7 @@ public partial class SiteProgress_graphics : System.Web.UI.Page
         ImageButton imgEdit = (ImageButton)grdCustomersImage.Rows[e.RowIndex].FindControl("imgEdit");
         ImageButton imgDelete = (ImageButton)grdCustomersImage.Rows[e.RowIndex].FindControl("imgDelete");
 
-        string StrQ = "UPDATE file_upload_info SET Desccription='" + txtDescription.Text.Replace("'", "''") + "' WHERE upload_fileId=" + Convert.ToInt32(upload_ImageId) + " AND client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        string StrQ = "UPDATE file_upload_info SET Desccription='" + txtDescription.Text.Replace("'", "''") + "' WHERE upload_fileId=" + Convert.ToInt32(upload_ImageId) + " AND client_id =" + Convert.ToInt32(hdnClientId.Value);
         _db.ExecuteCommand(StrQ, string.Empty);
         GetCustomerImageInfo(Convert.ToInt32(hdnCustomerId.Value));
 
@@ -205,7 +206,7 @@ public partial class SiteProgress_graphics : System.Web.UI.Page
                 var itemImage = from f in _db.file_upload_infos
                                where f.CustomerId == nCustId
                                && f.IsSiteProgress == true
-                               && f.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])
+                               && f.client_id == Convert.ToInt32(hdnClientId.Value)
                                && f.type != 1
                                && (f.ImageName.ToString().ToLower().Contains("jpg") || f.ImageName.ToLower().ToString().Contains("png") || f.ImageName.ToLower().ToString().Contains("jpeg"))
                                orderby f.upload_fileId ascending
@@ -229,24 +230,7 @@ public partial class SiteProgress_graphics : System.Web.UI.Page
         }
     }
 
-    //protected void imgDelete_Click(object sender, EventArgs e)
-    //{
-    //    try
-    //    {
-    //        DataClassesDataContext _db = new DataClassesDataContext();
-
-    //        ImageButton btn = (ImageButton)sender;
-    //        int upload_ImageId = Convert.ToInt32(btn.CommandArgument);
-    //        string strQ = "Delete Image_upload_info WHERE upload_ImageId=" + Convert.ToInt32(upload_ImageId) + " AND client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
-    //        _db.ExecuteCommand(strQ, string.Empty);
-    //        GetCustomerImageInfo(Convert.ToInt32(hdnCustomerId.Value));
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        Session.Add("sAddCartError", "AddCartError, " + ex.Message);
-    //    }
-    //}
-
+   
     
     protected void grdCustomersFile_RowDataBound(object sender, GridViewRowEventArgs e)
     {
@@ -275,7 +259,7 @@ public partial class SiteProgress_graphics : System.Web.UI.Page
     {
         DataClassesDataContext _db = new DataClassesDataContext();
         int upload_fileId = Convert.ToInt32(grdCustomersFile.DataKeys[e.RowIndex].Values[0].ToString());
-        string strQ = "Delete file_upload_info WHERE upload_fileId=" + Convert.ToInt32(upload_fileId) + " AND client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        string strQ = "Delete file_upload_info WHERE upload_fileId=" + Convert.ToInt32(upload_fileId) + " AND client_id =" + Convert.ToInt32(hdnClientId.Value);
         _db.ExecuteCommand(strQ, string.Empty);
         GetCustomerFileInfo(Convert.ToInt32(hdnCustomerId.Value));
 
@@ -299,7 +283,7 @@ public partial class SiteProgress_graphics : System.Web.UI.Page
         int upload_fileId = Convert.ToInt32(grdCustomersFile.DataKeys[e.RowIndex].Values[0].ToString());
         TextBox txtDescription = (TextBox)grdCustomersFile.Rows[e.RowIndex].FindControl("txtDescription");
         Label lblDescription = (Label)grdCustomersFile.Rows[e.RowIndex].FindControl("lblDescription");
-        string StrQ = "UPDATE file_upload_info SET Desccription='" + txtDescription.Text.Replace("'", "''") + "' WHERE upload_fileId=" + Convert.ToInt32(upload_fileId) + " AND client_id =" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        string StrQ = "UPDATE file_upload_info SET Desccription='" + txtDescription.Text.Replace("'", "''") + "' WHERE upload_fileId=" + Convert.ToInt32(upload_fileId) + " AND client_id =" + Convert.ToInt32(hdnClientId.Value);
         _db.ExecuteCommand(StrQ, string.Empty);
         GetCustomerFileInfo(Convert.ToInt32(hdnCustomerId.Value));
     }
@@ -312,7 +296,7 @@ public partial class SiteProgress_graphics : System.Web.UI.Page
         {
             var file = from file_info in _db.file_upload_infos
                        where file_info.CustomerId == nCustId && file_info.IsSiteProgress == true
-                       && file_info.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && file_info.type != 1
+                       && file_info.client_id == Convert.ToInt32(hdnClientId.Value) && file_info.type != 1
                         && (!file_info.ImageName.ToString().ToLower().Contains("jpg") && !file_info.ImageName.ToLower().ToString().Contains("png") && !file_info.ImageName.ToLower().ToString().Contains("jpeg"))
                        orderby file_info.upload_fileId ascending
                        select file_info;
@@ -408,9 +392,9 @@ public partial class SiteProgress_graphics : System.Web.UI.Page
             string sfileName = grdTemp.DataKeys[di.RowIndex].Value.ToString();
             sfileName = sfileName.Replace("amp;", "").Trim();
             file_upload_info fui = new file_upload_info();
-            if (_db.file_upload_infos.Where(l => l.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && l.CustomerId == Convert.ToInt32(hdnCustomerId.Value) && l.ImageName == sfileName).SingleOrDefault() == null)
+            if (_db.file_upload_infos.Where(l => l.CustomerId == Convert.ToInt32(hdnCustomerId.Value) && l.ImageName == sfileName).SingleOrDefault() == null)
             {
-                fui.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                fui.client_id = Convert.ToInt32(hdnClientId.Value);
                 fui.CustomerId = Convert.ToInt32(hdnCustomerId.Value);
                 fui.Desccription = txtDes.Text;
                 fui.ImageName = sfileName;

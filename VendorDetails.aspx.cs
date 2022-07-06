@@ -195,7 +195,7 @@ public partial class VendorDetails : System.Web.UI.Page
                 {
                     objVendSec.section_id = Convert.ToInt32(li.Value);
                     objVendSec.SectionName = li.Text;
-                    objVendSec.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                    objVendSec.client_id = Convert.ToInt32(ddlDivision.SelectedValue);
                     objVendSec.Vendor_Id = Convert.ToInt32(hdnVendorId.Value);
                     objVendSec.LastUpdateDate = DateTime.Now;
                     objVendSec.UpdateBy = User.Identity.Name;
@@ -204,7 +204,7 @@ public partial class VendorDetails : System.Web.UI.Page
                 }
             }          
         }
-        string strQ = "DELETE vendor_section WHERE Vendor_Id =" + Convert.ToInt32(hdnVendorId.Value) + " AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+        string strQ = "DELETE vendor_section WHERE Vendor_Id =" + Convert.ToInt32(hdnVendorId.Value);
         _db.ExecuteCommand(strQ, string.Empty);
 
         _db.SubmitChanges();
