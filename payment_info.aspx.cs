@@ -2175,7 +2175,8 @@ public partial class payment_info : System.Web.UI.Page
 
 
         string ContactAddress = string.Empty;
-        cover_page objCP = _db.cover_pages.SingleOrDefault(c => c.client_id == Convert.ToInt32(hdnClientId.Value));
+        cover_page objCP = _db.cover_pages.SingleOrDefault(c => c.client_id == 1);//  Do not change it
+
         if (objCP != null)
             ContactAddress = objCP.cover_page_content;
         if (ConfigurationManager.AppSettings["IsContactProductionServer"] == "true")

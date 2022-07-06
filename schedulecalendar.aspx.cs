@@ -81,7 +81,7 @@ public partial class schedulecalendar : System.Web.UI.Page
             co_pricing_master objCOPM = new co_pricing_master();
             location objLocation = new location();
 
-            company_profile objComp = _db.company_profiles.SingleOrDefault(c => c.client_id == Convert.ToInt32(hdnClientId.Value));
+            company_profile objComp = _db.company_profiles.SingleOrDefault(c => c.client_id == 1); //  Do not change it
 
             System.Web.HttpContext.Current.Session.Add("sUnassignedCheck", (bool)objComp.IsScheduleUnassignedCheck);
 
