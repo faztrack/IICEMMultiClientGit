@@ -51,9 +51,7 @@ public partial class mcrewlocationmap : System.Web.UI.Page
            
             DataClassesDataContext _db = new DataClassesDataContext();
             List<csCrewLocation> eCoord = new List<csCrewLocation>();
-           // company_profile com = _db.company_profiles.SingleOrDefault(cp => cp.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
-          ////  lblOfficePhone.Text = com.phone;//"<a href=tel:'" + com.phone + "'"+ com.phone+ "</a>";
-          //  hrfOfficePhone.HRef = "tel:"+com.phone;
+         
 
             customer objCust = _db.customers.SingleOrDefault(c => c.customer_id == nCustomerId);
            

@@ -81,7 +81,7 @@ public partial class schedulecalendar : System.Web.UI.Page
             co_pricing_master objCOPM = new co_pricing_master();
             location objLocation = new location();
 
-            company_profile objComp = _db.company_profiles.SingleOrDefault(c => c.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+            company_profile objComp = _db.company_profiles.SingleOrDefault(c => c.client_id == Convert.ToInt32(hdnClientId.Value));
 
             System.Web.HttpContext.Current.Session.Add("sUnassignedCheck", (bool)objComp.IsScheduleUnassignedCheck);
 
@@ -150,7 +150,7 @@ public partial class schedulecalendar : System.Web.UI.Page
                 HttpContext.Current.Session.Add("CustSelected", nCustomerID);
                 HttpContext.Current.Session.Add("EstSelected", nEstimateID);
 
-                string strQ = "SELECT * FROM customer_estimate WHERE customer_id=" + nCustomerID + " AND status_id = 3 AND client_id=" + Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+                string strQ = "SELECT * FROM customer_estimate WHERE customer_id=" + nCustomerID + " AND status_id = 3 " ;
                 IEnumerable<customer_estimate> list = _db.ExecuteQuery<customer_estimate>(strQ, string.Empty);
 
                 //ddlEst.DataSource = list;
@@ -179,14 +179,7 @@ public partial class schedulecalendar : System.Web.UI.Page
 
 
                 btnBack.Text = "Return to Customer List";// Schedule (" + strCustName + " - " + strEstimateName + ")";
-                //if (_db.customer_estimates.Where(ce => ce.customer_id == nCustomerID && ce.estimate_id == nEstimateID).Count() > 0)
-                //{
-                //    cus_est = _db.customer_estimates.Single(ce => ce.customer_id == nCustomerID && ce.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && ce.estimate_id == nEstimateID);
-                //    strEstimateName = cus_est.estimate_name;
-
-                //    ddlEst.SelectedValue = nEstimateID.ToString();
-
-                //}
+              
 
 
                 if (_db.customers.Where(c => c.customer_id == nCustomerID).Count() > 0)
@@ -834,7 +827,7 @@ public partial class schedulecalendar : System.Web.UI.Page
 
 
 
-        if (_db.estimate_payments.Any(pay => pay.estimate_id == nEstId && pay.customer_id == nCustId && pay.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])))
+        if (_db.estimate_payments.Any(pay => pay.estimate_id == nEstId && pay.customer_id == nCustId && pay.client_id == Convert.ToInt32(hdnClientId.Value)))
         {
             objEstPay = _db.estimate_payments.Single(pay => pay.estimate_id == nEstId && pay.customer_id == nCustId && pay.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
 
