@@ -325,6 +325,7 @@
                                                     <asp:HiddenField ID="hdnModEstimateNewId" runat="server"
                                                         EnableViewState="False" Value="0" />
                                                     <asp:HiddenField ID="hdnSalesId" runat="server" Value="0" />
+                                                    <asp:HiddenField ID="hdnClientId" runat="server" Value="0" />
                                                 </td>
                                             </tr>
                                             <tr>

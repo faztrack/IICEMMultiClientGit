@@ -35,6 +35,9 @@ public partial class PublicMe_Pricing : System.Web.UI.Page
             if (Request.QueryString.Get("meid") != null)
                 hdnEstimateId.Value = Request.QueryString.Get("meid");
 
+            if(Request.QueryString.Get("clid") != null)
+                hdnClientId.Value = Request.QueryString.Get("clid");
+
             userinfo obj = (userinfo)Session["oUser"];
             hdnSalesId.Value = obj.sales_person_id.ToString();
 
@@ -47,6 +50,8 @@ public partial class PublicMe_Pricing : System.Web.UI.Page
                 hdnSalesPersonId.Value = obj.sales_person_id.ToString();
             }
 
+
+            
 
             DataClassesDataContext _db = new DataClassesDataContext();
             model_estimate me = new model_estimate();
@@ -475,7 +480,7 @@ public partial class PublicMe_Pricing : System.Web.UI.Page
             nEstId = nEstId + 1;
             hdnModEstimateNewId.Value = nEstId.ToString();
             model_estimate Mod_est = new model_estimate();
-            Mod_est.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
+            Mod_est.client_id = Convert.ToInt32(hdnClientId.Value);
             Mod_est.model_estimate_id = Convert.ToInt32(hdnModEstimateNewId.Value);
             Mod_est.status_id = 1;
             Mod_est.estimate_comments = lblComments.Text;
@@ -539,7 +544,7 @@ public partial class PublicMe_Pricing : System.Web.UI.Page
             _db.SubmitChanges();
 
         }
-        Response.Redirect("me_pricing.aspx?meid=" + hdnModEstimateNewId.Value + "&spid=" + hdnSalesId.Value);
+        Response.Redirect("me_pricing.aspx?meid=" + hdnModEstimateNewId.Value + "&spid=" + hdnSalesId.Value + "&clid=" + hdnClientId.Value);
     }
     protected void grdSelectedItem_RowDataBound(object sender, GridViewRowEventArgs e)
     {
