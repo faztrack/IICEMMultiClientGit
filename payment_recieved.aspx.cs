@@ -78,7 +78,7 @@ public partial class payment_recieved : System.Web.UI.Page
                 if (Convert.ToInt32(hdnEstimateId.Value) > 0)
                 {
                     customer_estimate cus_est = new customer_estimate();
-                    cus_est = _db.customer_estimates.Single(ce => ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value));
+                    cus_est = _db.customer_estimates.Single(ce => ce.customer_id == Convert.ToInt32(hdnCustomerId.Value)  && ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value));
 
                     lblEstimateName.Text = cus_est.estimate_name;
                     lblJobNumber.Text = cus_est.job_number;
@@ -113,7 +113,7 @@ public partial class payment_recieved : System.Web.UI.Page
         estimate_payment objEstPay = new estimate_payment();
 
 
-        objEstPay = _db.estimate_payments.Single(pay => pay.est_payment_id == nPaymentId && pay.estimate_id == nEstimateId && pay.customer_id == nCustomerId && pay.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+        objEstPay = _db.estimate_payments.Single(pay => pay.est_payment_id == nPaymentId && pay.estimate_id == nEstimateId && pay.customer_id == nCustomerId );
 
 
         txtnDeposit.Text = Convert.ToDecimal(objEstPay.deposit_amount).ToString("c");
@@ -204,9 +204,9 @@ public partial class payment_recieved : System.Web.UI.Page
         decimal tax_amount = 0;
         DataClassesDataContext _db = new DataClassesDataContext();
         estimate_payment esp = new estimate_payment();
-        if (_db.estimate_payments.Where(ep => ep.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ep.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ep.client_id == 1).SingleOrDefault() != null)
+        if (_db.estimate_payments.Where(ep => ep.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ep.customer_id == Convert.ToInt32(hdnCustomerId.Value)).SingleOrDefault() != null)
         {
-            esp = _db.estimate_payments.Single(ep => ep.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ep.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ep.client_id == 1);
+            esp = _db.estimate_payments.Single(ep => ep.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ep.customer_id == Convert.ToInt32(hdnCustomerId.Value));
             totalwithtax = Convert.ToDecimal(esp.new_total_with_tax);
             if (Convert.ToDecimal(esp.adjusted_price) > 0)
                 project_subtotal = Convert.ToDecimal(esp.adjusted_price);
@@ -238,7 +238,7 @@ public partial class payment_recieved : System.Web.UI.Page
             CoTaxRate = Convert.ToDecimal(cho.tax);
             decimal dEconCost = 0;
             var Coresult = (from chpl in _db.change_order_pricing_lists
-                            where chpl.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && chpl.customer_id == Convert.ToInt32(hdnCustomerId.Value) && chpl.client_id == 1 && chpl.chage_order_id == ncoeid
+                            where chpl.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && chpl.customer_id == Convert.ToInt32(hdnCustomerId.Value)  && chpl.chage_order_id == ncoeid
                             select chpl.EconomicsCost);
             int cn = Coresult.Count();
             if (Coresult != null && cn > 0)
@@ -260,7 +260,7 @@ public partial class payment_recieved : System.Web.UI.Page
 
         decimal payAmount = 0;
         var result = (from ppi in _db.New_partial_payments
-                      where ppi.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ppi.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ppi.client_id == 1
+                      where ppi.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ppi.customer_id == Convert.ToInt32(hdnCustomerId.Value) 
                       select ppi.pay_amount);
         int n = result.Count();
         if (result != null && n > 0)
@@ -302,14 +302,14 @@ public partial class payment_recieved : System.Web.UI.Page
                 decimal CoTax = 0;
 
                 changeorder_estimate cho = new changeorder_estimate();
-                cho = _db.changeorder_estimates.Single(ce => ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ce.customer_id == Convert.ToInt32(hdnCustomerId.Value) && ce.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && ce.chage_order_id == ncoeid);
+                cho = _db.changeorder_estimates.Single(ce => ce.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && ce.customer_id == Convert.ToInt32(hdnCustomerId.Value)  && ce.chage_order_id == ncoeid);
                 if (Convert.ToBoolean(cho.is_tax) == true)
                 {
                     CoTaxRate = Convert.ToDecimal(cho.tax);
                 }
                 decimal dEconCost = 0;
                 var result = (from chpl in _db.change_order_pricing_lists
-                              where chpl.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && chpl.customer_id == Convert.ToInt32(hdnCustomerId.Value) && chpl.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]) && chpl.chage_order_id == ncoeid
+                              where chpl.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && chpl.customer_id == Convert.ToInt32(hdnCustomerId.Value)  && chpl.chage_order_id == ncoeid
                               select chpl.EconomicsCost);
                 int n = result.Count();
                 if (result != null && n > 0)
@@ -343,9 +343,9 @@ public partial class payment_recieved : System.Web.UI.Page
                 decimal dOtherAmount = 0;
 
 
-                if (_db.Co_PaymentTerms.Any(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == ncoeid && est_p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"])))
+                if (_db.Co_PaymentTerms.Any(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == ncoeid ))
                 {
-                    Co_PaymentTerm objPayTerm = _db.Co_PaymentTerms.FirstOrDefault(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == ncoeid && est_p.client_id == Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]));
+                    Co_PaymentTerm objPayTerm = _db.Co_PaymentTerms.FirstOrDefault(est_p => est_p.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && est_p.customer_id == Convert.ToInt32(hdnCustomerId.Value) && est_p.ChangeOrderId == ncoeid );
                     //hdnChPaymentId.Value = objPayTerm.co_payment_id.ToString();
 
 
@@ -464,7 +464,7 @@ public partial class payment_recieved : System.Web.UI.Page
         DataTable tmpTable = LoadDataTable();
 
         var item = from it in _db.New_partial_payments
-                   where it.customer_id == Convert.ToInt32(hdnCustomerId.Value) && it.estimate_id == Convert.ToInt32(hdnEstimateId.Value) && it.client_id == 1
+                   where it.customer_id == Convert.ToInt32(hdnCustomerId.Value) && it.estimate_id == Convert.ToInt32(hdnEstimateId.Value) 
                    select new PartialPayment_new()
                    {
                        payment_id = (int)it.payment_id,
