@@ -185,6 +185,7 @@ public partial class customer_details : System.Web.UI.Page
                 hypMap.NavigateUrl = "http://maps.google.com/maps?f=q&source=s_q&hl=en&geocode=&q=" + strAddress;
 
                 hdnClientId.Value = cust.client_id.ToString();
+
                 BindSalesPerson();
 
                 txtCompany.Text = cust.company;
@@ -285,7 +286,7 @@ public partial class customer_details : System.Web.UI.Page
                 pnlEstimate.Visible = false;
             }
 
-            
+         
 
             csCommonUtility.SetPagePermission(this.Page, new string[] { "btnSubmit", "btnSalesCalendar", "hypMap", "rdoCustomerLogin","btnImageGallery", "btnSaveContact", "HyperLink1", "btnUpload", "HyperLink2", "btnSaveCall", "chkFollowup", "pnlLeadListPopup" });
             csCommonUtility.SetPagePermissionForGrid(this.Page, new string[] { "hypMessageDetails", "Edit", "Update", "Delete" });

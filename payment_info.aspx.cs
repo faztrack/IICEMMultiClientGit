@@ -1573,7 +1573,7 @@ public partial class payment_info : System.Web.UI.Page
                     " FROM pricing_details  INNER JOIN location ON pricing_details.location_id=location.location_id  " +
                     " WHERE pricing_details.location_id IN (Select location_id from customer_locations WHERE customer_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_locations.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
                     " AND pricing_details.section_level IN (Select section_id from customer_sections  WHERE customer_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
-                    " AND estimate_id=" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND pricing_details.client_id=" + Convert.ToInt32(hdnClientId.Value) + " order by item_id asc";
+                    " AND estimate_id=" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND pricing_details.client_id=" + Convert.ToInt32(hdnClientId.Value);// + " order by section_level  asc";
 
         List<PricingDetailModel> CList = _db.ExecuteQuery<PricingDetailModel>(strQ, string.Empty).ToList();
         customer_estimate cus_est = new customer_estimate();
@@ -2108,31 +2108,48 @@ public partial class payment_info : System.Web.UI.Page
 
         ReportDocument rptFile = new ReportDocument();
         string strReportPath = "";
+
         if (rdoSort.SelectedValue == "1")
         {
-            if(Convert.ToInt32(hdnClientId.Value) == 1)
-            {
+           
                 strReportPath = Server.MapPath(@"Reports\rpt\rptContact.rpt");
-            }
-            else
-            {
-                strReportPath = Server.MapPath(@"Reports\rpt\rptContactOther.rpt");
-            }
-        }            
+          
+        }
         else
         {
-            if (Convert.ToInt32(hdnClientId.Value) == 1)
-            {
+           
                 strReportPath = Server.MapPath(@"Reports\rpt\rptContactSection.rpt");
-            }
-            else
-            {
-                strReportPath = Server.MapPath(@"Reports\rpt\rptContactSectionOther.rpt");
-            }
+           
         }
 
 
-            
+
+
+        //if (rdoSort.SelectedValue == "1")
+        //{
+        //    if(Convert.ToInt32(hdnClientId.Value) == 1)
+        //    {
+        //        strReportPath = Server.MapPath(@"Reports\rpt\rptContact.rpt");
+        //    }
+        //    else
+        //    {
+        //        strReportPath = Server.MapPath(@"Reports\rpt\rptContactOther.rpt");
+        //    }
+        //}            
+        //else
+        //{
+        //    if (Convert.ToInt32(hdnClientId.Value) == 1)
+        //    {
+        //        strReportPath = Server.MapPath(@"Reports\rpt\rptContactSection.rpt");
+        //    }
+        //    else
+        //    {
+        //        strReportPath = Server.MapPath(@"Reports\rpt\rptContactSectionOther.rpt");
+        //    }
+        //}
+
+
+
         // string strReportPath = Server.MapPath(@"Reports\rpt\rptContact.rpt");
         rptFile.Load(strReportPath);
         rptFile.SetDataSource(CList);
@@ -3017,15 +3034,27 @@ public partial class payment_info : System.Web.UI.Page
         DataTable dtShower = new DataTable();
         DataTable dtTub = new DataTable();
 
+        //string strOrderby = "";
+
+        //if (rdoSort.SelectedValue == "1")
+        //{
+        //    strOrderby = " ORDER BY location_name,section_name ASC ";
+        //}
+        //else
+        //{
+        //    strOrderby = " ORDER BY section_name, location_name ASC ";
+
+        //}
+
         string strQ = " SELECT  pricing_id, pricing_details.client_id, customer_id, estimate_id, pricing_details.location_id, sales_person_id, section_level, item_id, section_name," +
                     " CASE WHEN item_name LIKE '%>>'  THEN LEFT(item_name, LEN(item_name)-2) ELSE item_name END AS item_name, " +
-                    " measure_unit, item_cost, minimum_qty, quantity, retail_multiplier, labor_rate, labor_id, section_serial, item_cnt, total_direct_price, total_retail_price, is_direct, pricing_type, "+
-                    " CASE WHEN LEN(short_notes)>0 THEN '' + CHAR(13) + 'NOTES: '+ short_notes ELSE short_notes END AS short_notes, " +                  
+                    " measure_unit, item_cost, minimum_qty, quantity, retail_multiplier, labor_rate, labor_id, section_serial, item_cnt, total_direct_price, total_retail_price, is_direct, pricing_type, " +
+                    " CASE WHEN LEN(short_notes)>0 THEN '' + CHAR(13) + 'NOTES: '+ short_notes ELSE short_notes END AS short_notes, " +
                     " location_name,ISNULL(sort_id,0) AS sort_id " +
                     " FROM pricing_details  INNER JOIN location ON pricing_details.location_id=location.location_id  " +
                     " WHERE pricing_details.location_id IN (Select location_id from customer_locations WHERE customer_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_locations.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
                     " AND pricing_details.section_level IN (Select section_id from customer_sections  WHERE customer_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
-                    " AND estimate_id=" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND pricing_details.client_id=" + Convert.ToInt32(hdnClientId.Value) + " order by location_name asc";
+                    " AND estimate_id=" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND pricing_details.client_id=" + Convert.ToInt32(hdnClientId.Value) ;
 
         List<PricingDetailModel> CList = _db.ExecuteQuery<PricingDetailModel>(strQ, string.Empty).ToList();
 
@@ -5968,26 +5997,39 @@ public partial class payment_info : System.Web.UI.Page
 
         if (rdoSort.SelectedValue == "1")
         {
-            if (Convert.ToInt32(hdnClientId.Value) == 1)
-            {
-                strReportPath = Server.MapPath(@"Reports\rpt\rptContact.rpt");
-            }
-            else
-            {
-                strReportPath = Server.MapPath(@"Reports\rpt\rptContactOther.rpt");
-            }
+
+            strReportPath = Server.MapPath(@"Reports\rpt\rptContact.rpt");
+
         }
         else
         {
-            if (Convert.ToInt32(hdnClientId.Value) == 1)
-            {
-                strReportPath = Server.MapPath(@"Reports\rpt\rptContactSection.rpt");
-            }
-            else
-            {
-                strReportPath = Server.MapPath(@"Reports\rpt\rptContactSectionOther.rpt");
-            }
+
+            strReportPath = Server.MapPath(@"Reports\rpt\rptContactSection.rpt");
+
         }
+
+        //if (rdoSort.SelectedValue == "1")
+        //{
+        //    if (Convert.ToInt32(hdnClientId.Value) == 1)
+        //    {
+        //        strReportPath = Server.MapPath(@"Reports\rpt\rptContact.rpt");
+        //    }
+        //    else
+        //    {
+        //        strReportPath = Server.MapPath(@"Reports\rpt\rptContactOther.rpt");
+        //    }
+        //}
+        //else
+        //{
+        //    if (Convert.ToInt32(hdnClientId.Value) == 1)
+        //    {
+        //        strReportPath = Server.MapPath(@"Reports\rpt\rptContactSection.rpt");
+        //    }
+        //    else
+        //    {
+        //        strReportPath = Server.MapPath(@"Reports\rpt\rptContactSectionOther.rpt");
+        //    }
+        //}
 
         rptFile.Load(strReportPath);
         rptFile.SetDataSource(CList);
@@ -6493,7 +6535,7 @@ public partial class payment_info : System.Web.UI.Page
                     " FROM pricing_details  INNER JOIN location ON pricing_details.location_id=location.location_id  " +
                     " WHERE pricing_details.location_id IN (Select location_id from customer_locations WHERE customer_locations.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_locations.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_locations.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
                     " AND pricing_details.section_level IN (Select section_id from customer_sections  WHERE customer_sections.estimate_id =" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_sections.customer_id =" + Convert.ToInt32(hdnCustomerId.Value) + " AND customer_sections.client_id =" + Convert.ToInt32(hdnClientId.Value) + " ) " +
-                    " AND estimate_id=" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND pricing_details.client_id=" + Convert.ToInt32(hdnClientId.Value) + " order by item_id asc";
+                    " AND estimate_id=" + Convert.ToInt32(hdnEstimateId.Value) + " AND customer_id=" + Convert.ToInt32(hdnCustomerId.Value) + " AND pricing_details.client_id=" + Convert.ToInt32(hdnClientId.Value);// + " order by item_id asc";
 
         List<PricingDetailModel> CList = _db.ExecuteQuery<PricingDetailModel>(strQ, string.Empty).ToList();
         customer_estimate cus_est = new customer_estimate();

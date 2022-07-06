@@ -1232,7 +1232,7 @@ public partial class customerlist : System.Web.UI.Page
 
                         hyp_PreCon.NavigateUrl = "PreconstructionCheckList.aspx?eid=" + nestid + "&cid=" + ncid;
 
-                        if (_db.estimate_payments.Where(est_p => est_p.estimate_id == nestid && est_p.customer_id == ncid && est_p.client_id == 1).SingleOrDefault() == null)
+                        if (_db.estimate_payments.Where(est_p => est_p.estimate_id == nestid && est_p.customer_id == ncid ).SingleOrDefault() == null)
                         {
                             hyp_Payment.NavigateUrl = "payment_info.aspx?eid=" + nestid + "&cid=" + ncid;
 
@@ -1240,7 +1240,7 @@ public partial class customerlist : System.Web.UI.Page
                         else
                         {
                             estimate_payment objEstPay = new estimate_payment();
-                            objEstPay = _db.estimate_payments.Single(pay => pay.estimate_id == nestid && pay.customer_id == ncid && pay.client_id == 1);
+                            objEstPay = _db.estimate_payments.Single(pay => pay.estimate_id == nestid && pay.customer_id == ncid );
                             hyp_Payment.NavigateUrl = "payment_recieved.aspx?cid=" + ncid + "&epid=" + objEstPay.est_payment_id + "&eid=" + nestid;
 
                         }
@@ -1254,13 +1254,13 @@ public partial class customerlist : System.Web.UI.Page
                         ddlEstCO.DataValueField = "chage_order_id";
                         ddlEstCO.DataBind();
 
-                        if (_db.changeorder_estimates.Where(ce => ce.customer_id == ncid && ce.estimate_id == nestid && ce.client_id == 1).ToList().Count > 0)
+                        if (_db.changeorder_estimates.Where(ce => ce.customer_id == ncid && ce.estimate_id == nestid ).ToList().Count > 0)
                         {
                             ddlEstCO.Visible = true;
                             hypEstCODetail.Visible = true;
                             int nEstCOId = 0;
                             var result = (from ce in _db.changeorder_estimates
-                                          where ce.customer_id == ncid && ce.estimate_id == nestid && ce.client_id == 1
+                                          where ce.customer_id == ncid && ce.estimate_id == nestid 
                                           select ce.chage_order_id);
 
                             int n = result.Count();
@@ -1312,7 +1312,7 @@ public partial class customerlist : System.Web.UI.Page
                             hypEstCODetail.NavigateUrl = "change_order_locations.aspx?coestid=" + nChangeOrderId + "&eid=" + nestid + "&cid=" + ncid;
 
                         }
-                        if (_db.changeorder_estimates.Where(ce => ce.customer_id == ncid && ce.estimate_id == nestid && ce.client_id == 1 && ce.is_close == false).ToList().Count > 0)
+                        if (_db.changeorder_estimates.Where(ce => ce.customer_id == ncid && ce.estimate_id == nestid  && ce.is_close == false).ToList().Count > 0)
                         {
                             hypCOCommon.Visible = false;
 
