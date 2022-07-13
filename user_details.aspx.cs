@@ -641,9 +641,10 @@ public partial class user_details : System.Web.UI.Page
         // Sales person Info
         //obj.client_id = Convert.ToInt32(ConfigurationManager.AppSettings["client_id"]);
         obj.client_id = selectedvalue.TrimEnd(',');
-        
+        obj.division_name = selectDivisionName.Trim().TrimEnd(',');
 
-        if (selectedDivisionValue.Contains(","))
+
+        if (divisionCount > 1)
         {
             obj.primary_division = Convert.ToInt32(rdoPrimaryButton.SelectedValue);
         }
@@ -651,6 +652,15 @@ public partial class user_details : System.Web.UI.Page
         {
             obj.primary_division = Convert.ToInt32(lstDivision.SelectedValue);
         }
+
+        //if (selectedDivisionValue.Contains(","))
+        //{
+        //    obj.primary_division = Convert.ToInt32(rdoPrimaryButton.SelectedValue);
+        //}
+        //else
+        //{
+        //    obj.primary_division = Convert.ToInt32(lstDivision.SelectedValue);
+        //}
 
         obj.sales_person_id = Convert.ToInt32(hdnSalesPersonId.Value);
 
