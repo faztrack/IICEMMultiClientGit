@@ -34,7 +34,7 @@ public partial class schedulecalendar : System.Web.UI.Page
                 userinfo oUser = (userinfo)Session["oUser"];
                 hdnEmailType.Value = oUser.EmailIntegrationType.ToString();
                 hdnPrimaryDivision.Value = oUser.primaryDivision.ToString();
-                hdnClientId.Value = oUser.client_id.ToString();
+               
                 hdnDivisionName.Value = oUser.divisionName;
             }
 
@@ -191,7 +191,7 @@ public partial class schedulecalendar : System.Web.UI.Page
                 {
                     objCust = _db.customers.SingleOrDefault(c => c.customer_id == nCustomerID);
                     strCustName = objCust.first_name1 + " " + objCust.last_name1;
-
+                    hdnClientId.Value = objCust.client_id.ToString();
                     lbltopHead.Text = "Operation Calendar (" + strCustName + ")";
 
                     hdnCalStateAction.Value = objCust.isCalendarOnline.ToString().ToLower();
