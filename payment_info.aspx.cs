@@ -199,6 +199,8 @@ public partial class payment_info : System.Web.UI.Page
             }
             CalculateTotal();
             Calculate();
+
+            MainDataSave();
         }
 
 
@@ -963,16 +965,17 @@ public partial class payment_info : System.Web.UI.Page
     {
         Response.Redirect("pricing.aspx?eid=" + Convert.ToInt32(hdnEstimateId.Value) + "&cid=" + Convert.ToInt32(hdnCustomerId.Value));
     }
-    protected void btnSave_Click(object sender, EventArgs e)
+
+    private void MainDataSave()
     {
-        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnSave.ID, btnSave.GetType().Name, "Click"); 
-        lblResult.Text = "";
         try
         {
-            string strRequired = string.Empty;
+            lblResult.Text = "";
             if (txtTax.Text.Trim() == "")
             {
-                strRequired = "Missing Tax Rate.<br/>";
+                lblResult.Text = "Missing Tax Rate.";
+                lblResult.ForeColor = Color.Red;
+                return;
             }
             else
             {
@@ -983,63 +986,17 @@ public partial class payment_info : System.Web.UI.Page
                 }
                 catch (Exception ex)
                 {
-                    strRequired += "Invalid Tax Rate.<br/>";
-
+                    lblResult.Text = "Invalid Tax Rate.";
+                    lblResult.ForeColor = Color.Red;
+                    return;
                 }
             }
 
-            if (txtContractDate.Text.Trim() != "")
-            {
-                try
-                {
-                    Convert.ToDateTime(txtContractDate.Text);
-                }
-                catch (Exception ex)
-                {
-                    strRequired += "Contract Date: Invalid date format.<br/>";
-
-                }
-            }
-
-            if (rdoCompletionType.SelectedValue == "2")
-            {
-                if (txtStartDate.Text.Trim() != "")
-                {
-                    try
-                    {
-                        Convert.ToDateTime(txtStartDate.Text);
-                    }
-                    catch (Exception ex)
-                    {
-                        strRequired += "Start Date: Invalid date format.<br/>";
-
-                    }
-                }
-                if (txtCompletionDate.Text.Trim() != "")
-                {
-                    try
-                    {
-                        Convert.ToDateTime(txtCompletionDate.Text);
-                    }
-                    catch (Exception ex)
-                    {
-                        strRequired += "Completion Date: Invalid date format.<br/>";
-
-                    }
-                }
-            }
-
-            if (strRequired.Length > 0)
-            {
-                lblResult.Text = csCommonUtility.GetSystemRequiredMessage(strRequired);
-                return;
-            }
-
-
+            CalculateTotal();
             if (Convert.ToBoolean(Calculate()) == false)
             {
-                lblResult.Text = csCommonUtility.GetSystemErrorMessage(" % total should be 100%.");
-
+                lblResult.Text = " % total should be 100%.";
+                lblResult.ForeColor = Color.Red;
                 return;
             }
 
@@ -1258,7 +1215,7 @@ public partial class payment_info : System.Web.UI.Page
 
                 _db.SubmitChanges();
 
-                lblResult.Text = csCommonUtility.GetSystemMessage("Data updated successfully.");
+              //  lblResult.Text = csCommonUtility.GetSystemMessage("Data updated successfully.");
 
 
             }
@@ -1271,9 +1228,102 @@ public partial class payment_info : System.Web.UI.Page
                 _db.estimate_payments.InsertOnSubmit(obj);
                 _db.SubmitChanges();
 
-                lblResult.Text = csCommonUtility.GetSystemMessage("Data saved successfully.");
+                //lblResult.Text = csCommonUtility.GetSystemMessage("Data saved successfully.");
 
             }
+
+
+
+
+        }
+        catch (Exception ex)
+        {
+            lblResult.Text = csCommonUtility.GetSystemErrorMessage(ex.Message);
+        }
+
+    }
+    protected void btnSave_Click(object sender, EventArgs e)
+    {
+        KPIUtility.SaveEvent(this.Page.AppRelativeVirtualPath, btnSave.ID, btnSave.GetType().Name, "Click"); 
+        lblResult.Text = "";
+        try
+        {
+            string strRequired = string.Empty;
+            //if (txtTax.Text.Trim() == "")
+            //{
+            //    strRequired = "Missing Tax Rate.<br/>";
+            //}
+            //else
+            //{
+
+            //    try
+            //    {
+            //        Convert.ToDecimal(txtTax.Text);
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        strRequired += "Invalid Tax Rate.<br/>";
+
+            //    }
+            //}
+
+            if (txtContractDate.Text.Trim() != "")
+            {
+                try
+                {
+                    Convert.ToDateTime(txtContractDate.Text);
+                }
+                catch (Exception ex)
+                {
+                    strRequired += "Contract Date: Invalid date format.<br/>";
+
+                }
+            }
+
+            if (rdoCompletionType.SelectedValue == "2")
+            {
+                if (txtStartDate.Text.Trim() != "")
+                {
+                    try
+                    {
+                        Convert.ToDateTime(txtStartDate.Text);
+                    }
+                    catch (Exception ex)
+                    {
+                        strRequired += "Start Date: Invalid date format.<br/>";
+
+                    }
+                }
+                if (txtCompletionDate.Text.Trim() != "")
+                {
+                    try
+                    {
+                        Convert.ToDateTime(txtCompletionDate.Text);
+                    }
+                    catch (Exception ex)
+                    {
+                        strRequired += "Completion Date: Invalid date format.<br/>";
+
+                    }
+                }
+            }
+
+            if (strRequired.Length > 0)
+            {
+                lblResult.Text = csCommonUtility.GetSystemRequiredMessage(strRequired);
+                return;
+            }
+
+
+            if (Convert.ToBoolean(Calculate()) == false)
+            {
+                lblResult.Text = csCommonUtility.GetSystemErrorMessage(" % total should be 100%.");
+
+                return;
+            }
+            MainDataSave();
+            lblResult.Text = csCommonUtility.GetSystemMessage("Data saved successfully.");
+
         }
         catch (Exception ex)
         {
